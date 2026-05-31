@@ -6,6 +6,8 @@ dotenv.config()
 const app = express()
 app.use(express.static('public'))
 
+const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
+
 const BASE_INSTRUCTIONS = `You are an AI team member for A1 Professional Asphalt and Concrete serving the St. Louis area.
 IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.`
 
@@ -47,21 +49,39 @@ function buildInstructions(source) {
 ${greeting}${SHARED_RULES}`
 }
 
+function hasApiKey() {
+  return Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim())
+}
+
+app.get('/health', (_req, res) => {
+  res.json({
+    ok: hasApiKey(),
+    openai_key_configured: hasApiKey(),
+    model: REALTIME_MODEL
+  })
+})
+
 app.get('/session', async (req, res) => {
+  if (!hasApiKey()) {
+    return res.status(503).json({
+      error: 'OPENAI_API_KEY is not set on the server. Add it in Render → Environment.'
+    })
+  }
+
   try {
     const source = req.query.src === 'email' ? 'email' : 'web'
-    const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
-      method: "POST",
+    const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "gpt-4o-realtime-preview-2024-12-17",
-        voice: "alloy",
-        modalities: ["audio", "text"],
+        model: REALTIME_MODEL,
+        voice: 'alloy',
+        modalities: ['audio', 'text'],
         turn_detection: {
-          type: "server_vad",
+          type: 'server_vad',
           silence_duration_ms: 900,
           prefix_padding_ms: 300,
           create_response: true
@@ -69,10 +89,21 @@ app.get('/session', async (req, res) => {
         instructions: buildInstructions(source)
       })
     })
+
     const data = await response.json()
+
+    if (!response.ok || data.error) {
+      const message = data.error?.message || 'OpenAI session creation failed'
+      return res.status(response.status || 502).json({ error: message })
+    }
+
+    if (!data.client_secret?.value) {
+      return res.status(502).json({ error: 'OpenAI did not return a session token.' })
+    }
+
     res.json(data)
   } catch (error) {
-    res.status(500).json({ error: "API Failure" })
+    res.status(500).json({ error: 'API Failure' })
   }
 })
 

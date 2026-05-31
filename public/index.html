@@ -146,7 +146,7 @@
       </div>
 
       <div id="status-text"></div>
-      <div id="hint">Click outside this box to return to the website</div>
+      <div id="hint"></div>
 
       <div id="footer">
         <div class="brand">A1 Asphalt &amp; Sealing</div>
@@ -217,6 +217,30 @@
       try { history.back() } catch {}
     })
 
+    function showFailure(err) {
+      console.error(err)
+      pc = null
+      if (localStream) {
+        try { localStream.getTracks().forEach(t => t.stop()) } catch {}
+        localStream = null
+      }
+      document.body.className = 'idle'
+      starting = false
+      headlineEl.classList.remove('hide-soft')
+
+      const msg = err?.message || String(err)
+      if (msg.includes('OPENAI_API_KEY') || msg.includes('not set on the server')) {
+        statusEl.textContent = 'SETUP NEEDED'
+        hintEl.textContent = 'Server API key missing — add OPENAI_API_KEY in Render Environment'
+      } else if (msg.includes('microphone') || msg.includes('Permission')) {
+        statusEl.textContent = 'MIC BLOCKED'
+        hintEl.textContent = 'Allow microphone access in your browser, then try again'
+      } else {
+        statusEl.textContent = 'ERROR'
+        hintEl.textContent = msg.length > 90 ? 'Connection failed — try again' : msg
+      }
+    }
+
     async function toggleAssistant(){
       // Stop / pause if running OR starting
       if (pc || starting) {
@@ -228,9 +252,16 @@
       setStarting()
 
       try {
-        const r = await fetch('/session')
+        const r = await fetch(sessionUrl)
         const data = await r.json()
 
+        if (!r.ok || data.error || !data.client_secret?.value) {
+          throw new Error(
+            typeof data.error === 'string' ? data.error : data.error?.message || 'Session failed'
+          )
+        }
+
+        const model = data.model || 'gpt-realtime'
         pc = new RTCPeerConnection()
 
         const audio = document.createElement('audio')
@@ -249,7 +280,7 @@
         await pc.setLocalDescription(offer)
 
         const sdpResponse = await fetch(
-          "https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17",
+          `https://api.openai.com/v1/realtime?model=${encodeURIComponent(model)}`,
           {
             method: "POST",
             body: offer.sdp,
@@ -260,22 +291,16 @@
           }
         )
 
-        const answer = { type: "answer", sdp: await sdpResponse.text() }
+        if (!sdpResponse.ok) {
+          throw new Error('Voice connection failed — try again')
+        }
+
+        const answer = { type: 'answer', sdp: await sdpResponse.text() }
         await pc.setRemoteDescription(answer)
 
         setActive()
       } catch (err) {
-        console.error(err)
-        pc = null
-        if (localStream) {
-          try { localStream.getTracks().forEach(t => t.stop()) } catch {}
-          localStream = null
-        }
-        document.body.className = 'idle'
-        statusEl.textContent = 'ERROR'
-        starting = false
-        headlineEl.classList.remove('hide-soft')
-        hintEl.textContent = 'Click outside this box to return to the website'
+        showFailure(err)
       }
     }
 
