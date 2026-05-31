@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Axon Launcher</title>
+  <title>A1 AI — Opening…</title>
   <style>
     html, body {
       margin: 0;
@@ -16,9 +16,13 @@
 </head>
 <body>
   <script>
-    const APP_URL = "https://liveai-email.onrender.com";
-    const width = 420;
-    const height = 640;
+    const APP_BASE = "https://liveai-email.onrender.com";
+    const params = new URLSearchParams(window.location.search);
+    const src = params.get("src") || "email";
+    const APP_URL = `${APP_BASE}/?src=${encodeURIComponent(src)}`;
+
+    const width = 450;
+    const height = 680;
     const left = Math.max(0, Math.round((window.screen.width - width) / 2));
     const top = Math.max(0, Math.round((window.screen.height - height) / 2));
 

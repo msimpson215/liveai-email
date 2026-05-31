@@ -6,29 +6,18 @@ dotenv.config()
 const app = express()
 app.use(express.static('public'))
 
-app.get('/session', async (req, res) => {
-  try {
-    const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-realtime-preview-2024-12-17",
-        voice: "alloy",
-        modalities: ["audio", "text"],
-        turn_detection: {
-          type: "server_vad",
-          silence_duration_ms: 900,
-          prefix_padding_ms: 300,
-          create_response: true
-        },
-        instructions:
-`You are an AI team member for A1 Professional Asphalt and Concrete serving the St. Louis area.
-IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
-START OF SESSION (say exactly this once, and only once):
-"Hello, welcome to A1 Professional Asphalt and Sealing. I am an AI team member here to answer all your questions. What can I do for you?"
+const BASE_INSTRUCTIONS = `You are an AI team member for A1 Professional Asphalt and Concrete serving the St. Louis area.
+IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.`
+
+const WEB_GREETING =
+`START OF SESSION (say exactly this once, and only once):
+"Hello, welcome to A1 Professional Asphalt and Sealing. I am an AI team member here to answer all your questions. What can I do for you?"`
+
+const EMAIL_GREETING =
+`START OF SESSION (say exactly this once, and only once):
+"Hello, thanks for opening our message. I'm an AI team member for A1 Professional Asphalt and Sealing — you can talk with me right here. What can I help you with today?"`
+
+const SHARED_RULES = `
 SCOPE (only these topics):
 - Asphalt paving, patching, repairs
 - Crack sealing
@@ -51,6 +40,33 @@ STRICT RULES:
 STYLE:
 - Friendly, calm, local, professional.
 - Answer what was asked. No extra topics. No repeated greeting.`
+
+function buildInstructions(source) {
+  const greeting = source === 'email' ? EMAIL_GREETING : WEB_GREETING
+  return `${BASE_INSTRUCTIONS}
+${greeting}${SHARED_RULES}`
+}
+
+app.get('/session', async (req, res) => {
+  try {
+    const source = req.query.src === 'email' ? 'email' : 'web'
+    const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-realtime-preview-2024-12-17",
+        voice: "alloy",
+        modalities: ["audio", "text"],
+        turn_detection: {
+          type: "server_vad",
+          silence_duration_ms: 900,
+          prefix_padding_ms: 300,
+          create_response: true
+        },
+        instructions: buildInstructions(source)
       })
     })
     const data = await response.json()

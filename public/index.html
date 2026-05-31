@@ -160,15 +160,26 @@
     let localStream = null
     let starting = false
 
+    const urlParams = new URLSearchParams(window.location.search)
+    const isEmailContext = urlParams.get('src') === 'email'
+    const returnHint = isEmailContext
+      ? 'Click outside this box to return to your email'
+      : 'Click outside this box to return to the website'
+    const sessionUrl = isEmailContext ? '/session?src=email' : '/session'
+
     const statusEl = document.getElementById('status-text')
     const headlineEl = document.getElementById('headline')
     const hintEl = document.getElementById('hint')
+
+    if (isEmailContext) {
+      headlineEl.textContent = 'Press to start a conversation — right from your email'
+    }
 
     function setIdle(){
       document.body.className = 'idle'
       statusEl.textContent = ''
       headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = 'Click outside this box to return to the website'
+      hintEl.textContent = returnHint
       starting = false
     }
 
@@ -176,7 +187,7 @@
       document.body.className = 'starting'
       statusEl.textContent = 'STARTING…'
       headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = 'Click outside this box to return to the website'
+      hintEl.textContent = returnHint
     }
 
     function setActive(){
