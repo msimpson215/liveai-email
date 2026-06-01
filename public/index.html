@@ -3,99 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>Cooper's Automotive &amp; Towing</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --black: #000000;
-      --yellow: #ffcc00;
-      --yellow-dark: #e8b800;
-      --red: #cc0000;
-      --red-dark: #a80000;
+      --black: #080808;
+      --yellow: #f4c300;
+      --yellow-deep: #e8b400;
+      --red: #b50f0f;
       --white: #ffffff;
-      --gray: #cccccc;
+      --muted: #d9d9d9;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: "Montserrat", Arial, sans-serif;
-      background: var(--black);
+      margin: 0;
+      font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+      background: #111;
       color: var(--white);
     }
 
-    a { color: inherit; text-decoration: none; }
-
     .container {
-      width: min(1280px, 100%);
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 0 16px;
+      width: 100%;
+      padding: 0 28px;
     }
 
-    /* HEADER */
     .topbar {
       background: var(--black);
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #1f1f1f;
     }
 
-    .topbar-inner {
+    .topbar .container {
+      min-height: 96px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .brand {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
-    }
-
-    .brand-text .name {
-      color: var(--yellow);
-      font-size: 1.35rem;
-      font-weight: 800;
-      font-style: italic;
+      flex-direction: column;
+      gap: 4px;
       line-height: 1;
     }
 
-    .brand-text .tag {
+    .brand-main {
+      color: var(--yellow);
+      font-size: 52px;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-sub {
       color: var(--white);
-      font-size: 0.62rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      font-size: 24px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      line-height: 1.2;
-      margin-top: 3px;
+      font-weight: 700;
     }
 
     .nav {
-      display: none;
+      display: flex;
       align-items: center;
-      gap: 18px;
-      font-size: 0.78rem;
-      font-weight: 800;
+      gap: 28px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 22px;
+      font-weight: 700;
     }
 
     .nav a {
-      padding-bottom: 3px;
-      border-bottom: 2px solid transparent;
+      text-decoration: none;
+      color: #f2f2f2;
+      padding-bottom: 4px;
+      border-bottom: 3px solid transparent;
     }
 
     .nav a.active {
@@ -103,390 +90,317 @@
       border-bottom-color: var(--yellow);
     }
 
-    .nav .caret::after {
-      content: " ▾";
-      font-size: 0.7em;
-    }
-
-    .header-phone {
+    .phone {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
-    }
-
-    .phone-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--yellow);
-      display: grid;
-      place-items: center;
-      flex-shrink: 0;
-    }
-
-    .phone-icon svg { width: 18px; height: 18px; fill: var(--black); }
-
-    .phone-text small {
-      display: block;
-      color: var(--yellow);
-      font-size: 0.58rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
+      flex-direction: column;
+      align-items: flex-end;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .phone-text strong {
-      display: block;
-      font-size: 1rem;
-      font-weight: 900;
-      letter-spacing: 0.02em;
-      line-height: 1.1;
+    .phone small {
+      color: var(--yellow);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* HERO */
+    .phone strong {
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: 0.8px;
+    }
+
     .hero {
+      min-height: 560px;
       position: relative;
-      min-height: 420px;
       display: flex;
       align-items: center;
       background:
-        linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.78) 40%, rgba(0,0,0,0.35) 100%),
-        url("/images/hero.webp") center/cover no-repeat;
+        linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.75) 33%, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.2) 100%),
+        url("https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+      border-bottom: 1px solid #212121;
     }
 
     .hero-copy {
-      padding: 32px 0 36px;
-      max-width: 520px;
+      width: min(700px, 100%);
+      padding: 48px 0 58px;
     }
 
     .hero h1 {
-      font-size: clamp(2rem, 8vw, 3.4rem);
-      font-weight: 900;
+      margin: 0;
       text-transform: uppercase;
+      font-size: clamp(56px, 6vw, 92px);
       line-height: 0.95;
-      letter-spacing: 0.02em;
+      letter-spacing: 1px;
     }
 
-    .hero h1 .yellow {
+    .hero h1 .highlight {
       color: var(--yellow);
       display: block;
     }
 
-    .hero .desc {
-      margin-top: 14px;
-      font-size: clamp(0.95rem, 3.5vw, 1.15rem);
-      font-weight: 600;
-      line-height: 1.35;
-      color: #f0f0f0;
+    .hero p {
+      font-size: clamp(29px, 2vw, 34px);
+      margin: 18px 0 10px;
+      color: #efefef;
+      max-width: 660px;
     }
 
-    .hero .slogan {
-      margin-top: 10px;
-      color: var(--yellow);
-      font-size: clamp(0.85rem, 3vw, 1rem);
-      font-weight: 900;
+    .hero .subline {
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      color: var(--yellow);
+      font-size: clamp(30px, 2.2vw, 40px);
+      font-weight: 900;
+      margin: 0 0 24px;
     }
 
     .cta-row {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 18px;
+      flex-wrap: wrap;
     }
 
     .cta {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 8px;
-      font-weight: 800;
+      text-decoration: none;
       text-transform: uppercase;
+      font-weight: 800;
+      border-radius: 8px;
+      font-size: 36px;
+      padding: 18px 28px;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 310px;
     }
 
-    .cta svg {
-      width: 28px;
-      height: 28px;
-      flex-shrink: 0;
+    .cta strong {
+      font-size: 46px;
+      letter-spacing: 0.8px;
     }
 
-    .cta-text strong {
-      display: block;
-      font-size: 1rem;
-      line-height: 1.1;
+    .cta span {
+      font-size: 26px;
+      opacity: 0.92;
     }
 
-    .cta-text span {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      opacity: 0.95;
-      margin-top: 2px;
-    }
-
-    .cta-call {
-      background: var(--red);
+    .cta-primary {
+      background: #c81010;
       color: var(--white);
-      border: 2px solid #e02020;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      border: 2px solid #df3131;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
 
-    .cta-call svg { fill: var(--white); }
-
-    .cta-request {
-      background: rgba(0,0,0,0.55);
+    .cta-secondary {
       color: var(--yellow);
-      border: 2px solid var(--yellow);
+      border: 2px solid rgba(244, 195, 0, 0.85);
+      background: rgba(0, 0, 0, 0.45);
     }
 
-    .cta-request svg { fill: var(--yellow); }
-
-    /* FEATURE BAR */
-    .features {
-      background: var(--black);
-      border-top: 1px solid #222;
-      border-bottom: 1px solid #222;
+    .feature-bar {
+      background: #0a0a0a;
+      border-top: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1f1f1f;
     }
 
     .feature-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px 0;
     }
 
     .feature {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px 0;
-      border-bottom: 1px solid #222;
+      gap: 14px;
+      text-transform: uppercase;
+      border-right: 1px solid #252525;
+      padding-right: 16px;
+      min-height: 56px;
     }
 
-    .feature:last-child { border-bottom: 0; }
+    .feature:last-child {
+      border-right: 0;
+      padding-right: 0;
+    }
 
-    .feature svg {
-      width: 32px;
-      height: 32px;
-      fill: var(--yellow);
-      flex-shrink: 0;
+    .feature .icon {
+      color: var(--yellow);
+      font-size: 32px;
     }
 
     .feature strong {
       display: block;
-      font-size: 0.82rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      line-height: 1.15;
+      font-size: 27px;
+      line-height: 1.05;
     }
 
     .feature span {
-      display: block;
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--gray);
-      text-transform: uppercase;
-      margin-top: 2px;
+      font-size: 20px;
+      color: var(--muted);
+      line-height: 1.1;
     }
 
-    /* SERVICE AREA */
     .service-area {
-      position: relative;
-      background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-dark) 100%);
-      color: var(--black);
-      overflow: hidden;
+      background: linear-gradient(180deg, #f4c300 0%, var(--yellow-deep) 100%);
+      color: #111;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
     }
 
-    .service-area::after {
-      content: "";
-      position: absolute;
-      right: -20px;
-      bottom: 0;
-      width: 120px;
-      height: 100%;
-      opacity: 0.12;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 120'%3E%3Cpath fill='%23000' d='M50 10 C35 40 20 70 15 120 L85 120 C80 70 65 40 50 10Z'/%3E%3C/svg%3E") center/contain no-repeat;
-      pointer-events: none;
-    }
-
-    .service-inner {
-      position: relative;
-      z-index: 1;
-      padding: 18px 0;
-    }
-
-    .service-head {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .service-head svg {
-      width: 22px;
-      height: 22px;
-      fill: var(--black);
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .service-head h2 {
-      font-size: 0.95rem;
-      font-weight: 900;
+    .service-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 22px 0;
       text-transform: uppercase;
-      line-height: 1.15;
+    }
+
+    .service-title {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 0.98;
+      border-right: 2px solid rgba(0, 0, 0, 0.25);
+      padding-right: 26px;
     }
 
     .cities {
-      font-size: 0.72rem;
+      font-size: 35px;
       font-weight: 800;
-      line-height: 1.45;
+      line-height: 1.2;
+    }
+
+    .cities .small {
+      display: block;
+      font-size: 34px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .bottom-strip {
+      background: linear-gradient(180deg, #b90f10 0%, #9a090a 100%);
+      color: var(--white);
       text-transform: uppercase;
     }
 
-    .cities .dot { color: var(--red); }
-
-    /* BOTTOM CTA */
-    .bottom-cta {
-      background: linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+    .bottom-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 26px;
+      align-items: center;
       padding: 18px 0;
     }
 
-    .bottom-inner {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .bottom-phone-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .bottom-phone-row svg {
-      width: 28px;
-      height: 28px;
-      fill: var(--white);
-      flex-shrink: 0;
-    }
-
-    .bottom-phone-row strong {
-      font-size: 1.5rem;
+    .bottom-phone {
+      font-size: 64px;
       font-weight: 900;
-      letter-spacing: 0.02em;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      border-right: 2px solid rgba(255, 255, 255, 0.38);
+      padding-right: 26px;
     }
 
     .bottom-copy strong {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      line-height: 1.2;
+      font-size: 50px;
+      line-height: 1;
     }
 
     .bottom-copy span {
-      display: block;
-      margin-top: 4px;
       color: var(--yellow);
-      font-size: 0.72rem;
       font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 42px;
+      line-height: 1.05;
     }
 
-    @media (min-width: 768px) {
-      .container { padding: 0 24px; }
+    @media (max-width: 1200px) {
+      .brand-main { font-size: 40px; }
+      .brand-sub { font-size: 18px; }
+      .nav { font-size: 18px; gap: 20px; }
+      .phone small { font-size: 15px; }
+      .phone strong { font-size: 34px; }
+      .feature strong { font-size: 21px; }
+      .feature span { font-size: 16px; }
+      .service-title { font-size: 32px; }
+      .cities { font-size: 26px; }
+      .cities .small { font-size: 24px; }
+      .bottom-phone { font-size: 44px; }
+      .bottom-copy strong { font-size: 34px; }
+      .bottom-copy span { font-size: 28px; }
+    }
 
-      .topbar-inner { padding: 14px 0; flex-wrap: nowrap; }
-
-      .brand-mark { width: 52px; height: 52px; }
-      .brand-text .name { font-size: 1.75rem; }
-      .brand-text .tag { font-size: 0.72rem; }
-
-      .nav { display: flex; }
-      .header-phone { margin-left: 0; }
-      .phone-text strong { font-size: 1.35rem; }
-
-      .hero { min-height: 520px; }
-      .hero-copy { padding: 48px 0; max-width: 620px; }
-
-      .cta-row {
-        flex-direction: row;
-        flex-wrap: wrap;
+    @media (max-width: 900px) {
+      .topbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 20px;
       }
-
-      .cta { min-width: 280px; }
-
-      .feature-grid {
-        grid-template-columns: repeat(4, 1fr);
+      .phone { align-items: flex-start; }
+      .hero { min-height: 480px; }
+      .hero-copy { padding: 30px 0 42px; }
+      .cta { min-width: 260px; font-size: 26px; }
+      .cta strong { font-size: 34px; }
+      .cta span { font-size: 20px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .feature { border-right: 0; border-bottom: 1px solid #252525; padding-bottom: 12px; }
+      .feature:nth-last-child(-n + 2) { border-bottom: 0; padding-bottom: 0; }
+      .service-row,
+      .bottom-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
       }
-
-      .feature {
-        border-bottom: 0;
-        border-right: 1px solid #222;
-        padding: 20px 12px;
+      .service-title,
+      .bottom-phone {
+        border-right: 0;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+        padding-right: 0;
+        padding-bottom: 10px;
       }
-
-      .feature:last-child { border-right: 0; }
-
-      .service-inner {
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 20px;
-        align-items: center;
-        padding: 22px 0;
+      .bottom-phone {
+        border-bottom-color: rgba(255, 255, 255, 0.35);
       }
+    }
 
-      .service-head { margin-bottom: 0; }
-      .service-head h2 { font-size: 1.15rem; }
-      .cities { font-size: 0.82rem; }
-
-      .bottom-inner {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .bottom-phone-row strong { font-size: 2rem; }
-      .bottom-copy strong { font-size: 1rem; }
-      .bottom-copy span { font-size: 0.85rem; }
+    @media (max-width: 600px) {
+      .container { padding: 0 16px; }
+      .brand-main { font-size: 34px; }
+      .brand-sub { font-size: 16px; }
+      .nav { gap: 14px; font-size: 15px; flex-wrap: wrap; }
+      .hero h1 { font-size: 48px; }
+      .hero p { font-size: 22px; }
+      .hero .subline { font-size: 26px; }
+      .cta { width: 100%; min-width: 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature { border-bottom: 1px solid #252525; }
+      .feature:last-child { border-bottom: 0; }
+      .service-title { font-size: 28px; }
+      .cities,
+      .cities .small { font-size: 22px; }
+      .bottom-phone { font-size: 36px; }
+      .bottom-copy strong { font-size: 30px; }
+      .bottom-copy span { font-size: 24px; }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="container topbar-inner">
-      <a class="brand" href="/index.html">
-        <svg class="brand-mark" viewBox="0 0 52 52" aria-hidden="true">
-          <polygon points="8,4 28,4 44,48 24,48" fill="#cc0000"/>
-          <polygon points="14,10 26,10 38,42 26,42" fill="#ffcc00"/>
-          <polygon points="20,16 24,16 32,36 28,36" fill="#ffffff"/>
-        </svg>
-        <div class="brand-text">
-          <div class="name">Cooper's</div>
-          <div class="tag">Automotive &amp; Towing</div>
-        </div>
-      </a>
-
+    <div class="container">
+      <div class="brand">
+        <div class="brand-main">Cooper's</div>
+        <div class="brand-sub">Automotive &amp; Towing</div>
+      </div>
       <nav class="nav" aria-label="Main navigation">
         <a class="active" href="/index.html">Home</a>
-        <a class="caret" href="/towing.html">Towing</a>
-        <a class="caret" href="/automotive.html">Automotive</a>
+        <a href="/towing.html">Towing</a>
+        <a href="/automotive.html">Automotive</a>
         <a href="/about.html">About</a>
         <a href="/contact.html">Contact</a>
       </nav>
-
-      <a class="header-phone" href="tel:6186718770">
-        <span class="phone-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.5 2.9 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.6 22 2 13.4 2 3c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-        </span>
-        <span class="phone-text">
-          <small>Call Now 24/7</small>
-          <strong>618-671-8770</strong>
-        </span>
-      </a>
+      <div class="phone">
+        <small>Call Now 24/7</small>
+        <strong>618-671-8770</strong>
+      </div>
     </div>
   </header>
 
@@ -496,81 +410,70 @@
         <div class="hero-copy">
           <h1>
             Stranded?
-            <span class="yellow">We're On The Way.</span>
+            <span class="highlight">We're on the way.</span>
           </h1>
-          <p class="desc">Fast, reliable towing and automotive service throughout Metro East &amp; St. Louis.</p>
-          <p class="slogan">One Call. We'll Take Care Of The Rest.</p>
+          <p>Fast, reliable towing and automotive service throughout Metro East &amp; St. Louis.</p>
+          <p class="subline">One call. We'll take care of the rest.</p>
           <div class="cta-row">
-            <a class="cta cta-call" href="tel:6186718770">
-              <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.5 2.9 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.6 22 2 13.4 2 3c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-              <span class="cta-text">
-                <strong>Call Now</strong>
-                <span>618-671-8770</span>
-              </span>
+            <a class="cta cta-primary" href="tel:6186718770">
+              <strong>Call Now</strong>
+              <span>618-671-8770</span>
             </a>
-            <a class="cta cta-request" href="/contact.html">
-              <svg viewBox="0 0 24 24"><path d="M2 17h2v2H2v-2zm3-5h2v7H5v-7zm3-4h2v11H8V8zm3 2h2v9h-2v-9zm3-3h2v12h-2V7zm3 4h2v8h-2v-8z"/></svg>
-              <span class="cta-text">
-                <strong>Request Service</strong>
-                <span>We're On Our Way</span>
-              </span>
+            <a class="cta cta-secondary" href="/contact.html">
+              <strong>Request Service</strong>
+              <span>We're on our way</span>
             </a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="features">
+    <section class="feature-bar">
       <div class="container feature-grid">
         <article class="feature">
-          <svg viewBox="0 0 24 24"><path d="M18 18.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM9 18.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zM20 8h-3V6H7v2H4c-1.1 0-2 .9-2 2v7h2a3 3 0 0 1 6 0h6a3 3 0 0 1 6 0h2v-5l-3-4z"/></svg>
+          <div class="icon">🚛</div>
           <div>
             <strong>Emergency Towing</strong>
-            <span>24/7 Response</span>
+            <span>24/7 response</span>
           </div>
         </article>
         <article class="feature">
-          <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+          <div class="icon">⚠️</div>
           <div>
             <strong>Roadside Assistance</strong>
-            <span>Jump Starts, Lockouts &amp; More</span>
+            <span>Jump starts, lockouts &amp; more</span>
           </div>
         </article>
         <article class="feature">
-          <svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          <div class="icon">🛡️</div>
           <div>
             <strong>Local &amp; Experienced</strong>
-            <span>Trusted In Our Community</span>
+            <span>Trusted in our community</span>
           </div>
         </article>
         <article class="feature">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+          <div class="icon">⏱️</div>
           <div>
             <strong>Fast Response</strong>
-            <span>Getting You Back On The Road</span>
+            <span>Getting you back on the road</span>
           </div>
         </article>
       </div>
     </section>
 
-    <section class="service-area">
-      <div class="container service-inner">
-        <div class="service-head">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          <h2>Proudly Serving Metro East &amp; Greater St. Louis</h2>
+    <section class="service-area" id="request-service">
+      <div class="container service-row">
+        <div class="service-title">Proudly Serving<br />Metro East &amp; Greater St. Louis</div>
+        <div class="cities">
+          Belleville • Fairview Heights • Collinsville • O'Fallon • Swansea • Granite City
+          <span class="small">East St. Louis • Cahokia Heights • Edwardsville • St. Louis and surrounding areas</span>
         </div>
-        <p class="cities">
-          Belleville <span class="dot">•</span> Fairview Heights <span class="dot">•</span> Collinsville <span class="dot">•</span> O'Fallon <span class="dot">•</span> Swansea <span class="dot">•</span> Granite City <span class="dot">•</span> East St. Louis <span class="dot">•</span> Cahokia Heights <span class="dot">•</span> Edwardsville <span class="dot">•</span> St. Louis and surrounding areas
-        </p>
       </div>
     </section>
 
-    <section class="bottom-cta">
-      <div class="container bottom-inner">
-        <a class="bottom-phone-row" href="tel:6186718770">
-          <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.5 2.9 3.7 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V21c0 .6-.4 1-1 1C10.6 22 2 13.4 2 3c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-          <strong>618-671-8770</strong>
-        </a>
+    <section class="bottom-strip">
+      <div class="container bottom-row">
+        <div class="bottom-phone">618-671-8770</div>
         <div class="bottom-copy">
           <strong>One Call. We'll Take Care Of The Rest.</strong>
           <span>24 Hours A Day • 7 Days A Week</span>
