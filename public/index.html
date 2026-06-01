@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cooper's Automotive &amp; Towing</title>
+  <link rel="preload" href="/images/hero.webp" as="image" type="image/webp" />
   <style>
     :root {
       --black: #080808;
@@ -116,9 +117,13 @@
       position: relative;
       display: flex;
       align-items: center;
-      background:
+      background-color: #111;
+      background-image:
         linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.75) 33%, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.2) 100%),
-        url("/images/hero.webp?v=3") center/cover no-repeat;
+        url("/images/hero.webp");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
       border-bottom: 1px solid #212121;
     }
 
