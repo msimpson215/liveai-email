@@ -2,309 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>A1 Asphalt & Sealing</title>
-
-  <style>
-    :root{
-      --bg1:#252525;
-      --bg2:#000000;
-      --yellow:#FED100;
-      --muted: rgba(254,209,0,0.70);
-      --muted2: rgba(254,209,0,0.45);
-      --stroke: rgba(254,209,0,0.22);
-      --panel: rgba(0,0,0,0.25);
-    }
-
-    body {
-      margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle, var(--bg1) 0%, var(--bg2) 100%);
-      color: var(--yellow);
-      font-family: "Arial Narrow", Arial, sans-serif;
-      font-weight: 300;
-      overflow: hidden;
-      user-select: none;
-    }
-
-    #overlay{
-      position: fixed;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding: 22px;
-    }
-
-    #panel{
-      width: min(460px, calc(100vw - 44px));
-      border-radius: 18px;
-      padding: 18px 18px 14px;
-      background: var(--panel);
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.55);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      /* IMPORTANT: reserve space so nothing shifts */
-      gap: 10px;
-    }
-
-    /* Reserve space even when "hidden" to prevent layout jump */
-    #headline {
-      font-size: 0.98rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
-      color: var(--muted);
-      padding: 0 6px;
-      min-height: 2.4em; /* reserve 2 lines */
-      display: grid;
-      place-items: center;
-    }
-    .hide-soft { visibility: hidden; }
-
-    #orb-container {
-      width: 185px;   /* slightly smaller */
-      height: 185px;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-    }
-
-    .orb {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: var(--yellow);
-      box-shadow: 0 0 58px rgba(254, 209, 0, 0.78);
-      transform: scale(1);
-      transition: transform 260ms ease, box-shadow 260ms ease;
-    }
-
-    #orb-container:hover .orb{
-      transform: scale(1.03);
-      box-shadow: 0 0 75px rgba(254,209,0,0.9);
-    }
-
-    body.active .orb {
-      transform: scale(1.12);
-      box-shadow: 0 0 100px rgba(254, 209, 0, 1);
-      animation: pulse 1.35s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%   { transform: scale(1.08); box-shadow: 0 0 68px rgba(254,209,0,0.75); }
-      100% { transform: scale(1.15); box-shadow: 0 0 112px rgba(254,209,0,1); }
-    }
-
-    #status-text{
-      font-size: 0.86rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
-      color: var(--yellow);
-      opacity: 0.90;
-      min-height: 1.2em; /* reserve 1 line always */
-    }
-
-    #hint{
-      font-size: 0.82rem;
-      color: var(--muted2);
-      text-align: center;
-      line-height: 1.2;
-      min-height: 1.1em; /* reserve 1 line always */
-      margin-top: -2px;
-    }
-
-    #footer {
-      text-align: center;
-      opacity: 0.60;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      line-height: 1.2;
-      margin-top: 2px;
-    }
-
-    #footer .brand { font-size: 0.82rem; }
-    #footer .phone { font-size: 0.78rem; opacity: 0.9; margin-top: 4px; }
-
-    body.starting #orb-container { pointer-events: none; opacity: 0.95; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cooper's Automotive &amp; Towing | Home</title>
+  <link rel="stylesheet" href="/site.css" />
 </head>
-
-<body class="idle">
-  <div id="overlay">
-    <div id="panel">
-      <div id="headline">Press to start a conversation with our AI team member</div>
-
-      <div id="orb-container" onclick="toggleAssistant()">
-        <div class="orb"></div>
-      </div>
-
-      <div id="status-text"></div>
-      <div id="hint"></div>
-
-      <div id="footer">
-        <div class="brand">A1 Asphalt &amp; Sealing</div>
-        <div class="phone">(618) 929-3301</div>
-      </div>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="/index.html">
+        <div class="brand-main">Cooper's</div>
+        <div class="brand-sub">Automotive &amp; Towing</div>
+      </a>
+      <button class="menu-btn" data-menu-toggle aria-expanded="false" aria-controls="main-nav">Menu</button>
+      <nav class="nav" id="main-nav" data-nav aria-label="Main navigation">
+        <a class="active" href="/index.html">Home</a>
+        <a href="/towing.html">Towing</a>
+        <a href="/automotive.html">Automotive</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a class="phone-cta" href="tel:6186718770">
+        <small>Call now 24/7</small>
+        <strong>618-671-8770</strong>
+      </a>
     </div>
-  </div>
+  </header>
 
-  <script>
-    let pc = null
-    let localStream = null
-    let starting = false
+  <main>
+    <section class="hero">
+      <div class="container hero-copy">
+        <h1>Stranded?<span class="highlight">We're On The Way.</span></h1>
+        <p class="lead">Fast, reliable towing and automotive service throughout Metro East &amp; St. Louis.</p>
+        <p class="subline">One Call. We'll Take Care Of The Rest.</p>
+        <div class="btn-row">
+          <a class="btn primary" href="tel:6186718770">
+            <strong>Call Now</strong>
+            <span>618-671-8770</span>
+          </a>
+          <a class="btn secondary" href="/contact.html">
+            <strong>Request Service</strong>
+            <span>We're On Our Way</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const isEmailContext = urlParams.get('src') === 'email'
-    const returnHint = isEmailContext
-      ? 'Click outside this box to return to your email'
-      : 'Click outside this box to return to the website'
-    const sessionUrl = isEmailContext ? '/session?src=email' : '/session'
+    <section class="features">
+      <div class="container feature-grid">
+        <article class="feature">
+          <strong>Emergency Towing</strong>
+          <span>24/7 response for breakdowns and accidents.</span>
+        </article>
+        <article class="feature">
+          <strong>Roadside Assistance</strong>
+          <span>Jump starts, tire changes, lockouts, and fuel delivery.</span>
+        </article>
+        <article class="feature">
+          <strong>Local &amp; Experienced</strong>
+          <span>40+ years serving Metro East and surrounding communities.</span>
+        </article>
+        <article class="feature">
+          <strong>Reliable With Integrity</strong>
+          <span>Straightforward service and dependable follow-through.</span>
+        </article>
+      </div>
+    </section>
 
-    const statusEl = document.getElementById('status-text')
-    const headlineEl = document.getElementById('headline')
-    const hintEl = document.getElementById('hint')
+    <section class="service-area section">
+      <div class="container">
+        <h3>Proudly Serving Metro East &amp; Greater St. Louis</h3>
+        <p>Belleville • Fairview Heights • Collinsville • O'Fallon • Swansea • Granite City • East St. Louis • Edwardsville</p>
+      </div>
+    </section>
 
-    if (isEmailContext) {
-      headlineEl.textContent = 'Press to start a conversation — right from your email'
-    }
+    <section class="bottom-call">
+      <div class="container">
+        <strong>618-671-8770</strong>
+        <span>One Call. 24 Hours A Day • 7 Days A Week.</span>
+      </div>
+    </section>
+  </main>
 
-    function setIdle(){
-      document.body.className = 'idle'
-      statusEl.textContent = ''
-      headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = returnHint
-      starting = false
-    }
-
-    function setStarting(){
-      document.body.className = 'starting'
-      statusEl.textContent = 'STARTING…'
-      headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = returnHint
-    }
-
-    function setActive(){
-      document.body.className = 'active'
-      statusEl.textContent = ''
-      headlineEl.classList.add('hide-soft')
-      hintEl.textContent = 'Click orb to end'
-    }
-
-    async function hardStop(){
-      try{
-        if (pc) { try { pc.close() } catch {} pc = null }
-        if (localStream) {
-          try { localStream.getTracks().forEach(t => t.stop()) } catch {}
-          localStream = null
-        }
-      } finally {
-        setIdle()
-      }
-    }
-
-    document.getElementById('overlay').addEventListener('click', async (e) => {
-      if (e.target.id !== 'overlay') return
-      await hardStop()
-      try { window.parent.postMessage({ type: 'voxtalk-close' }, '*') } catch {}
-      try { window.close() } catch {}
-      try { history.back() } catch {}
-    })
-
-    function showFailure(err) {
-      console.error(err)
-      pc = null
-      if (localStream) {
-        try { localStream.getTracks().forEach(t => t.stop()) } catch {}
-        localStream = null
-      }
-      document.body.className = 'idle'
-      starting = false
-      headlineEl.classList.remove('hide-soft')
-
-      const msg = err?.message || String(err)
-      if (msg.includes('OPENAI_API_KEY') || msg.includes('not set on the server')) {
-        statusEl.textContent = 'SETUP NEEDED'
-        hintEl.textContent = 'Server API key missing — add OPENAI_API_KEY in Render Environment'
-      } else if (msg.includes('microphone') || msg.includes('Permission')) {
-        statusEl.textContent = 'MIC BLOCKED'
-        hintEl.textContent = 'Allow microphone access in your browser, then try again'
-      } else {
-        statusEl.textContent = 'ERROR'
-        hintEl.textContent = msg.length > 90 ? 'Connection failed — try again' : msg
-      }
-    }
-
-    async function toggleAssistant(){
-      // Stop / pause if running OR starting
-      if (pc || starting) {
-        await hardStop()
-        return
-      }
-
-      starting = true
-      setStarting()
-
-      try {
-        const r = await fetch(sessionUrl)
-        const data = await r.json()
-
-        if (!r.ok || data.error || !data.client_secret?.value) {
-          throw new Error(
-            typeof data.error === 'string' ? data.error : data.error?.message || 'Session failed'
-          )
-        }
-
-        const model = data.model || 'gpt-realtime'
-        pc = new RTCPeerConnection()
-
-        const audio = document.createElement('audio')
-        audio.autoplay = true
-
-        pc.ontrack = (e) => {
-          if (audio.srcObject !== e.streams[0]) {
-            audio.srcObject = e.streams[0]
-          }
-        }
-
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        pc.addTrack(localStream.getTracks()[0])
-
-        const offer = await pc.createOffer()
-        await pc.setLocalDescription(offer)
-
-        const sdpResponse = await fetch(
-          `https://api.openai.com/v1/realtime?model=${encodeURIComponent(model)}`,
-          {
-            method: "POST",
-            body: offer.sdp,
-            headers: {
-              Authorization: `Bearer ${data.client_secret.value}`,
-              "Content-Type": "application/sdp"
-            }
-          }
-        )
-
-        if (!sdpResponse.ok) {
-          throw new Error('Voice connection failed — try again')
-        }
-
-        const answer = { type: 'answer', sdp: await sdpResponse.text() }
-        await pc.setRemoteDescription(answer)
-
-        setActive()
-      } catch (err) {
-        showFailure(err)
-      }
-    }
-
-    setIdle()
-  </script>
+  <footer class="footer">Cooper's Automotive &amp; Towing • 24/7 emergency service • 40+ years of experience</footer>
+  <script src="/site.js"></script>
 </body>
 </html>
