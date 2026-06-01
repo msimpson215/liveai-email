@@ -2,309 +2,484 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>A1 Asphalt & Sealing</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cooper's Automotive &amp; Towing</title>
   <style>
-    :root{
-      --bg1:#252525;
-      --bg2:#000000;
-      --yellow:#FED100;
-      --muted: rgba(254,209,0,0.70);
-      --muted2: rgba(254,209,0,0.45);
-      --stroke: rgba(254,209,0,0.22);
-      --panel: rgba(0,0,0,0.25);
+    :root {
+      --black: #080808;
+      --yellow: #f4c300;
+      --yellow-deep: #e8b400;
+      --red: #b50f0f;
+      --white: #ffffff;
+      --muted: #d9d9d9;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle, var(--bg1) 0%, var(--bg2) 100%);
-      color: var(--yellow);
-      font-family: "Arial Narrow", Arial, sans-serif;
-      font-weight: 300;
-      overflow: hidden;
-      user-select: none;
+      font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+      background: #111;
+      color: var(--white);
     }
 
-    #overlay{
-      position: fixed;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      padding: 22px;
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 28px;
     }
 
-    #panel{
-      width: min(460px, calc(100vw - 44px));
-      border-radius: 18px;
-      padding: 18px 18px 14px;
-      background: var(--panel);
-      border: 1px solid var(--stroke);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+    .topbar {
+      background: var(--black);
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .topbar .container {
+      min-height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
       display: flex;
       flex-direction: column;
-      align-items: center;
-
-      /* IMPORTANT: reserve space so nothing shifts */
-      gap: 10px;
+      gap: 4px;
+      line-height: 1;
     }
 
-    /* Reserve space even when "hidden" to prevent layout jump */
-    #headline {
-      font-size: 0.98rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
-      color: var(--muted);
-      padding: 0 6px;
-      min-height: 2.4em; /* reserve 2 lines */
-      display: grid;
-      place-items: center;
-    }
-    .hide-soft { visibility: hidden; }
-
-    #orb-container {
-      width: 185px;   /* slightly smaller */
-      height: 185px;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-    }
-
-    .orb {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background-color: var(--yellow);
-      box-shadow: 0 0 58px rgba(254, 209, 0, 0.78);
-      transform: scale(1);
-      transition: transform 260ms ease, box-shadow 260ms ease;
-    }
-
-    #orb-container:hover .orb{
-      transform: scale(1.03);
-      box-shadow: 0 0 75px rgba(254,209,0,0.9);
-    }
-
-    body.active .orb {
-      transform: scale(1.12);
-      box-shadow: 0 0 100px rgba(254, 209, 0, 1);
-      animation: pulse 1.35s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%   { transform: scale(1.08); box-shadow: 0 0 68px rgba(254,209,0,0.75); }
-      100% { transform: scale(1.15); box-shadow: 0 0 112px rgba(254,209,0,1); }
-    }
-
-    #status-text{
-      font-size: 0.86rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-align: center;
-      line-height: 1.2;
+    .brand-main {
       color: var(--yellow);
-      opacity: 0.90;
-      min-height: 1.2em; /* reserve 1 line always */
+      font-size: 52px;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0.3px;
     }
 
-    #hint{
-      font-size: 0.82rem;
-      color: var(--muted2);
-      text-align: center;
-      line-height: 1.2;
-      min-height: 1.1em; /* reserve 1 line always */
-      margin-top: -2px;
-    }
-
-    #footer {
-      text-align: center;
-      opacity: 0.60;
-      text-transform: uppercase;
+    .brand-sub {
+      color: var(--white);
+      font-size: 24px;
       letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #f2f2f2;
+      padding-bottom: 4px;
+      border-bottom: 3px solid transparent;
+    }
+
+    .nav a.active {
+      color: var(--yellow);
+      border-bottom-color: var(--yellow);
+    }
+
+    .phone {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .phone small {
+      color: var(--yellow);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .phone strong {
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: 0.8px;
+    }
+
+    .hero {
+      min-height: 560px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.75) 33%, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.2) 100%),
+        url("https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+      border-bottom: 1px solid #212121;
+    }
+
+    .hero-copy {
+      width: min(700px, 100%);
+      padding: 48px 0 58px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      text-transform: uppercase;
+      font-size: clamp(56px, 6vw, 92px);
+      line-height: 0.95;
+      letter-spacing: 1px;
+    }
+
+    .hero h1 .highlight {
+      color: var(--yellow);
+      display: block;
+    }
+
+    .hero p {
+      font-size: clamp(29px, 2vw, 34px);
+      margin: 18px 0 10px;
+      color: #efefef;
+      max-width: 660px;
+    }
+
+    .hero .subline {
+      text-transform: uppercase;
+      color: var(--yellow);
+      font-size: clamp(30px, 2.2vw, 40px);
+      font-weight: 900;
+      margin: 0 0 24px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .cta {
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 800;
+      border-radius: 8px;
+      font-size: 36px;
+      padding: 18px 28px;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 310px;
+    }
+
+    .cta strong {
+      font-size: 46px;
+      letter-spacing: 0.8px;
+    }
+
+    .cta span {
+      font-size: 26px;
+      opacity: 0.92;
+    }
+
+    .cta-primary {
+      background: #c81010;
+      color: var(--white);
+      border: 2px solid #df3131;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .cta-secondary {
+      color: var(--yellow);
+      border: 2px solid rgba(244, 195, 0, 0.85);
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .feature-bar {
+      background: #0a0a0a;
+      border-top: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px 0;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-transform: uppercase;
+      border-right: 1px solid #252525;
+      padding-right: 16px;
+      min-height: 56px;
+    }
+
+    .feature:last-child {
+      border-right: 0;
+      padding-right: 0;
+    }
+
+    .feature .icon {
+      color: var(--yellow);
+      font-size: 32px;
+    }
+
+    .feature strong {
+      display: block;
+      font-size: 27px;
+      line-height: 1.05;
+    }
+
+    .feature span {
+      font-size: 20px;
+      color: var(--muted);
+      line-height: 1.1;
+    }
+
+    .service-area {
+      background: linear-gradient(180deg, #f4c300 0%, var(--yellow-deep) 100%);
+      color: #111;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .service-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 22px 0;
+      text-transform: uppercase;
+    }
+
+    .service-title {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 0.98;
+      border-right: 2px solid rgba(0, 0, 0, 0.25);
+      padding-right: 26px;
+    }
+
+    .cities {
+      font-size: 35px;
+      font-weight: 800;
       line-height: 1.2;
+    }
+
+    .cities .small {
+      display: block;
+      font-size: 34px;
+      font-weight: 700;
       margin-top: 2px;
     }
 
-    #footer .brand { font-size: 0.82rem; }
-    #footer .phone { font-size: 0.78rem; opacity: 0.9; margin-top: 4px; }
+    .bottom-strip {
+      background: linear-gradient(180deg, #b90f10 0%, #9a090a 100%);
+      color: var(--white);
+      text-transform: uppercase;
+    }
 
-    body.starting #orb-container { pointer-events: none; opacity: 0.95; }
+    .bottom-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 26px;
+      align-items: center;
+      padding: 18px 0;
+    }
+
+    .bottom-phone {
+      font-size: 64px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      border-right: 2px solid rgba(255, 255, 255, 0.38);
+      padding-right: 26px;
+    }
+
+    .bottom-copy strong {
+      display: block;
+      font-size: 50px;
+      line-height: 1;
+    }
+
+    .bottom-copy span {
+      color: var(--yellow);
+      font-weight: 900;
+      font-size: 42px;
+      line-height: 1.05;
+    }
+
+    @media (max-width: 1200px) {
+      .brand-main { font-size: 40px; }
+      .brand-sub { font-size: 18px; }
+      .nav { font-size: 18px; gap: 20px; }
+      .phone small { font-size: 15px; }
+      .phone strong { font-size: 34px; }
+      .feature strong { font-size: 21px; }
+      .feature span { font-size: 16px; }
+      .service-title { font-size: 32px; }
+      .cities { font-size: 26px; }
+      .cities .small { font-size: 24px; }
+      .bottom-phone { font-size: 44px; }
+      .bottom-copy strong { font-size: 34px; }
+      .bottom-copy span { font-size: 28px; }
+    }
+
+    @media (max-width: 900px) {
+      .topbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 20px;
+      }
+      .phone { align-items: flex-start; }
+      .hero { min-height: 480px; }
+      .hero-copy { padding: 30px 0 42px; }
+      .cta { min-width: 260px; font-size: 26px; }
+      .cta strong { font-size: 34px; }
+      .cta span { font-size: 20px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .feature { border-right: 0; border-bottom: 1px solid #252525; padding-bottom: 12px; }
+      .feature:nth-last-child(-n + 2) { border-bottom: 0; padding-bottom: 0; }
+      .service-row,
+      .bottom-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .service-title,
+      .bottom-phone {
+        border-right: 0;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+      .bottom-phone {
+        border-bottom-color: rgba(255, 255, 255, 0.35);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 16px; }
+      .brand-main { font-size: 34px; }
+      .brand-sub { font-size: 16px; }
+      .nav { gap: 14px; font-size: 15px; flex-wrap: wrap; }
+      .hero h1 { font-size: 48px; }
+      .hero p { font-size: 22px; }
+      .hero .subline { font-size: 26px; }
+      .cta { width: 100%; min-width: 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature { border-bottom: 1px solid #252525; }
+      .feature:last-child { border-bottom: 0; }
+      .service-title { font-size: 28px; }
+      .cities,
+      .cities .small { font-size: 22px; }
+      .bottom-phone { font-size: 36px; }
+      .bottom-copy strong { font-size: 30px; }
+      .bottom-copy span { font-size: 24px; }
+    }
   </style>
 </head>
-
-<body class="idle">
-  <div id="overlay">
-    <div id="panel">
-      <div id="headline">Press to start a conversation with our AI team member</div>
-
-      <div id="orb-container" onclick="toggleAssistant()">
-        <div class="orb"></div>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <div class="brand-main">Cooper's</div>
+        <div class="brand-sub">Automotive &amp; Towing</div>
       </div>
-
-      <div id="status-text"></div>
-      <div id="hint"></div>
-
-      <div id="footer">
-        <div class="brand">A1 Asphalt &amp; Sealing</div>
-        <div class="phone">(618) 929-3301</div>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="active" href="#">Home</a>
+        <a href="#">Towing</a>
+        <a href="#">Automotive</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="phone">
+        <small>Call Now 24/7</small>
+        <strong>618-671-8770</strong>
       </div>
     </div>
-  </div>
+  </header>
 
-  <script>
-    let pc = null
-    let localStream = null
-    let starting = false
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-copy">
+          <h1>
+            Stranded?
+            <span class="highlight">We're on the way.</span>
+          </h1>
+          <p>Fast, reliable towing and automotive service throughout Metro East &amp; St. Louis.</p>
+          <p class="subline">One call. We'll take care of the rest.</p>
+          <div class="cta-row">
+            <a class="cta cta-primary" href="tel:6186718770">
+              <strong>Call Now</strong>
+              <span>618-671-8770</span>
+            </a>
+            <a class="cta cta-secondary" href="#request-service">
+              <strong>Request Service</strong>
+              <span>We're on our way</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    const urlParams = new URLSearchParams(window.location.search)
-    const isEmailContext = urlParams.get('src') === 'email'
-    const returnHint = isEmailContext
-      ? 'Click outside this box to return to your email'
-      : 'Click outside this box to return to the website'
-    const sessionUrl = isEmailContext ? '/session?src=email' : '/session'
+    <section class="feature-bar">
+      <div class="container feature-grid">
+        <article class="feature">
+          <div class="icon">🚛</div>
+          <div>
+            <strong>Emergency Towing</strong>
+            <span>24/7 response</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">⚠️</div>
+          <div>
+            <strong>Roadside Assistance</strong>
+            <span>Jump starts, lockouts &amp; more</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">🛡️</div>
+          <div>
+            <strong>Local &amp; Experienced</strong>
+            <span>Trusted in our community</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">⏱️</div>
+          <div>
+            <strong>Fast Response</strong>
+            <span>Getting you back on the road</span>
+          </div>
+        </article>
+      </div>
+    </section>
 
-    const statusEl = document.getElementById('status-text')
-    const headlineEl = document.getElementById('headline')
-    const hintEl = document.getElementById('hint')
+    <section class="service-area" id="request-service">
+      <div class="container service-row">
+        <div class="service-title">Proudly Serving<br />Metro East &amp; Greater St. Louis</div>
+        <div class="cities">
+          Belleville • Fairview Heights • Collinsville • O'Fallon • Swansea • Granite City
+          <span class="small">East St. Louis • Cahokia Heights • Edwardsville • St. Louis and surrounding areas</span>
+        </div>
+      </div>
+    </section>
 
-    if (isEmailContext) {
-      headlineEl.textContent = 'Press to start a conversation — right from your email'
-    }
-
-    function setIdle(){
-      document.body.className = 'idle'
-      statusEl.textContent = ''
-      headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = returnHint
-      starting = false
-    }
-
-    function setStarting(){
-      document.body.className = 'starting'
-      statusEl.textContent = 'STARTING…'
-      headlineEl.classList.remove('hide-soft')
-      hintEl.textContent = returnHint
-    }
-
-    function setActive(){
-      document.body.className = 'active'
-      statusEl.textContent = ''
-      headlineEl.classList.add('hide-soft')
-      hintEl.textContent = 'Click orb to end'
-    }
-
-    async function hardStop(){
-      try{
-        if (pc) { try { pc.close() } catch {} pc = null }
-        if (localStream) {
-          try { localStream.getTracks().forEach(t => t.stop()) } catch {}
-          localStream = null
-        }
-      } finally {
-        setIdle()
-      }
-    }
-
-    document.getElementById('overlay').addEventListener('click', async (e) => {
-      if (e.target.id !== 'overlay') return
-      await hardStop()
-      try { window.parent.postMessage({ type: 'voxtalk-close' }, '*') } catch {}
-      try { window.close() } catch {}
-      try { history.back() } catch {}
-    })
-
-    function showFailure(err) {
-      console.error(err)
-      pc = null
-      if (localStream) {
-        try { localStream.getTracks().forEach(t => t.stop()) } catch {}
-        localStream = null
-      }
-      document.body.className = 'idle'
-      starting = false
-      headlineEl.classList.remove('hide-soft')
-
-      const msg = err?.message || String(err)
-      if (msg.includes('OPENAI_API_KEY') || msg.includes('not set on the server')) {
-        statusEl.textContent = 'SETUP NEEDED'
-        hintEl.textContent = 'Server API key missing — add OPENAI_API_KEY in Render Environment'
-      } else if (msg.includes('microphone') || msg.includes('Permission')) {
-        statusEl.textContent = 'MIC BLOCKED'
-        hintEl.textContent = 'Allow microphone access in your browser, then try again'
-      } else {
-        statusEl.textContent = 'ERROR'
-        hintEl.textContent = msg.length > 90 ? 'Connection failed — try again' : msg
-      }
-    }
-
-    async function toggleAssistant(){
-      // Stop / pause if running OR starting
-      if (pc || starting) {
-        await hardStop()
-        return
-      }
-
-      starting = true
-      setStarting()
-
-      try {
-        const r = await fetch(sessionUrl)
-        const data = await r.json()
-
-        if (!r.ok || data.error || !data.client_secret?.value) {
-          throw new Error(
-            typeof data.error === 'string' ? data.error : data.error?.message || 'Session failed'
-          )
-        }
-
-        const model = data.model || 'gpt-realtime'
-        pc = new RTCPeerConnection()
-
-        const audio = document.createElement('audio')
-        audio.autoplay = true
-
-        pc.ontrack = (e) => {
-          if (audio.srcObject !== e.streams[0]) {
-            audio.srcObject = e.streams[0]
-          }
-        }
-
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-        pc.addTrack(localStream.getTracks()[0])
-
-        const offer = await pc.createOffer()
-        await pc.setLocalDescription(offer)
-
-        const sdpResponse = await fetch(
-          `https://api.openai.com/v1/realtime?model=${encodeURIComponent(model)}`,
-          {
-            method: "POST",
-            body: offer.sdp,
-            headers: {
-              Authorization: `Bearer ${data.client_secret.value}`,
-              "Content-Type": "application/sdp"
-            }
-          }
-        )
-
-        if (!sdpResponse.ok) {
-          throw new Error('Voice connection failed — try again')
-        }
-
-        const answer = { type: 'answer', sdp: await sdpResponse.text() }
-        await pc.setRemoteDescription(answer)
-
-        setActive()
-      } catch (err) {
-        showFailure(err)
-      }
-    }
-
-    setIdle()
-  </script>
+    <section class="bottom-strip">
+      <div class="container bottom-row">
+        <div class="bottom-phone">618-671-8770</div>
+        <div class="bottom-copy">
+          <strong>One Call. We'll Take Care Of The Rest.</strong>
+          <span>24 Hours A Day • 7 Days A Week</span>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
