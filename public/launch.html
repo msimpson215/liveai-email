@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"/><title></title>
 <style>html,body{margin:0;background:transparent;background-color:transparent;}</style>
-</head>
-<body>
 <script src="/assets/axon-email-orb.js"></script>
 <script>
 (function(){
   var p=AxonEmailOrb.openEmailOrb({src:'email'});
-  if(p){try{window.close()}catch(e){}}
-  else{location.replace(AxonEmailOrb.buildPlateUrl({src:'email'}));}
+  if(p){
+    try{window.close()}catch(e){}
+    return;
+  }
+  try{
+    window.resizeTo(236,236);
+    window.moveTo(Math.round((screen.width-236)/2),Math.round((screen.height-236)/2));
+  }catch(e){}
+  location.replace(AxonEmailOrb.buildPlateUrl({src:'email'}));
 })();
 </script>
-</body></html>
+</head><body></body></html>

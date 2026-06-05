@@ -49,6 +49,13 @@ let pc=null,localStream=null,starting=false;
 const sessionUrl=new URLSearchParams(location.search).get('src')==='email'?'/session?src=email':'/session';
 const orb=document.getElementById('orb');
 
+if(new URLSearchParams(location.search).get('popup')==='1'){
+  try{
+    window.resizeTo(236,236);
+    window.moveTo(Math.round((screen.width-236)/2),Math.round((screen.height-236)/2));
+  }catch(e){}
+}
+
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
