@@ -1,10 +1,18 @@
 import express from 'express'
 import fetch from 'node-fetch'
 import dotenv from 'dotenv'
+import nodemailer from 'nodemailer'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 dotenv.config()
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
+app.use(express.json())
 app.use(express.static('public'))
+
+const LAUNCH_URL = 'https://liveai-email.onrender.com/launch.html?src=email'
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 
@@ -104,6 +112,71 @@ app.get('/session', async (req, res) => {
     res.json({ ...data, model: REALTIME_MODEL })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
+  }
+})
+
+function hasMailer() {
+  return Boolean(
+    process.env.GMAIL_USER?.trim() &&
+    process.env.GMAIL_APP_PASSWORD?.trim()
+  )
+}
+
+app.get('/api/mail-ready', (_req, res) => {
+  res.json({ ok: hasMailer() })
+})
+
+app.post('/api/send-orb', async (req, res) => {
+  const to = String(req.body?.email || '').trim()
+  if (!to || !to.includes('@')) {
+    return res.status(400).json({ error: 'Enter a valid email address.' })
+  }
+  if (!hasMailer()) {
+    return res.status(503).json({
+      error: 'Server cannot send email yet. Add GMAIL_USER and GMAIL_APP_PASSWORD in Render Environment.'
+    })
+  }
+
+  const gifPath = path.join(__dirname, '..', 'public', 'email', 'orb-pulse.gif')
+  if (!fs.existsSync(gifPath)) {
+    return res.status(500).json({ error: 'Orb image missing on server.' })
+  }
+
+  const html = `<!DOCTYPE html>
+<html><body style="margin:0;padding:32px;background:#f6f8fc;text-align:center;font-family:Arial,sans-serif;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr><td align="center" style="padding:20px;">
+<a href="${LAUNCH_URL}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+<img src="cid:orb" alt="" width="240" height="240" style="display:block;border:0;border-radius:50%;"/>
+</a>
+</td></tr>
+</table>
+</body></html>`
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+      }
+    })
+
+    await transporter.sendMail({
+      from: `"A1 Asphalt" <${process.env.GMAIL_USER}>`,
+      to,
+      subject: 'Click the orb',
+      html,
+      attachments: [{
+        filename: 'orb-pulse.gif',
+        path: gifPath,
+        cid: 'orb'
+      }]
+    })
+
+    res.json({ ok: true })
+  } catch (error) {
+    res.status(500).json({ error: 'Could not send email. Check Gmail app password on server.' })
   }
 })
 

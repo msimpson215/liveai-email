@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send orb email</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: #f6f8fc; font-family: Arial, sans-serif; padding: 20px;
+    }
+    .box {
+      width: 100%; max-width: 400px; background: #fff;
+      border: 1px solid #dadce0; border-radius: 16px;
+      padding: 28px; text-align: center;
+    }
+    img {
+      width: 180px; height: 180px; border-radius: 50%;
+      box-shadow: 0 0 50px rgba(245,197,24,0.5);
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    p { font-size: 15px; color: #5f6368; margin: 0 0 20px; line-height: 1.4; }
+    input {
+      width: 100%; padding: 14px; font-size: 16px;
+      border: 1px solid #dadce0; border-radius: 8px; margin-bottom: 12px;
+    }
+    button {
+      width: 100%; padding: 16px; font-size: 16px; font-weight: 800;
+      background: #FED100; color: #111; border: none; border-radius: 8px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    button.ok { background: #1e8e3e; color: #fff; }
+    #msg { margin-top: 16px; font-size: 14px; line-height: 1.5; min-height: 40px; }
+    .err { color: #c5221f; }
+    .okmsg { color: #1e8e3e; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <img src="/email/orb-pulse.gif" width="180" height="180" alt=""/>
+    <h1>Send the orb to your inbox</h1>
+    <p>Type your email. We send it. You click the orb in Gmail.</p>
+    <input id="email" type="email" placeholder="you@gmail.com" autocomplete="email"/>
+    <button type="button" id="sendBtn">Send orb email to me</button>
+    <div id="msg"></div>
+  </div>
+  <script>
+    var btn = document.getElementById('sendBtn');
+    var msg = document.getElementById('msg');
+    var input = document.getElementById('email');
+
+    btn.addEventListener('click', function () {
+      var email = input.value.trim();
+      if (!email || email.indexOf('@') < 1) {
+        msg.className = 'err';
+        msg.textContent = 'Type your email address first.';
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      msg.textContent = '';
+
+      fetch('/api/send-orb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          btn.disabled = false;
+          if (res.ok) {
+            btn.textContent = 'Sent!';
+            btn.classList.add('ok');
+            msg.className = 'okmsg';
+            msg.textContent = 'Check your inbox. Open the email. Click the orb.';
+          } else {
+            btn.textContent = 'Send orb email to me';
+            msg.className = 'err';
+            msg.textContent = res.d.error || 'Send failed.';
+          }
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'Send orb email to me';
+          msg.className = 'err';
+          msg.textContent = 'Network error. Try again.';
+        });
+    });
+  </script>
+</body>
+</html>
