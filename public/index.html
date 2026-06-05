@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cooper's Automotive &amp; Towing</title>
+  <link rel="preload" href="/images/hero.webp" as="image" type="image/webp" />
+  <style>
+    :root {
+      --black: #080808;
+      --yellow: #f4c300;
+      --yellow-deep: #e8b400;
+      --red: #b50f0f;
+      --white: #ffffff;
+      --muted: #d9d9d9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+      background: #111;
+      color: var(--white);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 28px;
+    }
+
+    .topbar {
+      background: var(--black);
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .topbar .container {
+      min-height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      line-height: 1;
+    }
+
+    .brand-main {
+      color: var(--yellow);
+      font-size: 52px;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0.3px;
+    }
+
+    .brand-sub {
+      color: var(--white);
+      font-size: 24px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #f2f2f2;
+      padding-bottom: 4px;
+      border-bottom: 3px solid transparent;
+    }
+
+    .nav a.active {
+      color: var(--yellow);
+      border-bottom-color: var(--yellow);
+    }
+
+    .phone {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .phone small {
+      color: var(--yellow);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .phone strong {
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: 0.8px;
+    }
+
+    .hero {
+      min-height: 560px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      background-color: #111;
+      background-image:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.75) 33%, rgba(0, 0, 0, 0.35) 65%, rgba(0, 0, 0, 0.2) 100%),
+        url("/images/hero.webp");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      border-bottom: 1px solid #212121;
+    }
+
+    .hero-copy {
+      width: min(700px, 100%);
+      padding: 48px 0 58px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      text-transform: uppercase;
+      font-size: clamp(56px, 6vw, 92px);
+      line-height: 0.95;
+      letter-spacing: 1px;
+    }
+
+    .hero h1 .highlight {
+      color: var(--yellow);
+      display: block;
+    }
+
+    .hero p {
+      font-size: clamp(29px, 2vw, 34px);
+      margin: 18px 0 10px;
+      color: #efefef;
+      max-width: 660px;
+    }
+
+    .hero .subline {
+      text-transform: uppercase;
+      color: var(--yellow);
+      font-size: clamp(30px, 2.2vw, 40px);
+      font-weight: 900;
+      margin: 0 0 24px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .cta {
+      text-decoration: none;
+      text-transform: uppercase;
+      font-weight: 800;
+      border-radius: 8px;
+      font-size: 36px;
+      padding: 18px 28px;
+      display: inline-flex;
+      flex-direction: column;
+      line-height: 1.05;
+      min-width: 310px;
+    }
+
+    .cta strong {
+      font-size: 46px;
+      letter-spacing: 0.8px;
+    }
+
+    .cta span {
+      font-size: 26px;
+      opacity: 0.92;
+    }
+
+    .cta-primary {
+      background: #c81010;
+      color: var(--white);
+      border: 2px solid #df3131;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .cta-secondary {
+      color: var(--yellow);
+      border: 2px solid rgba(244, 195, 0, 0.85);
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .feature-bar {
+      background: #0a0a0a;
+      border-top: 1px solid #1f1f1f;
+      border-bottom: 1px solid #1f1f1f;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px 0;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-transform: uppercase;
+      border-right: 1px solid #252525;
+      padding-right: 16px;
+      min-height: 56px;
+    }
+
+    .feature:last-child {
+      border-right: 0;
+      padding-right: 0;
+    }
+
+    .feature .icon {
+      color: var(--yellow);
+      font-size: 32px;
+    }
+
+    .feature strong {
+      display: block;
+      font-size: 27px;
+      line-height: 1.05;
+    }
+
+    .feature span {
+      font-size: 20px;
+      color: var(--muted);
+      line-height: 1.1;
+    }
+
+    .service-area {
+      background: linear-gradient(180deg, #f4c300 0%, var(--yellow-deep) 100%);
+      color: #111;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    }
+
+    .service-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 22px 0;
+      text-transform: uppercase;
+    }
+
+    .service-title {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 0.98;
+      border-right: 2px solid rgba(0, 0, 0, 0.25);
+      padding-right: 26px;
+    }
+
+    .cities {
+      font-size: 35px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .cities .small {
+      display: block;
+      font-size: 34px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .bottom-strip {
+      background: linear-gradient(180deg, #b90f10 0%, #9a090a 100%);
+      color: var(--white);
+      text-transform: uppercase;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 26px;
+      align-items: center;
+      padding: 18px 0;
+    }
+
+    .bottom-phone {
+      font-size: 64px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      border-right: 2px solid rgba(255, 255, 255, 0.38);
+      padding-right: 26px;
+    }
+
+    .bottom-copy strong {
+      display: block;
+      font-size: 50px;
+      line-height: 1;
+    }
+
+    .bottom-copy span {
+      color: var(--yellow);
+      font-weight: 900;
+      font-size: 42px;
+      line-height: 1.05;
+    }
+
+    @media (max-width: 1200px) {
+      .brand-main { font-size: 40px; }
+      .brand-sub { font-size: 18px; }
+      .nav { font-size: 18px; gap: 20px; }
+      .phone small { font-size: 15px; }
+      .phone strong { font-size: 34px; }
+      .feature strong { font-size: 21px; }
+      .feature span { font-size: 16px; }
+      .service-title { font-size: 32px; }
+      .cities { font-size: 26px; }
+      .cities .small { font-size: 24px; }
+      .bottom-phone { font-size: 44px; }
+      .bottom-copy strong { font-size: 34px; }
+      .bottom-copy span { font-size: 28px; }
+    }
+
+    @media (max-width: 900px) {
+      .topbar .container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 20px;
+      }
+      .phone { align-items: flex-start; }
+      .hero { min-height: 480px; }
+      .hero-copy { padding: 30px 0 42px; }
+      .cta { min-width: 260px; font-size: 26px; }
+      .cta strong { font-size: 34px; }
+      .cta span { font-size: 20px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .feature { border-right: 0; border-bottom: 1px solid #252525; padding-bottom: 12px; }
+      .feature:nth-last-child(-n + 2) { border-bottom: 0; padding-bottom: 0; }
+      .service-row,
+      .bottom-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .service-title,
+      .bottom-phone {
+        border-right: 0;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.18);
+        padding-right: 0;
+        padding-bottom: 10px;
+      }
+      .bottom-phone {
+        border-bottom-color: rgba(255, 255, 255, 0.35);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 16px; }
+      .brand-main { font-size: 34px; }
+      .brand-sub { font-size: 16px; }
+      .nav { gap: 14px; font-size: 15px; flex-wrap: wrap; }
+      .hero h1 { font-size: 48px; }
+      .hero p { font-size: 22px; }
+      .hero .subline { font-size: 26px; }
+      .cta { width: 100%; min-width: 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .feature { border-bottom: 1px solid #252525; }
+      .feature:last-child { border-bottom: 0; }
+      .service-title { font-size: 28px; }
+      .cities,
+      .cities .small { font-size: 22px; }
+      .bottom-phone { font-size: 36px; }
+      .bottom-copy strong { font-size: 30px; }
+      .bottom-copy span { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <div class="brand-main">Cooper's</div>
+        <div class="brand-sub">Automotive &amp; Towing</div>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="active" href="/index.html">Home</a>
+        <a href="/towing.html">Towing</a>
+        <a href="/automotive.html">Automotive</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <div class="phone">
+        <small>Call Now 24/7</small>
+        <strong>618-671-8770</strong>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-copy">
+          <h1>
+            Stranded?
+            <span class="highlight">We're on the way.</span>
+          </h1>
+          <p>Fast, reliable towing and automotive service throughout Metro East &amp; St. Louis.</p>
+          <p class="subline">One call. We'll take care of the rest.</p>
+          <div class="cta-row">
+            <a class="cta cta-primary" href="tel:6186718770">
+              <strong>Call Now</strong>
+              <span>618-671-8770</span>
+            </a>
+            <a class="cta cta-secondary" href="/contact.html">
+              <strong>Request Service</strong>
+              <span>We're on our way</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-bar">
+      <div class="container feature-grid">
+        <article class="feature">
+          <div class="icon">🚛</div>
+          <div>
+            <strong>Emergency Towing</strong>
+            <span>24/7 response</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">⚠️</div>
+          <div>
+            <strong>Roadside Assistance</strong>
+            <span>Jump starts, lockouts &amp; more</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">🛡️</div>
+          <div>
+            <strong>Local &amp; Experienced</strong>
+            <span>Trusted in our community</span>
+          </div>
+        </article>
+        <article class="feature">
+          <div class="icon">⏱️</div>
+          <div>
+            <strong>Fast Response</strong>
+            <span>Getting you back on the road</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="service-area" id="request-service">
+      <div class="container service-row">
+        <div class="service-title">Proudly Serving<br />Metro East &amp; Greater St. Louis</div>
+        <div class="cities">
+          Belleville • Fairview Heights • Collinsville • O'Fallon • Swansea • Granite City
+          <span class="small">East St. Louis • Cahokia Heights • Edwardsville • St. Louis and surrounding areas</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-strip">
+      <div class="container bottom-row">
+        <div class="bottom-phone">618-671-8770</div>
+        <div class="bottom-copy">
+          <strong>One Call. We'll Take Care Of The Rest.</strong>
+          <span>24 Hours A Day • 7 Days A Week</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs>
+    <!-- Soft glow -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle radial highlight -->
+    <radialGradient id="orbGradient" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFF2A6" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#FED100" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#D9AF00" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Outer glow ring -->
+  <circle cx="300" cy="300" r="220" fill="#FED100" opacity="0.25" filter="url(#glow)"/>
+
+  <!-- Main orb -->
+  <circle cx="300" cy="300" r="190" fill="url(#orbGradient)" filter="url(#glow)"/>
+
+  <!-- Specular highlight -->
+  <ellipse cx="245" cy="210" rx="85" ry="60" fill="#FFFFFF" opacity="0.18"/>
+</svg>
