@@ -127,6 +127,11 @@ app.get('/download/orb.gif', (_req, res) => {
   res.download(gifPath, 'orb.gif')
 })
 
+app.get('/download/orb.png', (_req, res) => {
+  const pngPath = path.join(__dirname, '..', 'public', 'email', 'orb-static.png')
+  res.download(pngPath, 'orb.png')
+})
+
 app.get('/api/mail-ready', (_req, res) => {
   res.json({ ok: hasMailer() })
 })

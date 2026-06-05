@@ -7,37 +7,39 @@
   <style>
     body { margin:0; font-family:Arial,sans-serif; background:#f6f8fc; padding:32px 20px; }
     .wrap { max-width:480px; margin:0 auto; }
-    img.orb { width:200px; height:200px; border-radius:50%; display:block; margin:0 auto 24px; box-shadow:0 0 50px rgba(245,197,24,0.5); }
+    img.orb { width:200px; height:200px; border-radius:50%; display:block; margin:0 auto 24px; }
     a.dl {
-      display:block; text-align:center; padding:18px; margin-bottom:28px;
-      background:#FED100; color:#111; font-weight:900; font-size:18px;
+      display:block; text-align:center; padding:16px; margin-bottom:12px;
+      background:#FED100; color:#111; font-weight:900; font-size:17px;
       text-decoration:none; border-radius:8px;
     }
-    ol { font-size:17px; line-height:1.7; color:#202124; padding-left:22px; }
-    ol li { margin-bottom:10px; }
-    strong { color:#111; }
+    a.dl2 { background:#111; color:#FED100; font-size:14px; }
+    ol { font-size:16px; line-height:1.65; color:#202124; padding-left:20px; }
+    li { margin-bottom:8px; }
     .linkbox {
       background:#fff; border:2px solid #FED100; border-radius:8px;
-      padding:12px; font-size:13px; word-break:break-all; margin-top:8px;
+      padding:10px; font-size:12px; word-break:break-all; margin-top:6px;
     }
-    h1 { font-size:22px; text-align:center; margin:0 0 20px; }
+    h1 { font-size:20px; text-align:center; margin:0 0 16px; }
+    .tip { font-size:14px; color:#5f6368; text-align:center; margin-bottom:20px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Put orb in Gmail</h1>
-    <img class="orb" src="/email/orb-pulse.gif" width="200" height="200" alt=""/>
-    <a class="dl" href="/download/orb.gif">Step 1: Download orb.gif</a>
+    <h1>Orb in email for Joe</h1>
+    <p class="tip">Use <strong>orb.png</strong> — loads fast. GIF can spin forever in Gmail.</p>
+    <img class="orb" src="/email/orb-static.png" width="200" height="200" alt=""/>
+    <a class="dl" href="/download/orb.png">Download orb.png (use this)</a>
+    <a class="dl dl2" href="/download/orb.gif">Download orb.gif (animated, slower)</a>
     <ol>
-      <li>Gmail → <strong>Compose</strong> new email</li>
-      <li>Bottom of compose window → click <strong>Insert photo</strong> (mountain icon)</li>
-      <li>Click <strong>Upload</strong> tab (not Web URL)</li>
-      <li>Pick <strong>orb.gif</strong> from Downloads or Desktop</li>
-      <li>The yellow orb appears in your email</li>
-      <li>Click the orb → click <strong>Link</strong> (chain icon) → paste this:
-        <div class="linkbox">https://liveai-email.onrender.com/launch.html?src=email</div>
+      <li>Gmail → Compose</li>
+      <li><strong>Insert photo</strong> → <strong>Upload</strong> → pick <strong>orb.png</strong></li>
+      <li>Orb in email → click it → bottom bar → <strong>center align</strong> (lines icon)</li>
+      <li>Click orb again → <strong>Link</strong> (chain) → paste:
+        <div class="linkbox">https://liveai-email.onrender.com/email-plate.html?src=email&amp;popup=1</div>
       </li>
-      <li>Send to yourself → open email → click orb</li>
+      <li>Send to Joe (or yourself to test)</li>
+      <li>Joe clicks orb → small window (with extension) → click orb → voice</li>
     </ol>
   </div>
 </body>
