@@ -12,7 +12,7 @@
   }
 
   function plateUrl() {
-    return 'https://' + HOST + '/email-plate.html?src=email&popup=1';
+    return 'https://' + HOST + '/email-plate.html?src=email&popup=1&autostart=1';
   }
 
   function openOrbPopup(url) {

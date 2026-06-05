@@ -13,6 +13,7 @@
     var q = new URLSearchParams();
     q.set('src', (params && params.src) || 'email');
     q.set('popup', '1');
+    q.set('autostart', '1');
     return (origin || g.location.origin) + PLATE + '?' + q;
   }
 

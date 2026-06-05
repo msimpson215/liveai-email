@@ -28,9 +28,12 @@ html,body{
   animation:pulse 3s ease-in-out infinite;
   flex-shrink:0;
 }
-body.active .orb{
+body.active .orb,body.connecting .orb{
   border-color:#fff;
   animation:pulseOn 1.2s ease-in-out infinite alternate;
+}
+body.error .orb{
+  border-color:#c5221f;
 }
 @keyframes pulse{
   0%,100%{transform:scale(1);}
@@ -59,37 +62,61 @@ if(new URLSearchParams(location.search).get('popup')==='1'){
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  document.body.classList.remove('active');
+  document.body.classList.remove('active','connecting','error');
   starting=false;
+}
+
+async function fetchSession(){
+  const r=await fetch(sessionUrl);
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  return data;
+}
+
+async function connectVoice(){
+  const data=await fetchSession();
+  pc=new RTCPeerConnection();
+  const audio=document.createElement('audio');
+  audio.autoplay=true;
+  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc.addTrack(localStream.getTracks()[0]);
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
+  const sdp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(model),{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+data.client_secret.value,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  document.body.classList.add('active');
+  document.body.classList.remove('connecting','error');
 }
 
 async function toggle(){
   if(pc||starting){await stop();return}
   starting=true;
+  document.body.classList.add('connecting');
+  document.body.classList.remove('error');
   try{
-    const r=await fetch(sessionUrl);
-    const data=await r.json();
-    if(!r.ok||data.error)throw new Error(data.error||'fail');
-    pc=new RTCPeerConnection();
-    const audio=document.createElement('audio');
-    audio.autoplay=true;
-    pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
-    localStream=await navigator.mediaDevices.getUserMedia({audio:true});
-    pc.addTrack(localStream.getTracks()[0]);
-    const offer=await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
-    const sdp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(model),{
-      method:'POST',body:offer.sdp,
-      headers:{Authorization:'Bearer '+data.client_secret.value,'Content-Type':'application/sdp'}
-    });
-    if(!sdp.ok)throw new Error('sdp');
-    await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-    document.body.classList.add('active');
+    await connectVoice();
   }catch(e){
     console.error(e);
     await stop();
+    document.body.classList.add('error');
+    try{
+      starting=true;
+      document.body.classList.add('connecting');
+      document.body.classList.remove('error');
+      await connectVoice();
+    }catch(e2){
+      console.error(e2);
+      await stop();
+      document.body.classList.add('error');
+    }
   }
+  starting=false;
 }
 
 orb.addEventListener('click',toggle);
@@ -97,6 +124,10 @@ orb.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
+
+if(new URLSearchParams(location.search).get('autostart')==='1'){
+  setTimeout(toggle,300);
+}
 </script>
 </body>
 </html>

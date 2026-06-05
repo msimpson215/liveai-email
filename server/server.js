@@ -12,7 +12,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static('public'))
 
-const LAUNCH_URL = 'https://liveai-email.onrender.com/launch.html?src=email'
+const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/email-plate.html?src=email&popup=1&autostart=1'
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 
@@ -132,6 +132,10 @@ app.get('/download/orb.png', (_req, res) => {
   res.download(pngPath, 'orb.png')
 })
 
+app.get('/api/email-link', (_req, res) => {
+  res.json({ link: EMAIL_ORB_LINK })
+})
+
 app.get('/api/mail-ready', (_req, res) => {
   res.json({ ok: hasMailer() })
 })
@@ -156,7 +160,7 @@ app.post('/api/send-orb', async (req, res) => {
 <html><body style="margin:0;padding:32px;background:#f6f8fc;text-align:center;font-family:Arial,sans-serif;">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr><td align="center" style="padding:20px;">
-<a href="${LAUNCH_URL}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+<a href="${EMAIL_ORB_LINK}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
 <img src="cid:orb" alt="" width="240" height="240" style="display:block;border:0;border-radius:50%;"/>
 </a>
 </td></tr>
