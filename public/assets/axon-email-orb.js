@@ -1,85 +1,52 @@
 /**
- * Live AI Dash Email — plate-on-Gmail-table popup helpers.
- * Gmail: images + links only. Conversation runs on liveai-email (Axon), not inside Google.
+ * Live AI Dash Email — 236px transparent popup over Gmail (orb only).
+ * Gmail: images + links only. Voice runs on liveai-email (Axon), not inside Google.
  */
-(function (global) {
-  var LAUNCH_PATH = '/launch.html';
-  var PLATE_PATH = '/email-plate.html';
-  var WIDTH = 450;
-  var HEIGHT = 680;
-  var WINDOW_NAME = 'axon_plate';
+(function (g) {
+  var PLATE = '/email-plate.html';
+  var LAUNCH = '/launch.html';
+  var NAME = 'axon_plate';
+  var W = 236;
+  var H = 236;
 
-  function buildLaunchUrl(params, origin) {
-    var base = (origin || (global.location && global.location.origin) || '') + LAUNCH_PATH;
-    var q = new URLSearchParams();
-    q.set('src', (params && params.src) || 'email');
-    if (params && params.biz) q.set('biz', params.biz);
-    if (params && params.tagline) q.set('tagline', params.tagline);
-    return base + '?' + q.toString();
-  }
-
-  function buildPlateUrl(params, origin) {
-    var base = (origin || (global.location && global.location.origin) || '') + PLATE_PATH;
+  function plateUrl(params, origin) {
     var q = new URLSearchParams();
     q.set('src', (params && params.src) || 'email');
     q.set('popup', '1');
-    if (params && params.autostart) q.set('autostart', '1');
-    if (params && params.biz) q.set('biz', params.biz);
-    return base + '?' + q.toString();
+    return (origin || g.location.origin) + PLATE + '?' + q;
   }
 
-  function popupFeatures() {
-    var left = Math.max(0, Math.round(((global.screen && global.screen.width) || 1200) - WIDTH) / 2);
-    var top = Math.max(0, Math.round(((global.screen && global.screen.height) || 800) - HEIGHT) / 2);
-    return (
-      'popup=yes,width=' + WIDTH +
-      ',height=' + HEIGHT +
-      ',left=' + left +
-      ',top=' + top +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=no'
-    );
+  function launchUrl(params, origin) {
+    var q = new URLSearchParams();
+    q.set('src', (params && params.src) || 'email');
+    return (origin || g.location.origin) + LAUNCH + '?' + q;
   }
 
-  function centeredPopupFeatures() {
-    return (
-      'popup=yes,width=' + WIDTH +
-      ',height=' + HEIGHT +
-      ",left='+(screen.width-" + WIDTH + ")/2" +
-      ",top='+(screen.height-" + HEIGHT + ")/2" +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=no'
-    );
+  function features() {
+    var l = Math.round(((g.screen.width || 1200) - W) / 2);
+    var t = Math.round(((g.screen.height || 800) - H) / 2);
+    return 'popup=yes,width=' + W + ',height=' + H + ',left=' + l + ',top=' + t +
+      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no';
   }
 
-  /** Opens the AI plate directly (best illusion over Gmail). */
+  function jsFeatures() {
+    return 'popup=yes,width=' + W + ',height=' + H +
+      ",left='+(screen.width-" + W + ")/2,top='+(screen.height-" + H + ")/2" +
+      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no';
+  }
+
   function openEmailOrb(params, origin) {
-    var url = buildPlateUrl(params || {}, origin);
-    return global.open(url, WINDOW_NAME, popupFeatures());
+    return g.open(plateUrl(params, origin), NAME, features());
   }
 
-  function javascriptHyperlink(params, origin) {
-    var url = buildPlateUrl(params || {}, origin).replace(/'/g, '%27');
-    return (
-      "javascript:void(window.open('" +
-      url +
-      "','" +
-      WINDOW_NAME +
-      "'," +
-      centeredPopupFeatures() +
-      '))'
-    );
-  }
-
-  function httpsHyperlink(params, origin) {
-    return buildLaunchUrl(params || {}, origin);
-  }
-
-  global.AxonEmailOrb = {
-    LAUNCH_PATH: LAUNCH_PATH,
-    PLATE_PATH: PLATE_PATH,
-    buildLaunchUrl: buildLaunchUrl,
-    buildPlateUrl: buildPlateUrl,
+  g.AxonEmailOrb = {
     openEmailOrb: openEmailOrb,
-    javascriptHyperlink: javascriptHyperlink,
-    httpsHyperlink: httpsHyperlink
+    buildPlateUrl: plateUrl,
+    buildLaunchUrl: launchUrl,
+    httpsHyperlink: launchUrl,
+    javascriptHyperlink: function (params, origin) {
+      var u = plateUrl(params, origin).replace(/'/g, '%27');
+      return "javascript:void(window.open('" + u + "','" + NAME + "'," + jsFeatures() + '))';
+    }
   };
 })(typeof window !== 'undefined' ? window : this);

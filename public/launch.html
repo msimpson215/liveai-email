@@ -1,103 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A1 AI — Opening conversation</title>
-  <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: #f6f8fc;
-      color: #202124;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .card {
-      max-width: 380px;
-      background: #fff;
-      border: 1px solid #dadce0;
-      border-radius: 12px;
-      padding: 28px 24px;
-      text-align: center;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-    .card h1 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin: 0 0 8px;
-      line-height: 1.4;
-    }
-    .card p {
-      font-size: 14px;
-      line-height: 1.55;
-      color: #5f6368;
-      margin: 0 0 20px;
-    }
-    .orb-wrap {
-      margin: 0 auto 16px;
-      cursor: pointer;
-      line-height: 0;
-    }
-    .orb-wrap img {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      display: block;
-      box-shadow: 0 0 50px rgba(254, 209, 0, 0.7);
-    }
-    .orb-wrap:active img { transform: scale(0.97); }
-    .cta {
-      display: inline-block;
-      padding: 12px 20px;
-      background: #FED100;
-      color: #111;
-      font-weight: 700;
-      font-size: 13px;
-      text-decoration: none;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      border: none;
-      cursor: pointer;
-    }
-    .gmail-hint {
-      margin-top: 16px;
-      font-size: 12px;
-      color: #80868b;
-      line-height: 1.5;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h1>Open the conversation window</h1>
-    <p>Your Gmail stays open in the other tab. A <strong>small window</strong> will open for the AI — not a full new page.</p>
-    <div class="orb-wrap" id="orb" role="button" tabindex="0" aria-label="Open conversation window">
-      <img src="/email/orb-pulse.gif" width="160" height="160" alt="Axon AI orb" />
-    </div>
-    <button class="cta" id="openBtn" type="button">Open small window</button>
-    <p class="gmail-hint">If nothing happens, allow popups for this site, then tap again.<br />Switch back to Gmail anytime.</p>
-  </div>
-
-  <script src="/assets/axon-email-orb.js"></script>
-  <script>
-    function handleOpen() {
-      if (!AxonEmailOrb.openEmailOrb({ src: 'email' })) {
-        alert('Please allow popups, then tap "Open small window" again.\n\nYour Gmail tab will stay open.');
-      }
-    }
-
-    document.getElementById('orb').addEventListener('click', handleOpen);
-    document.getElementById('openBtn').addEventListener('click', handleOpen);
-
-    if (new URLSearchParams(window.location.search).get('autolaunch') === '1') {
-      handleOpen();
-    }
-  </script>
-</body>
-</html>
+<html><head><meta charset="UTF-8"/><title></title></head>
+<body style="margin:0;background:transparent;">
+<script src="/assets/axon-email-orb.js"></script>
+<script>
+(function(){
+  var p=AxonEmailOrb.openEmailOrb({src:'email'});
+  if(p){try{window.close()}catch(e){}}
+  else{location.replace(AxonEmailOrb.buildPlateUrl({src:'email'}));}
+})();
+</script>
+</body></html>
