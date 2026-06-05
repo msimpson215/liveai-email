@@ -5,26 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Get orb</title>
   <style>
-    body { margin:0; font-family:Arial,sans-serif; background:#f6f8fc; text-align:center; padding:40px 20px; }
-    img { width:200px; height:200px; border-radius:50%; box-shadow:0 0 50px rgba(245,197,24,0.5); }
+    body { margin:0; font-family:Arial,sans-serif; background:#f6f8fc; padding:32px 20px; }
+    .wrap { max-width:480px; margin:0 auto; }
+    img.orb { width:200px; height:200px; border-radius:50%; display:block; margin:0 auto 24px; box-shadow:0 0 50px rgba(245,197,24,0.5); }
     a.dl {
-      display:inline-block; margin-top:24px; padding:18px 32px;
+      display:block; text-align:center; padding:18px; margin-bottom:28px;
       background:#FED100; color:#111; font-weight:900; font-size:18px;
       text-decoration:none; border-radius:8px;
     }
-    p { font-size:16px; color:#333; max-width:400px; margin:20px auto 0; line-height:1.5; }
-    code { background:#eee; padding:2px 6px; font-size:13px; word-break:break-all; }
+    ol { font-size:17px; line-height:1.7; color:#202124; padding-left:22px; }
+    ol li { margin-bottom:10px; }
+    strong { color:#111; }
+    .linkbox {
+      background:#fff; border:2px solid #FED100; border-radius:8px;
+      padding:12px; font-size:13px; word-break:break-all; margin-top:8px;
+    }
+    h1 { font-size:22px; text-align:center; margin:0 0 20px; }
   </style>
 </head>
 <body>
-  <img src="/email/orb-pulse.gif" width="200" height="200" alt=""/>
-  <br/>
-  <a class="dl" href="/download/orb.gif">Download orb.gif</a>
-  <p>
-    1. Download the file<br/>
-    2. Gmail Compose → drag <strong>orb.gif</strong> into the email<br/>
-    3. Click the orb → Link → paste:<br/>
-    <code>https://liveai-email.onrender.com/launch.html?src=email</code>
-  </p>
+  <div class="wrap">
+    <h1>Put orb in Gmail</h1>
+    <img class="orb" src="/email/orb-pulse.gif" width="200" height="200" alt=""/>
+    <a class="dl" href="/download/orb.gif">Step 1: Download orb.gif</a>
+    <ol>
+      <li>Gmail → <strong>Compose</strong> new email</li>
+      <li>Bottom of compose window → click <strong>Insert photo</strong> (mountain icon)</li>
+      <li>Click <strong>Upload</strong> tab (not Web URL)</li>
+      <li>Pick <strong>orb.gif</strong> from Downloads or Desktop</li>
+      <li>The yellow orb appears in your email</li>
+      <li>Click the orb → click <strong>Link</strong> (chain icon) → paste this:
+        <div class="linkbox">https://liveai-email.onrender.com/launch.html?src=email</div>
+      </li>
+      <li>Send to yourself → open email → click orb</li>
+    </ol>
+  </div>
 </body>
 </html>
