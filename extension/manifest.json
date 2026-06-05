@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "A1 Email Orb",
+  "version": "1.0.0",
+  "description": "Opens liveai-email links as a tiny popup over Gmail instead of a full tab.",
+  "permissions": [],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "https://liveai-email.onrender.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
