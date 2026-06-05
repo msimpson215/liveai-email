@@ -1,86 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Copy email orb — paste into Gmail</title>
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f6f8fc; color: #202124; }
-    .bar {
-      position: sticky; top: 0; z-index: 10;
-      background: #FED100; padding: 16px 20px;
-      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-      border-bottom: 2px solid #e8b400;
-    }
-    .bar p { margin: 0; font-size: 15px; font-weight: 700; flex: 1; min-width: 200px; }
-    button {
-      padding: 14px 24px; background: #111; color: #FED100;
-      border: none; border-radius: 8px; font-size: 15px; font-weight: 800;
-      cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    button.ok { background: #1e8e3e; color: #fff; }
-    .preview { padding: 24px 16px; }
-    #status { font-size: 14px; font-weight: 700; }
-  </style>
+  <meta http-equiv="refresh" content="0;url=/gmail.html"/>
+  <script>location.replace('/gmail.html');</script>
 </head>
 <body>
-  <div class="bar">
-    <p>1. Click Copy &nbsp;→&nbsp; 2. Gmail Compose &nbsp;→&nbsp; 3. Paste &nbsp;→&nbsp; 4. Send</p>
-    <button type="button" id="copyBtn">Copy email HTML</button>
-    <span id="status"></span>
-  </div>
-
-  <div class="preview" id="preview">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f6f8fc;">
-      <tr>
-        <td align="center" style="padding:32px 16px;">
-          <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border:1px solid #dadce0;border-radius:8px;">
-            <tr>
-              <td align="center" style="padding:28px 28px 20px;">
-                <a
-                  id="orbLink"
-                  href="javascript:void(window.open('https://liveai-email.onrender.com/email-plate.html?src=email&amp;popup=1','axon_plate','popup=yes,width=236,height=236,left='+(screen.width-236)/2+',top='+(screen.height-236)/2+',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no'))"
-                  style="text-decoration:none;display:inline-block;"
-                >
-                  <img
-                    src="https://liveai-email.onrender.com/email/orb-pulse.gif"
-                    alt=""
-                    width="240" height="240"
-                    style="display:block;border:0;border-radius:50%;"
-                  />
-                </a>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <textarea id="snippet" readonly style="position:fixed;left:-9999px;top:0;" aria-hidden="true"></textarea>
-
-  <script>
-    var ORB_HTML = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f6f8fc;"><tr><td align="center" style="padding:32px 16px;"><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border:1px solid #dadce0;border-radius:8px;"><tr><td align="center" style="padding:28px 28px 20px;"><a href="javascript:void(window.open(\'https://liveai-email.onrender.com/email-plate.html?src=email&amp;popup=1\',\'axon_plate\',\'popup=yes,width=236,height=236,left=\'+(screen.width-236)/2+\',top=\'+(screen.height-236)/2+\',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no\'))" style="text-decoration:none;display:inline-block;"><img src="https://liveai-email.onrender.com/email/orb-pulse.gif" alt="" width="240" height="240" style="display:block;border:0;border-radius:50%;" /></a></td></tr></table></td></tr></table>';
-
-    document.getElementById('snippet').value = ORB_HTML;
-
-    document.getElementById('copyBtn').addEventListener('click', function () {
-      var btn = document.getElementById('copyBtn');
-      var status = document.getElementById('status');
-      navigator.clipboard.writeText(ORB_HTML).then(function () {
-        btn.textContent = 'Copied!';
-        btn.classList.add('ok');
-        status.textContent = 'Now paste into Gmail Compose.';
-        setTimeout(function () {
-          btn.textContent = 'Copy email HTML';
-          btn.classList.remove('ok');
-        }, 4000);
-      }).catch(function () {
-        document.getElementById('snippet').style.left = '0';
-        document.getElementById('snippet').select();
-        status.textContent = 'Press Ctrl+C (or Cmd+C)';
-      });
-    });
-  </script>
+  <p><a href="/gmail.html">Go to Gmail setup →</a></p>
 </body>
 </html>
