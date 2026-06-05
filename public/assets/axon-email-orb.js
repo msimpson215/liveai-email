@@ -26,13 +26,13 @@
     var l = Math.round(((g.screen.width || 1200) - W) / 2);
     var t = Math.round(((g.screen.height || 800) - H) / 2);
     return 'popup=yes,width=' + W + ',height=' + H + ',left=' + l + ',top=' + t +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no';
+      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no';
   }
 
   function jsFeatures() {
     return 'popup=yes,width=' + W + ',height=' + H +
       ",left='+(screen.width-" + W + ")/2,top='+(screen.height-" + H + ")/2" +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no';
+      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no';
   }
 
   function openEmailOrb(params, origin) {

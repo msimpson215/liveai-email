@@ -1,67 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live AI Dash Email — A1 Asphalt</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      background: #f6f8fc;
-      font-family: Arial, sans-serif;
-      color: #202124;
-      padding: 24px;
-    }
-    h1 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      text-align: center;
-    }
-    .orb {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 3px solid #F5C518;
-      background: #F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
-      box-shadow: 0 0 60px rgba(245,197,24,0.45), 0 0 120px rgba(245,197,24,0.18);
-      animation: pulse 3s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(245,197,24,0.65), 0 0 160px rgba(245,197,24,0.28); }
-    }
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      font-size: 14px;
-    }
-    .links a { color: #1a73e8; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title></title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:none transparent;
+  background-color:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.orb{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  cursor:pointer;
+  background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
+  background-color:#F5C518;
+  border:3px solid #F5C518;
+  box-shadow:0 0 60px rgba(245,197,24,0.45),0 0 120px rgba(245,197,24,0.18);
+  animation:pulse 3s ease-in-out infinite;
+  flex-shrink:0;
+}
+body.active .orb{
+  border-color:#fff;
+  animation:pulseOn 1.2s ease-in-out infinite alternate;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.05);box-shadow:0 0 80px rgba(245,197,24,0.65),0 0 160px rgba(245,197,24,0.28);}
+}
+@keyframes pulseOn{
+  from{transform:scale(1.02);}
+  to{transform:scale(1.08);box-shadow:0 0 100px rgba(245,197,24,0.9),0 0 200px rgba(245,197,24,0.4);}
+}
+</style>
 </head>
 <body>
-  <h1>A1 Asphalt — Gmail email orb (click to test voice)</h1>
-  <div class="orb" id="orb" role="button" tabindex="0" aria-label="Open email orb popup"></div>
-  <div class="links">
-    <a href="/mailer.html">Email template</a>
-    <a href="/email-orb-launcher.html">Link generator</a>
-    <a href="/email-plate.html?src=email&popup=1">Orb popup</a>
-  </div>
-  <script src="/assets/axon-email-orb.js"></script>
-  <script>
-    function openOrb() { AxonEmailOrb.openEmailOrb({ src: 'email' }); }
-    document.getElementById('orb').addEventListener('click', openOrb);
-    document.getElementById('orb').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOrb(); }
+<div class="orb" id="orb" role="button" tabindex="0"></div>
+<script>
+let pc=null,localStream=null,starting=false;
+const sessionUrl='/session?src=email';
+const orb=document.getElementById('orb');
+
+async function stop(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  document.body.classList.remove('active');
+  starting=false;
+}
+
+async function toggle(){
+  if(pc||starting){await stop();return}
+  starting=true;
+  try{
+    const r=await fetch(sessionUrl);
+    const data=await r.json();
+    if(!r.ok||data.error)throw new Error(data.error||'fail');
+    pc=new RTCPeerConnection();
+    const audio=document.createElement('audio');
+    audio.autoplay=true;
+    pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
+    localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    pc.addTrack(localStream.getTracks()[0]);
+    const offer=await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
+    const sdp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(model),{
+      method:'POST',body:offer.sdp,
+      headers:{Authorization:'Bearer '+data.client_secret.value,'Content-Type':'application/sdp'}
     });
-  </script>
+    if(!sdp.ok)throw new Error('sdp');
+    await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+    document.body.classList.add('active');
+  }catch(e){
+    console.error(e);
+    await stop();
+  }
+}
+
+orb.addEventListener('click',toggle);
+orb.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
+</script>
 </body>
 </html>
