@@ -1,12 +1,21 @@
 (function () {
   const currentPage = document.body.dataset.page || 'home';
 
-  document.querySelectorAll('.nav-btn, .brand-btn').forEach(function (btn) {
+  document.querySelectorAll('.nav-btn, .brand-btn, .hotspot').forEach(function (btn) {
     if (btn.dataset.page === currentPage) {
       btn.classList.add('active');
       btn.setAttribute('aria-current', 'page');
     }
   });
+
+  const canvaArt = document.getElementById('canva-art');
+  if (canvaArt) {
+    canvaArt.addEventListener('error', function onMissingCanva() {
+      canvaArt.removeEventListener('error', onMissingCanva);
+      canvaArt.src = '/images/hero.webp';
+      canvaArt.alt = 'SideEye360 — add canva-index.png to public/images/ for full design';
+    }, { once: true });
+  }
 
   if (currentPage !== 'home') return;
 
@@ -44,7 +53,7 @@
       device.style.transform = '';
       device.style.cursor = 'grab';
       document.querySelector('.mount-demo').insertBefore(device, mount);
-      statusText.textContent = 'Standby — place in mount to activate';
+      statusText.textContent = 'Seat in mount to activate';
     }
   }
 
