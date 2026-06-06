@@ -9,11 +9,18 @@
   });
 
   const canvaArt = document.getElementById('canva-art');
+  const heroContent = document.getElementById('home-hero-content');
   if (canvaArt) {
+    canvaArt.addEventListener('load', function () {
+      if (canvaArt.naturalWidth > 0) {
+        canvaArt.hidden = false;
+        if (heroContent) heroContent.hidden = true;
+        document.body.classList.add('canva-page');
+      }
+    });
     canvaArt.addEventListener('error', function onMissingCanva() {
       canvaArt.removeEventListener('error', onMissingCanva);
-      canvaArt.src = '/images/hero.webp';
-      canvaArt.alt = 'SiteEye360 — add canva-index.png to public/images/ for full design';
+      canvaArt.remove();
     }, { once: true });
   }
 

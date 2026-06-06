@@ -7,53 +7,83 @@
   <title>SiteEye360 — See Everything. Stay in Control.</title>
   <link rel="stylesheet" href="/css/siteeye360.css"/>
 </head>
-<body data-page="home" class="canva-page">
+<body data-page="home">
 
-  <main class="canva-stage" id="canva-stage">
-    <!-- Export from Canva as PNG → save to public/images/canva-index.png -->
-    <img
-      class="canva-art"
-      id="canva-art"
-      src="/images/canva-index.png"
-      alt="SiteEye360 — live 360° job site monitoring system for commercial trucks"
-      width="1920"
-      height="4800"
-    />
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="brand-btn" data-page="home">Site<span class="eye">Eye</span>360</a>
+      <div class="nav-links">
+        <a href="/overview.html" class="nav-btn" data-page="overview">Overview</a>
+        <a href="/features.html" class="nav-btn" data-page="features">Features</a>
+        <a href="/how-it-works.html" class="nav-btn" data-page="how-it-works">How It Works</a>
+        <a href="/system-specs.html" class="nav-btn" data-page="system-specs">System Specs</a>
+        <a href="/contact.html" class="nav-btn" data-page="contact">Contact</a>
+      </div>
+    </div>
+  </nav>
 
-    <nav class="canva-hotspots" aria-label="Main navigation">
-      <a href="/" class="hotspot hotspot-logo" data-page="home" aria-label="SiteEye360 Home"></a>
-      <a href="/overview.html" class="hotspot hotspot-overview" data-page="overview" aria-label="Overview"></a>
-      <a href="/features.html" class="hotspot hotspot-features" data-page="features" aria-label="Features"></a>
-      <a href="/how-it-works.html" class="hotspot hotspot-how" data-page="how-it-works" aria-label="How It Works"></a>
-      <a href="/system-specs.html" class="hotspot hotspot-specs" data-page="system-specs" aria-label="System Specs"></a>
-      <a href="/contact.html" class="hotspot hotspot-contact" data-page="contact" aria-label="Contact"></a>
-    </nav>
-
-    <aside class="alert-panel canva-alert" id="alert-panel" aria-label="Driver alert system demo">
-      <div class="alert-header">
-        <span class="alert-title">Driver Alert</span>
-        <span class="live-badge">
-          <span class="live-dot" aria-hidden="true"></span>
-          Live
-        </span>
+  <main class="home-main">
+    <section class="home-hero">
+      <img
+        class="home-hero-img"
+        id="canva-art"
+        src="/images/canva-index.png"
+        alt=""
+        hidden
+      />
+      <div class="home-hero-content" id="home-hero-content">
+        <p class="home-eyebrow">Live 360° Job Site Monitoring</p>
+        <h1>See Everything.<br/><span class="accent">Stay in Control.</span></h1>
+        <p class="home-sub">Safety, productivity, and peace of mind — automatic, simple, reliable.</p>
+        <ul class="home-bullets">
+          <li>Improve Safety</li>
+          <li>Ensure Quality</li>
+          <li>Increase Accountability</li>
+          <li>Watch from Anywhere</li>
+        </ul>
       </div>
 
-      <div class="mount-demo">
-        <div class="device-unit" id="device-unit" role="button" tabindex="0" aria-label="Alert unit — drag into mount to activate">
-          <span class="led" aria-hidden="true"></span>
-          <span class="device-label">SiteEye360</span>
+      <aside class="alert-panel home-alert" id="alert-panel" aria-label="Driver alert system demo">
+        <div class="alert-header">
+          <span class="alert-title">Driver Alert System</span>
+          <span class="live-badge">
+            <span class="live-dot" aria-hidden="true"></span>
+            Live
+          </span>
         </div>
+        <div class="mount-demo">
+          <div class="device-unit" id="device-unit" role="button" tabindex="0" aria-label="Alert unit — drag into mount to activate">
+            <span class="led" aria-hidden="true"></span>
+            <span class="device-label">SiteEye360</span>
+          </div>
+          <div class="mount-slot" id="mount-slot" role="button" tabindex="0" aria-label="Hood mount — open circuit powers LED">
+            <span class="mount-icon">Hood<br/>Mount</span>
+          </div>
+        </div>
+        <p class="alert-status">
+          Status: <strong id="alert-status-text">Seat in mount to activate</strong>
+        </p>
+        <p class="alert-hint">Open-circuit — installs on, no switch to forget</p>
+      </aside>
+    </section>
 
-        <div class="mount-slot" id="mount-slot" role="button" tabindex="0" aria-label="Hood mount — open circuit powers LED">
-          <span class="mount-icon">Hood<br/>Mount</span>
-        </div>
+    <section class="feature-bar" aria-label="Key features">
+      <div class="feature-bar-inner">
+        <span>Visible Warning System</span>
+        <span>Auto Power &amp; Connect</span>
+        <span>Driver Alert System</span>
+        <span>Live 360° Streaming</span>
       </div>
-
-      <p class="alert-status">
-        <strong id="alert-status-text">Seat in mount to activate</strong>
-      </p>
-    </aside>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">Site<span class="eye">Eye</span>360</p>
+      <p class="footer-copy">&copy; 2026 SiteEye360. All rights reserved.</p>
+      <p class="footer-tagline">See more. Know more. Do more.</p>
+    </div>
+  </footer>
 
   <script src="/js/siteeye360.js"></script>
 </body>
