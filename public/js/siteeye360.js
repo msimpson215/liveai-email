@@ -9,18 +9,9 @@
   });
 
   const canvaArt = document.getElementById('canva-art');
-  const heroContent = document.getElementById('home-hero-content');
-  if (canvaArt) {
-    canvaArt.addEventListener('load', function () {
-      if (canvaArt.naturalWidth > 0) {
-        canvaArt.hidden = false;
-        if (heroContent) heroContent.hidden = true;
-        document.body.classList.add('canva-page');
-      }
-    });
-    canvaArt.addEventListener('error', function onMissingCanva() {
-      canvaArt.removeEventListener('error', onMissingCanva);
-      canvaArt.remove();
+  if (canvaArt && canvaArt.complete && canvaArt.naturalWidth === 0) {
+    canvaArt.addEventListener('error', function () {
+      window.location.replace('/overview.html');
     }, { once: true });
   }
 
