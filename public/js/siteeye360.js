@@ -13,7 +13,7 @@
     canvaArt.addEventListener('error', function onMissingCanva() {
       canvaArt.removeEventListener('error', onMissingCanva);
       canvaArt.src = '/images/hero.webp';
-      canvaArt.alt = 'SideEye360 — add canva-index.png to public/images/ for full design';
+      canvaArt.alt = 'SiteEye360 — add canva-index.png to public/images/ for full design';
     }, { once: true });
   }
 
