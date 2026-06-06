@@ -749,7 +749,7 @@ body.canva-page {
     border-radius: 6px;
   }
 
-  .hotspot-logo::after { content: "Siteeye360"; }
+  .hotspot-logo::after { content: "SiteEye360"; }
   .hotspot-overview::after { content: "Overview"; }
   .hotspot-features::after { content: "Features"; }
   .hotspot-how::after { content: "How"; }
