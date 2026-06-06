@@ -312,9 +312,20 @@ body.canva-page .feature-bar {
 }
 
 body.canva-page {
-  display: flex;
-  flex-direction: column;
+  display: block;
   background: #1a1a1a;
+}
+
+body.canva-page .canva-stage {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+}
+
+body.canva-page .canva-art {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .canva-stage {
