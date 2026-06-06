@@ -270,22 +270,51 @@ body.canva-page .feature-bar {
   text-transform: uppercase;
 }
 
-/* ── Canva full-page (when canva-index.png exists) ── */
+/* ── Shared hero (cropped from Canva) ── */
+
+.page-hero {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+  background: #0a0a0a;
+}
+
+.page-hero-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.page-hero .canva-hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+.page-hero .hotspot {
+  --hs-top: 3%;
+  --hs-h: 14%;
+}
+
+.home-canva {
+  flex: 1;
+  background: #1a1a1a;
+}
+
+.canva-body-stage {
+  line-height: 0;
+  background: #1a1a1a;
+}
+
+.canva-body-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 body.canva-page {
   display: flex;
   flex-direction: column;
   background: #1a1a1a;
-}
-
-body.canva-page .home-main {
-  position: relative;
-  line-height: 0;
-}
-
-body.canva-page .site-nav,
-body.canva-page .site-footer {
-  display: none;
 }
 
 .canva-stage {
