@@ -1,0 +1,348 @@
+:root {
+  --live-blue: #1e40af;
+  --live-blue-light: #3b82f6;
+  --live-red: #dc2626;
+  --live-green: #16a34a;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --font: "Segoe UI", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.live-wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
+
+.live-topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.live-topbar a { color: var(--live-blue); font-weight: 600; }
+
+.live-brand {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--live-blue);
+}
+
+.live-brand .pill {
+  display: inline-block;
+  background: var(--live-red);
+  color: #fff;
+  font-size: 0.72em;
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  margin-left: 0.15em;
+  vertical-align: middle;
+}
+
+.live-hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+  color: #fff;
+  padding: 3rem 1.25rem 3.5rem;
+  text-align: center;
+}
+
+.live-hero h1 {
+  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+
+.live-hero .tagline {
+  font-size: 1.15rem;
+  opacity: 0.92;
+  max-width: 640px;
+  margin: 0 auto 0.5rem;
+}
+
+.live-hero .temp-note {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.45rem 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.live-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.live-nav a {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: 6px;
+}
+
+.live-nav a:hover,
+.live-nav a.active {
+  color: var(--live-blue);
+  background: #eff6ff;
+}
+
+.live-section {
+  padding: 2.5rem 0;
+}
+
+.live-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--live-blue);
+}
+
+.live-section .lead {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  max-width: 720px;
+}
+
+.icon-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.icon-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem;
+  text-align: center;
+}
+
+.icon-card strong {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 0.35rem;
+  color: var(--live-blue);
+}
+
+.icon-card span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.pricing-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.price-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.price-card.pro { border-color: var(--live-green); }
+
+.price-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.price-card .tier {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.price-card .amount {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--live-blue);
+  margin-bottom: 0.25rem;
+}
+
+.price-card.pro .amount { color: var(--live-green); }
+
+.price-card ul {
+  list-style: none;
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.price-card li {
+  padding: 0.3rem 0 0.3rem 1.1rem;
+  position: relative;
+}
+
+.price-card li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--live-green);
+  font-weight: 700;
+}
+
+.steps-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 1.25rem;
+}
+
+.step-card {
+  text-align: center;
+  padding: 1rem 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.step-num {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: var(--live-blue);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.step-card strong {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 0.25rem;
+}
+
+.step-card span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.mount-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  margin-top: 1rem;
+}
+
+.mount-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mount-card img { width: 100%; display: block; }
+
+.mount-card-body { padding: 1rem; }
+
+.mount-card h3 { font-size: 0.92rem; margin-bottom: 0.35rem; }
+
+.mount-card p { font-size: 0.82rem; color: var(--text-muted); }
+
+.page-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.page-main h1 { font-size: 1.75rem; color: var(--live-blue); margin-bottom: 0.5rem; }
+
+.content-section { margin-bottom: 1.75rem; }
+
+.content-section h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+.content-section p, .content-section li {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.content-section ul { padding-left: 1.25rem; }
+
+.live-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.8rem;
+}
+
+.live-footer strong { color: #fff; }
+
+.contact-form {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 480px;
+  margin-top: 1rem;
+}
+
+.contact-form label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.contact-form button {
+  justify-self: start;
+  padding: 0.65rem 1.25rem;
+  background: var(--live-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.page-back {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--live-blue);
+  font-weight: 600;
+}

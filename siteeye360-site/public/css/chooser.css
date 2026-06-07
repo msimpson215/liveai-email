@@ -1,0 +1,126 @@
+:root {
+  --bg: #060a10;
+  --text: #f4f6fa;
+  --muted: #a8b0be;
+  --amber: #f5c518;
+  --blue: #2563eb;
+  --live-red: #e82222;
+  --card: #141b28;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.chooser {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+}
+
+.chooser-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.chooser-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.chooser-header h1 {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.chooser-lead {
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.chooser-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.chooser-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.chooser-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.chooser-360:hover { border-color: rgba(245, 197, 24, 0.45); }
+.chooser-live:hover { border-color: rgba(37, 99, 235, 0.45); }
+
+.chooser-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.chooser-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.chooser-card .eye { color: var(--amber); }
+.chooser-live .eye { color: var(--blue); }
+
+.live-pill {
+  display: inline-block;
+  background: var(--live-red);
+  color: #fff;
+  font-size: 0.85em;
+  padding: 0.1em 0.45em;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.chooser-card p {
+  flex: 1;
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+}
+
+.chooser-cta {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.chooser-live .chooser-cta { color: #60a5fa; }
+
+.chooser-footer {
+  text-align: center;
+  margin-top: 2.5rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}

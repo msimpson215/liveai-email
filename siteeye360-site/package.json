@@ -1,0 +1,12 @@
+{
+  "name": "siteeye360",
+  "version": "1.0.0",
+  "description": "SiteEye 360°™ and SiteEye LIVE™ product sites",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
