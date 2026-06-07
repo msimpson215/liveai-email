@@ -9,8 +9,8 @@
   /* Canva hotspot positions — tuned for 1536×1024 SiteEye360 artboard */
   --hs-top: 1.4%;
   --hs-h: 5.5%;
-  --hs-logo-l: 1.5%;
-  --hs-logo-w: 14%;
+  --hs-logo-l: 1.2%;
+  --hs-logo-w: 15.5%;
   --hs-overview-l: 39%;
   --hs-overview-w: 9.5%;
   --hs-features-l: 49%;
@@ -375,6 +375,134 @@ body.canva-page .canva-art {
 .hotspot-logo {
   left: var(--hs-logo-l);
   width: var(--hs-logo-w);
+}
+
+/* Corrected logo overlay — covers baked-in Canva logo */
+.brand-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.15rem 0.4rem 0.1rem 0.55rem;
+  background: #080808;
+  z-index: 15;
+  line-height: 1;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.brand-overlay:hover,
+.brand-overlay:focus-visible {
+  background: #101010;
+  outline: none;
+}
+
+.brand-tm {
+  font-size: 0.42rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  align-self: flex-end;
+  margin-right: 0.15rem;
+  margin-bottom: 0.05rem;
+  line-height: 1;
+}
+
+.brand-line {
+  font-size: clamp(0.62rem, 1.05vw, 0.9rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.brand-eye {
+  color: var(--accent-amber);
+}
+
+.brand-360 {
+  font-size: clamp(0.58rem, 0.95vw, 0.82rem);
+  font-weight: 800;
+  color: var(--accent-amber);
+  margin-left: 2.05em;
+  margin-top: 0.12rem;
+  white-space: nowrap;
+}
+
+/* Inner page hero — Canva crop, no extra nav */
+.inner-hero-link {
+  display: block;
+  line-height: 0;
+  background: #0a0a0a;
+}
+
+.inner-hero {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mount-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  margin: 1.5rem 0 2rem;
+}
+
+.mount-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mount-card img,
+.mount-card svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mount-card-body {
+  padding: 1rem 1.15rem 1.15rem;
+}
+
+.mount-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+
+.mount-card p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.mount-card.recommended {
+  border-color: rgba(245, 197, 24, 0.45);
+}
+
+.mount-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  margin-bottom: 0.35rem;
+}
+
+.page-back {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.page-back:hover {
+  text-decoration: underline;
 }
 
 .hotspot-overview {
@@ -855,8 +983,16 @@ body.canva-page .canva-art {
   margin-bottom: 0.35rem;
 }
 
-.footer-brand .eye {
-  color: var(--accent-red);
+.footer-brand .eye,
+.footer-brand .deg {
+  color: var(--accent-amber);
+}
+
+.footer-tm {
+  font-size: 0.55em;
+  color: var(--accent-amber);
+  vertical-align: super;
+  margin-left: 0.1em;
 }
 
 .footer-copy {
