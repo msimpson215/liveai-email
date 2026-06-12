@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Talk with A1 Professional Asphalt</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;height:100%;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at 50% 42%, #2a2a2a 0%, #0c0c0c 70%, #050505 100%);
+  color:#F5C518;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+}
+#wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:22px;padding:24px;text-align:center;
+}
+#brand{
+  font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(245,197,24,0.75);
+}
+#orb{
+  width:min(240px,62vw);height:min(240px,62vw);
+  border-radius:50%;cursor:pointer;flex-shrink:0;
+  background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
+  background-color:#F5C518;
+  border:3px solid #F5C518;
+  box-shadow:0 0 60px rgba(245,197,24,0.5),0 0 130px rgba(245,197,24,0.2);
+  animation:pulse 3s ease-in-out infinite;
+}
+body.connecting #orb,body.active #orb{
+  border-color:#fff;
+  animation:pulseOn 1.15s ease-in-out infinite alternate;
+}
+body.error #orb{border-color:#e0533f;}
+@keyframes pulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.05);box-shadow:0 0 90px rgba(245,197,24,0.7),0 0 180px rgba(245,197,24,0.3);}
+}
+@keyframes pulseOn{
+  from{transform:scale(1.02);}
+  to{transform:scale(1.1);box-shadow:0 0 120px rgba(245,197,24,0.95),0 0 220px rgba(245,197,24,0.45);}
+}
+#status{
+  font-size:1rem;letter-spacing:1px;text-transform:uppercase;
+  min-height:1.3em;color:#F5C518;
+}
+#hint{
+  font-size:0.8rem;color:rgba(245,197,24,0.5);min-height:1.1em;
+}
+#close{
+  position:fixed;top:14px;right:16px;width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(245,197,24,0.4);background:rgba(0,0,0,0.4);
+  color:#F5C518;font-size:1.1rem;cursor:pointer;line-height:1;
+}
+</style>
+</head>
+<body class="idle">
+<button id="close" title="Close" aria-label="Close">&#10005;</button>
+<div id="wrap">
+  <div id="brand">A1 Professional Asphalt &amp; Sealing</div>
+  <div id="orb" role="button" tabindex="0" aria-label="Tap to talk with our AI"></div>
+  <div id="status">Tap the orb to talk</div>
+  <div id="hint">Artificial team member &middot; available now</div>
+</div>
+<script>
+let pc=null,localStream=null,starting=false;
+const sessionUrl='/session?src=email';
+const orb=document.getElementById('orb');
+const statusEl=document.getElementById('status');
+const hintEl=document.getElementById('hint');
+
+function setIdle(){
+  document.body.className='idle';
+  statusEl.textContent='Tap the orb to talk';
+  hintEl.textContent='Artificial team member \u00b7 available now';
+}
+function setConnecting(){
+  document.body.className='connecting';
+  statusEl.textContent='Connecting\u2026';
+  hintEl.textContent='Allow the microphone when asked';
+}
+function setActive(){
+  document.body.className='active';
+  statusEl.textContent='Listening \u2014 tap orb to stop';
+  hintEl.textContent='Speak naturally';
+}
+function setError(){
+  document.body.className='error';
+  statusEl.textContent='Could not start \u2014 tap to retry';
+  hintEl.textContent='Check your microphone and connection';
+}
+
+async function stop(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setIdle();
+}
+
+async function connectVoice(){
+  const r=await fetch(sessionUrl);
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  pc=new RTCPeerConnection();
+  const audio=document.createElement('audio');
+  audio.autoplay=true;
+  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc.addTrack(localStream.getTracks()[0]);
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
+  const sdp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(model),{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+data.client_secret.value,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setActive();
+}
+
+async function toggle(){
+  if(pc||starting){await stop();return}
+  starting=true;
+  setConnecting();
+  try{
+    await connectVoice();
+  }catch(e){
+    console.error(e);
+    if(pc){try{pc.close()}catch(_){}pc=null}
+    if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}localStream=null}
+    try{
+      await connectVoice();
+    }catch(e2){
+      console.error(e2);
+      if(pc){try{pc.close()}catch(_){}pc=null}
+      if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}localStream=null}
+      setError();
+    }
+  }
+  starting=false;
+}
+
+orb.addEventListener('click',toggle);
+orb.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
+});
+document.getElementById('close').addEventListener('click',async()=>{
+  await stop();
+  try{window.close()}catch(e){}
+  setIdle();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
+
+setIdle();
+</script>
+</body>
+</html>

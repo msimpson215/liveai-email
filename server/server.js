@@ -12,7 +12,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static('public'))
 
-const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/email-plate.html?src=email&popup=1&autostart=1'
+const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 
