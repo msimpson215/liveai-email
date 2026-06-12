@@ -110,8 +110,8 @@ function setError(){
 }
 function setLaunched(){
   document.body.className='idle';
-  statusEl.textContent='Open in the corner window';
-  hintEl.textContent='Talk up in the corner \u00b7 your inbox stays here \u00b7 tap orb to reopen';
+  statusEl.textContent='Talking in the corner \u2014 back to Gmail';
+  hintEl.textContent='You can close this tab \u00b7 the corner window keeps talking';
 }
 function setBlocked(){
   document.body.className='error';
@@ -183,6 +183,9 @@ function openMiniWindow(){
   if(popWin){
     setLaunched();
     try{popWin.focus()}catch(e){}
+    // Close this launcher tab so Gmail (the tab you came from) shows behind
+    // the corner window. If the browser refuses, we leave a clear message.
+    setTimeout(function(){ try{ window.close(); }catch(e){} }, 300);
   }else{
     setBlocked();
   }
