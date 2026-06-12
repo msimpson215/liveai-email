@@ -190,7 +190,8 @@ function openMiniWindow(isAuto){
     // Pop-up blocked on auto-open (first-time visitor): show the orb to tap.
     setIdle();
   }else{
-    setBlocked();
+    // Manual tap but pop-up blocked: never get stuck — just talk on this page.
+    talk();
   }
 }
 
