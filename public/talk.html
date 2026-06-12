@@ -105,18 +105,20 @@ async function connectVoice(){
   const r=await fetch(sessionUrl);
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=document.createElement('audio');
   audio.autoplay=true;
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
+  pc.createDataChannel('oai-events');
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
-  const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
-  const sdp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(model),{
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
     method:'POST',body:offer.sdp,
-    headers:{Authorization:'Bearer '+data.client_secret.value,'Content-Type':'application/sdp'}
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});

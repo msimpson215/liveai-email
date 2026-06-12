@@ -78,23 +78,30 @@ app.get('/session', async (req, res) => {
 
   try {
     const source = req.query.src === 'email' ? 'email' : 'web'
-    const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
+    const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: REALTIME_MODEL,
-        voice: 'alloy',
-        modalities: ['audio', 'text'],
-        turn_detection: {
-          type: 'server_vad',
-          silence_duration_ms: 900,
-          prefix_padding_ms: 300,
-          create_response: true
-        },
-        instructions: buildInstructions(source)
+        session: {
+          type: 'realtime',
+          model: REALTIME_MODEL,
+          instructions: buildInstructions(source),
+          audio: {
+            input: {
+              turn_detection: {
+                type: 'server_vad',
+                silence_duration_ms: 900,
+                prefix_padding_ms: 300
+              }
+            },
+            output: {
+              voice: 'alloy'
+            }
+          }
+        }
       })
     })
 
@@ -105,11 +112,12 @@ app.get('/session', async (req, res) => {
       return res.status(response.status || 502).json({ error: message })
     }
 
-    if (!data.client_secret?.value) {
+    const value = data.value || data.client_secret?.value
+    if (!value) {
       return res.status(502).json({ error: 'OpenAI did not return a session token.' })
     }
 
-    res.json({ ...data, model: REALTIME_MODEL })
+    res.json({ value, model: REALTIME_MODEL })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
   }
