@@ -174,7 +174,7 @@ async function talk(){
 
 /* Top-level tab: tapping the orb pops out a small centered window.
    Gmail tab stays open behind it. If the popup is blocked, talk inline. */
-function openMiniWindow(){
+function openMiniWindow(isAuto){
   if(popWin && !popWin.closed){ try{popWin.focus()}catch(e){} return; }
   const features='popup=yes,width='+WIN_W+',height='+WIN_H+
     ',left='+cornerLeft()+',top='+cornerTop()+
@@ -186,6 +186,9 @@ function openMiniWindow(){
     // Close this launcher tab so Gmail (the tab you came from) shows behind
     // the corner window. If the browser refuses, we leave a clear message.
     setTimeout(function(){ try{ window.close(); }catch(e){} }, 300);
+  }else if(isAuto){
+    // Pop-up blocked on auto-open (first-time visitor): show the orb to tap.
+    setIdle();
   }else{
     setBlocked();
   }
@@ -193,7 +196,7 @@ function openMiniWindow(){
 
 function onOrb(){
   if(isMini){ talk(); }
-  else{ openMiniWindow(); }
+  else{ openMiniWindow(false); }
 }
 
 orb.addEventListener('click',onOrb);
@@ -212,6 +215,9 @@ if(isMini){
 }else{
   statusEl.textContent='Tap the orb to talk';
   hintEl.textContent='Opens a small window in the corner \u00b7 your inbox stays open';
+  // If pop-ups are already allowed for this site, skip the tap: open the
+  // corner window now and close this launcher tab (feels like one click).
+  setTimeout(function(){ openMiniWindow(true); }, 60);
 }
 </script>
 </body>
