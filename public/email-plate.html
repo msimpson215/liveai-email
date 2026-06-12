@@ -52,7 +52,9 @@ let pc=null,localStream=null,starting=false;
 const sessionUrl=new URLSearchParams(location.search).get('src')==='email'?'/session?src=email':'/session';
 const orb=document.getElementById('orb');
 
-if(new URLSearchParams(location.search).get('popup')==='1'){
+const _p=new URLSearchParams(location.search);
+const inOverlay=_p.get('overlay')==='1'||window.top!==window.self;
+if(_p.get('popup')==='1' && !inOverlay){
   try{
     window.resizeTo(236,236);
     window.moveTo(Math.round((screen.width-236)/2),Math.round((screen.height-236)/2));
