@@ -49,7 +49,7 @@ body.error #orb{border-color:#e0533f;}
   min-height:1.3em;color:#F5C518;
 }
 #hint{
-  font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:300px;
+  font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:320px;
 }
 #close{
   position:fixed;top:12px;right:14px;width:36px;height:36px;border-radius:50%;
@@ -69,18 +69,17 @@ body.error #orb{border-color:#e0533f;}
 <script>
 const P=new URLSearchParams(location.search);
 const isMini=P.get('mini')==='1';
-let pc=null,localStream=null,starting=false,popWin=null;
+let pc=null,localStream=null,starting=false,popWin=null,pipWin=null;
 const sessionUrl='/session?src=email';
 const orb=document.getElementById('orb');
 const statusEl=document.getElementById('status');
 const hintEl=document.getElementById('hint');
 
-/* The small pop-out window: tiny, pinned to the upper-right corner. */
+/* Corner pop-out window (fallback for browsers without Picture-in-Picture). */
 const WIN_W=300,WIN_H=380,WIN_MARGIN=20;
 function cornerLeft(){return Math.max(0,(screen.availWidth||screen.width)-WIN_W-WIN_MARGIN);}
 function cornerTop(){return WIN_MARGIN;}
 
-/* Mini = the small pop-out window. Shrink + pin to upper-right. */
 if(isMini){
   try{
     window.resizeTo(WIN_W,WIN_H);
@@ -88,36 +87,22 @@ if(isMini){
   }catch(e){}
 }
 
-function setIdle(){
-  document.body.className='idle';
-  statusEl.textContent='Tap the orb to talk';
-  hintEl.textContent='Artificial team member \u00b7 available now';
+/* One place to paint state — updates this page AND the floating window. */
+function render(state,statusText){
+  document.body.className=state;
+  if(statusEl)statusEl.textContent=statusText;
+  if(pipWin && !pipWin.closed){
+    try{
+      pipWin.document.body.className=state;
+      const ps=pipWin.document.getElementById('status');
+      if(ps)ps.textContent=statusText;
+    }catch(e){}
+  }
 }
-function setConnecting(){
-  document.body.className='connecting';
-  statusEl.textContent='Connecting\u2026';
-  hintEl.textContent='Allow the microphone when asked';
-}
-function setActive(){
-  document.body.className='active';
-  statusEl.textContent='Listening \u2014 tap orb to stop';
-  hintEl.textContent='Speak naturally';
-}
-function setError(){
-  document.body.className='error';
-  statusEl.textContent='Could not start \u2014 tap to retry';
-  hintEl.textContent='Check your microphone and connection';
-}
-function setLaunched(){
-  document.body.className='idle';
-  statusEl.textContent='Talking in the corner \u2014 back to Gmail';
-  hintEl.textContent='You can close this tab \u00b7 the corner window keeps talking';
-}
-function setBlocked(){
-  document.body.className='error';
-  statusEl.textContent='Allow pop-ups, then tap again';
-  hintEl.textContent='Click the blocked pop-up icon in the address bar \u2192 always allow';
-}
+function setIdle(){render('idle','Tap the orb to talk');if(hintEl)hintEl.textContent='Artificial team member \u00b7 available now';}
+function setConnecting(){render('connecting','Connecting\u2026');if(hintEl)hintEl.textContent='Allow the microphone when asked';}
+function setActive(){render('active','Listening \u2014 tap to stop');if(hintEl)hintEl.textContent='Speak naturally';}
+function setError(){render('error','Could not start \u2014 tap to retry');if(hintEl)hintEl.textContent='Check your microphone and connection';}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
@@ -172,32 +157,66 @@ async function talk(){
   starting=false;
 }
 
-/* Top-level tab: tapping the orb pops out a small centered window.
-   Gmail tab stays open behind it. If the popup is blocked, talk inline. */
+/* Picture-in-Picture: a small always-on-top floating window that sits over
+   Gmail. NOT a pop-up, so pop-up blockers don't touch it. Chrome/Edge. */
+const PIP_W=250,PIP_H=270;
+async function openFloatingPiP(){
+  if(!('documentPictureInPicture' in window))return false;
+  if(pipWin && !pipWin.closed){try{pipWin.focus()}catch(e){}return true;}
+  try{
+    pipWin=await window.documentPictureInPicture.requestWindow({width:PIP_W,height:PIP_H});
+  }catch(e){pipWin=null;return false;}
+  const d=pipWin.document;
+  const LOGO=location.origin+'/email/a1-logo.jpg';
+  const st=d.createElement('style');
+  st.textContent=
+    "*{margin:0;padding:0;box-sizing:border-box;}"+
+    "html,body{width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;"+
+    "align-items:center;justify-content:center;gap:12px;cursor:pointer;"+
+    "font-family:Arial,Helvetica,sans-serif;color:#F5C518;"+
+    "background:radial-gradient(circle at 50% 42%,#2a2a2a 0%,#080808 75%);}"+
+    ".orb{width:150px;height:150px;border-radius:50%;flex-shrink:0;"+
+    "background:#F5C518 url("+LOGO+") center/68% no-repeat;border:3px solid #F5C518;"+
+    "box-shadow:0 0 46px rgba(245,197,24,0.55);animation:pulse 3s ease-in-out infinite;}"+
+    "body.connecting .orb,body.active .orb{border-color:#fff;animation:pulseOn 1.15s ease-in-out infinite alternate;}"+
+    "body.error .orb{border-color:#e0533f;}"+
+    "@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}"+
+    "@keyframes pulseOn{from{transform:scale(1.02)}to{transform:scale(1.1)}}"+
+    "#status{font-size:12px;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:0 10px;}";
+  d.head.appendChild(st);
+  d.body.className='idle';
+  const o=d.createElement('div');o.className='orb';
+  const s=d.createElement('div');s.id='status';s.textContent='Connecting\u2026';
+  d.body.appendChild(o);d.body.appendChild(s);
+  o.addEventListener('click',talk);
+  pipWin.addEventListener('pagehide',function(){try{stop()}catch(e){}pipWin=null;});
+  if(hintEl)hintEl.textContent='Floating window is on top \u00b7 switch to Gmail, it stays visible';
+  talk();
+  return true;
+}
+
+async function onOrb(){
+  if(isMini){talk();return;}
+  if(await openFloatingPiP())return;
+  openMiniWindow(false);
+}
+
+/* Corner pop-out fallback (no Picture-in-Picture support). */
 function openMiniWindow(isAuto){
-  if(popWin && !popWin.closed){ try{popWin.focus()}catch(e){} return; }
+  if(popWin && !popWin.closed){try{popWin.focus()}catch(e){}return;}
   const features='popup=yes,width='+WIN_W+',height='+WIN_H+
     ',left='+cornerLeft()+',top='+cornerTop()+
     ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
   popWin=window.open(location.pathname+'?mini=1','a1_talk',features);
   if(popWin){
-    setLaunched();
+    if(hintEl)hintEl.textContent='You can close this tab \u00b7 the corner window keeps talking';
     try{popWin.focus()}catch(e){}
-    // Close this launcher tab so Gmail (the tab you came from) shows behind
-    // the corner window. If the browser refuses, we leave a clear message.
-    setTimeout(function(){ try{ window.close(); }catch(e){} }, 300);
+    setTimeout(function(){try{window.close()}catch(e){}},300);
   }else if(isAuto){
-    // Pop-up blocked on auto-open (first-time visitor): show the orb to tap.
     setIdle();
   }else{
-    // Manual tap but pop-up blocked: never get stuck — just talk on this page.
     talk();
   }
-}
-
-function onOrb(){
-  if(isMini){ talk(); }
-  else{ openMiniWindow(false); }
 }
 
 orb.addEventListener('click',onOrb);
@@ -206,6 +225,7 @@ orb.addEventListener('keydown',e=>{
 });
 document.getElementById('close').addEventListener('click',async()=>{
   await stop();
+  if(pipWin && !pipWin.closed){try{pipWin.close()}catch(e){}}
   try{window.close()}catch(e){}
   setIdle();
 });
@@ -214,11 +234,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.c
 if(isMini){
   setIdle();
 }else{
-  statusEl.textContent='Tap the orb to talk';
-  hintEl.textContent='Opens a small window in the corner \u00b7 your inbox stays open';
-  // If pop-ups are already allowed for this site, skip the tap: open the
-  // corner window now and close this launcher tab (feels like one click).
-  setTimeout(function(){ openMiniWindow(true); }, 60);
+  setIdle();
+  if('documentPictureInPicture' in window){
+    hintEl.textContent='Tap the orb \u2014 it floats over Gmail';
+  }else{
+    hintEl.textContent='Opens a small window in the corner \u00b7 your inbox stays open';
+    // Browsers without PiP: if pop-ups are allowed, open the corner window now.
+    setTimeout(function(){openMiniWindow(true);},60);
+  }
 }
 </script>
 </body>
