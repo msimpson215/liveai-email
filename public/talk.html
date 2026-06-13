@@ -69,7 +69,7 @@ body.error #orb{border-color:#e0533f;}
 <script>
 const P=new URLSearchParams(location.search);
 const isMini=P.get('mini')==='1';
-let pc=null,localStream=null,starting=false,popWin=null,pipWin=null;
+let pc=null,localStream=null,starting=false,popWin=null,pipWin=null,floating=false;
 const sessionUrl='/session?src=email';
 const orb=document.getElementById('orb');
 const statusEl=document.getElementById('status');
@@ -89,8 +89,12 @@ if(isMini){
 
 /* One place to paint state — updates this page AND the floating window. */
 function render(state,statusText){
-  document.body.className=state;
-  if(statusEl)statusEl.textContent=statusText;
+  // While the orb is floating in a PiP window, keep the launcher page on its
+  // "switch to Gmail" message; the live status shows inside the floating orb.
+  if(!floating){
+    document.body.className=state;
+    if(statusEl)statusEl.textContent=statusText;
+  }
   if(pipWin && !pipWin.closed){
     try{
       pipWin.document.body.className=state;
@@ -98,6 +102,12 @@ function render(state,statusText){
       if(ps)ps.textContent=statusText;
     }catch(e){}
   }
+}
+function setFloatingLauncher(){
+  floating=true;
+  document.body.className='idle';
+  if(statusEl)statusEl.textContent='Your orb is floating on top \u2191';
+  if(hintEl)hintEl.textContent='Click your Gmail tab \u2014 the orb stays visible over it. Closing this tab ends the call.';
 }
 function setIdle(){render('idle','Tap the orb to talk');if(hintEl)hintEl.textContent='Artificial team member \u00b7 available now';}
 function setConnecting(){render('connecting','Connecting\u2026');if(hintEl)hintEl.textContent='Allow the microphone when asked';}
@@ -189,8 +199,8 @@ async function openFloatingPiP(){
   const s=d.createElement('div');s.id='status';s.textContent='Connecting\u2026';
   d.body.appendChild(o);d.body.appendChild(s);
   o.addEventListener('click',talk);
-  pipWin.addEventListener('pagehide',function(){try{stop()}catch(e){}pipWin=null;});
-  if(hintEl)hintEl.textContent='Floating window is on top \u00b7 switch to Gmail, it stays visible';
+  pipWin.addEventListener('pagehide',function(){floating=false;try{stop()}catch(e){}pipWin=null;});
+  setFloatingLauncher();
   talk();
   return true;
 }
@@ -224,8 +234,9 @@ orb.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();onOrb()}
 });
 document.getElementById('close').addEventListener('click',async()=>{
-  await stop();
+  floating=false;
   if(pipWin && !pipWin.closed){try{pipWin.close()}catch(e){}}
+  await stop();
   try{window.close()}catch(e){}
   setIdle();
 });
