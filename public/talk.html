@@ -207,26 +207,32 @@ async function openFloatingPiP(){
 
 async function onOrb(){
   if(isMini){talk();return;}
+  // 1) Pop-out window: launcher tab closes itself, so Gmail comes forward and
+  //    the little window floats over your inbox automatically (needs pop-ups
+  //    allowed once). This is the cleanest "window over Gmail".
+  if(openMiniWindow())return;
+  // 2) Pop-ups blocked: floating Picture-in-Picture (no permission needed,
+  //    but the launcher tab stays — click your Gmail tab to see it behind).
   if(await openFloatingPiP())return;
-  openMiniWindow(false);
+  // 3) Last resort: talk right here on this page.
+  talk();
 }
 
-/* Corner pop-out fallback (no Picture-in-Picture support). */
-function openMiniWindow(isAuto){
-  if(popWin && !popWin.closed){try{popWin.focus()}catch(e){}return;}
+/* Corner pop-out window. Returns true if it opened. Closes the launcher tab
+   so Gmail (the tab you came from) shows behind the little window. */
+function openMiniWindow(){
+  if(popWin && !popWin.closed){try{popWin.focus()}catch(e){}return true;}
   const features='popup=yes,width='+WIN_W+',height='+WIN_H+
     ',left='+cornerLeft()+',top='+cornerTop()+
     ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
   popWin=window.open(location.pathname+'?mini=1','a1_talk',features);
   if(popWin){
-    if(hintEl)hintEl.textContent='You can close this tab \u00b7 the corner window keeps talking';
+    if(hintEl)hintEl.textContent='Opening over your inbox\u2026 you can close this tab';
     try{popWin.focus()}catch(e){}
     setTimeout(function(){try{window.close()}catch(e){}},300);
-  }else if(isAuto){
-    setIdle();
-  }else{
-    talk();
+    return true;
   }
+  return false;
 }
 
 orb.addEventListener('click',onOrb);
@@ -246,13 +252,10 @@ if(isMini){
   setIdle();
 }else{
   setIdle();
-  if('documentPictureInPicture' in window){
-    hintEl.textContent='Tap the orb \u2014 it floats over Gmail';
-  }else{
-    hintEl.textContent='Opens a small window in the corner \u00b7 your inbox stays open';
-    // Browsers without PiP: if pop-ups are allowed, open the corner window now.
-    setTimeout(function(){openMiniWindow(true);},60);
-  }
+  hintEl.textContent='Tap the orb to talk \u00b7 your inbox stays open';
+  // If pop-ups are allowed, open the corner window now and close this tab, so
+  // the little window lands over Gmail automatically (one click).
+  setTimeout(function(){openMiniWindow();},60);
 }
 </script>
 </body>
