@@ -207,12 +207,14 @@ async function openFloatingPiP(){
 
 async function onOrb(){
   if(isMini){talk();return;}
-  // 1) Picture-in-Picture: floating window over Gmail, NO permission, no
-  //    "pop-up blocked" flash. Chrome/Edge. This is the smoothest path.
-  if(await openFloatingPiP())return;
-  // 2) No PiP support: pop-out window (launcher self-closes so Gmail shows
-  //    behind it). Needs pop-ups allowed once.
+  // 1) Pop-out window FIRST: it closes this launcher tab, so Gmail comes
+  //    forward and the little window floats over your inbox. This is the only
+  //    path that puts Gmail behind it. Needs pop-ups allowed once (no flash
+  //    after you allow).
   if(openMiniWindow())return;
+  // 2) Pop-ups blocked: Picture-in-Picture floats with no permission, but it
+  //    can't bring Gmail forward (launcher tab stays). Still works.
+  if(await openFloatingPiP())return;
   // 3) Last resort: talk right here on this page.
   talk();
 }
@@ -251,16 +253,10 @@ if(isMini){
   setIdle();
 }else{
   setIdle();
-  if('documentPictureInPicture' in window){
-    // Chrome/Edge: wait for the tap, then float via PiP. No auto pop-up
-    // attempt here, so the browser never shows a "pop-up blocked" flash.
-    hintEl.textContent='Tap the orb \u2014 it floats over your inbox';
-  }else{
-    // Other browsers: if pop-ups are allowed, open the corner window now and
-    // close this tab so it lands over Gmail automatically.
-    hintEl.textContent='Tap the orb to talk \u00b7 your inbox stays open';
-    setTimeout(function(){openMiniWindow();},60);
-  }
+  hintEl.textContent='Tap the orb to talk \u00b7 your inbox stays open';
+  // If pop-ups are allowed, open the corner window now and close this tab so
+  // it lands over Gmail automatically (one click, no flash).
+  setTimeout(function(){openMiniWindow();},60);
 }
 </script>
 </body>
