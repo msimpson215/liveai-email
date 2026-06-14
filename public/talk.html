@@ -18,14 +18,14 @@ html,body{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:20px;padding:22px;text-align:center;
 }
-#brand{
-  font-size:0.74rem;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(245,197,24,0.75);
+#headline{
+  font-size:1.15rem;font-weight:bold;letter-spacing:0.4px;
+  color:#F5C518;max-width:340px;line-height:1.35;
 }
 #orb{
   width:min(220px,58vw);height:min(220px,58vw);
   border-radius:50%;cursor:pointer;flex-shrink:0;
-  background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
+  background:#F5C518 url('/email/a1-logo.jpg') 30% center/cover no-repeat;
   background-color:#F5C518;
   border:3px solid #F5C518;
   box-shadow:0 0 60px rgba(245,197,24,0.5),0 0 130px rgba(245,197,24,0.2);
@@ -61,10 +61,10 @@ body.error #orb{border-color:#e0533f;}
 <body class="idle">
 <button id="close" title="Close" aria-label="Close">&#10005;</button>
 <div id="wrap">
-  <div id="brand">A1 Professional Asphalt &amp; Sealing</div>
-  <div id="orb" role="button" tabindex="0" aria-label="Talk with our AI"></div>
-  <div id="status">Tap the orb to talk</div>
-  <div id="hint">Artificial team member &middot; available now</div>
+  <div id="headline">You're one click from a live conversation</div>
+  <div id="orb" role="button" tabindex="0" aria-label="Click here to talk"></div>
+  <div id="status">Click here to talk</div>
+  <div id="hint">Live voice &middot; nothing to install &middot; you stay right here</div>
 </div>
 <script>
 const P=new URLSearchParams(location.search);
@@ -106,13 +106,15 @@ function render(state,statusText){
 function setFloatingLauncher(){
   floating=true;
   document.body.className='idle';
-  if(statusEl)statusEl.textContent='Your orb is floating on top \u2191';
-  if(hintEl)hintEl.textContent='Click your Gmail tab \u2014 the orb stays visible over it. Closing this tab ends the call.';
+  const h=document.getElementById('headline');
+  if(h)h.textContent='You\u2019re connected';
+  if(statusEl)statusEl.textContent='Talking in the floating window';
+  if(hintEl)hintEl.textContent='Click your Gmail tab \u2014 the conversation keeps floating on top';
 }
-function setIdle(){render('idle','Tap the orb to talk');if(hintEl)hintEl.textContent='Artificial team member \u00b7 available now';}
+function setIdle(){render('idle','Click here to talk');if(hintEl)hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';}
 function setConnecting(){render('connecting','Connecting\u2026');if(hintEl)hintEl.textContent='Allow the microphone when asked';}
-function setActive(){render('active','Listening \u2014 tap to stop');if(hintEl)hintEl.textContent='Speak naturally';}
-function setError(){render('error','Could not start \u2014 tap to retry');if(hintEl)hintEl.textContent='Check your microphone and connection';}
+function setActive(){render('active','Listening \u2014 click to stop');if(hintEl)hintEl.textContent='Speak naturally';}
+function setError(){render('error','Couldn\u2019t connect \u2014 click to retry');if(hintEl)hintEl.textContent='Check your microphone and connection';}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
@@ -186,7 +188,7 @@ async function openFloatingPiP(){
     "font-family:Arial,Helvetica,sans-serif;color:#F5C518;"+
     "background:radial-gradient(circle at 50% 42%,#2a2a2a 0%,#080808 75%);}"+
     ".orb{width:150px;height:150px;border-radius:50%;flex-shrink:0;"+
-    "background:#F5C518 url("+LOGO+") center/68% no-repeat;border:3px solid #F5C518;"+
+    "background:#F5C518 url("+LOGO+") 30% center/cover no-repeat;border:3px solid #F5C518;"+
     "box-shadow:0 0 46px rgba(245,197,24,0.55);animation:pulse 3s ease-in-out infinite;}"+
     "body.connecting .orb,body.active .orb{border-color:#fff;animation:pulseOn 1.15s ease-in-out infinite alternate;}"+
     "body.error .orb{border-color:#e0533f;}"+
@@ -253,12 +255,12 @@ if(isMini){
 }else{
   setIdle();
   if('documentPictureInPicture' in window){
-    // Chrome/Edge: wait for the tap, then float via PiP. No pop-up attempt,
+    // Chrome/Edge: wait for the click, then float via PiP. No pop-up attempt,
     // so the browser never shows a "pop-up blocked" flash.
-    hintEl.textContent='Tap the orb \u2014 it floats, then click your Gmail tab';
+    hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';
   }else{
     // No PiP: try the pop-out window (needs pop-ups allowed once).
-    hintEl.textContent='Tap the orb to talk \u00b7 your inbox stays open';
+    hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';
     setTimeout(function(){openMiniWindow();},60);
   }
 }
