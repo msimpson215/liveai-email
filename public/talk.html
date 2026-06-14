@@ -209,14 +209,12 @@ async function openFloatingPiP(){
 
 async function onOrb(){
   if(isMini){talk();return;}
-  // 1) Picture-in-Picture FIRST: floating orb with NO pop-up permission and no
-  //    "pop-up blocked" flash. The launcher tab stays (PiP rule) — click your
-  //    Gmail tab and the orb floats over your inbox. Best for the 99%.
-  if(await openFloatingPiP())return;
-  // 2) No PiP support: pop-out window (closes launcher, Gmail behind) if pop-ups
-  //    are allowed.
+  // Pop-out window from this CLICK (a user gesture is allowed past the pop-up
+  // blocker by default). It closes the launcher tab so Gmail comes forward and
+  // the little window floats over your inbox — the whole point.
   if(openMiniWindow())return;
-  // 3) Last resort: talk right here on this page.
+  // Only if the browser truly refuses a window: float in place via PiP.
+  if(await openFloatingPiP())return;
   talk();
 }
 
@@ -253,16 +251,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.c
 if(isMini){
   setIdle();
 }else{
+  // Wait for the click — no auto pop-up on load (that caused the "blocked"
+  // flash). The click itself is a user gesture the blocker allows.
   setIdle();
-  if('documentPictureInPicture' in window){
-    // Chrome/Edge: wait for the click, then float via PiP. No pop-up attempt,
-    // so the browser never shows a "pop-up blocked" flash.
-    hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';
-  }else{
-    // No PiP: try the pop-out window (needs pop-ups allowed once).
-    hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';
-    setTimeout(function(){openMiniWindow();},60);
-  }
 }
 </script>
 </body>
