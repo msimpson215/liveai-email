@@ -28,7 +28,7 @@ body.error #orb{border-color:#e0533f;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);box-shadow:0 0 90px rgba(245,197,24,0.7),0 0 180px rgba(245,197,24,0.3);}}
 @keyframes pulseOn{from{transform:scale(1.02);}to{transform:scale(1.1);box-shadow:0 0 120px rgba(245,197,24,0.95),0 0 220px rgba(245,197,24,0.45);}}
 #status{font-size:0.95rem;letter-spacing:1px;text-transform:uppercase;min-height:1.3em;color:#F5C518;}
-#hint{font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:320px;}
+#hint{font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:300px;}
 #close{position:fixed;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,197,24,0.4);background:rgba(0,0,0,0.4);color:#F5C518;font-size:1rem;cursor:pointer;line-height:1;}
 </style>
 </head>
@@ -40,27 +40,26 @@ body.error #orb{border-color:#e0533f;}
   <div id="hint">Live voice &middot; allow the microphone when asked</div>
 </div>
 <script>
-let pc=null,localStream=null,starting=false,pipWin=null;
+const P=new URLSearchParams(location.search);
+const isMini=P.get('mini')==='1';
+const W=320,H=420;
+let pc=null,localStream=null,starting=false;
 const sessionUrl='/session?src=email';
 const orb=document.getElementById('orb');
 const statusEl=document.getElementById('status');
 const hintEl=document.getElementById('hint');
 
-function paint(state,txt){
-  document.body.className=state;
-  if(statusEl)statusEl.textContent=txt;
-  if(pipWin && !pipWin.closed){
-    try{
-      pipWin.document.body.className=state;
-      const ps=pipWin.document.getElementById('status');
-      if(ps)ps.textContent=txt;
-    }catch(e){}
-  }
-}
-function setIdle(){paint('idle','Click to talk');if(hintEl)hintEl.textContent='Live voice \u00b7 allow the microphone when asked';}
-function setConnecting(){paint('connecting','Connecting\u2026');if(hintEl)hintEl.textContent='Allow the microphone when asked';}
-function setActive(){paint('active','Listening \u2014 click to stop');if(hintEl)hintEl.textContent='Speak naturally';}
-function setError(){paint('error','Click to talk');if(hintEl)hintEl.textContent='Tap the orb to start';}
+function miniLeft(){return Math.max(0,(screen.availWidth||screen.width)-W-24);}
+function miniTop(){return 24;}
+
+/* This IS the little window: shrink + pin to the upper-right corner. */
+if(isMini){try{window.resizeTo(W,H);window.moveTo(miniLeft(),miniTop());}catch(e){}}
+
+function setIdle(){document.body.className='idle';statusEl.textContent='Click to talk';hintEl.textContent='Live voice \u00b7 allow the microphone when asked';}
+function setConnecting(){document.body.className='connecting';statusEl.textContent='Connecting\u2026';hintEl.textContent='Allow the microphone when asked';}
+function setActive(){document.body.className='active';statusEl.textContent='Listening \u2014 click to stop';hintEl.textContent='Speak naturally';}
+function setError(){document.body.className='error';statusEl.textContent='Click to talk';hintEl.textContent='Tap the orb to start';}
+function setLaunched(){document.body.className='connecting';statusEl.textContent='Opening\u2026';hintEl.textContent='Your inbox is right behind';}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
@@ -108,59 +107,35 @@ async function toggle(){
   starting=false;
 }
 
-/* Picture-in-Picture: floating, always-on-top mini window over Gmail.
-   Not a pop-up, not an extension. Chrome/Edge. */
-async function openFloatingPiP(){
-  if(!('documentPictureInPicture' in window))return false;
-  if(pipWin && !pipWin.closed){try{pipWin.focus()}catch(e){}return true;}
-  try{pipWin=await window.documentPictureInPicture.requestWindow({width:260,height:300});}
-  catch(e){pipWin=null;return false;}
-  const d=pipWin.document;
-  const LOGO=location.origin+'/email/a1-logo.jpg';
-  const st=d.createElement('style');
-  st.textContent=
-    "*{margin:0;padding:0;box-sizing:border-box;}"+
-    "html,body{width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;"+
-    "align-items:center;justify-content:center;gap:12px;cursor:pointer;"+
-    "font-family:Arial,Helvetica,sans-serif;color:#F5C518;"+
-    "background:radial-gradient(circle at 50% 42%,#2a2a2a 0%,#080808 75%);}"+
-    ".orb{width:150px;height:150px;border-radius:50%;flex-shrink:0;"+
-    "background:#F5C518 url("+LOGO+") center/68% no-repeat;border:3px solid #F5C518;"+
-    "box-shadow:0 0 46px rgba(245,197,24,0.55);animation:pulse 3s ease-in-out infinite;}"+
-    "body.connecting .orb,body.active .orb{border-color:#fff;animation:pulseOn 1.15s ease-in-out infinite alternate;}"+
-    "body.error .orb{border-color:#e0533f;}"+
-    "@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}"+
-    "@keyframes pulseOn{from{transform:scale(1.02)}to{transform:scale(1.1)}}"+
-    "#status{font-size:12px;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:0 10px;}";
-  d.head.appendChild(st);
-  d.body.className='idle';
-  const o=d.createElement('div');o.className='orb';
-  const s=d.createElement('div');s.id='status';s.textContent='Connecting\u2026';
-  d.body.appendChild(o);d.body.appendChild(s);
-  o.addEventListener('click',toggle);
-  pipWin.addEventListener('pagehide',function(){try{stop()}catch(e){}pipWin=null;});
-  if(hintEl)hintEl.textContent='Floating on top \u2014 switch to your Gmail tab; it stays visible';
-  toggle();
-  return true;
+/* Click opens the little window (a click-opened window is allowed even with
+   pop-ups "blocked"), then this launcher tab closes itself so Gmail is behind
+   the little window. */
+function openMini(){
+  const f='popup=yes,width='+W+',height='+H+',left='+miniLeft()+',top='+miniTop()+
+    ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
+  const win=window.open(location.pathname+'?mini=1','a1_talk',f);
+  if(win){
+    setLaunched();
+    try{win.focus()}catch(e){}
+    setTimeout(function(){try{window.close()}catch(e){}},250);
+    return true;
+  }
+  return false;
 }
 
-async function onOrb(){
-  // No pop-up, no extension: float via Picture-in-Picture. If the browser
-  // doesn't support PiP, just talk on this page.
-  if(await openFloatingPiP())return;
-  toggle();
+function onOrb(){
+  if(isMini){toggle();return;}
+  if(!openMini())toggle();
 }
 
 orb.addEventListener('click',onOrb);
 orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onOrb()}});
-document.getElementById('close').addEventListener('click',async()=>{
-  if(pipWin && !pipWin.closed){try{pipWin.close()}catch(e){}}
-  await stop();
-  try{window.close()}catch(e){}
-});
+document.getElementById('close').addEventListener('click',async()=>{await stop();try{window.close()}catch(e){}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
 
 setIdle();
+/* In the little window, start talking immediately and greet first — no extra click. */
+if(isMini){setTimeout(toggle,250);}
 </script>
 </body>
 </html>
