@@ -16,14 +16,10 @@ html,body{
 }
 #wrap{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:20px;padding:22px;text-align:center;
-}
-#headline{
-  font-size:1.15rem;font-weight:bold;letter-spacing:0.4px;
-  color:#F5C518;max-width:340px;line-height:1.35;
+  gap:22px;padding:24px;text-align:center;
 }
 #orb{
-  width:min(220px,58vw);height:min(220px,58vw);
+  width:min(240px,62vw);height:min(240px,62vw);
   border-radius:50%;cursor:pointer;flex-shrink:0;
   background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
   background-color:#F5C518;
@@ -45,11 +41,11 @@ body.error #orb{border-color:#e0533f;}
   to{transform:scale(1.1);box-shadow:0 0 120px rgba(245,197,24,0.95),0 0 220px rgba(245,197,24,0.45);}
 }
 #status{
-  font-size:0.95rem;letter-spacing:1px;text-transform:uppercase;
+  font-size:1.05rem;letter-spacing:1px;text-transform:uppercase;
   min-height:1.3em;color:#F5C518;
 }
 #hint{
-  font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:320px;
+  font-size:0.8rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:320px;
 }
 #close{
   position:fixed;top:12px;right:14px;width:36px;height:36px;border-radius:50%;
@@ -61,60 +57,21 @@ body.error #orb{border-color:#e0533f;}
 <body class="idle">
 <button id="close" title="Close" aria-label="Close">&#10005;</button>
 <div id="wrap">
-  <div id="headline">You're one click from a live conversation</div>
-  <div id="orb" role="button" tabindex="0" aria-label="Click here to talk"></div>
-  <div id="status">Click here to talk</div>
-  <div id="hint">Live voice &middot; nothing to install &middot; you stay right here</div>
+  <div id="orb" role="button" tabindex="0" aria-label="Click to talk"></div>
+  <div id="status">Click to talk</div>
+  <div id="hint">Live voice &middot; allow the microphone when asked</div>
 </div>
 <script>
-const P=new URLSearchParams(location.search);
-const isMini=P.get('mini')==='1';
-let pc=null,localStream=null,starting=false,popWin=null,pipWin=null,floating=false;
+let pc=null,localStream=null,starting=false;
 const sessionUrl='/session?src=email';
 const orb=document.getElementById('orb');
 const statusEl=document.getElementById('status');
 const hintEl=document.getElementById('hint');
 
-/* Corner pop-out window (fallback for browsers without Picture-in-Picture). */
-const WIN_W=300,WIN_H=380,WIN_MARGIN=20;
-function cornerLeft(){return Math.max(0,(screen.availWidth||screen.width)-WIN_W-WIN_MARGIN);}
-function cornerTop(){return WIN_MARGIN;}
-
-if(isMini){
-  try{
-    window.resizeTo(WIN_W,WIN_H);
-    window.moveTo(cornerLeft(),cornerTop());
-  }catch(e){}
-}
-
-/* One place to paint state — updates this page AND the floating window. */
-function render(state,statusText){
-  // While the orb is floating in a PiP window, keep the launcher page on its
-  // "switch to Gmail" message; the live status shows inside the floating orb.
-  if(!floating){
-    document.body.className=state;
-    if(statusEl)statusEl.textContent=statusText;
-  }
-  if(pipWin && !pipWin.closed){
-    try{
-      pipWin.document.body.className=state;
-      const ps=pipWin.document.getElementById('status');
-      if(ps)ps.textContent=statusText;
-    }catch(e){}
-  }
-}
-function setFloatingLauncher(){
-  floating=true;
-  document.body.className='idle';
-  const h=document.getElementById('headline');
-  if(h)h.textContent='You\u2019re connected';
-  if(statusEl)statusEl.textContent='Talking in the floating window';
-  if(hintEl)hintEl.textContent='Click your Gmail tab \u2014 the conversation keeps floating on top';
-}
-function setIdle(){render('idle','Click here to talk');if(hintEl)hintEl.textContent='Live voice \u00b7 nothing to install \u00b7 you stay right here';}
-function setConnecting(){render('connecting','Connecting\u2026');if(hintEl)hintEl.textContent='Allow the microphone when asked';}
-function setActive(){render('active','Listening \u2014 click to stop');if(hintEl)hintEl.textContent='Speak naturally';}
-function setError(){render('error','Couldn\u2019t connect \u2014 click to retry');if(hintEl)hintEl.textContent='Check your microphone and connection';}
+function setIdle(){document.body.className='idle';statusEl.textContent='Click to talk';hintEl.textContent='Live voice \u00b7 allow the microphone when asked';}
+function setConnecting(){document.body.className='connecting';statusEl.textContent='Connecting\u2026';hintEl.textContent='Allow the microphone when asked';}
+function setActive(){document.body.className='active';statusEl.textContent='Listening \u2014 click to stop';hintEl.textContent='Speak naturally';}
+function setError(){document.body.className='error';statusEl.textContent='Couldn\u2019t connect \u2014 click to retry';hintEl.textContent='Check your microphone and connection';}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
@@ -147,7 +104,7 @@ async function connectVoice(){
   setActive();
 }
 
-async function talk(){
+async function toggle(){
   if(pc||starting){await stop();return}
   starting=true;
   setConnecting();
@@ -169,92 +126,12 @@ async function talk(){
   starting=false;
 }
 
-/* Picture-in-Picture: a small always-on-top floating window that sits over
-   Gmail. NOT a pop-up, so pop-up blockers don't touch it. Chrome/Edge. */
-const PIP_W=250,PIP_H=270;
-async function openFloatingPiP(){
-  if(!('documentPictureInPicture' in window))return false;
-  if(pipWin && !pipWin.closed){try{pipWin.focus()}catch(e){}return true;}
-  try{
-    pipWin=await window.documentPictureInPicture.requestWindow({width:PIP_W,height:PIP_H});
-  }catch(e){pipWin=null;return false;}
-  const d=pipWin.document;
-  const LOGO=location.origin+'/email/a1-logo.jpg';
-  const st=d.createElement('style');
-  st.textContent=
-    "*{margin:0;padding:0;box-sizing:border-box;}"+
-    "html,body{width:100%;height:100%;overflow:hidden;display:flex;flex-direction:column;"+
-    "align-items:center;justify-content:center;gap:12px;cursor:pointer;"+
-    "font-family:Arial,Helvetica,sans-serif;color:#F5C518;"+
-    "background:radial-gradient(circle at 50% 42%,#2a2a2a 0%,#080808 75%);}"+
-    ".orb{width:150px;height:150px;border-radius:50%;flex-shrink:0;"+
-    "background:#F5C518 url("+LOGO+") center/68% no-repeat;border:3px solid #F5C518;"+
-    "box-shadow:0 0 46px rgba(245,197,24,0.55);animation:pulse 3s ease-in-out infinite;}"+
-    "body.connecting .orb,body.active .orb{border-color:#fff;animation:pulseOn 1.15s ease-in-out infinite alternate;}"+
-    "body.error .orb{border-color:#e0533f;}"+
-    "@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}"+
-    "@keyframes pulseOn{from{transform:scale(1.02)}to{transform:scale(1.1)}}"+
-    "#status{font-size:12px;letter-spacing:1px;text-transform:uppercase;text-align:center;padding:0 10px;}";
-  d.head.appendChild(st);
-  d.body.className='idle';
-  const o=d.createElement('div');o.className='orb';
-  const s=d.createElement('div');s.id='status';s.textContent='Connecting\u2026';
-  d.body.appendChild(o);d.body.appendChild(s);
-  o.addEventListener('click',talk);
-  pipWin.addEventListener('pagehide',function(){floating=false;try{stop()}catch(e){}pipWin=null;});
-  setFloatingLauncher();
-  talk();
-  return true;
-}
-
-async function onOrb(){
-  if(isMini){talk();return;}
-  // Pop-out window from this CLICK (a user gesture is allowed past the pop-up
-  // blocker by default). It closes the launcher tab so Gmail comes forward and
-  // the little window floats over your inbox — the whole point.
-  if(openMiniWindow())return;
-  // Only if the browser truly refuses a window: float in place via PiP.
-  if(await openFloatingPiP())return;
-  talk();
-}
-
-/* Corner pop-out window. Returns true if it opened. Closes the launcher tab
-   so Gmail (the tab you came from) shows behind the little window. */
-function openMiniWindow(){
-  if(popWin && !popWin.closed){try{popWin.focus()}catch(e){}return true;}
-  const features='popup=yes,width='+WIN_W+',height='+WIN_H+
-    ',left='+cornerLeft()+',top='+cornerTop()+
-    ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
-  popWin=window.open(location.pathname+'?mini=1','a1_talk',features);
-  if(popWin){
-    if(hintEl)hintEl.textContent='Opening over your inbox\u2026 you can close this tab';
-    try{popWin.focus()}catch(e){}
-    setTimeout(function(){try{window.close()}catch(e){}},300);
-    return true;
-  }
-  return false;
-}
-
-orb.addEventListener('click',onOrb);
-orb.addEventListener('keydown',e=>{
-  if(e.key==='Enter'||e.key===' '){e.preventDefault();onOrb()}
-});
-document.getElementById('close').addEventListener('click',async()=>{
-  floating=false;
-  if(pipWin && !pipWin.closed){try{pipWin.close()}catch(e){}}
-  await stop();
-  try{window.close()}catch(e){}
-  setIdle();
-});
+orb.addEventListener('click',toggle);
+orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+document.getElementById('close').addEventListener('click',async()=>{await stop();try{window.close()}catch(e){}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
 
-if(isMini){
-  setIdle();
-}else{
-  // Wait for the click — no auto pop-up on load (that caused the "blocked"
-  // flash). The click itself is a user gesture the blocker allows.
-  setIdle();
-}
+setIdle();
 </script>
 </body>
 </html>
