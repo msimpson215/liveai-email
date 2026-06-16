@@ -16,10 +16,10 @@ html,body{
 }
 #wrap{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:22px;padding:24px;text-align:center;
+  gap:20px;padding:22px;text-align:center;
 }
 #orb{
-  width:min(240px,62vw);height:min(240px,62vw);
+  width:min(220px,58vw);height:min(220px,58vw);
   border-radius:50%;cursor:pointer;flex-shrink:0;
   background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
   background-color:#F5C518;
@@ -41,16 +41,16 @@ body.error #orb{border-color:#e0533f;}
   to{transform:scale(1.1);box-shadow:0 0 120px rgba(245,197,24,0.95),0 0 220px rgba(245,197,24,0.45);}
 }
 #status{
-  font-size:1.05rem;letter-spacing:1px;text-transform:uppercase;
+  font-size:0.95rem;letter-spacing:1px;text-transform:uppercase;
   min-height:1.3em;color:#F5C518;
 }
 #hint{
-  font-size:0.8rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:320px;
+  font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:300px;
 }
 #close{
-  position:fixed;top:12px;right:14px;width:36px;height:36px;border-radius:50%;
+  position:fixed;top:10px;right:12px;width:34px;height:34px;border-radius:50%;
   border:1px solid rgba(245,197,24,0.4);background:rgba(0,0,0,0.4);
-  color:#F5C518;font-size:1.05rem;cursor:pointer;line-height:1;
+  color:#F5C518;font-size:1rem;cursor:pointer;line-height:1;
 }
 </style>
 </head>
@@ -62,16 +62,28 @@ body.error #orb{border-color:#e0533f;}
   <div id="hint">Live voice &middot; allow the microphone when asked</div>
 </div>
 <script>
+const P=new URLSearchParams(location.search);
+const isMini=P.get('mini')==='1';
+const W=320,H=420;
 let pc=null,localStream=null,starting=false;
 const sessionUrl='/session?src=email';
 const orb=document.getElementById('orb');
 const statusEl=document.getElementById('status');
 const hintEl=document.getElementById('hint');
 
+function miniLeft(){return Math.max(0,(screen.availWidth||screen.width)-W-24);}
+function miniTop(){return 24;}
+
+/* This IS the little window: shrink + pin to the upper-right corner. */
+if(isMini){
+  try{window.resizeTo(W,H);window.moveTo(miniLeft(),miniTop());}catch(e){}
+}
+
 function setIdle(){document.body.className='idle';statusEl.textContent='Click to talk';hintEl.textContent='Live voice \u00b7 allow the microphone when asked';}
 function setConnecting(){document.body.className='connecting';statusEl.textContent='Connecting\u2026';hintEl.textContent='Allow the microphone when asked';}
 function setActive(){document.body.className='active';statusEl.textContent='Listening \u2014 click to stop';hintEl.textContent='Speak naturally';}
-function setError(){document.body.className='error';statusEl.textContent='Couldn\u2019t connect \u2014 click to retry';hintEl.textContent='Check your microphone and connection';}
+function setError(){document.body.className='error';statusEl.textContent='Click to talk';hintEl.textContent='Tap the orb to start';}
+function setLaunched(){document.body.className='idle';statusEl.textContent='Talking in the corner';hintEl.textContent='Your inbox is right behind \u00b7 close that window when done';}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
@@ -114,24 +126,41 @@ async function toggle(){
     console.error(e);
     if(pc){try{pc.close()}catch(_){}pc=null}
     if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}localStream=null}
-    try{
-      await connectVoice();
-    }catch(e2){
-      console.error(e2);
-      if(pc){try{pc.close()}catch(_){}pc=null}
-      if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}localStream=null}
-      setError();
-    }
+    setError();
   }
   starting=false;
 }
 
-orb.addEventListener('click',toggle);
-orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+/* Top-level page: clicking the orb pops the little window (a click-opened
+   window is allowed even with pop-ups "blocked"), then closes this tab so
+   Gmail is behind the little window. */
+function openMini(){
+  const f='popup=yes,width='+W+',height='+H+',left='+miniLeft()+',top='+miniTop()+
+    ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
+  const win=window.open(location.pathname+'?mini=1','a1_talk',f);
+  if(win){
+    setLaunched();
+    try{win.focus()}catch(e){}
+    setTimeout(function(){try{window.close()}catch(e){}},250);
+    return true;
+  }
+  return false;
+}
+
+function onOrb(){
+  if(isMini){toggle();return;}
+  // pop the little window; if the browser truly refuses, talk on this page
+  if(!openMini())toggle();
+}
+
+orb.addEventListener('click',onOrb);
+orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onOrb()}});
 document.getElementById('close').addEventListener('click',async()=>{await stop();try{window.close()}catch(e){}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
 
 setIdle();
+// In the little window, start talking immediately — no extra click.
+if(isMini){setTimeout(toggle,250);}
 </script>
 </body>
 </html>
