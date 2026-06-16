@@ -104,7 +104,11 @@ async function connectVoice(){
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
-  pc.createDataChannel('oai-events');
+  const dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){
+    // Make the AI speak its greeting first, so the user doesn't have to.
+    try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
+  });
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
