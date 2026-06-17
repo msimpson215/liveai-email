@@ -8,8 +8,9 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Your design, full-bleed, margin to margin. */
-#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+/* Your design — always shown whole and centered on every screen (phone,
+   laptop, 31"). Empty space matches the design's white so it blends. */
+#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#ffffff;}
 /* Live orb sits exactly on the orb in your image (positioned by JS). */
 #orb{
   position:fixed;border-radius:50%;cursor:pointer;z-index:2;
@@ -39,7 +40,7 @@ const ORB_D=0.165;                  // orb diameter as fraction of image width
 const orb=document.getElementById('orb');
 function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
-  const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover
+  const scale=Math.min(vw/IMG_W,vh/IMG_H);   // object-fit: contain (whole image always visible)
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2,offY=(vh-rh)/2;
   const d=ORB_D*rw;
