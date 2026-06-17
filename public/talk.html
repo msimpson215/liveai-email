@@ -52,32 +52,24 @@ placeOrb();
 window.addEventListener('resize',placeOrb);
 
 /* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
-let pc=null,localStream=null,starting=false,audioEl=null;
+let pc=null,localStream=null,starting=false;
 const sessionUrl='/session?src=email';
 function setState(s){document.body.className=s;}
 
-function ensureAudio(){
-  if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}
-  return audioEl;
-}
-function resumeAudio(){
-  if(audioEl&&audioEl.paused){audioEl.play().catch(function(){});return true;}
-  return false;
-}
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   starting=false;setState('idle');
 }
 async function connectVoice(){
-  const r=await fetch(sessionUrl,{cache:'no-store'});
+  const r=await fetch(sessionUrl);
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
-  const audio=ensureAudio();
-  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
+  const audio=document.createElement('audio');audio.autoplay=true;
+  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
   const dc=pc.createDataChannel('oai-events');
@@ -96,34 +88,25 @@ async function start(){
   if(pc||starting)return;
   starting=true;setState('connecting');
   try{await connectVoice();}
-  catch(e){
-    console.error(e);
-    if(pc){try{pc.close()}catch(_){}}pc=null;
-    if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}}localStream=null;
-    try{await connectVoice();}
-    catch(e2){console.error(e2);await stop();}
-  }
+  catch(e){console.error(e);await stop();}
   starting=false;
 }
 
-/* Tap the orb (or anywhere) to start/stop. Click anywhere to stop (per design). */
+/* Click the orb to talk. Click anywhere else to stop (per the design). */
 orb.addEventListener('click',function(e){
   e.stopPropagation();
-  if(pc||starting){if(!resumeAudio())stop();}else{start();}
+  if(pc||starting){stop();}else{start();}
 });
 orb.addEventListener('keydown',function(e){
-  if(e.key==='Enter'||e.key===' '){e.preventDefault();if(pc||starting){if(!resumeAudio())stop();}else{start();}}
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();if(pc||starting){stop();}else{start();}}
 });
 document.addEventListener('click',function(e){
   if(e.target===orb)return;
-  if(pc||starting){if(!resumeAudio())stop();}
+  if(pc||starting)stop();
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
 
 setState('idle');
-/* Auto-connect the moment the page opens — no click needed. WebRTC audio can
-   play on its own; if a browser blocks the sound, a single tap anywhere starts it. */
-start();
 </script>
 </body>
 </html>
