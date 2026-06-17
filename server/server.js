@@ -10,13 +10,17 @@ dotenv.config()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(express.json())
-app.use(express.static('public'))
+app.use(express.static('public', {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store')
+  }
+}))
 
 const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 
-const BASE_INSTRUCTIONS = `You are an AI team member for A1 Professional Asphalt and Concrete serving the St. Louis area.
+const BASE_INSTRUCTIONS = `You are an AI team member for A1 Professional Asphalt and Sealing serving the St. Louis area.
 IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.`
 
 const WEB_GREETING =
@@ -48,7 +52,7 @@ STRICT RULES:
 4) If asked anything unrelated to A1 asphalt/concrete services, say:
    "I'm here to help with asphalt and concrete services. What can I help you with today?"
 5) If the user asks "What are you?" or "Who are you?", answer in ONE sentence:
-   "I'm an AI team member for A1 Professional Asphalt and Concrete, here to answer questions about our asphalt and concrete services."
+   "I'm an AI team member for A1 Professional Asphalt and Sealing, here to answer questions about our asphalt, sealing, and concrete services."
 STYLE:
 - Friendly, calm, local, professional.
 - Answer what was asked. No extra topics.
