@@ -101,7 +101,7 @@ app.get('/session', async (req, res) => {
               }
             },
             output: {
-              voice: 'alloy'
+              voice: 'shimmer'
             }
           }
         }
