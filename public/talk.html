@@ -3,71 +3,64 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>Talk with A1 Professional Asphalt</title>
+<title>A1 Professional Asphalt &mdash; Conversation</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{
-  width:100%;height:100%;overflow:hidden;
-  font-family:Arial,Helvetica,sans-serif;
-  background:radial-gradient(circle at 50% 42%, #2a2a2a 0%, #0c0c0c 70%, #050505 100%);
-  color:#F5C518;
-  display:flex;align-items:center;justify-content:center;
-  user-select:none;-webkit-tap-highlight-color:transparent;
-}
-#wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:22px;text-align:center;}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff;
+  -webkit-tap-highlight-color:transparent;user-select:none;}
+/* Your design, full-bleed, margin to margin. */
+#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+/* Live orb sits exactly on the orb in your image (positioned by JS). */
 #orb{
-  width:min(220px,58vw);height:min(220px,58vw);
-  border-radius:50%;cursor:pointer;flex-shrink:0;
-  background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
-  background-color:#F5C518;border:3px solid #F5C518;
-  box-shadow:0 0 60px rgba(245,197,24,0.5),0 0 130px rgba(245,197,24,0.2);
-  animation:pulse 3s ease-in-out infinite;
+  position:fixed;border-radius:50%;cursor:pointer;z-index:2;
+  background:transparent;
+  box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
+  animation:pulse 2.6s ease-in-out infinite;
 }
-body.connecting #orb,body.active #orb{border-color:#fff;animation:pulseOn 1.15s ease-in-out infinite alternate;}
-body.error #orb{border-color:#e0533f;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);box-shadow:0 0 90px rgba(245,197,24,0.7),0 0 180px rgba(245,197,24,0.3);}}
-@keyframes pulseOn{from{transform:scale(1.02);}to{transform:scale(1.1);box-shadow:0 0 120px rgba(245,197,24,0.95),0 0 220px rgba(245,197,24,0.45);}}
-#status{font-size:0.95rem;letter-spacing:1px;text-transform:uppercase;min-height:1.3em;color:#F5C518;}
-#hint{font-size:0.78rem;color:rgba(245,197,24,0.5);min-height:1.1em;max-width:300px;}
-#close{position:fixed;top:10px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(245,197,24,0.4);background:rgba(0,0,0,0.4);color:#F5C518;font-size:1rem;cursor:pointer;line-height:1;}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
+  50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
+}
+body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinite alternate;}
+@keyframes pulseOn{
+  from{box-shadow:0 0 50px 12px rgba(255,255,255,0.55);}
+  to{box-shadow:0 0 110px 30px rgba(255,225,0,0.9);}
+}
 </style>
 </head>
 <body class="idle">
-<button id="close" title="Close" aria-label="Close">&#10005;</button>
-<div id="wrap">
-  <div id="orb" role="button" tabindex="0" aria-label="Click to talk"></div>
-  <div id="status">Click to talk</div>
-  <div id="hint">Live voice &middot; allow the microphone when asked</div>
-</div>
+<img id="bg" src="/email/talk-bg.png" alt=""/>
+<div id="orb" role="button" tabindex="0" aria-label="Click to talk"></div>
 <script>
-const P=new URLSearchParams(location.search);
-const isMini=P.get('mini')==='1';
-const W=320,H=420;
+/* ---- position the live orb exactly on the orb drawn in the image ---- */
+const IMG_W=1536,IMG_H=1024;        // background natural size
+const ORB_CX=0.508,ORB_CY=0.523;    // orb center as fraction of the image
+const ORB_D=0.165;                  // orb diameter as fraction of image width
+const orb=document.getElementById('orb');
+function placeOrb(){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover
+  const rw=IMG_W*scale,rh=IMG_H*scale;
+  const offX=(vw-rw)/2,offY=(vh-rh)/2;
+  const d=ORB_D*rw;
+  orb.style.width=d+'px';
+  orb.style.height=d+'px';
+  orb.style.left=(offX+ORB_CX*rw-d/2)+'px';
+  orb.style.top=(offY+ORB_CY*rh-d/2)+'px';
+}
+placeOrb();
+window.addEventListener('resize',placeOrb);
+
+/* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
 let pc=null,localStream=null,starting=false;
 const sessionUrl='/session?src=email';
-const orb=document.getElementById('orb');
-const statusEl=document.getElementById('status');
-const hintEl=document.getElementById('hint');
-
-function miniLeft(){return Math.max(0,(screen.availWidth||screen.width)-W-24);}
-function miniTop(){return 24;}
-
-/* This IS the little window: shrink + pin to the upper-right corner. */
-if(isMini){try{window.resizeTo(W,H);window.moveTo(miniLeft(),miniTop());}catch(e){}}
-
-function setIdle(){document.body.className='idle';statusEl.textContent='Click to talk';hintEl.textContent='Live voice \u00b7 allow the microphone when asked';}
-function setConnecting(){document.body.className='connecting';statusEl.textContent='Connecting\u2026';hintEl.textContent='Allow the microphone when asked';}
-function setActive(){document.body.className='active';statusEl.textContent='Listening \u2014 click to stop';hintEl.textContent='Speak naturally';}
-function setError(){document.body.className='error';statusEl.textContent='Click to talk';hintEl.textContent='Tap the orb to start';}
-function setLaunched(){document.body.className='connecting';statusEl.textContent='Opening\u2026';hintEl.textContent='Your inbox is right behind';}
+function setState(s){document.body.className=s;}
 
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  starting=false;
-  setIdle();
+  starting=false;setState('idle');
 }
-
 async function connectVoice(){
   const r=await fetch(sessionUrl);
   const data=await r.json();
@@ -75,8 +68,7 @@ async function connectVoice(){
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
-  const audio=document.createElement('audio');
-  audio.autoplay=true;
+  const audio=document.createElement('audio');audio.autoplay=true;
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
@@ -90,52 +82,31 @@ async function connectVoice(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  setActive();
+  setState('active');
 }
-
-async function toggle(){
-  if(pc||starting){await stop();return}
-  starting=true;
-  setConnecting();
+async function start(){
+  if(pc||starting)return;
+  starting=true;setState('connecting');
   try{await connectVoice();}
-  catch(e){
-    console.error(e);
-    if(pc){try{pc.close()}catch(_){}pc=null}
-    if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}localStream=null}
-    setError();
-  }
+  catch(e){console.error(e);await stop();}
   starting=false;
 }
 
-/* Click opens the little window (a click-opened window is allowed even with
-   pop-ups "blocked"), then this launcher tab closes itself so Gmail is behind
-   the little window. */
-function openMini(){
-  const f='popup=yes,width='+W+',height='+H+',left='+miniLeft()+',top='+miniTop()+
-    ',toolbar=no,menubar=no,location=no,status=no,scrollbars=no,resizable=yes';
-  const win=window.open(location.pathname+'?mini=1','a1_talk',f);
-  if(win){
-    setLaunched();
-    try{win.focus()}catch(e){}
-    setTimeout(function(){try{window.close()}catch(e){}},250);
-    return true;
-  }
-  return false;
-}
+/* Click the orb to talk. Click anywhere else to stop (per the design). */
+orb.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(pc||starting){stop();}else{start();}
+});
+orb.addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();if(pc||starting){stop();}else{start();}}
+});
+document.addEventListener('click',function(e){
+  if(e.target===orb)return;
+  if(pc||starting)stop();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
 
-function onOrb(){
-  if(isMini){toggle();return;}
-  if(!openMini())toggle();
-}
-
-orb.addEventListener('click',onOrb);
-orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onOrb()}});
-document.getElementById('close').addEventListener('click',async()=>{await stop();try{window.close()}catch(e){}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
-
-setIdle();
-/* In the little window, start talking immediately and greet first — no extra click. */
-if(isMini){setTimeout(toggle,250);}
+setState('idle');
 </script>
 </body>
 </html>
