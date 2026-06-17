@@ -77,6 +77,10 @@ app.get('/health', (_req, res) => {
 })
 
 app.get('/session', async (req, res) => {
+  // Never cache: each call must mint a fresh token with the CURRENT voice.
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+  res.set('Pragma', 'no-cache')
+  res.set('Expires', '0')
   if (!hasApiKey()) {
     return res.status(503).json({
       error: 'OPENAI_API_KEY is not set on the server. Add it in Render → Environment.'
