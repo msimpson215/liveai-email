@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Playbooks — Demo Catalog</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#0c0c0c;color:#eee;min-height:100vh;padding:2rem 1.25rem 3rem;}
+    .wrap{max-width:820px;margin:0 auto;}
+    h1{font-size:1.75rem;font-weight:800;margin-bottom:0.35rem;}
+    .sub{color:#aaa;font-size:1rem;line-height:1.55;margin-bottom:1.5rem;}
+    .money{background:#1a1408;border:1px solid #5a4a18;border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.75rem;}
+    .money h2{font-size:0.95rem;color:#f5c518;margin-bottom:0.5rem;}
+    .money ol{margin-left:1.25rem;color:#ccc;font-size:0.9rem;line-height:1.6;}
+    .card{display:block;background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:0.85rem;text-decoration:none;color:inherit;transition:border-color .15s,background .15s;}
+    .card:hover,.card:focus-visible{border-color:#f5c518;background:#1a1a14;outline:none;}
+    .card h2{font-size:1.05rem;font-weight:700;margin-bottom:0.25rem;color:#fff;}
+    .card .desc{font-size:0.9rem;color:#aaa;line-height:1.45;margin-bottom:0.5rem;}
+    .card .links{font-size:0.82rem;color:#888;}
+    .card .links a{color:#8ab4f8;text-decoration:none;}
+    .card .links a:hover{text-decoration:underline;}
+    .num{display:inline-block;font-size:0.75rem;font-weight:800;color:#111;background:#f5c518;border-radius:50%;width:1.5rem;height:1.5rem;line-height:1.5rem;text-align:center;margin-right:0.45rem;vertical-align:middle;}
+    .tag{display:inline-block;font-size:0.65rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;background:#2d5a27;color:#b8f0b0;padding:0.18rem 0.4rem;border-radius:4px;margin-left:0.35rem;vertical-align:middle;}
+    .tag.soon{background:#3a3a3a;color:#999;}
+    footer{margin-top:2rem;font-size:0.82rem;color:#666;line-height:1.55;}
+    footer a{color:#8ab4f8;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Product Playbooks</h1>
+    <p class="sub">Seven separate products. Each has its own AI playbook (voice + facts). Click a demo, listen to the intro, ask questions. Go through them one at a time.</p>
+
+    <div class="money">
+      <h2>Where can we make money the fastest? (Joe's view)</h2>
+      <ol>
+        <li><strong>DNA Paternity</strong> — proven call-center model, low overhead, tests in ~8 minutes</li>
+        <li><strong>Live AI Email (A1 / Axon)</strong> — Joe's live product today</li>
+        <li><strong>STD Testing</strong> — same lab + patient-service-center model as DNA</li>
+        <li><strong>Pre-De-Icer</strong> — licensing / partner play (windshield category)</li>
+        <li><strong>AI Point</strong> — the platform behind all of this</li>
+        <li><strong>WorkSite I 360</strong> — prototype / subscription (hardware)</li>
+        <li><strong>No More Boo-Boos</strong> — licensing, longer regulatory path</li>
+      </ol>
+    </div>
+
+    <a class="card" href="/talk.html">
+      <h2><span class="num">1</span>Convo Email — A1 Asphalt <span class="tag">Live</span></h2>
+      <p class="desc">Conversational email. Joe's customers click the orb in Gmail and talk to the AI team member.</p>
+      <div class="links">Demo: <a href="/talk.html">/talk.html</a> · Playbook: <code>email</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=siteeye&amp;bg=/images/canva-index.png">
+      <h2><span class="num">2</span>WorkSite I 360 <span class="tag soon">aka SiteEye</span></h2>
+      <p class="desc">Temporary field monitoring — 360° camera + safety beacon for mobilized jobs (crew in, crew out). Naming options: WorkSite I 360, EventSite I 360.</p>
+      <div class="links">Demo: <a href="/demo.html?src=siteeye">/demo.html?src=siteeye</a> · Playbook: <code>siteeye</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=predeicer&amp;bg=/demo/predeicer.png">
+      <h2><span class="num">3</span>Pre-De-Icer™</h2>
+      <p class="desc">Patented preventive ice treatment — windshields first, then danger zones (bridges, overpasses).</p>
+      <div class="links">Demo: <a href="/demo.html?src=predeicer">/demo.html?src=predeicer</a> · Playbook: <code>predeicer</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=bandage&amp;bg=/demo/bandage.png">
+      <h2><span class="num">4</span>No More Boo-Boos — Dissolvable Bandage</h2>
+      <p class="desc">Kids' bandage that dissolves under warm water. No tear-off. Licensing play.</p>
+      <div class="links">Demo: <a href="/demo.html?src=bandage">/demo.html?src=bandage</a> · Playbook: <code>bandage</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=dna&amp;bg=/demo/dna.png">
+      <h2><span class="num">5</span>DNA Paternity Testing <span class="tag">Fastest $</span></h2>
+      <p class="desc">Affordable paternity testing by phone — LabCorp patient service centers nationwide. AI + human team.</p>
+      <div class="links">Demo: <a href="/demo.html?src=dna">/demo.html?src=dna</a> · Playbook: <code>dna</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=std&amp;bg=/demo/std.png">
+      <h2><span class="num">6</span>STD Testing</h2>
+      <p class="desc">Discreet STAT testing — same-day appointments, next-day results. Call center + lab network.</p>
+      <div class="links">Demo: <a href="/demo.html?src=std">/demo.html?src=std</a> · Playbook: <code>std</code></div>
+    </a>
+
+    <a class="card" href="/demo.html?src=aipoint&amp;bg=/demo/aipoint.png">
+      <h2><span class="num">7</span>AI Point</h2>
+      <p class="desc">PowerPoint-style demo sites with live voice AI — the platform behind everything here.</p>
+      <div class="links">Demo: <a href="/demo.html?src=aipoint">/demo.html?src=aipoint</a> · Playbook: <code>aipoint</code></div>
+    </a>
+
+    <footer>
+      Hub: <a href="/demo/">/demo/</a> · Source docs: <code>docs/business-brains/</code> on GitHub ·
+      Full catalog: <code>docs/product-playbooks/CATALOG.md</code>
+    </footer>
+  </div>
+</body>
+</html>

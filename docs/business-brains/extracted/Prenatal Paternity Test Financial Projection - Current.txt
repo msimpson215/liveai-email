@@ -1,0 +1,55 @@
+What This Is: 
+
+This is a very basic financial projection worksheet. The idea is to estimate your sales, and your expenses on a monthly basis. By subtracting  expenses from sales, we estimate net profit. 
+
+Note that this is a VERY BASIC project. In the real world you might have numberous SKUs and price points, and a variety of other factors that  complicate this. But this spreadsheet is intended to allow you to ballpark things at least, to make sure you can see a future for your business, in  basic terms. 
+
+How To Use It: 
+
+This copy is read-only, so you need to make a copy for yourself. To do that, choose "File...Make A Copy" in the menu above, and save a  copy for yourself on Google Drive. Then you will be able to enter your own figures, etc. 
+
+NET INCOME PROJECTIONS (Fill in the GREEN boxes with your best guesses. This also allows you to see how changes in pricing and costs affect your monthly profits) 14 Local Listings 50 Local Listings 100 Local Listings 200 Local Listings 
+
+estimated number of sales monthly 20 71 143 286 average retail cost of your product/service $1,395.00 $1,395.00 $1,395.00 $1,395.00 Monthly Gross Sales $27,900 $99,045 $199,485 $398,970 
+
+Ravgen cost product/Collection $1,050.00 $1,050.00 $1,000.00 $1,000.00 
+
+your monthly cost for product/service $21,000 $74,550 $143,000 $286,000 Monthly Net Sales (profit) $6,900 $24,495 $56,485 $112,970 
+
+Annual Net Sales $82,800 $293,940 $677,820 $1,355,640 
+
+$0 $0 $0 
+
+$0 $0 $0 $0 
+
+EXPENSE PROJECTIONS (fill in the GREEN boxes with your best guesses) 
+
+low estimate medium estimate high estimate higher estimate 
+
+monthly rent $0 $0 $0 $0 
+
+monthly internet or servers $95 $200 $300 $600 
+
+monthly phone bill $50 $100 $200 $500 
+
+monthly gas, water, sewer $0 $0 $0 $0 
+
+monthly office supplies $0 $0 $0 $0 
+
+monthly auto/gas expenses $0 $0 $0 $0 
+
+misc expenses $80 $160 $250 $400 
+
+Sales Person (1), (2), (4), (7) $4,200 $8,400 $16,800 $29,400 
+
+go daddy $16 $50 $100 $100 
+
+monthly marketing expense (local leases) $400 $1,250 $2,500 $5,000
+
+Average Annual Expenses $58,092 $121,920 $241,800 $432,000 
+
+ANNUAL PROFIT AND LOSS PROJECTION 
+
+low estimate medium estimate high estimate high estimate 
+
+annual Social Security income $0 $0 $0 $0 average annual business revenue $82,800 $293,940 $677,820 $1,355,640 average annual expenses $58,092 $121,920 $241,800 $432,000 ANNUAL PROFIT/LOSS $24,708 $172,020 $436,020 $923,640 MONTHLY PROFIT/LOSS $2,059 $14,335 $36,335 $76,970

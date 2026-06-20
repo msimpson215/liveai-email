@@ -1,0 +1,38 @@
+Pre-De-Icer – Ingredient Cost Analysis
+Production Cost Estimate (1 Gallon Batch)
+Target Batch Volume: 1 U.S. Gallon (3,785 mL / 128 fl oz)
+Ingredient Breakdown – Scaled from Base Formula
+● Methylcellulose (food-grade, finely powdered)
+– 103 teaspoons (approx. 1.2 ounces)
+– Cost per ounce: $1.25
+– Total: $1.50
+● Isopropyl Alcohol (70–91%) 91% alcohol is higher cost than 70%
+– 2,065 mL (approx. 69.7 fl oz)
+– Cost per gallon: $17.50
+– Cost per ounce: $0.137
+– Total: $9.55
+● Water (distilled or tap, as needed) Distilled would cost to make or purchase~cheaper to
+make own distilled in the long run
+– 1,376 mL (approx. 46.6 fl oz)
+– Cost: $0.00
+● Propylene Glycol (corn based)
+– 344 mL (approx. 11.6 fl oz)
+– Cost per gallon: $20.00
+– Cost per ounce: $0.156
+
+-- 1 of 2 --
+
+– Total: $1.81
+Total Cost per Gallon: $12.86
+Cost per 16 oz Retail Bottle
+● 128 oz ÷ 16 oz = 8 bottles per gallon
+● $12.86 ÷ 8 = $1.61 per bottle (ingredients only)
+Key Notes
+● Ingredient prices based on small-batch supply costs. Bulk purchasing could reduce total
+cost by 20–40%.
+● Water assumed as no-cost input (filtered or tap).
+● Does not include bottling, packaging, labeling, shipping, labor, or overhead.
+● Methylcellulose density approx. 85 teaspoons per ounce, based on fine powder granule
+size.
+
+-- 2 of 2 --

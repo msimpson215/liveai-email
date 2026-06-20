@@ -1,0 +1,112 @@
+MARTY - make your notes in GREEN, I’ll make mine in BLUE.
+That way we can understand our notes back and forth.
+msimpson215
+Miagreat215!
+The Steps To Making Money w VoxTalk
+First pass at the non-negotiable steps to taking VoxTalk from where it is now, to something
+lucrative that we can get paid for.
+Got it — I’ve read your VoxTalk document. You’re right: this could be a big deal, but being a lone
+programmer without Silicon Valley credibility means you have to be very deliberate in how you
+package, protect, and present it. Here’s a step-by-step sequence, in strict order, tailored to
+your situation (older, solo, prefer remote/online over in-person).
+Non-Negotiable Steps in Order
+1. Protect What You’ve Built
+1. Make sure GitHub repos are PRIVATE and not PUBLIC.
+a. Click Settings (top menu).
+b. Scroll to Danger Zone → “Change repository visibility.”
+c. Switch from Public → Private.
+2. Own the IP clearly: Make sure your code is tracked in a private Git repo with
+timestamps.
+3. File at least a provisional patent on your unique differentiators (noise suppression +
+human fallback, toolbar integration, memory). This buys you a year of protection.( does
+have a good chance, according to chat)
+
+-- 1 of 5 --
+
+4. Draft basic NDAs so you can share your demo safely. 	Lmk if
+ok…..9/6..my Dad’s Birthday!!!
+Notes: Arguably, we could finish the demo first as long as the GitHub repos are locked
+down/private.Yes they are looked and btw…going to learn Fly.io and replace Render with
+it…Fyi.io is great..love it
+2. Package It for Business Eyes THIS IS THE OBVIOUS FOCUS. THESE
+STEPS BELOW have to be done before anyone will take VT seriously.
+4. Polish your demo: Short, 90-second video showing VoxTalk ordering a tricky part or
+navigating a noisy environment. No code shown.
+a. Things that the DEMO NEEDS - this is your TO DO list for now mah fren:
+b. I uploaded the zipped repo into the Marty folder, and here’s the
+HoldTheBacon demo URL → https://holdthebacon.onrender.com this is the
+one i am actively working with. Once done will share files with VoxTalk so
+we have the mothership, and then i will start modifying
+https://holdthebacon.onrender.com for whichever we want to first create.
+Holdthebacon url is not working. I am constantly working on it..its down
+more than working…9/6
+Two Folders voxtalk- headless & hold-the -bacon
+Great I’ll look at it when I get home tonight. Need laptop
+i. Doesn’t crash/stall etc
+ii. Doesn’t go silent. Right now, when I ask it to do things, it goes silent for
+long periods or several minutes.
+iii. Develop a use case, such as finding Corvette Parts. The person viewing
+the demo isn’t looking for seamless voice to voice talking probably. They
+need to see a USE CASE that helps them understand the commercial
+potential.
+iv. User needs to understand if VT is LISTENING, or SPEAKING, or
+PAUSED.
+
+-- 2 of 5 --
+
+v. Need to add ability for VT to access and reference external data file such
+as a parts or menu database. This database can be a single external text
+file like a .CSV for now. Someday we would want to extend this but a
+.CSV file should suffice for now. I can create one for you quickly if
+needed.
+vi. Needs to run on most major browsers (desktop or mobile) I think it does
+this already which is great.
+5. Create a one-pager (simple PDF) that frames the problem (e.g., McDonald’s meltdown),
+your differentiators, and how it makes businesses money. I can do this after the demo
+is done.
+6. Make a lean website (single landing page) with:
+● Demo video I can help on this after the demo is done.
+● “How it works” diagram I can help on this after the demo is done.
+● Clear contact form (for buyers/partners) I can help on this after the demo is done.
+3. Define How You’ll Sell
+7. Decide your monetization model:
+● Outright sale (one-time payout, you walk away)
+● Licensing (recurring revenue, but you keep maintaining the codebase)
+● Partnership/third-party service (you operate the tech for clients)
+Pick one primary path so buyers don’t think you’re aimless.
+● I wrote this then asked chat to clean it up….obviously all this when demo’s are complete
+and this is what i have thought of occasionally since starting this journey….
+4. Build Credibility Without Being Seen
+
+-- 3 of 5 --
+
+8. Use your materials as a proxy for you — demo, website, PDF must look pro. They
+become your “face.”
+9. Skip in-person: Rely on Zoom, phone demos, email outreach. That’s normal today;
+plenty of founders do it.
+5. Identify & Reach Acquirers
+10. Make a short list of target industries: auto parts, appliances, restaurants, healthcare.
+11. Within those, identify innovation/product leaders (e.g., VP of Digital, Head of AI,
+Corporate Dev).
+12. Leverage LinkedIn warm introductions (your pitch deck/PDF makes intros easier).
+13. If you can’t get intros, cold pitch with demo video link — that alone sets you apart.
+6. Enter Conversations Safely
+14. Start with the demo and one-pager, not the code.
+15. Get NDAs signed before sharing more.
+16. If they’re interested, loop in a tech/startup lawyer immediately before any contract talk.
+7. Negotiate for Lucrative Exit
+17. Have your lawyer handle:
+● IP transfer terms
+● Payment structure (cash upfront vs. royalties)
+● Non-compete / ongoing obligations (important since you’re solo).
+
+-- 4 of 5 --
+
+18. Talk to multiple companies at once so you have leverage — never let it look like they’re
+your only option.
+The Core Flow (Simplified)
+1. Protect → 2. Demo/Website → 3. Monetization decision → 4. Outreach → 5. NDA → 6.
+Lawyer/Negotiation → 7. Close
+.
+
+-- 5 of 5 --

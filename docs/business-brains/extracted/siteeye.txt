@@ -1,0 +1,168 @@
+-- 1 of 12 --
+
+Edit
+
+-- 2 of 12 --
+
+
+
+-- 3 of 12 --
+
+
+
+-- 4 of 12 --
+
+My opinion? If your goal is eventually to sell the company, I'd lean toward a
+subscription/service model, but not a pure lease.
+I'd structure it like this:
+SiteEye LIVE™ Service
+Customer pays:
+● Initial setup fee
+● Monthly service fee
+They receive:
+● Hardware
+● Cellular connectivity
+● Dashboard access
+● Support
+● Software updates
+Why?
+Because companies that buy businesses often pay higher multiples for recurring revenue than
+for one-time hardware sales.
+Example
+Company A:
+● Sells 500 units at $2,000 each.
+● Makes revenue once.
+● Must constantly find new customers.
+Company B:
+● Has 500 units deployed.
+
+-- 5 of 12 --
+
+● Generates $89/month per unit.
+● Has predictable recurring revenue.
+Acquirers usually find Company B more attractive because they can forecast cash flow.
+But...
+I would still offer an outright purchase option.
+Not because you want people to choose it.
+Because some contractors hate subscriptions.
+So:
+Option 	Basic 	Pro
+Service 	$399 setup + $89/mo 	$999 setup + $119/mo
+Purchase 	$1,999 	$3,999
+If 80–90% choose the service, great.
+If a contractor insists on ownership, you don't lose the sale.
+What I'd do in the first 12–24 months
+Honestly?
+Don't over-engineer the business model yet.
+Build:
+1. One prototype.
+2. Put it in Joe's hands.
+
+-- 6 of 12 --
+
+3. Let Joe use it on real jobs.
+4. Let Tony beat up the economics.
+Then you'll learn things you can't predict today:
+● Do crews tolerate it?
+● Does it survive wind and weather?
+● Does Joe actually check it?
+● Is $89/month a bargain or too much?
+● What breaks first?
+Those answers will drive the business model more than any spreadsheet.
+If Joe uses it for 30 days and says:
+"I can't imagine running my crews without this now."
+That's when you start thinking seriously about patents, manufacturing, and whether you're
+building a hardware company, a software company, or a service company.
+Right now, if I had to choose one path with the information we have:
+Service/subscription first, purchase option second.
+That's the model I'd bet on if the long-term goal is building value and eventually selling the
+company.
+Okay, now redo the images with the correct pricing on it.
+
+-- 7 of 12 --
+
+
+
+-- 8 of 12 --
+
+Edit
+again that have some of the materials. Can you give me the websites again that have the
+materials to build the prototype?
+Absolutely. For a prototype, I would avoid specialty surveillance suppliers at first and use
+readily available parts.
+1. Telescoping Mast / Pole
+Spiderbeam
+● Spiderbeam Fiberglass Masts
+● Lightweight fiberglass poles
+● 12–18 ft options
+● Good prototype choice
+Max-Gain Systems
+● Max-Gain Systems
+● Telescoping fiberglass masts
+● Popular with radio and camera projects
+DX Engineering
+● DX Engineering
+● Carries multiple mast brands
+2. Tripod
+Glide Gear
+● Glide Gear
+● Tall camera tripods and mast systems
+Manfrotto
+
+-- 9 of 12 --
+
+● Manfrotto
+● Commercial-grade tripods
+For Joe's prototype I'd lean toward a heavy-duty tripod first because it's universal.
+3. 360 Camera
+Insta360
+● Insta360
+● X3
+● X4
+● X5
+Probably the easiest prototype camera.
+Ricoh Theta
+● Ricoh Theta
+● Simpler 360 cameras
+4. Cellular Connectivity
+Verizon Business
+● Verizon Jetpack Hotspots
+Netgear
+● Netgear Nighthawk Mobile Hotspots
+I'd rather use a dedicated hotspot than a burner phone for the production version.
+5. Weatherproof Case
+
+-- 10 of 12 --
+
+Pelican
+● Pelican Cases
+Probably the industry standard.
+6. Flashing Beacon
+Federal Signal
+● Federal Signal
+For prototype purposes, Amazon beacon lights are fine.
+7. Battery System
+Anker
+● Anker Power Banks
+EcoFlow
+● EcoFlow Portable Power Stations
+My Prototype BOM
+If I were spending money tomorrow:
+Component 	Vendor
+15 ft mast 	Spiderbeam
+Tripod 	Glide Gear
+
+-- 11 of 12 --
+
+Camera 	Insta360 X4
+Hotspot 	Verizon Jetpack
+Battery 	Anker
+Case 	Pelican
+Expected prototype cost:
+$700–$1,500
+depending on how commercial-grade you go.
+For manufacturing later, I'd source direct from overseas factories or U.S. wholesalers. But for
+Joe and Tony's first working unit, I'd buy retail, get it deployed fast, and see if they actually use it
+every day. That's the test that matters most right now.
+
+-- 12 of 12 --

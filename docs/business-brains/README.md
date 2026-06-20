@@ -1,10 +1,14 @@
-# Business brain source documents
+# Business source documents → product playbooks
 
-Upload **zip files or PDFs** here via GitHub (see link below). Zip is fine — we unzip on the server.
+Upload PDFs, docx, or zip files here via GitHub. Each product has its own AI playbook in `server/server.js`.
+
+**Walk through demos one by one:** https://liveai-email.onrender.com/demo/catalog.html
 
 1. Open: https://github.com/msimpson215/liveai-email/upload/main/docs/business-brains  
-2. Drag all 6 zip files onto the page  
+2. Drag files onto the page  
 3. Commit changes  
 4. Tell the agent **uploaded**
 
 After upload: `npm run ingest-brains` (unzip + extract text → `extracted/`)
+
+Full catalog: `docs/product-playbooks/CATALOG.md`

@@ -1,0 +1,91 @@
+Provisional Patent Application
+Inventors:
+Martin Simpson
+Lebanon, Illinois
+[Phone Numbers]
+[Email Addresses]
+Title of Invention:
+VoxTalk: Voice-Activated, AI-Driven Website Assistant with Auto-Trigger Engagement
+Background of the Invention:
+As artificial intelligence and voice recognition technology continue to evolve, most
+websites still rely on outdated user interfaces such as contact forms, generic chatbots,
+or static content. These systems are impersonal, reactive, and often underutilized by site
+visitors.
+There exists a need for a simple, website-integrated, custom-branded, voice-to-voice AI
+assistant that helps website owners engage visitors immediately — starting the
+conversation as soon as they arrive on the domain. The system should work for legacy,
+static, or dynamic websites, and allow businesses to offer customized, voice-guided
+interaction based solely on their products, services, and internal knowledge.
+This invention is designed to serve website owners and their customers, creating a better
+user experience while protecting brand identity and keeping AI interaction focused on
+the intended topic.
+Summary of the Invention:
+This invention provides a method and system for embedding a voice-first, AI-powered
+assistant into any website. The assistant auto-triggers upon domain load, optionally
+
+-- 1 of 4 --
+
+beginning with a text-based greeting such as, “Welcome to [Company Name], click here
+to begin a voice conversation.” Users can then choose to engage using spoken
+conversation or text, depending on their environment.
+The AI system integrates with backend large language models (LLMs) such as OpenAI’s
+GPT-4, Gemini, Claude, and Perplexity, and it can be trained using the client’s proprietary
+business information, enabling custom, branded responses. It avoids off-topic
+discussion and can redirect irrelevant questions back to the business's focus area (e.g.,
+“Sorry, I’m only trained to assist with Corvette parts”).
+Detailed Description:
+Core Features:
+● Auto-launch on website load with text-first greeting
+● Optional voice-to-voice interaction using microphone and speech synthesis
+● Voice and text toggle for accessibility in quiet or noisy settings
+● Custom-trained AI models that use the business’s own documents, FAQs, or
+product catalogs
+● Controlled response scope to stay on-brand and avoid generic open-ended AI
+answers
+● Integration with multiple backend models: GPT-4, Gemini, Claude, and Perplexity
+● Multi-API support for voice input/output and transcription, including:
+○ OpenAI (ChatGPT)
+○ Google Cloud Speech-to-Text
+○ ElevenLabs for voice synthesis
+○ WebSockets
+○ Node.js or Python (Flask/Express) for backend
+
+-- 2 of 4 --
+
+○ HTML, CSS, JavaScript for frontend widget
+Technical Workflow:
+1. User visits website → system auto-triggers with on-screen greeting
+2. Option to enable microphone and begin voice conversation
+3. Speech captured and transcribed using Google Cloud or Whisper
+4. Transcription sent to AI backend (GPT, Gemini, etc.)
+5. Response generated based on business-trained data only
+6. Output played as synthesized voice using ElevenLabs
+7. User may continue speaking or switch to typing
+Use Cases:
+● Auto industry (e.g., classic Corvette parts)
+● Law firms and medical offices
+● Local service businesses
+● Educational or nonprofit sites
+● eCommerce and online retail
+● Municipal and tourism websites
+Claims (Sample):
+1. A system for automatically initiating AI interaction upon website domain load.
+
+-- 3 of 4 --
+
+2. The system of claim 1, wherein a text prompt is displayed allowing users to opt
+into voice communication.
+3. The system of claim 1, wherein voice interaction uses real-time speech
+recognition and AI-generated voice replies.
+4. The system of claim 1, wherein the backend AI engine is selected from the group
+consisting of GPT-4, Gemini, Claude, and Perplexity.
+5. The system of claim 1, wherein the AI is trained exclusively on business-provided
+content and rejects off-topic queries.
+6. The system of claim 1, wherein the frontend offers both voice and text-based
+conversation options.
+7. A method for deploying the system using HTML, JavaScript, WebSockets, and a
+Node.js or Python backend.
+8. A method for customizing AI responses by uploading proprietary documents to
+define AI behavior.
+
+-- 4 of 4 --

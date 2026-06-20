@@ -1,0 +1,77 @@
+A) What Wisconsin data implies (to anchor
+the salt side)
+● Salt used (WI 2023-24): 7.3 tons per lane-mile for the season. Wisconsin Department
+of Transportation+1
+● Typical granular salt rate: ~172 lb per lane-mile per application (NYSDOT public
+figure; close to other DOTs). NYSDOT+1
+Implied number of passes:
+7.3 tons × 2000 lb / 172 lb ≈ ~85 applications per season.
+If WI had ~~21 winter events, that’s ≈ 4 passes per storm on average. (This is a math
+inference using WI + NY inputs; that’s why investors see 2–4 passes per storm as typical.)
+Wisconsin Department of Transportation+1
+Salt works best above ~15–20°F. Below that, its “practical” performance falls off.
+Cargill+2Nova Region+2
+B) One-storm, danger-zone math (not
+miles)
+Let’s define a danger-zone segment as 0.25 lane-mile (a reasonable overpass length).
+Salt (per pass, per 0.25 LM)
+● Materials: 172 lb/LM/app × $0.0456/lb (WI 2023-24 salt price) = $7.85/LM → $1.96 for
+0.25 LM.
+● Labor+truck (midpoint): ≈ $6.00/LM → $1.50 for 0.25 LM.
+● Per pass total: $3.46 per 0.25 LM.
+
+-- 1 of 4 --
+
+● Per storm typical:
+○ 2 passes: $6.92
+○ 3 passes: $10.38
+○ 4 passes (WI-implied avg): $13.84
+(Salt price from WI 2023-24; rate from NYSDOT 2024-25; “passes per storm” is the WI/NY
+derivation above.) Wisconsin Department of Transportation+1
+Pre-De-Icer (per 0.25 LM, one preventive pass)
+● Your bulk chemical cost: $9.65/gal (your $12.86 less 25%).
+● Labor+truck same midpoint: $1.50 for 0.25 LM.
+● Material cost depends on rate (gal/LM). The segment cost is:
+Segment cost = $1.50 + 0.25 × ($9.65 × rate_gal/LM)
+PDI rate (gal/LM) 	Segment materials 	Total per segment (1 pass)
+2.0 	$4.83 	$6.33
+3.0 	$7.24 	$8.74
+4.0 	$9.65 	$11.15
+Takeaway:
+● If salt would be 2 passes on that bridge, PDI beats salt at ≲ 2 gal/LM ( $6.33 vs $6.92 ).
+● If salt is 3 passes, PDI is competitive up to ≈ 4 gal/LM ( $11.15 vs $10.38 ).
+● If salt is ~4 passes (WI-implied average), PDI wins even at ~4 gal/LM ( $11.15 vs
+$13.84 ).
+
+-- 2 of 4 --
+
+● And PDI still works below 27°F where salt under-performs. Cargill+1
+This is exactly why we recommend PDI only for danger zones (or a short
+main-street stretch), not every mile of open highway.
+Positioning sentence you can paste:
+“Pre-De-Icer is a premium, preventive treatment for danger zones—bridges and
+overpasses where crashes spike and salt often needs 3–4 reactive passes. Using
+our bulk cost ($9.65/gal) and conservative labor, one PDI pass is cost-competitive
+when salt requires multiple passes (2–4), and it maintains performance at
+temperatures where salt is less effective. We are not proposing PDI for miles of
+rural highway; we’re proposing targeted segments and the consumer windshield
+product.”
+D) “Other pre-icers” claim (why PDI is
+different)
+● Commodity “de-icers” for windshields are typically alcohol-heavy, reactive sprays
+(e.g., methanol/ethanol based; see Prestone SDS). They melt after the bond forms and
+can be harsh on materials. PDI is a preventive coating with viscosity/adhesion that
+stops bonding and coats blades so they don’t freeze mid-drive. Mighty Auto Parts+1
+● Brines (liquid NaCl) are cheap but also salt-temperature-limited (15–20°F practical).
+Cargill+1
+Short version: “We aren’t selling PDI by the mile. We’re using it where it matters
+most. On a 0.25 lane-mile bridge, salt usually needs 2–4 passes (Wisconsin + NY
+rates imply ~4 on average), which runs $6.92–$13.84 per storm just in this
+
+-- 3 of 4 --
+
+segment. One PDI pass costs $6.33–$11.15 depending on application rate (2–4
+gal/LM) and still works below 27°F. That’s why PDI is the right tool for danger
+zones—and why the windshield product is our fastest-to-market consumer win.”
+
+-- 4 of 4 --

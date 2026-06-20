@@ -1,0 +1,47 @@
+Architecture Overview:
+Here’s an overview of what would be on each side of the system… take a look. Lemme know
+any questions and we can work on how to accomplish this next.
+Retailer (satellite) Side:
+● Simple one line embed calls Widget.js (on our server) → one-line script embed with Retailer ID calls to a
+file called widget.js on our server.. Something like this:
+<script src="https://mothership.yourdomain.com/widget.js" data-retailer-id="corvette123"></script>
+● Captures voice from customer and sends to mothership server.
+● Displays responses (voice, text, product info).
+● Retailer SKU Database remains with retailer.
+○ Exposed via REST API for mothership queries.
+Mothership Side:
+● Central Server → core application logic.
+● Retailer Preferences DB → saves branding, tone, voice, UI configs.
+● OpenAI API calls → Whisper (ASR), GPT (conversation), Voices (TTS).
+● Connector Layer → queries Retailer SKU DB via REST API.
+● Response → sends back to retailer widget (voice, text, images, product links).
+
+-- 1 of 3 --
+
+This is good shit my fren….a recipe….it lines up with what we talked about (satellite widget,
+mothership brain, SKU connections). i do have a thought again on satellite structure. I’ll write it
+up when I’m a little more rested…But good to have this written down….and yes, I wish it was
+going faster so we could get to all of it.
+Just to give you an idea where I’m at and my new strategy(which might be the way your
+supposed to do it): I changed from “one thing at a time” to working on multiple things at once
+when committing qnd deploying. I know that can sound messy, but it feels more efficient when
+fighting with repos that don’t want to behave ....... especially when the right LLM is helping.
+Here’s my focus right now though(9/19/2025):
+● Targeting OpenAI’s Realtime Whisper for STT, the same way ChatGPT does it(i think).
+● Trying to hook into the exact moment when Whisper detects speech, and then the
+Realtime TTS kicks in.
+● Once that happens, I just want to trigger a simple color change in the button, so the UX
+can see the shift from idle....showing an active VoxTalk speaking.
+● Later, I’d like to replace that with a polished CSS animation (swirl, glow, etc eyc) but after
+i get a basic fundamental demo completed.
+
+-- 2 of 3 --
+
+I’m also weighing whether to do something similar when ASR fires (UI talking). Chat doesn’t
+show it that way — UI just stays idle — but if we think it helps, we can hook into the ASR start
+event too. Maybe it’s overkill, maybe not. Either way, the main point is I’m tapping into these
+events on both the backend and frontend to get a basic demo loop running.
+Once that’s stable, we can add the “accessories” ....filters, SKU connectors, etc. but then have
+more time to do more admin stuff.
+
+-- 3 of 3 --

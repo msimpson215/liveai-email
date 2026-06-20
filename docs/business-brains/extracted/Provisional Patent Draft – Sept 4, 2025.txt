@@ -1,0 +1,87 @@
+Draft Provisional Patent Application
+(Outline)
+Title:
+System and Method for Embedding Voice-to-Voice Artificial Intelligence into Website Navigation
+with Abuse Detection, SKU Integration, and Memory-Linked Personalization
+Inventor:
+Marty Simpson
+Timothy Donahue (and team as needed)
+Date:
+September 4, 2025
+1. Field of the Invention
+The present invention relates to conversational artificial intelligence, specifically a system and
+method for embedding real-time, voice-to-voice AI functionality directly into website navigation
+toolbars for commerce, customer service, and information retrieval.
+2. Background
+Current AI chatbots primarily rely on text-based “chat bubbles” or standalone apps. These
+approaches lack brand integration, create trust barriers, and often fail under noisy environments
+or with multiple concurrent users. Existing solutions do not effectively combine:
+● Toolbar-level embedding,
+● Abuse detection with enforced manual fallback,
+● SKU-based transaction flows,
+
+-- 1 of 4 --
+
+● Personalized memory tied to app or user identifiers,
+● And transcript-based SEO/data benefits.
+3. Summary of the Invention
+This invention provides a system and method that:
+1. Embeds an AI voice assistant directly into a website toolbar for seamless brand trust.
+2. Processes user speech through an English-only ASR pipeline with noise suppression.
+3. Detects abusive or nonsensical use and automatically reverts to manual
+human-controlled mode, optionally enforcing temporary lockouts.
+4. Maps transcripts to SKU libraries, enabling voice-driven commerce transactions (search,
+add to cart, checkout).
+5. Stores and recalls memory tied to user IDs or app logins, enabling personalized repeat
+interactions.
+6. Exports transcripts for SEO indexing and training data improvement.
+7. Supports “Mothership + Satellite” architecture where core AI improvements flow
+downward, but client proprietary data remains firewalled.
+4. Detailed Description (Plain Language)
+● Toolbar Integration: A code snippet embeds a microphone button into the site’s
+navigation bar, ensuring the assistant inherits the credibility of the host brand rather than
+appearing as a third-party widget.
+● Noise Suppression Pipeline: Audio is streamed to an English-only automatic speech
+recognition (ASR) service (e.g., Deepgram) that blocks unintended languages and filters
+
+-- 2 of 4 --
+
+background noise (music, chatter, engines).
+● Abuse Detection: If transcripts reveal trolling, nonsense, or malicious intent, the system
+locks the user into manual mode for a set period, preventing resource waste or
+misorders.
+● SKU Mapping: The assistant converts natural language (“olive oil, 16 oz, cheapest”) into
+SKU-based selections, adding items to cart or initiating checkout.
+● Memory Linkage: Repeat users are recognized via app or site identifiers, allowing the
+AI to recall past orders or preferences.
+● Transcript Export: Conversations are logged and available for search engine indexing,
+enhancing site SEO and AI search visibility.
+● Mothership–Satellite Architecture: A core AI model (“Mothership”) pushes generic
+improvements (latency, voice quality, reasoning) to all satellites (e.g., Walmart instance,
+CorvetteParts instance). Proprietary client data (menus, SKU lists) is isolated by firewall,
+never returning to the mothership.
+5. Claims (Plain Draft)
+1. A system for embedding a real-time voice assistant into a website toolbar comprising:
+○ a microphone interface,
+○ a streaming ASR pipeline constrained to English with noise suppression,
+○ and a WebRTC connection to a reasoning model providing audio responses.
+2. The system of claim 1 further comprising abuse detection logic that triggers enforced
+manual fallback mode and temporary lockout of abusive users.
+3. The system of claim 1 further comprising SKU mapping from transcripts to product
+databases for e-commerce transactions.
+4. The system of claim 1 further comprising session memory tied to application or user
+identifiers for personalized repeat interactions.
+
+-- 3 of 4 --
+
+5. The system of claim 1 further comprising transcript export to external search engines for
+SEO enhancement.
+6. The system of claim 1 implemented in a mothership–satellite architecture where generic
+improvements are shared downstream and client proprietary data is firewalled upstream.
+6. Abstract
+A system and method for embedding real-time, voice-to-voice artificial intelligence directly into
+website navigation toolbars. The system integrates speech recognition, abuse detection, SKU
+mapping, personalized memory, and transcript export into a commerce-ready AI. Proprietary
+client data remains isolated within a mothership–satellite architecture.
+
+-- 4 of 4 --
