@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "node server/server.js",
-    "extract-pdfs": "node scripts/extract-pdf-brains.js"
+    "unzip-brains": "node scripts/unzip-brains.js",
+    "extract-pdfs": "node scripts/extract-pdf-brains.js",
+    "ingest-brains": "node scripts/ingest-brains.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
