@@ -17,6 +17,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
+#humanLink{
+  position:fixed;z-index:3;display:none;transform:translateX(-50%);
+  padding:10px 14px;border-radius:999px;background:rgba(0,0,0,0.78);
+  color:#fff;text-decoration:none;font:700 13px/1.2 system-ui,sans-serif;
+  box-shadow:0 10px 35px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.18);
+  white-space:nowrap;
+}
+body.outreach #humanLink{display:block;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -31,30 +39,40 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
 <body class="idle">
 <img id="bg" src="/email/talk-bg.png" alt=""/>
 <div id="orb" role="button" tabindex="0" aria-label="Click to talk"></div>
+<a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
 <script>
 /* ---- position the live orb exactly on the orb drawn in the image ---- */
 const IMG_W=1536,IMG_H=1024;        // background natural size
 const ORB_CX=0.508,ORB_CY=0.523;    // orb center as fraction of the image
 const ORB_D=0.165;                  // orb diameter as fraction of image width
 const orb=document.getElementById('orb');
+const humanLink=document.getElementById('humanLink');
 function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
   const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover (full-bleed)
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2,offY=(vh-rh)/2;
   const d=ORB_D*rw;
+  const left=offX+ORB_CX*rw-d/2;
+  const top=offY+ORB_CY*rh-d/2;
   orb.style.width=d+'px';
   orb.style.height=d+'px';
-  orb.style.left=(offX+ORB_CX*rw-d/2)+'px';
-  orb.style.top=(offY+ORB_CY*rh-d/2)+'px';
+  orb.style.left=left+'px';
+  orb.style.top=top+'px';
+  humanLink.style.left=(left+d/2)+'px';
+  humanLink.style.top=(top+d+14)+'px';
 }
 placeOrb();
 window.addEventListener('resize',placeOrb);
 
 /* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
 let pc=null,localStream=null,starting=false,audioEl=null;
-const sessionUrl='/session?src=email';
-function setState(s){document.body.className=s;}
+const params=new URLSearchParams(location.search);
+const source=(params.get('src')||'email').toLowerCase();
+const sessionSource=source==='a1tony'?'a1tony':'email';
+const isOutreach=sessionSource==='a1tony';
+const sessionUrl='/session?src='+encodeURIComponent(sessionSource);
+function setState(s){document.body.className=s+(isOutreach?' outreach':'');}
 
 function ensureAudio(){
   if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}
