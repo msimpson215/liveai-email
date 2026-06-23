@@ -70,7 +70,15 @@ body.no-bg::before{
 <script>
 const params=new URLSearchParams(location.search);
 const SRC=(params.get('src')||'siteeye').toLowerCase();
-const BG=params.get('bg')||'/images/canva-index.png';
+const DEFAULT_BACKGROUNDS={
+  siteeye:'/images/canva-index.png',
+  predeicer:'/demo/predeicer.png',
+  bandage:'/demo/bandage.png',
+  dna:'/demo/home%20dna%20paternity.png',
+  std:'/demo/std.png',
+  aipoint:'/demo/aipoint.png'
+};
+const BG=params.get('bg')||DEFAULT_BACKGROUNDS[SRC]||'/images/canva-index.png';
 const TITLES={
   siteeye:'SiteEye360° Live',
   predeicer:'Pre-Deicer Program',
