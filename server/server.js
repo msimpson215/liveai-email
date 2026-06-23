@@ -19,6 +19,7 @@ app.use(express.static('public', {
 const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
+const REALTIME_VOICE = 'coral'
 
 const VOICE_RULES = `IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
 Voice: upbeat, warm, professional woman. Keep answers short unless giving the intro.`
@@ -228,7 +229,8 @@ app.get('/health', (_req, res) => {
   res.json({
     ok: hasApiKey(),
     openai_key_configured: hasApiKey(),
-    model: REALTIME_MODEL
+    model: REALTIME_MODEL,
+    voice: REALTIME_VOICE
   })
 })
 
@@ -266,7 +268,7 @@ app.get('/session', async (req, res) => {
               }
             },
             output: {
-              voice: 'coral'
+              voice: REALTIME_VOICE
             }
           }
         }
@@ -285,7 +287,7 @@ app.get('/session', async (req, res) => {
       return res.status(502).json({ error: 'OpenAI did not return a session token.' })
     }
 
-    res.json({ value, model: REALTIME_MODEL })
+    res.json({ value, model: REALTIME_MODEL, voice: REALTIME_VOICE })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
   }

@@ -98,15 +98,13 @@ async function start(){
   try{await connectVoice();}
   catch(e){
     console.error(e);
-    if(pc){try{pc.close()}catch(_){}}pc=null;
-    if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(_){}}localStream=null;
-    try{await connectVoice();}
-    catch(e2){console.error(e2);await stop();}
+    await stop();
   }
   starting=false;
 }
 
-/* Tap the orb (or anywhere) to start/stop. Click anywhere to stop (per design). */
+/* Tap the orb to start/stop. Do not auto-start: browsers handle mic/audio
+   permissions reliably only after a real user gesture. */
 orb.addEventListener('click',function(e){
   e.stopPropagation();
   if(pc||starting){if(!resumeAudio())stop();}else{start();}
@@ -114,16 +112,9 @@ orb.addEventListener('click',function(e){
 orb.addEventListener('keydown',function(e){
   if(e.key==='Enter'||e.key===' '){e.preventDefault();if(pc||starting){if(!resumeAudio())stop();}else{start();}}
 });
-document.addEventListener('click',function(e){
-  if(e.target===orb)return;
-  if(pc||starting){if(!resumeAudio())stop();}
-});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
 
 setState('idle');
-/* Auto-connect the moment the page opens — no click needed. WebRTC audio can
-   play on its own; if a browser blocks the sound, a single tap anywhere starts it. */
-start();
 </script>
 </body>
 </html>

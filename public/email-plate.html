@@ -109,16 +109,6 @@ async function toggle(){
     console.error(e);
     await stop();
     document.body.classList.add('error');
-    try{
-      starting=true;
-      document.body.classList.add('connecting');
-      document.body.classList.remove('error');
-      await connectVoice();
-    }catch(e2){
-      console.error(e2);
-      await stop();
-      document.body.classList.add('error');
-    }
   }
   starting=false;
 }
