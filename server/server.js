@@ -56,10 +56,10 @@ const A1_EMAIL_GREETING =
 After you have said this greeting once, you must NEVER say it again. If the user says "hello", "hi", or similar afterward, do NOT greet again — answer their question directly.`
 
 const A1_TONY_GREETING =
-`OPENING — say this EXACTLY, word for word, one time, immediately at the very start:
-"Hello Tony. I'm the AI team member for A1 Professional Asphalt and Sealing. Joe asked me to reach out because if you have any upcoming asphalt, sealcoating, concrete, parking lot repair, or third-party bid work, A1 would be glad to talk. This is actual conversational AI powered by Axon AI, so you can ask me anything about A1. If you'd rather talk to a person, use the human team button below. Do you have any questions today about A1's services? If not, please hold onto this message. Anytime in the future, you can come back here or request that A1 come out to look at a future job or estimate."
+recipientName => `OPENING — say this EXACTLY, word for word, one time, immediately at the very start:
+"Hello ${recipientName}. I'm the AI team member for A1 Professional Asphalt and Sealing. Joe asked me to reach out because if you have any upcoming asphalt, sealcoating, concrete, parking lot repair, or third-party bid work, A1 would be glad to talk. This is actual conversational AI powered by Axon AI, so you can ask me anything about A1. If you'd rather talk to a person, use the human team button below. Do you have any questions today about A1's services? If not, please hold onto this message. Anytime in the future, you can come back here or request that A1 come out to look at a future job or estimate."
 Rules for this opening:
-- Do NOT change Tony to Joe.
+- Do NOT change ${recipientName} to Joe or any other name.
 - Do NOT say "blank", "blank blank", "this is blank", or any placeholder.
 - Do NOT invent a caller name.
 - Do NOT shorten the opening to just "do you have any questions".
@@ -85,21 +85,24 @@ ${A1_EMAIL_GREETING}
 ${A1_RULES}`
   },
   a1tony: {
-    instructions: () => `${A1_BASE}
+    instructions: context => `${A1_BASE}
 ${VOICE_RULES}
-${A1_TONY_GREETING}
+${A1_TONY_GREETING(context.recipientName || 'Tony')}
 ${A1_RULES}
 CONTEXT:
-- This is a demo outreach email for Tony, who has construction experience.
+- This is a demo outreach email for ${context.recipientName || 'Tony'}.
 - The reason for the outreach is business development: A1 would like to be considered for future asphalt, sealcoating, concrete, parking lot, or third-party bid opportunities.
-- If Tony is uncomfortable with AI, acknowledge it and say a human team member can follow up.
+- If the recipient is uncomfortable with AI, acknowledge it and say a human team member can follow up.
 - Make clear this is actual voice AI powered by Axon AI, not a basic scripted chatbot.
 - Do not over-sell. Keep it professional, short, and conversational.
-- Do NOT say "are you still there" or repeatedly prompt if Tony is quiet. Let the conversation rest.
-- Do NOT address Tony as Joe. Joe is the owner who asked for the outreach; Tony is the recipient.
+- Do NOT say "are you still there" or repeatedly prompt if the recipient is quiet. Let the conversation rest.
+- Do NOT address the recipient as Joe. Joe is the owner who asked for the outreach; ${context.recipientName || 'the recipient'} is the recipient.
 - Never use placeholders such as "blank", "someone", or "your name here".
-- If Tony seems unsure what to ask, briefly suggest: upcoming asphalt work, sealcoating, concrete, parking lot repairs, or requesting an estimate.
-- If Tony says he has no questions, close politely: "No problem. Please hold onto this message, and anytime you have a future job or estimate question, you can come back here or use the human team button."`
+- If the recipient seems unsure what to ask, briefly suggest: upcoming asphalt work, sealcoating, concrete, parking lot repairs, or requesting an estimate.
+- If the recipient says they have no questions, close politely: "No problem. Please hold onto this message, and anytime you have a future job or estimate question, you can come back here or use the human team button."`
+  },
+  a1outreach: {
+    instructions: context => PRODUCT_PROFILES.a1tony.instructions(context)
   },
   web: {
     instructions: () => `${A1_BASE}
@@ -246,9 +249,18 @@ If asked who you are: "I'm an AI team member demonstrating AI Point."`
 
 const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
-function buildInstructions(source) {
+function sanitizeRecipientName(value) {
+  const cleaned = String(value || '')
+    .replace(/[^a-zA-Z0-9 .,'-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 60)
+  return cleaned || 'Tony'
+}
+
+function buildInstructions(source, context = {}) {
   const key = VALID_SOURCES.has(source) ? source : 'web'
-  return PRODUCT_PROFILES[key].instructions()
+  return PRODUCT_PROFILES[key].instructions(context)
 }
 
 function hasApiKey() {
@@ -278,6 +290,7 @@ app.get('/session', async (req, res) => {
   try {
     const raw = String(req.query.src || 'web').toLowerCase()
     const source = VALID_SOURCES.has(raw) ? raw : 'web'
+    const recipientName = sanitizeRecipientName(req.query.name)
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
@@ -288,7 +301,7 @@ app.get('/session', async (req, res) => {
         session: {
           type: 'realtime',
           model: REALTIME_MODEL,
-          instructions: buildInstructions(source),
+          instructions: buildInstructions(source, { recipientName }),
           audio: {
             input: {
               turn_detection: {
@@ -317,7 +330,7 @@ app.get('/session', async (req, res) => {
       return res.status(502).json({ error: 'OpenAI did not return a session token.' })
     }
 
-    res.json({ value, model: REALTIME_MODEL, voice: REALTIME_VOICE })
+    res.json({ value, model: REALTIME_MODEL, voice: REALTIME_VOICE, source, recipientName })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
   }
