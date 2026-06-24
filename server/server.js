@@ -385,7 +385,7 @@ app.post('/api/send-orb', async (req, res) => {
   }
 
   const html = `<!DOCTYPE html>
-<html><body style="margin:0;padding:32px;background:#f6f8fc;text-align:center;font-family:Arial,sans-serif;">
+<html><body style="margin:0;padding:32px;background:#ffffff;text-align:center;font-family:Arial,sans-serif;">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr><td align="center" style="padding:20px;">
 <a href="${EMAIL_ORB_LINK}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
