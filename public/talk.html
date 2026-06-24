@@ -87,9 +87,13 @@ window.addEventListener('resize',placeOrb);
 let pc=null,localStream=null,starting=false,audioEl=null;
 const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
-const sessionSource=source==='a1tony'?'a1tony':'email';
-const isOutreach=sessionSource==='a1tony';
-const sessionUrl='/session?src='+encodeURIComponent(sessionSource);
+const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
+const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
+const recipientName=params.get('name')||'';
+const autostart=params.get('autostart')==='1';
+const sessionParams=new URLSearchParams({src:sessionSource});
+if(recipientName)sessionParams.set('name',recipientName);
+const sessionUrl='/session?'+sessionParams.toString();
 function setState(s){document.body.className=s+(isOutreach?' outreach':'');}
 
 function ensureAudio(){
@@ -157,6 +161,9 @@ window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
 
 setState('idle');
+if(autostart){
+  setTimeout(start,250);
+}
 </script>
 </body>
 </html>
