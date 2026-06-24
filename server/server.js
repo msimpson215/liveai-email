@@ -353,6 +353,13 @@ app.get('/download/orb.png', (_req, res) => {
   res.download(pngPath, 'orb.png')
 })
 
+app.get('/orb.png', (_req, res) => {
+  const pngPath = path.join(__dirname, '..', 'public', 'email', 'orb-static.png')
+  res.set('Content-Type', 'image/png')
+  res.set('Cache-Control', 'public, max-age=86400')
+  res.sendFile(pngPath)
+})
+
 app.get('/api/email-link', (_req, res) => {
   res.json({ link: EMAIL_ORB_LINK })
 })
