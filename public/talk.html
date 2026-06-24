@@ -10,6 +10,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
 /* Your design, full-bleed, margin to margin (looks right on big screens & laptops). */
 #bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+#outreachPage{display:none;}
+body.outreach{background:#fff;}
+body.outreach #bg{display:none;}
+body.outreach #outreachPage{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;background:#fff;color:#111;font-family:system-ui,sans-serif;
+  padding:clamp(22px,5vw,54px) 22px;text-align:center;
+}
+.a1Mark{font-weight:950;letter-spacing:-0.05em;font-size:clamp(56px,12vw,112px);line-height:0.8;color:#111;}
+.a1Brand{font-weight:900;font-size:clamp(22px,5vw,44px);line-height:1.05;margin-top:10px;}
+.a1Brand span{display:block;color:#f1be00;}
+.a1Sub{max-width:760px;margin-top:14px;font-size:clamp(16px,2.4vw,24px);font-weight:650;color:#333;line-height:1.35;}
 /* Live orb sits exactly on the orb in your image (positioned by JS). */
 #orb{
   position:fixed;border-radius:50%;cursor:pointer;z-index:2;
@@ -51,12 +63,21 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
 </head>
 <body class="idle">
 <img id="bg" src="/email/talk-bg.png" alt=""/>
+<div id="outreachPage" aria-hidden="true">
+  <div class="a1Mark">A1</div>
+  <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
+  <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
+</div>
 <div id="orb" role="button" tabindex="0" aria-label="Click to talk"></div>
 <button id="clickCta" type="button">Click here to talk</button>
 <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
 <div id="poweredBy">Powered by Axon AI&trade;</div>
 <script>
 /* ---- position the live orb exactly on the orb drawn in the image ---- */
+const params=new URLSearchParams(location.search);
+const source=(params.get('src')||'email').toLowerCase();
+const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
+const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
 const IMG_W=1536,IMG_H=1024;        // background natural size
 const ORB_CX=0.508,ORB_CY=0.523;    // orb center as fraction of the image
 const ORB_D=0.165;                  // orb diameter as fraction of image width
@@ -65,6 +86,20 @@ const humanLink=document.getElementById('humanLink');
 const clickCta=document.getElementById('clickCta');
 function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
+  if(isOutreach){
+    const d=Math.max(112,Math.min(Math.min(vw,vh)*0.24,190));
+    const left=(vw-d)/2;
+    const top=Math.max(vh*0.38,260);
+    orb.style.width=d+'px';
+    orb.style.height=d+'px';
+    orb.style.left=left+'px';
+    orb.style.top=top+'px';
+    clickCta.style.left=(left+d/2)+'px';
+    clickCta.style.top=(top+d+18)+'px';
+    humanLink.style.left=(left+d/2)+'px';
+    humanLink.style.top=(top+d+70)+'px';
+    return;
+  }
   const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover (full-bleed)
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2,offY=(vh-rh)/2;
@@ -85,10 +120,6 @@ window.addEventListener('resize',placeOrb);
 
 /* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
 let pc=null,localStream=null,starting=false,audioEl=null;
-const params=new URLSearchParams(location.search);
-const source=(params.get('src')||'email').toLowerCase();
-const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
-const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
 const recipientName=params.get('name')||'';
 const autostart=params.get('autostart')==='1';
 const sessionParams=new URLSearchParams({src:sessionSource});
