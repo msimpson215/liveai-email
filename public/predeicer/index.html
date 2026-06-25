@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Pre-De-Icer — patented, eco-safe, pre-storm ice prevention. Never scrape your windshield again. US Utility Patent #8,119,025."/>
+<title>Pre-De-Icer&trade; — Stop Ice Before It Starts</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#0b1f33;--ink2:#33475b;--ice:#1f7ae0;--ice-deep:#0c4da2;
+  --line:#e4e9f0;--bg:#ffffff;--soft:#f4f8fd;--gold:#fed100;
+}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+a{color:var(--ice-deep);}
+.btn{display:inline-block;background:var(--ice);color:#fff;font-weight:800;text-decoration:none;
+  padding:14px 26px;border-radius:999px;font-size:15px;letter-spacing:0.02em;
+  box-shadow:0 10px 30px rgba(31,122,224,0.30);transition:transform .12s,box-shadow .12s;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 14px 38px rgba(31,122,224,0.40);}
+.btn.gold{background:var(--gold);color:#1a1a1a;box-shadow:0 10px 30px rgba(254,209,0,0.35);}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1080px;margin:0 auto;}
+.brand{font-weight:900;font-size:20px;letter-spacing:-0.02em;color:var(--ink);}
+.brand b{color:var(--ice);}
+.brand .tm{font-size:11px;vertical-align:super;color:var(--ink2);font-weight:700;}
+.nav-links{display:flex;gap:22px;align-items:center;}
+.nav-links a{color:var(--ink2);text-decoration:none;font-weight:600;font-size:14px;}
+.nav-links a:hover{color:var(--ice);}
+@media(max-width:720px){.nav-links a:not(.btn){display:none;}}
+
+/* Hero */
+.hero{background:linear-gradient(160deg,#eef5fe 0%,#ffffff 60%);padding:72px 0 64px;border-bottom:1px solid var(--line);}
+.hero h1{font-size:clamp(34px,6vw,60px);line-height:1.04;letter-spacing:-0.03em;font-weight:950;}
+.hero h1 span{color:var(--ice);}
+.hero .lead{font-size:clamp(17px,2.4vw,21px);color:var(--ink2);max-width:640px;margin:20px 0 14px;}
+.hero .patent{display:inline-block;margin:8px 0 26px;font-size:13px;font-weight:800;color:var(--ice-deep);
+  background:#e7f1fd;border:1px solid #cfe2fb;padding:7px 14px;border-radius:999px;letter-spacing:0.02em;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+
+/* Sections */
+section{padding:64px 0;}
+.eyebrow{font-size:13px;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--ice);margin-bottom:10px;}
+h2{font-size:clamp(26px,4vw,40px);line-height:1.1;letter-spacing:-0.02em;font-weight:900;margin-bottom:16px;}
+.section-lead{font-size:18px;color:var(--ink2);max-width:720px;margin-bottom:36px;}
+.soft{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+
+/* Grid */
+.grid{display:grid;gap:22px;}
+.cols-3{grid-template-columns:repeat(3,1fr);}
+.cols-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:860px){.cols-3,.cols-2{grid-template-columns:1fr;}}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 1px 0 rgba(11,31,51,0.02);}
+.card h3{font-size:19px;font-weight:800;margin-bottom:8px;}
+.card p{color:var(--ink2);font-size:15px;}
+.card .ic{width:42px;height:42px;border-radius:11px;background:#e7f1fd;display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:14px;}
+
+/* Steps */
+.steps{counter-reset:step;display:grid;gap:18px;grid-template-columns:repeat(3,1fr);}
+@media(max-width:860px){.steps{grid-template-columns:1fr;}}
+.step{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 24px 24px;}
+.step::before{counter-increment:step;content:counter(step);position:absolute;top:-16px;left:24px;
+  width:34px;height:34px;border-radius:50%;background:var(--ice);color:#fff;font-weight:900;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(31,122,224,0.35);}
+.step h3{margin:8px 0 6px;font-size:18px;}
+.step p{color:var(--ink2);font-size:15px;}
+
+/* Compare table */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;}
+table{width:100%;border-collapse:collapse;min-width:560px;background:#fff;}
+th,td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line);font-size:15px;vertical-align:top;}
+thead th{background:var(--ink);color:#fff;font-weight:800;font-size:14px;}
+thead th.win{background:var(--ice);}
+tbody tr:last-child td{border-bottom:0;}
+td.win{background:#f0f7ff;font-weight:700;color:var(--ink);}
+.rowlabel{font-weight:800;color:var(--ink);}
+
+/* Markets */
+.chips{display:flex;flex-wrap:wrap;gap:10px;}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--ink2);}
+
+/* WeatherTech callout */
+.cta-band{background:linear-gradient(160deg,#0c4da2,#1f7ae0);color:#fff;border-radius:22px;padding:46px 38px;text-align:center;}
+.cta-band h2{color:#fff;}
+.cta-band p{color:#e6f0fc;max-width:660px;margin:0 auto 26px;font-size:18px;}
+
+/* Footer */
+footer{padding:40px 0;border-top:1px solid var(--line);color:var(--ink2);font-size:14px;}
+.footer-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.disclaimer{margin-top:14px;font-size:12px;color:#8595a6;max-width:760px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">Pre&#8209;De&#8209;Icer<span class="tm">&trade;</span></div>
+    <nav class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#why">Why It's Different</a>
+      <a href="#compare">Compare</a>
+      <a href="#markets">Markets</a>
+      <a href="#partner" class="btn">Partner With Us</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Stop ice <span>before it starts.</span><br/>Never scrape again.</h1>
+    <p class="lead">Pre-De-Icer is a patented, eco-safe formula applied <strong>before</strong> the storm. A thick, honey-like film clings to the surface so snow and ice never bond. Walk out, turn on the wipers, and go.</p>
+    <div class="patent">U.S. Utility Patent&nbsp;#8,119,025 &middot; Effective to &minus;51&deg;F</div>
+    <div class="hero-cta">
+      <a href="#partner" class="btn gold">For WeatherTech &amp; Partners</a>
+      <a href="#how" class="btn">See How It Works</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow">How It Works</div>
+    <h2>Three steps. No scraping.</h2>
+    <p class="section-lead">Pre-De-Icer is preventive, not reactive. You treat the surface ahead of the weather instead of fighting ice after it forms.</p>
+    <div class="steps">
+      <div class="step">
+        <h3>Spray before the storm</h3>
+        <p>Apply an even coat to a clean, dry windshield the night before snow or frost.</p>
+      </div>
+      <div class="step">
+        <h3>The film holds its ground</h3>
+        <p>Its honey-like viscosity clings to the glass and resists wash-off, staying active through precipitation.</p>
+      </div>
+      <div class="step">
+        <h3>Wipers on, drive away</h3>
+        <p>Ice and snow rest on top instead of bonding. One pass of the wipers and you have clear visibility from the first minute.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why" class="soft">
+  <div class="wrap">
+    <div class="eyebrow">Why It's Different</div>
+    <h2>Not a salt. Not a brine. Not an alcohol spray.</h2>
+    <p class="section-lead">Pre-De-Icer is a completely different approach to winter — built to prevent the bond rather than melt it after the fact.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <div class="ic">&#10052;&#65039;</div>
+        <h3>Extreme cold performance</h3>
+        <p>Proven effective down to &minus;51&deg;F, with a new eco-friendly formulation reaching &minus;82&deg;F. Salt stops working around 27&deg;F.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#128167;</div>
+        <h3>Viscosity &amp; longevity</h3>
+        <p>The thick film stays put and resists rain wash-off, so a single pre-storm treatment keeps working instead of needing repeated passes.</p>
+      </div>
+      <div class="card">
+        <div class="ic">&#127807;</div>
+        <h3>Eco-safe &amp; salt-free</h3>
+        <p>Protects vehicles, concrete, bridges, vegetation, and waterways from chloride corrosion. Safe for paint, wipers, and trim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <div class="eyebrow">Compare</div>
+    <h2>How Pre-De-Icer stacks up</h2>
+    <p class="section-lead">Against the tools winter has relied on for decades.</p>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="win">Pre-De-Icer&trade;</th>
+            <th>Salt / Brine</th>
+            <th>Methanol Spray</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rowlabel">Cling &amp; wash-off</td>
+            <td class="win">Stays in place, film-forming</td>
+            <td>Thin, washes off easily</td>
+            <td>Evaporates quickly</td>
+          </tr>
+          <tr>
+            <td class="rowlabel">Cold performance</td>
+            <td class="win">&minus;51&deg;F (&minus;82&deg;F new formula)</td>
+            <td>Stops working ~27&deg;F</td>
+            <td>Limited (frost only)</td>
+          </tr>
+          <tr>
+            <td class="rowlabel">Eco impact</td>
+            <td class="win">Salt-free, safe for infrastructure</td>
+            <td>Corrosive to bridges &amp; cars</td>
+            <td>Harsh on paint &amp; trim</td>
+          </tr>
+          <tr>
+            <td class="rowlabel">Re-application</td>
+            <td class="win">Single pre-storm treatment lasts</td>
+            <td>Requires multiple passes</td>
+            <td>Requires repeated spraying</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="markets" class="soft">
+  <div class="wrap">
+    <div class="eyebrow">Markets</div>
+    <h2>Windshields first. Then everywhere ice is a danger.</h2>
+    <p class="section-lead">The fastest path to market is the consumer windshield — &ldquo;never scrape again.&rdquo; From there, Pre-De-Icer targets the danger zones where salt under-performs.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>The near-term win: windshields</h3>
+        <p>Consumers and fleets apply once before the storm, turn on the wipers, and drive away with clear visibility &mdash; safe for paint, wiper blades, and trim. This is why we see WeatherTech as the ideal first partner.</p>
+      </div>
+      <div class="card">
+        <h3>The danger zones</h3>
+        <p>Bridges, overpasses, shaded stretches, and low-lying areas where ice forms first and crashes happen. A premium, preventive tool for the critical spots where repeated salt passes add up.</p>
+      </div>
+    </div>
+    <div style="margin-top:24px;" class="chips">
+      <span class="chip">Sidewalks &amp; driveways</span>
+      <span class="chip">Commercial trucking &amp; fleets</span>
+      <span class="chip">Boat docks &amp; boats</span>
+      <span class="chip">Roofs &amp; ice dams</span>
+      <span class="chip">Power lines &amp; equipment</span>
+      <span class="chip">Airport / aircraft de-icing</span>
+      <span class="chip">Government &amp; military</span>
+    </div>
+  </div>
+</section>
+
+<section id="partner">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Be the first to bring it to market.</h2>
+      <p>Pre-De-Icer has never been presented to the market before. We're ready to discuss sale, licensing, or exclusive representation &mdash; U.S. Utility Patent included. Your customers protect their interiors with WeatherTech; now protect their windshields too.</p>
+      <a href="mailto:?subject=Pre-De-Icer%20%E2%80%94%20Partnership%20Inquiry" class="btn gold">Request a Conversation</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div><strong>Pre-De-Icer&trade;</strong> &middot; Patented pre-storm ice prevention</div>
+      <div>U.S. Utility Patent #8,119,025</div>
+    </div>
+    <p class="disclaimer">Pre-De-Icer is patented technology available for sale or licensing. Performance figures reflect inventor testing and product documentation. Pre-De-Icer&trade; is a trademark used in connection with this technology. WeatherTech and other company names are referenced for market-fit context only and are the property of their respective owners.</p>
+  </div>
+</footer>
+
+</body>
+</html>
