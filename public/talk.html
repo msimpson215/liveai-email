@@ -45,10 +45,11 @@ body.outreach #humanLink{display:block;}
 }
 body.connecting #stopBtn,body.active #stopBtn{display:block;}
 #poweredBy{
-  position:fixed;left:0;right:0;bottom:7px;z-index:3;text-align:center;
-  font:600 10px/1.2 system-ui,sans-serif;letter-spacing:0.04em;color:rgba(255,255,255,0.74);
-  text-shadow:0 1px 8px rgba(0,0,0,0.8);pointer-events:none;text-transform:uppercase;
+  position:fixed;right:16px;bottom:12px;z-index:3;text-align:right;
+  font:600 12px/1.3 system-ui,sans-serif;letter-spacing:0.01em;color:rgba(255,255,255,0.82);
+  text-shadow:0 1px 8px rgba(0,0,0,0.85);pointer-events:none;
 }
+#poweredBy b{font-weight:800;color:#fff;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -70,7 +71,7 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
 <div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
 <button id="stopBtn" type="button">Stop</button>
 <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
-<div id="poweredBy">Powered by Axon AI&trade;</div>
+<div id="poweredBy">Powered by <b>Axon AI</b></div>
 <script>
 /* ---- position the live orb exactly on the orb drawn in the image ---- */
 const params=new URLSearchParams(location.search);
