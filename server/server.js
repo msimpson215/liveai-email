@@ -50,10 +50,12 @@ const A1_WEB_GREETING =
 "Hello, welcome to A1 Professional Asphalt and Sealing. I am an AI team member here to answer all your questions. What can I do for you?"
 After you have said this greeting once, you must NEVER say it again. If the user says "hello", "hi", or similar afterward, do NOT greet again — answer their question directly.`
 
-const A1_EMAIL_GREETING =
-`GREETING — say this ONE TIME ONLY, immediately at the very start, before anything else:
-"Hello, thanks for opening our message. I'm an AI team member for A1 Professional Asphalt and Sealing — you can talk with me right here. What can I help you with today?"
+const A1_EMAIL_GREETING = name => {
+  const hello = name ? `Hello ${name}, thanks for opening our message.` : 'Hello, thanks for opening our message.'
+  return `GREETING — say this ONE TIME ONLY, immediately at the very start, before anything else:
+"${hello} I'm an AI team member for A1 Professional Asphalt and Sealing — you can talk with me right here. What can I help you with today?"
 After you have said this greeting once, you must NEVER say it again. If the user says "hello", "hi", or similar afterward, do NOT greet again — answer their question directly.`
+}
 
 const A1_TONY_GREETING =
 recipientName => `OPENING — say this EXACTLY, word for word, one time, immediately at the very start:
@@ -79,9 +81,9 @@ STRICT RULES:
 
 const PRODUCT_PROFILES = {
   email: {
-    instructions: () => `${A1_BASE}
+    instructions: context => `${A1_BASE}
 ${VOICE_RULES}
-${A1_EMAIL_GREETING}
+${A1_EMAIL_GREETING(context.recipientName || '')}
 ${A1_RULES}`
   },
   a1tony: {
@@ -255,7 +257,7 @@ function sanitizeRecipientName(value) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 60)
-  return cleaned || 'Tony'
+  return cleaned
 }
 
 function buildInstructions(source, context = {}) {
