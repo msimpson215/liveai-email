@@ -140,43 +140,13 @@ async function connectVoice(){
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
-  const greeting=data.greeting||'';
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
-  const micTrack=localStream.getAudioTracks()[0];
-  pc.addTrack(micTrack);
-  /* Mute the mic until the opening finishes so the user's room noise can't
-     interrupt (barge-in) and cut the greeting off mid-sentence. */
-  let micUnmuted=false;
-  function unmuteMic(){if(!micUnmuted&&micTrack){micTrack.enabled=true;micUnmuted=true;}}
-  if(greeting&&micTrack){micTrack.enabled=false;}
+  pc.addTrack(localStream.getTracks()[0]);
   const dc=pc.createDataChannel('oai-events');
-  dc.addEventListener('open',function(){
-    try{
-      // Force the exact opening words. The model must read this verbatim.
-      if(greeting){
-        dc.send(JSON.stringify({
-          type:'response.create',
-          response:{instructions:'Read this text aloud, slowly and completely, word for word exactly as written. Do not paraphrase, summarize, shorten, skip, or add anything. Read every sentence to the end:\n\n"'+greeting+'"'}
-        }));
-      }else{
-        dc.send(JSON.stringify({type:'response.create'}));
-      }
-    }catch(e){}
-  });
-  dc.addEventListener('message',function(ev){
-    try{
-      const msg=JSON.parse(ev.data);
-      // When the opening response is fully spoken, turn the mic on for Q&A.
-      if(msg.type==='response.done'||msg.type==='output_audio_buffer.stopped'||msg.type==='response.output_audio.done'){
-        unmuteMic();
-      }
-    }catch(e){}
-  });
-  /* Safety net: never leave the mic muted longer than 22s. */
-  if(greeting){setTimeout(unmuteMic,22000);}
+  dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
