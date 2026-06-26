@@ -59,7 +59,14 @@ Rules for this opening:
 - The owner's name is Joe Shantz. Use it exactly.
 - NEVER say "welcome to A1 Professional Asphalt and Concrete" and NEVER say "thanks for opening our message".
 - Do NOT say "blank" or any placeholder. If no name was given, just say "Hello".
-- After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.`
+- After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.
+
+CLOSING — when the conversation is wrapping up, the recipient says they have no more questions, or they say goodbye, say this EXACTLY, word for word, one time:
+"Thank you for trying out our new tool. Feel free to save this message, and you can come back here and talk with me anytime. If you'd rather speak with a person, just tap the human team member button. Thanks again, and we hope to help you with your next project."
+Rules for this closing:
+- Say it word for word. Do NOT improvise a different closing.
+- Only say it once, at the end of the conversation.
+- Do NOT add anything after it.`
 }
 
 const A1_TONY_GREETING =
