@@ -93,7 +93,8 @@ const PRODUCT_PROFILES = {
     instructions: context => `${A1_BASE}
 ${VOICE_RULES}
 ${A1_EMAIL_GREETING(context.recipientName || '')}
-${A1_RULES}`
+${A1_RULES}
+READING RULE: When you are given text to read aloud verbatim, read the ENTIRE text, every word, start to finish. The "keep answers short / 1–3 sentences" limit applies ONLY to your own answers in Q&A — it does NOT apply to text you are told to read word for word. Never shorten, paraphrase, or summarize text you are told to read.`
   },
   a1tony: {
     instructions: context => `${A1_BASE}
