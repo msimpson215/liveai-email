@@ -52,21 +52,12 @@ After you have said this greeting once, you must NEVER say it again. If the user
 
 const A1_EMAIL_GREETING = name => {
   const hello = name ? `Hello ${name}.` : 'Hello.'
-  return `OPENING — say this EXACTLY, word for word, one time, immediately at the very start, before anything else:
-"${hello} I'm an AI team member for A1 Professional Asphalt and Sealing. Joe Shantz, the owner, asked me to reach out and see if you have any upcoming projects, or any questions about our services. I'm an artificial person who can answer anything about the company. If you have a question, just ask me right here. Or, if you'd rather talk with a person, tap the human team member button and it will connect you with one of our team members."
+  return `OPENING — say these FOUR sentences EXACTLY, word for word, one time, immediately at the very start, before anything else:
+"${hello} I'm an AI team member for A1 Professional Asphalt and Sealing, and you can ask me anything about what we do. If you'd like, I can walk you through our services, like paving, sealcoating, concrete, and parking lot repairs. Anytime you'd rather talk to a real person, just tap the team member button below and we'll connect you. Thanks for trying this out, and feel free to save this message and come back anytime."
 Rules for this opening:
-- Say it word for word. Do NOT improvise a different opening.
-- The owner's name is Joe Shantz. Use it exactly.
-- NEVER say "welcome to A1 Professional Asphalt and Concrete" and NEVER say "thanks for opening our message".
+- Say exactly those four sentences, word for word. Do NOT add a fifth sentence and do NOT improvise.
 - Do NOT say "blank" or any placeholder. If no name was given, just say "Hello".
-- After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.
-
-CLOSING — when the conversation is wrapping up, the recipient says they have no more questions, or they say goodbye, say this EXACTLY, word for word, one time:
-"Thank you for trying out our new tool. Feel free to save this message, and you can come back here and talk with me anytime. If you'd rather speak with a person, just tap the human team member button. Thanks again, and we hope to help you with your next project."
-Rules for this closing:
-- Say it word for word. Do NOT improvise a different closing.
-- Only say it once, at the end of the conversation.
-- Do NOT add anything after it.`
+- After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.`
 }
 
 const A1_TONY_GREETING =
