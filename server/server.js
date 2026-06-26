@@ -50,12 +50,17 @@ const A1_WEB_GREETING =
 "Hello, welcome to A1 Professional Asphalt and Sealing. I am an AI team member here to answer all your questions. What can I do for you?"
 After you have said this greeting once, you must NEVER say it again. If the user says "hello", "hi", or similar afterward, do NOT greet again — answer their question directly.`
 
-const A1_EMAIL_GREETING = name => {
+const A1_EMAIL_SPOKEN = name => {
   const hello = name ? `Hello ${name}.` : 'Hello.'
-  return `OPENING — say these FOUR sentences EXACTLY, word for word, one time, immediately at the very start, before anything else:
-"${hello} I'm an AI team member for A1 Professional Asphalt and Sealing, and you can ask me anything about what we do. If you'd like, I can walk you through our services, like paving, sealcoating, concrete, and parking lot repairs. Anytime you'd rather talk to a real person, just tap the team member button below and we'll connect you. Thanks for trying this out, and feel free to save this message and come back anytime."
+  return `${hello} I'm an AI team member for A1 Professional Asphalt and Sealing, and you can ask me anything about what we do. If you'd like, I can walk you through our services, like paving, sealcoating, concrete, and parking lot repairs. Anytime you'd rather talk to a real person, just tap the team member button below and we'll connect you. Thanks for trying this out, and feel free to save this message and come back anytime.`
+}
+
+const A1_EMAIL_GREETING = name => {
+  return `OPENING — your VERY FIRST words must be these FOUR sentences, EXACTLY, word for word, one time, before anything else:
+"${A1_EMAIL_SPOKEN(name)}"
 Rules for this opening:
 - Say exactly those four sentences, word for word. Do NOT add a fifth sentence and do NOT improvise.
+- Do NOT say "What can I do for you", "welcome to A1", "this is A1 Asphalt", or any other opening. ONLY the four sentences above.
 - Do NOT say "blank" or any placeholder. If no name was given, just say "Hello".
 - After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.`
 }
@@ -269,6 +274,13 @@ function buildInstructions(source, context = {}) {
   return PRODUCT_PROFILES[key].instructions(context)
 }
 
+// Exact words the AI must speak first. Used to force the opening over the
+// data channel so the model cannot improvise its own greeting.
+function buildSpokenGreeting(source, context = {}) {
+  if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
+  return ''
+}
+
 function hasApiKey() {
   return Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim())
 }
@@ -336,7 +348,14 @@ app.get('/session', async (req, res) => {
       return res.status(502).json({ error: 'OpenAI did not return a session token.' })
     }
 
-    res.json({ value, model: REALTIME_MODEL, voice: REALTIME_VOICE, source, recipientName })
+    res.json({
+      value,
+      model: REALTIME_MODEL,
+      voice: REALTIME_VOICE,
+      source,
+      recipientName,
+      greeting: buildSpokenGreeting(source, { recipientName })
+    })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
   }

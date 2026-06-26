@@ -140,13 +140,27 @@ async function connectVoice(){
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
+  const greeting=data.greeting||'';
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
   const dc=pc.createDataChannel('oai-events');
-  dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+  dc.addEventListener('open',function(){
+    try{
+      // Force the exact opening words. The model must read this verbatim,
+      // it cannot improvise its own greeting.
+      if(greeting){
+        dc.send(JSON.stringify({
+          type:'response.create',
+          response:{instructions:'Say the following out loud, word for word, exactly as written, and nothing else: "'+greeting+'"'}
+        }));
+      }else{
+        dc.send(JSON.stringify({type:'response.create'}));
+      }
+    }catch(e){}
+  });
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
