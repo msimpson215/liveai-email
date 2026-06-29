@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Background: pre-cropped image — Promotions/Updates and Terms/Privacy removed at source. */
+/* Background: tabs/footer masked in talk-bg-clean.png — full artwork kept. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
 #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 /* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
@@ -52,7 +52,7 @@ body.outreach #outreachPage{
 }
 /* Action buttons: pinned to image coordinates (where "click anywhere" was). */
 #actionBar{
-  position:fixed;z-index:4;display:flex;justify-content:center;align-items:center;
+  position:fixed;z-index:6;display:flex;justify-content:center;align-items:center;
   gap:8px;transform:translate(-50%,-50%);pointer-events:auto;
 }
 body.texting #actionBar{display:none;}
@@ -140,10 +140,10 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=801;          // talk-bg-clean.png — measured crop
-const ORB_CX=0.5013,ORB_CY=0.3346;   // orb ring center (pixels: 770, 436 original)
-const ORB_D=0.333;                   // ring diameter 511px / 1536px
-const ACTION_CY=0.8976;              // where baked "click anywhere" text was
+const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
+const ORB_CX=0.5013,ORB_CY=0.4258;   // orb ring center (measured px 770, 436)
+const ORB_D=0.26;                    // inner ring — not the whole glow (was 0.333, too huge)
+const ACTION_CY=0.866;               // below "WITH OUR EMAIL" — where click-anywhere was
 const orb=document.getElementById('orb');
 const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
