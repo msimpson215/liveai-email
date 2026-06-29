@@ -8,21 +8,28 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Full-bleed background; slight zoom crops Gmail tabs/footer out of view. */
-#bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
+/* Background: zoom hides Gmail Promotions tab (top) and footer links (bottom). */
+#bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
 #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
-  object-position:center 46%;transform:scale(1.14);transform-origin:center center;}
-#poweredBy{
-  position:fixed;left:0;right:0;bottom:calc(6px + env(safe-area-inset-bottom));z-index:4;
-  text-align:center;pointer-events:auto;
-  font:600 11px/1.3 system-ui,sans-serif;color:rgba(255,255,255,0.72);
-  text-shadow:0 1px 6px rgba(0,0,0,0.85);
+  object-position:center 42%;transform:scale(1.20);transform-origin:center center;}
+@media (max-width:600px){
+  #bg{object-position:center 36%;transform:scale(1.30);}
 }
-#poweredBy a{color:rgba(255,255,255,0.92);text-decoration:none;}
+/* Thin footer dock — sits on the email list area, NOT on CONVERSATION text. */
+#dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  background:rgba(14,14,14,0.92);
+  border-top:1px solid rgba(255,255,255,0.10);
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+}
+body.texting #dock{display:none;}
+#poweredBy{
+  text-align:center;pointer-events:auto;margin-top:5px;
+  font:600 10px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.55);
+}
+#poweredBy a{color:rgba(255,255,255,0.80);text-decoration:none;}
 #poweredBy a:hover{text-decoration:underline;}
-#poweredBy b{font-weight:800;color:#fff;}
-body.texting #poweredBy{color:rgba(90,90,90,0.9);text-shadow:none;}
-body.texting #poweredBy a{color:#333;}
+#poweredBy b{font-weight:800;color:rgba(255,255,255,0.90);}
 #outreachPage{display:none;}
 body.outreach{background:#fff;}
 body.outreach #bg{display:none;}
@@ -42,22 +49,20 @@ body.outreach #outreachPage{
   box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
-/* Compact, glassy control row pinned to the very bottom; blends with the art. */
+/* Controls live inside the bottom dock only. */
 #controls{
-  position:fixed;left:0;right:0;bottom:0;z-index:5;
-  display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:10px 12px calc(28px + env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(0,0,0,0.32),rgba(0,0,0,0));
+  display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap;
 }
-body.texting #controls{display:none;}
 #controls button,#controls a{
-  padding:8px 15px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:none;
-  font:700 12.5px/1 system-ui,sans-serif;white-space:nowrap;
-  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+  padding:7px 11px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:none;
+  font:700 11px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:1;min-width:0;
 }
-#textToggle{background:rgba(20,20,20,0.55);color:#fff;border:1px solid rgba(255,255,255,0.30);}
-#humanLink{background:rgba(254,209,0,0.92);color:#1a1a1a;display:inline-block;}
-#stopBtn{background:rgba(255,255,255,0.80);color:#111;border:1px solid rgba(0,0,0,0.08);}
+#textToggle{background:rgba(50,50,50,0.95);color:#fff;border:1px solid rgba(255,255,255,0.22);}
+#humanLink{background:#fed100;color:#111;display:inline-block;}
+#stopBtn{background:rgba(255,255,255,0.88);color:#111;}
+@media (max-width:600px){
+  #controls button,#controls a{padding:7px 9px;font-size:10px;}
+}
 body.active #textToggle,body.connecting #textToggle{display:inline-block;}
 body.active #stopBtn,body.connecting #stopBtn,body.paused #stopBtn{display:inline-block;}
 body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
@@ -112,12 +117,14 @@ body.noisy #textPanel .note{display:block;}
   <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
 </div>
 <div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
-<div id="controls">
-  <button id="textToggle" type="button">Type your question instead</button>
-  <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
-  <button id="stopBtn" type="button">Pause</button>
+<div id="dock">
+  <div id="controls">
+    <button id="textToggle" type="button">Type instead</button>
+    <a id="humanLink" href="tel:+16189293301">Human team</a>
+    <button id="stopBtn" type="button">Pause</button>
+  </div>
+  <div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
 </div>
-<div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
 <div id="textPanel" aria-live="polite">
   <div class="note">Sorry, it&rsquo;s a little loud right now. Please type your question here and I&rsquo;ll answer out loud &mdash; you can switch back to voice once it&rsquo;s quieter.</div>
   <div id="answer"></div>
@@ -155,7 +162,8 @@ function placeOrb(){
   const offX=(vw-rw)/2,offY=(vh-rh)/2;
   const d=ORB_D*rw;
   const left=offX+ORB_CX*rw-d/2;
-  const top=offY+ORB_CY*rh-d/2;
+  const topNudge=(vw<600)?vh*0.07:(vw<900)?vh*0.03:0;
+  const top=offY+ORB_CY*rh-d/2-topNudge;
   orb.style.width=d+'px';
   orb.style.height=d+'px';
   orb.style.left=left+'px';
