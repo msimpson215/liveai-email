@@ -325,8 +325,14 @@ app.get('/session', async (req, res) => {
             input: {
               turn_detection: {
                 type: 'server_vad',
-                silence_duration_ms: 900,
-                prefix_padding_ms: 300
+                // Hard-disable interruptions. Outside noise, a human talking,
+                // a jet engine, a rock concert — none of it cuts the AI off.
+                // It always finishes its full turn, then listens.
+                threshold: 0.95,
+                silence_duration_ms: 1200,
+                prefix_padding_ms: 300,
+                interrupt_response: false,
+                create_response: true
               }
             },
             output: {
