@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Background: tabs/footer masked in talk-bg-clean.png — full artwork kept. */
+/* Background: original artwork — do not edit the image file. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
 #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 /* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
@@ -109,7 +109,7 @@ body.noisy #textPanel .note{display:block;}
 </style>
 </head>
 <body class="idle">
-<div id="bgWrap"><img id="bg" src="/email/talk-bg-clean.png" alt=""/></div>
+<div id="bgWrap"><img id="bg" src="/email/talk-bg.png" alt=""/></div>
 <div id="outreachPage" aria-hidden="true">
   <div class="a1Mark">A1</div>
   <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
@@ -140,7 +140,7 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
+const IMG_W=1536,IMG_H=1024;          // original talk-bg.png — never edit this file
 const ORB_CX=0.5189,ORB_CY=0.3906;   // bright ring — measured px 797, 400 (788,437 is white center)
 const ORB_D=0.24;                    // bright ring diam 0.24 — dark glow 0.51 in artwork
 const ACTION_CY=0.866;               // below WITH OUR EMAIL (px 887 / 1024)
