@@ -191,13 +191,20 @@ async function connectVoice(){
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
-  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+    setupAiMeter(e.streams[0]);
+  };
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   micTrack=localStream.getAudioTracks()[0];
   pc.addTrack(micTrack);
   /* A separate, always-on copy of the mic feeds the noise meter only, so we can
-     mute the real mic during AI speech (no interruptions) and still hear the room. */
-  try{analyserTrack=micTrack.clone();}catch(e){analyserTrack=null;}
+     mute the real mic during AI speech (no interruptions) and still hear the room.
+     Clone FIRST (while live), then mute the real mic. */
+  try{analyserTrack=micTrack.clone();analyserTrack.enabled=true;}catch(e){analyserTrack=null;}
+  /* Start with the mic OFF so the opening can never be interrupted. The AI
+     voice meter keeps it off the whole time the AI is talking. */
+  aiSpeaking=true;micTrack.enabled=false;
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
   dc.addEventListener('message',handleEvent);
@@ -264,8 +271,6 @@ function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting);}}
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
-  if(t==='response.created'||t==='output_audio_buffer.started'){aiSpeaking=true;refreshMic();}
-  else if(t==='response.done'||t==='response.cancelled'||t==='output_audio_buffer.stopped'){aiSpeaking=false;refreshMic();}
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}
@@ -287,8 +292,11 @@ function closeText(){
 function enterNoiseMode(){
   if(isTexting||autoTexted)return;
   autoTexted=true;
+  /* Only speak the hand-off if the AI isn't already mid-sentence (avoids
+     creating a second response while one is active). The on-screen note
+     explains it either way. */
   const line="Hi — it sounds like there's a lot of background noise right now. Let's switch to text so I can make sure I get you the right answer. Just type your question below.";
-  if(dc&&dc.readyState==='open'){
+  if(!aiSpeaking&&dc&&dc.readyState==='open'){
     try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly, word for word: "'+line+'"'}}));}catch(e){}
   }
   openText(true);
@@ -310,6 +318,37 @@ textToggle.addEventListener('click',function(){openText(false);});
 sendBtn.addEventListener('click',sendText);
 voiceBack.addEventListener('click',closeText);
 textInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendText();}});
+
+/* ---- AI voice meter: mic is OFF whenever the AI is making sound ----
+   This is the hard guarantee that nothing (a word, a yell, noise) can
+   interrupt the AI. The mic only comes back ~0.7s after the AI goes quiet. */
+let aiAnalyser=null,aiData=null,aiMeterTimer=null,lastAiSound=0;
+function setupAiMeter(stream){
+  try{
+    if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
+    if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
+    const src=audioCtx.createMediaStreamSource(stream);
+    aiAnalyser=audioCtx.createAnalyser();aiAnalyser.fftSize=512;
+    aiData=new Uint8Array(aiAnalyser.frequencyBinCount);
+    src.connect(aiAnalyser);
+    lastAiSound=Date.now();
+    if(aiMeterTimer)clearInterval(aiMeterTimer);
+    aiMeterTimer=setInterval(checkAiSound,100);
+  }catch(e){}
+}
+function checkAiSound(){
+  if(!aiAnalyser)return;
+  aiAnalyser.getByteTimeDomainData(aiData);
+  let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
+  const rms=Math.sqrt(sum/aiData.length);
+  const now=Date.now();
+  if(rms>0.025){
+    lastAiSound=now;
+    if(!aiSpeaking){aiSpeaking=true;refreshMic();}
+  }else if(aiSpeaking&&(now-lastAiSound)>700){
+    aiSpeaking=false;refreshMic();
+  }
+}
 
 /* ---- Noise watch: if it stays loud, auto-offer the text box once ---- */
 let audioCtx=null,analyser=null,noiseData=null,loudFrames=0;
@@ -336,9 +375,10 @@ function checkNoise(){
 }
 function stopNoiseMonitor(){
   if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
+  if(aiMeterTimer){clearInterval(aiMeterTimer);aiMeterTimer=null;}
   if(audioCtx){try{audioCtx.close()}catch(e){}audioCtx=null;}
   if(analyserTrack){try{analyserTrack.stop()}catch(e){}analyserTrack=null;}
-  analyser=null;loudFrames=0;
+  analyser=null;aiAnalyser=null;loudFrames=0;
 }
 
 setState('idle');
