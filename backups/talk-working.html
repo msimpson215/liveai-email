@@ -8,21 +8,29 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Full-bleed background; slight zoom crops Gmail tabs/footer out of view. */
-#bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
-#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
-  object-position:center 46%;transform:scale(1.14);transform-origin:center center;}
-#poweredBy{
-  position:fixed;left:0;right:0;bottom:calc(6px + env(safe-area-inset-bottom));z-index:4;
-  text-align:center;pointer-events:auto;
-  font:600 11px/1.3 system-ui,sans-serif;color:rgba(255,255,255,0.72);
-  text-shadow:0 1px 6px rgba(0,0,0,0.85);
+/* Background: tabs/footer masked in talk-bg-clean.png — full artwork kept. */
+#bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;display:block;}
+/* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
+#dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  background:rgba(14,14,14,0.94);
+  border-top:1px solid rgba(255,255,255,0.10);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+  text-align:center;
 }
-#poweredBy a{color:rgba(255,255,255,0.92);text-decoration:none;}
+body.texting #dock{display:none;}
+#footerStop{
+  font:700 13px/1.3 system-ui,sans-serif;color:#fff;letter-spacing:0.02em;
+  cursor:pointer;padding:2px 0 4px;
+}
+#poweredBy{
+  pointer-events:auto;margin-top:4px;
+  font:600 10px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.50);
+}
+#poweredBy a{color:rgba(255,255,255,0.80);text-decoration:none;}
 #poweredBy a:hover{text-decoration:underline;}
-#poweredBy b{font-weight:800;color:#fff;}
-body.texting #poweredBy{color:rgba(90,90,90,0.9);text-shadow:none;}
-body.texting #poweredBy a{color:#333;}
+#poweredBy b{font-weight:800;color:rgba(255,255,255,0.90);}
 #outreachPage{display:none;}
 body.outreach{background:#fff;}
 body.outreach #bg{display:none;}
@@ -42,25 +50,21 @@ body.outreach #outreachPage{
   box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
-/* Compact, glassy control row pinned to the very bottom; blends with the art. */
-#controls{
-  position:fixed;left:0;right:0;bottom:0;z-index:5;
-  display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:10px 12px calc(28px + env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(0,0,0,0.32),rgba(0,0,0,0));
+/* Action buttons: pinned to image coordinates (where "click anywhere" was). */
+#actionBar{
+  position:fixed;z-index:6;display:flex;justify-content:center;align-items:center;
+  gap:8px;transform:translate(-50%,-50%);pointer-events:auto;
 }
-body.texting #controls{display:none;}
-#controls button,#controls a{
-  padding:8px 15px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:none;
-  font:700 12.5px/1 system-ui,sans-serif;white-space:nowrap;
-  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+body.texting #actionBar{display:none;}
+#actionBar button,#actionBar a{
+  padding:8px 14px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;
+  font:700 12px/1 system-ui,sans-serif;white-space:nowrap;
+  box-shadow:0 6px 22px rgba(0,0,0,0.45);
 }
-#textToggle{background:rgba(20,20,20,0.55);color:#fff;border:1px solid rgba(255,255,255,0.30);}
-#humanLink{background:rgba(254,209,0,0.92);color:#1a1a1a;display:inline-block;}
-#stopBtn{background:rgba(255,255,255,0.80);color:#111;border:1px solid rgba(0,0,0,0.08);}
-body.active #textToggle,body.connecting #textToggle{display:inline-block;}
-body.active #stopBtn,body.connecting #stopBtn,body.paused #stopBtn{display:inline-block;}
-body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
+#textToggle{background:rgba(30,30,30,0.88);color:#fff;border:1px solid rgba(255,255,255,0.25);}
+#humanLink{background:#fed100;color:#111;display:inline-block;}
+#stopBtn{background:rgba(255,255,255,0.92);color:#111;}
+body.paused #stopBtn{background:#fed100;color:#111;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -105,19 +109,22 @@ body.noisy #textPanel .note{display:block;}
 </style>
 </head>
 <body class="idle">
-<div id="bgWrap"><img id="bg" src="/email/talk-bg.png" alt=""/></div>
+<div id="bgWrap"><img id="bg" src="/email/talk-bg-clean.png" alt=""/></div>
 <div id="outreachPage" aria-hidden="true">
   <div class="a1Mark">A1</div>
   <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
   <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
 </div>
 <div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
-<div id="controls">
-  <button id="textToggle" type="button">Type your question instead</button>
-  <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
+<div id="actionBar">
+  <button id="textToggle" type="button">Type instead</button>
   <button id="stopBtn" type="button">Pause</button>
+  <a id="humanLink" href="tel:+16189293301">Human team</a>
 </div>
-<div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
+<div id="dock">
+  <div id="footerStop" role="button" tabindex="0">Click anywhere to stop</div>
+  <div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
+</div>
 <div id="textPanel" aria-live="polite">
   <div class="note">Sorry, it&rsquo;s a little loud right now. Please type your question here and I&rsquo;ll answer out loud &mdash; you can switch back to voice once it&rsquo;s quieter.</div>
   <div id="answer"></div>
@@ -133,12 +140,21 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=1024;        // background natural size
-const ORB_CX=0.508,ORB_CY=0.523;    // orb center as fraction of the image
-const ORB_D=0.165;                  // orb diameter as fraction of image width
+const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
+const ORB_CX=0.5130,ORB_CY=0.4268;   // bright inner ring center (px 788, 437)
+const ORB_D=0.086;                   // inner bright ring only — big glow stays in artwork
+const ACTION_CY=0.866;               // buttons sit below "WITH OUR EMAIL"
 const orb=document.getElementById('orb');
+const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
-function placeOrb(){
+function coverMap(){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const scale=Math.max(vw/IMG_W,vh/IMG_H);
+  const rw=IMG_W*scale,rh=IMG_H*scale;
+  const offX=(vw-rw)/2,offY=(vh-rh)/2; /* matches object-position: center center */
+  return {rw,rh,offX,offY};
+}
+function placeLayout(){
   const vw=window.innerWidth,vh=window.innerHeight;
   if(isOutreach){
     const d=Math.max(112,Math.min(Math.min(vw,vh)*0.24,190));
@@ -148,11 +164,11 @@ function placeOrb(){
     orb.style.height=d+'px';
     orb.style.left=left+'px';
     orb.style.top=top+'px';
+    actionBar.style.left=(left+d/2)+'px';
+    actionBar.style.top=(top+d+70)+'px';
     return;
   }
-  const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover (full-bleed)
-  const rw=IMG_W*scale,rh=IMG_H*scale;
-  const offX=(vw-rw)/2,offY=(vh-rh)/2;
+  const {rw,rh,offX,offY}=coverMap();
   const d=ORB_D*rw;
   const left=offX+ORB_CX*rw-d/2;
   const top=offY+ORB_CY*rh-d/2;
@@ -160,7 +176,10 @@ function placeOrb(){
   orb.style.height=d+'px';
   orb.style.left=left+'px';
   orb.style.top=top+'px';
+  actionBar.style.left=(offX+ORB_CX*rw)+'px';
+  actionBar.style.top=(offY+ACTION_CY*rh)+'px';
 }
+function placeOrb(){placeLayout();}
 placeOrb();
 window.addEventListener('resize',placeOrb);
 
@@ -287,6 +306,14 @@ orb.addEventListener('keydown',function(e){
 stopBtn.addEventListener('click',function(e){
   e.stopPropagation();
   if(isPaused)resumeSession();else pauseSession();
+});
+const footerStop=document.getElementById('footerStop');
+footerStop.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(isPaused)resumeSession();else if(pc||starting)pauseSession();
+});
+footerStop.addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();footerStop.click();}
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pc)pauseSession();});
 document.addEventListener('visibilitychange',function(){

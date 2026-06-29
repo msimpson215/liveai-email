@@ -10,7 +10,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
 /* Background: tabs/footer masked in talk-bg-clean.png — full artwork kept. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
-#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;display:block;}
 /* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
 #dock{
   position:fixed;left:0;right:0;bottom:0;z-index:5;
@@ -141,9 +141,9 @@ const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
 const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
-const ORB_CX=0.5013,ORB_CY=0.4258;   // orb ring center (measured px 770, 436)
-const ORB_D=0.26;                    // inner ring — not the whole glow (was 0.333, too huge)
-const ACTION_CY=0.866;               // below "WITH OUR EMAIL" — where click-anywhere was
+const ORB_CX=0.5130,ORB_CY=0.4268;   // bright inner ring center (px 788, 437)
+const ORB_D=0.086;                   // inner bright ring only — big glow stays in artwork
+const ACTION_CY=0.866;               // buttons sit below "WITH OUR EMAIL"
 const orb=document.getElementById('orb');
 const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
@@ -151,7 +151,7 @@ function coverMap(){
   const vw=window.innerWidth,vh=window.innerHeight;
   const scale=Math.max(vw/IMG_W,vh/IMG_H);
   const rw=IMG_W*scale,rh=IMG_H*scale;
-  const offX=(vw-rw)/2,offY=0; /* matches object-position: center top */
+  const offX=(vw-rw)/2,offY=(vh-rh)/2; /* matches object-position: center center */
   return {rw,rh,offX,offY};
 }
 function placeLayout(){
