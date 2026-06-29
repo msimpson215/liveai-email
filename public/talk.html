@@ -58,6 +58,47 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
   from{box-shadow:0 0 50px 12px rgba(255,255,255,0.55);}
   to{box-shadow:0 0 110px 30px rgba(255,225,0,0.9);}
 }
+/* ---- Type-instead fallback (for loud places) ---- */
+#textToggle{
+  position:fixed;z-index:4;left:50%;bottom:12px;transform:translateX(-50%);display:none;
+  padding:9px 18px;border:0;border-radius:999px;background:rgba(17,17,17,0.9);color:#fff;
+  font:700 13px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,0.35);
+  white-space:nowrap;
+}
+body.active #textToggle,body.connecting #textToggle{display:block;}
+body.texting #textToggle{display:none;}
+#textPanel{
+  position:fixed;z-index:6;left:0;right:0;bottom:0;display:none;background:#fff;
+  border-top:1px solid #e6e6e6;box-shadow:0 -10px 44px rgba(0,0,0,0.22);
+  padding:14px 14px calc(16px + env(safe-area-inset-bottom));
+}
+body.texting #textPanel{display:block;}
+body.texting #stopBtn,body.texting #poweredBy{display:none;}
+#textPanel .note{
+  font:600 13px/1.4 system-ui,sans-serif;color:#7a5d00;background:#fff8df;border:1px solid #ffe39a;
+  border-radius:10px;padding:9px 11px;margin-bottom:10px;display:none;
+}
+body.noisy #textPanel .note{display:block;}
+#answer{
+  max-height:34vh;overflow:auto;font:500 15px/1.55 system-ui,sans-serif;color:#111;
+  margin-bottom:10px;white-space:pre-wrap;-webkit-user-select:text;user-select:text;
+}
+#answer:empty{display:none;}
+#answer .you{color:#555;font-weight:700;}
+.trow{display:flex;gap:8px;}
+#textInput{
+  flex:1;padding:13px 14px;border:1px solid #ccc;border-radius:12px;
+  font:500 16px/1.2 system-ui,sans-serif;outline:none;background:#fff;color:#111;
+}
+#textInput:focus{border-color:#fed100;box-shadow:0 0 0 3px rgba(254,209,0,0.25);}
+#sendBtn{
+  padding:13px 20px;border:0;border-radius:12px;background:#fed100;color:#111;
+  font:800 14px/1 system-ui,sans-serif;cursor:pointer;
+}
+#voiceBack{
+  display:block;margin:11px auto 0;background:none;border:0;color:#666;
+  font:600 13px/1 system-ui,sans-serif;cursor:pointer;text-decoration:underline;
+}
 </style>
 </head>
 <body class="idle">
@@ -71,6 +112,16 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
 <button id="stopBtn" type="button">Stop</button>
 <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
 <div id="poweredBy">Powered by <b>Axon AI</b></div>
+<button id="textToggle" type="button">Type your question instead</button>
+<div id="textPanel" aria-live="polite">
+  <div class="note">It&rsquo;s a little loud where you are &mdash; type your question here and I&rsquo;ll answer on screen.</div>
+  <div id="answer"></div>
+  <div class="trow">
+    <input id="textInput" type="text" placeholder="Type your question&hellip;" autocomplete="off" enterkeyhint="send"/>
+    <button id="sendBtn" type="button">Send</button>
+  </div>
+  <button id="voiceBack" type="button">Use voice instead</button>
+</div>
 <script>
 /* ---- position the live orb exactly on the orb drawn in the image ---- */
 const params=new URLSearchParams(location.search);
@@ -114,12 +165,20 @@ window.addEventListener('resize',placeOrb);
 
 /* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
 let pc=null,localStream=null,starting=false,audioEl=null;
+let dc=null,micTrack=null,noiseTimer=null,autoTexted=false;
 const recipientName=params.get('name')||'';
 const autostart=params.get('autostart')==='1';
 const sessionParams=new URLSearchParams({src:sessionSource});
 if(recipientName)sessionParams.set('name',recipientName);
 const sessionUrl='/session?'+sessionParams.toString();
-function setState(s){document.body.className=s+(isOutreach?' outreach':'');}
+let connState='idle',isTexting=false,isNoisy=false;
+function applyClasses(){
+  let c=connState+(isOutreach?' outreach':'');
+  if(isTexting)c+=' texting';
+  if(isNoisy)c+=' noisy';
+  document.body.className=c;
+}
+function setState(s){connState=s;applyClasses();}
 
 function ensureAudio(){
   if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}
@@ -130,8 +189,11 @@ function resumeAudio(){
   return false;
 }
 async function stop(){
+  stopNoiseMonitor();
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;micTrack=null;
+  isTexting=false;isNoisy=false;autoTexted=false;
   starting=false;setState('idle');
 }
 async function connectVoice(){
@@ -144,9 +206,12 @@ async function connectVoice(){
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
-  pc.addTrack(localStream.getTracks()[0]);
-  const dc=pc.createDataChannel('oai-events');
+  micTrack=localStream.getAudioTracks()[0];
+  pc.addTrack(micTrack);
+  dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+  dc.addEventListener('message',handleEvent);
+  startNoiseMonitor();
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
@@ -185,6 +250,88 @@ document.addEventListener('visibilitychange',function(){
 });
 window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
+
+/* ---- Type-instead fallback for loud environments ---- */
+const textToggle=document.getElementById('textToggle');
+const textPanel=document.getElementById('textPanel');
+const textInput=document.getElementById('textInput');
+const sendBtn=document.getElementById('sendBtn');
+const voiceBack=document.getElementById('voiceBack');
+const answerEl=document.getElementById('answer');
+let curAI=null;
+
+function appendAI(text){
+  if(!curAI){curAI=document.createElement('div');answerEl.appendChild(curAI);}
+  curAI.textContent+=text;
+  answerEl.scrollTop=answerEl.scrollHeight;
+}
+/* Read the AI's spoken words as text so it works even when you can't hear it. */
+function handleEvent(ev){
+  let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
+  const t=msg.type||'';
+  if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
+  else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
+  else if(t.indexOf('audio_transcript.done')>=0||t==='response.done'){curAI=null;}
+}
+function setMic(on){if(micTrack){micTrack.enabled=on;}}
+function openText(auto){
+  if(!pc&&!starting){start();}
+  isTexting=true;
+  if(auto){isNoisy=true;autoTexted=true;}
+  setMic(false);
+  applyClasses();
+  setTimeout(function(){try{textInput.focus();}catch(e){}},60);
+}
+function closeText(){
+  isTexting=false;isNoisy=false;
+  setMic(true);
+  applyClasses();
+}
+function sendText(){
+  const text=(textInput.value||'').trim();
+  if(!text)return;
+  const you=document.createElement('div');you.className='you';you.textContent='You: '+text;
+  answerEl.appendChild(you);curAI=null;answerEl.scrollTop=answerEl.scrollHeight;
+  textInput.value='';
+  if(dc&&dc.readyState==='open'){
+    try{
+      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:text}]}}));
+      dc.send(JSON.stringify({type:'response.create'}));
+    }catch(e){}
+  }
+}
+textToggle.addEventListener('click',function(){openText(false);});
+sendBtn.addEventListener('click',sendText);
+voiceBack.addEventListener('click',closeText);
+textInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendText();}});
+
+/* ---- Noise watch: if it stays loud, auto-offer the text box once ---- */
+let audioCtx=null,analyser=null,noiseData=null,loudFrames=0;
+function startNoiseMonitor(){
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
+    const src=audioCtx.createMediaStreamSource(localStream);
+    analyser=audioCtx.createAnalyser();analyser.fftSize=512;
+    noiseData=new Uint8Array(analyser.frequencyBinCount);
+    src.connect(analyser);
+    loudFrames=0;
+    noiseTimer=setInterval(checkNoise,250);
+  }catch(e){}
+}
+function checkNoise(){
+  if(!analyser||isTexting||autoTexted)return;
+  analyser.getByteTimeDomainData(noiseData);
+  let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
+  const rms=Math.sqrt(sum/noiseData.length);
+  if(rms>0.17){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
+  if(loudFrames>=12){openText(true);}   /* ~3s of sustained loud */
+}
+function stopNoiseMonitor(){
+  if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
+  if(audioCtx){try{audioCtx.close()}catch(e){}audioCtx=null;}
+  analyser=null;loudFrames=0;
+}
 
 setState('idle');
 /* Always auto-start the moment the page opens (no button, no extra click). */
