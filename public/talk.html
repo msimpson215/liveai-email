@@ -140,26 +140,20 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=1024;
-/* Measured from talk-bg.png pixels (1536×1024): */
-const ORB_CX=0.5124,ORB_CY=0.4268;   /* bright ring center px 787, 437 */
-const ORB_D=0.1094;                  /* bright ring diam px 168 — dark glow 0.249 */
-const ACTION_CY=0.8574;              /* button row center px 878 */
-const DOCK_CLEAR=76;                 /* dock height + gap — measured */
+const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
+const ORB_CX=0.5189,ORB_CY=0.3906;   // bright ring — measured px 797, 400 (788,437 is white center)
+const ORB_D=0.24;                    // bright ring diam 0.24 — dark glow 0.51 in artwork
+const ACTION_CY=0.866;               // below WITH OUR EMAIL (px 887 / 1024)
+const DOCK_CLEAR=72;                 // px above footer dock — measured
 const orb=document.getElementById('orb');
 const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
-const dockEl=document.getElementById('dock');
 function coverMap(){
   const vw=window.innerWidth,vh=window.innerHeight;
   const scale=Math.max(vw/IMG_W,vh/IMG_H);
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2,offY=0; /* object-position: center top */
-  return {rw,rh,offX,offY,vh};
-}
-function dockClearance(){
-  const h=dockEl?dockEl.offsetHeight:56;
-  return Math.max(DOCK_CLEAR,h+12);
+  return {rw,rh,offX,offY};
 }
 function placeLayout(){
   const vw=window.innerWidth,vh=window.innerHeight;
@@ -177,12 +171,14 @@ function placeLayout(){
   }
   const {rw,rh,offX,offY}=coverMap();
   const d=ORB_D*rw;
+  const left=offX+ORB_CX*rw-d/2;
+  const top=offY+ORB_CY*rh-d/2;
   orb.style.width=d+'px';
   orb.style.height=d+'px';
-  orb.style.left=(offX+ORB_CX*rw-d/2)+'px';
-  orb.style.top=(offY+ORB_CY*rh-d/2)+'px';
+  orb.style.left=left+'px';
+  orb.style.top=top+'px';
   const wantBarY=offY+ACTION_CY*rh;
-  const maxBarY=vh-dockClearance();
+  const maxBarY=vh-DOCK_CLEAR;
   actionBar.style.left=(offX+ORB_CX*rw)+'px';
   actionBar.style.top=Math.min(wantBarY,maxBarY)+'px';
 }
