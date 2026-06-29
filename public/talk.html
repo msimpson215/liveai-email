@@ -11,10 +11,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
 /* Full-bleed background; slight zoom crops Gmail tabs/footer out of view. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
 #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
-  object-position:center 52%;transform:scale(1.18);transform-origin:center center;}
-@media (max-width:600px){
-  #bg{object-position:center 48%;transform:scale(1.22);}
-}
+  object-position:center 46%;transform:scale(1.14);transform-origin:center center;}
 #poweredBy{
   position:fixed;left:0;right:0;bottom:calc(6px + env(safe-area-inset-bottom));z-index:4;
   text-align:center;pointer-events:auto;
@@ -158,8 +155,7 @@ function placeOrb(){
   const offX=(vw-rw)/2,offY=(vh-rh)/2;
   const d=ORB_D*rw;
   const left=offX+ORB_CX*rw-d/2;
-  const topNudge=(vw<600)?vh*0.045:0;
-  const top=offY+ORB_CY*rh-d/2-topNudge;
+  const top=offY+ORB_CY*rh-d/2;
   orb.style.width=d+'px';
   orb.style.height=d+'px';
   orb.style.left=left+'px';
