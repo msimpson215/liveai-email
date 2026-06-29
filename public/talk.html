@@ -8,8 +8,21 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Your design, full-bleed, margin to margin (looks right on big screens & laptops). */
-#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+/* Full-bleed background; slight zoom crops Gmail tabs/footer out of view. */
+#bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  object-position:center 46%;transform:scale(1.14);transform-origin:center center;}
+#poweredBy{
+  position:fixed;left:0;right:0;bottom:calc(6px + env(safe-area-inset-bottom));z-index:4;
+  text-align:center;pointer-events:auto;
+  font:600 11px/1.3 system-ui,sans-serif;color:rgba(255,255,255,0.72);
+  text-shadow:0 1px 6px rgba(0,0,0,0.85);
+}
+#poweredBy a{color:rgba(255,255,255,0.92);text-decoration:none;}
+#poweredBy a:hover{text-decoration:underline;}
+#poweredBy b{font-weight:800;color:#fff;}
+body.texting #poweredBy{color:rgba(90,90,90,0.9);text-shadow:none;}
+body.texting #poweredBy a{color:#333;}
 #outreachPage{display:none;}
 body.outreach{background:#fff;}
 body.outreach #bg{display:none;}
@@ -33,7 +46,7 @@ body.outreach #outreachPage{
 #controls{
   position:fixed;left:0;right:0;bottom:0;z-index:5;
   display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:10px 12px calc(12px + env(safe-area-inset-bottom));
+  padding:10px 12px calc(28px + env(safe-area-inset-bottom));
   background:linear-gradient(to top,rgba(0,0,0,0.32),rgba(0,0,0,0));
 }
 body.texting #controls{display:none;}
@@ -46,7 +59,8 @@ body.texting #controls{display:none;}
 #humanLink{background:rgba(254,209,0,0.92);color:#1a1a1a;display:inline-block;}
 #stopBtn{background:rgba(255,255,255,0.80);color:#111;border:1px solid rgba(0,0,0,0.08);}
 body.active #textToggle,body.connecting #textToggle{display:inline-block;}
-body.active #stopBtn,body.connecting #stopBtn{display:inline-block;}
+body.active #stopBtn,body.connecting #stopBtn,body.paused #stopBtn{display:inline-block;}
+body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -91,7 +105,7 @@ body.noisy #textPanel .note{display:block;}
 </style>
 </head>
 <body class="idle">
-<img id="bg" src="/email/talk-bg.png" alt=""/>
+<div id="bgWrap"><img id="bg" src="/email/talk-bg.png" alt=""/></div>
 <div id="outreachPage" aria-hidden="true">
   <div class="a1Mark">A1</div>
   <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
@@ -101,8 +115,9 @@ body.noisy #textPanel .note{display:block;}
 <div id="controls">
   <button id="textToggle" type="button">Type your question instead</button>
   <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
-  <button id="stopBtn" type="button">Stop</button>
+  <button id="stopBtn" type="button">Pause</button>
 </div>
+<div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
 <div id="textPanel" aria-live="polite">
   <div class="note">Sorry, it&rsquo;s a little loud right now. Please type your question here and I&rsquo;ll answer out loud &mdash; you can switch back to voice once it&rsquo;s quieter.</div>
   <div id="answer"></div>
@@ -158,11 +173,12 @@ const autostart=params.get('autostart')==='1';
 const sessionParams=new URLSearchParams({src:sessionSource});
 if(recipientName)sessionParams.set('name',recipientName);
 const sessionUrl='/session?'+sessionParams.toString();
-let connState='idle',isTexting=false,isNoisy=false;
+let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=false;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
   if(isNoisy)c+=' noisy';
+  if(isPaused)c+=' paused';
   document.body.className=c;
 }
 function setState(s){connState=s;applyClasses();}
@@ -180,8 +196,27 @@ async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;micTrack=null;aiSpeaking=false;
-  isTexting=false;isNoisy=false;autoTexted=false;
+  isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
   starting=false;setState('idle');
+  if(stopBtn)stopBtn.textContent='Pause';
+}
+function pauseSession(){
+  if(!pc&&!starting)return;
+  isPaused=true;
+  if(audioEl)audioEl.muted=true;
+  if(micTrack)micTrack.enabled=false;
+  connState='paused';
+  applyClasses();
+  if(stopBtn)stopBtn.textContent='Resume';
+}
+function resumeSession(){
+  if(!pc)return;
+  isPaused=false;
+  if(audioEl){audioEl.muted=false;audioEl.play().catch(function(){});}
+  connState='active';
+  refreshMic();
+  applyClasses();
+  if(stopBtn)stopBtn.textContent='Pause';
 }
 async function connectVoice(){
   const r=await fetch(sessionUrl,{cache:'no-store'});
@@ -206,7 +241,13 @@ async function connectVoice(){
      voice meter keeps it off the whole time the AI is talking. */
   aiSpeaking=true;micTrack.enabled=false;
   dc=pc.createDataChannel('oai-events');
-  dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+  dc.addEventListener('open',function(){
+    try{
+      /* Opening greeting plays once per page visit. Pause/resume and orb
+         restarts keep the conversation — no second "Hello Mr. Grawe". */
+      if(!greetingDone){dc.send(JSON.stringify({type:'response.create'}));}
+    }catch(e){}
+  });
   dc.addEventListener('message',handleEvent);
   startNoiseMonitor();
   const offer=await pc.createOffer();
@@ -230,18 +271,24 @@ async function start(){
   starting=false;
 }
 
-/* Auto-start on open. To stop: press Stop, press Escape, or leave the page.
-   The orb stays tappable as a silent fallback if the browser blocks autostart. */
+/* Pause keeps the session alive and picks up the conversation — no second greeting.
+   Tap Resume or the orb to continue. Leaving the page fully ends the session. */
 const stopBtn=document.getElementById('stopBtn');
 function toggleVoice(){
-  if(pc||starting){if(!resumeAudio())stop();}else{start();}
+  if(isPaused){resumeSession();return;}
+  if(pc||starting){
+    if(!resumeAudio())pauseSession();
+  }else{start();}
 }
 orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
 orb.addEventListener('keydown',function(e){
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice();}
 });
-stopBtn.addEventListener('click',function(e){e.stopPropagation();stop();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
+stopBtn.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(isPaused)resumeSession();else pauseSession();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pc)pauseSession();});
 document.addEventListener('visibilitychange',function(){
   if(document.hidden&&(pc||starting))stop();
 });
@@ -265,12 +312,13 @@ function appendAI(text){
 /* The real mic is ON only when the AI is NOT speaking and we're not in text mode.
    While the AI talks, the mic is OFF — so "stop", "fuck you", or any noise can
    NOT interrupt it. It always finishes. */
-function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting);}}
+function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting&&!isPaused);}}
 /* Read the AI's spoken words as text so it works even when you can't hear it,
    and track when it starts/stops talking. */
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
+  if(t==='response.done'){greetingDone=true;}
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}
@@ -337,7 +385,7 @@ function setupAiMeter(stream){
   }catch(e){}
 }
 function checkAiSound(){
-  if(!aiAnalyser)return;
+  if(!aiAnalyser||isPaused)return;
   aiAnalyser.getByteTimeDomainData(aiData);
   let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
   const rms=Math.sqrt(sum/aiData.length);
