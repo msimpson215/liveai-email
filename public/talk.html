@@ -29,27 +29,24 @@ body.outreach #outreachPage{
   box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
-/* One tidy stacked control bar at the bottom — nothing overlaps. */
+/* Compact, glassy control row pinned to the very bottom; blends with the art. */
 #controls{
-  position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);
-  z-index:5;display:flex;flex-direction:column;align-items:stretch;gap:10px;width:min(90vw,340px);
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 12px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(0,0,0,0.32),rgba(0,0,0,0));
 }
 body.texting #controls{display:none;}
 #controls button,#controls a{
-  width:100%;text-align:center;padding:13px 18px;border-radius:999px;cursor:pointer;
-  font:800 14px/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,0.28);
-  white-space:nowrap;border:0;text-decoration:none;display:none;box-sizing:border-box;
+  padding:8px 15px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:none;
+  font:700 12.5px/1 system-ui,sans-serif;white-space:nowrap;
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
 }
-#textToggle{background:rgba(17,17,17,0.92);color:#fff;}
-#humanLink{background:#fed100;color:#111;display:block;}
-#stopBtn{background:#fff;color:#111;border:1px solid #d8d8d8;text-transform:uppercase;letter-spacing:0.04em;}
-body.active #textToggle,body.connecting #textToggle{display:block;}
-body.active #stopBtn,body.connecting #stopBtn{display:block;}
-#poweredBy{
-  position:fixed;left:0;right:0;bottom:5px;z-index:4;text-align:center;pointer-events:none;
-  font:600 11px/1.3 system-ui,sans-serif;color:rgba(110,110,110,0.95);
-}
-#poweredBy b{font-weight:800;color:#444;}
+#textToggle{background:rgba(20,20,20,0.55);color:#fff;border:1px solid rgba(255,255,255,0.30);}
+#humanLink{background:rgba(254,209,0,0.92);color:#1a1a1a;display:inline-block;}
+#stopBtn{background:rgba(255,255,255,0.80);color:#111;border:1px solid rgba(0,0,0,0.08);}
+body.active #textToggle,body.connecting #textToggle{display:inline-block;}
+body.active #stopBtn,body.connecting #stopBtn{display:inline-block;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -66,7 +63,6 @@ body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinit
   padding:14px 14px calc(16px + env(safe-area-inset-bottom));
 }
 body.texting #textPanel{display:block;}
-body.texting #stopBtn,body.texting #poweredBy{display:none;}
 #textPanel .note{
   font:600 13px/1.4 system-ui,sans-serif;color:#7a5d00;background:#fff8df;border:1px solid #ffe39a;
   border-radius:10px;padding:9px 11px;margin-bottom:10px;display:none;
@@ -107,7 +103,6 @@ body.noisy #textPanel .note{display:block;}
   <a id="humanLink" href="tel:+16189293301">Talk to a human team member</a>
   <button id="stopBtn" type="button">Stop</button>
 </div>
-<div id="poweredBy">Powered by <b>Axon AI</b></div>
 <div id="textPanel" aria-live="polite">
   <div class="note">Sorry, it&rsquo;s a little loud right now. Please type your question here and I&rsquo;ll answer out loud &mdash; you can switch back to voice once it&rsquo;s quieter.</div>
   <div id="answer"></div>
@@ -157,6 +152,7 @@ window.addEventListener('resize',placeOrb);
 /* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
 let pc=null,localStream=null,starting=false,audioEl=null;
 let dc=null,micTrack=null,noiseTimer=null,autoTexted=false;
+let aiSpeaking=false,analyserTrack=null;
 const recipientName=params.get('name')||'';
 const autostart=params.get('autostart')==='1';
 const sessionParams=new URLSearchParams({src:sessionSource});
@@ -183,7 +179,7 @@ async function stop(){
   stopNoiseMonitor();
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  dc=null;micTrack=null;
+  dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;
   starting=false;setState('idle');
 }
@@ -196,9 +192,12 @@ async function connectVoice(){
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
-  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   micTrack=localStream.getAudioTracks()[0];
   pc.addTrack(micTrack);
+  /* A separate, always-on copy of the mic feeds the noise meter only, so we can
+     mute the real mic during AI speech (no interruptions) and still hear the room. */
+  try{analyserTrack=micTrack.clone();}catch(e){analyserTrack=null;}
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
   dc.addEventListener('message',handleEvent);
@@ -256,27 +255,43 @@ function appendAI(text){
   curAI.textContent+=text;
   answerEl.scrollTop=answerEl.scrollHeight;
 }
-/* Read the AI's spoken words as text so it works even when you can't hear it. */
+/* The real mic is ON only when the AI is NOT speaking and we're not in text mode.
+   While the AI talks, the mic is OFF — so "stop", "fuck you", or any noise can
+   NOT interrupt it. It always finishes. */
+function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting);}}
+/* Read the AI's spoken words as text so it works even when you can't hear it,
+   and track when it starts/stops talking. */
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
+  if(t==='response.created'||t==='output_audio_buffer.started'){aiSpeaking=true;refreshMic();}
+  else if(t==='response.done'||t==='response.cancelled'||t==='output_audio_buffer.stopped'){aiSpeaking=false;refreshMic();}
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
-  else if(t.indexOf('audio_transcript.done')>=0||t==='response.done'){curAI=null;}
+  else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}
 }
-function setMic(on){if(micTrack){micTrack.enabled=on;}}
 function openText(auto){
   if(!pc&&!starting){start();}
   isTexting=true;
   if(auto){isNoisy=true;autoTexted=true;}
-  setMic(false);
+  refreshMic();
   applyClasses();
   setTimeout(function(){try{textInput.focus();}catch(e){}},60);
 }
 function closeText(){
   isTexting=false;isNoisy=false;
-  setMic(true);
+  refreshMic();
   applyClasses();
+}
+/* When the room is too loud, the AI announces the switch and we open text mode. */
+function enterNoiseMode(){
+  if(isTexting||autoTexted)return;
+  autoTexted=true;
+  const line="Hi — it sounds like there's a lot of background noise right now. Let's switch to text so I can make sure I get you the right answer. Just type your question below.";
+  if(dc&&dc.readyState==='open'){
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly, word for word: "'+line+'"'}}));}catch(e){}
+  }
+  openText(true);
 }
 function sendText(){
   const text=(textInput.value||'').trim();
@@ -302,7 +317,8 @@ function startNoiseMonitor(){
   try{
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
-    const src=audioCtx.createMediaStreamSource(localStream);
+    const meterStream=analyserTrack?new MediaStream([analyserTrack]):localStream;
+    const src=audioCtx.createMediaStreamSource(meterStream);
     analyser=audioCtx.createAnalyser();analyser.fftSize=512;
     noiseData=new Uint8Array(analyser.frequencyBinCount);
     src.connect(analyser);
@@ -315,12 +331,13 @@ function checkNoise(){
   analyser.getByteTimeDomainData(noiseData);
   let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
   const rms=Math.sqrt(sum/noiseData.length);
-  if(rms>0.14){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
-  if(loudFrames>=8){openText(true);}   /* ~2s of sustained loud -> switch to text */
+  if(rms>0.15){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
+  if(loudFrames>=10){enterNoiseMode();}   /* ~2.5s of sustained loud -> switch to text */
 }
 function stopNoiseMonitor(){
   if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
   if(audioCtx){try{audioCtx.close()}catch(e){}audioCtx=null;}
+  if(analyserTrack){try{analyserTrack.stop()}catch(e){}analyserTrack=null;}
   analyser=null;loudFrames=0;
 }
 
