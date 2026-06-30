@@ -8,7 +8,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Background: original artwork — do not edit the image file. */
+/* Background: tabs/footer masked in talk-bg-clean.png — full artwork kept. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
 #bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 /* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
@@ -43,27 +43,17 @@ body.outreach #outreachPage{
 .a1Brand{font-weight:900;font-size:clamp(22px,5vw,44px);line-height:1.05;margin-top:10px;}
 .a1Brand span{display:block;color:#f1be00;}
 .a1Sub{max-width:760px;margin-top:14px;font-size:clamp(16px,2.4vw,24px);font-weight:650;color:#333;line-height:1.35;}
-/* Live orb: dark back shade (big) + bright ring (small) — matches artwork eclipse. */
-#orbHit{position:fixed;cursor:pointer;z-index:2;}
-#orbShade{
-  position:fixed;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(12,8,0,0.82) 0%,rgba(30,20,0,0.55) 45%,rgba(45,32,0,0.22) 68%,transparent 100%);
-  box-shadow:0 0 120px 50px rgba(20,14,0,0.65);
-}
-#orbRing{
-  position:fixed;border-radius:50%;pointer-events:none;
+/* Live orb sits exactly on the orb in your image (positioned by JS). */
+#orb{
+  position:fixed;border-radius:50%;cursor:pointer;z-index:2;
   background:transparent;
-  border:3px solid rgba(255,220,70,0.95);
-  box-shadow:0 0 28px 10px rgba(255,210,0,0.55),inset 0 0 18px rgba(255,200,0,0.35);
+  box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
-body.connecting #orbRing,body.active #orbRing{animation:pulseOn 1.1s ease-in-out infinite alternate;}
-/* Action buttons: always above footer dock. */
+/* Action buttons: pinned to image coordinates (where "click anywhere" was). */
 #actionBar{
-  position:fixed;z-index:6;left:50%;bottom:76px;
-  transform:translateX(-50%);
-  display:flex;justify-content:center;align-items:center;
-  gap:8px;pointer-events:auto;
+  position:fixed;z-index:6;display:flex;justify-content:center;align-items:center;
+  gap:8px;transform:translate(-50%,-50%);pointer-events:auto;
 }
 body.texting #actionBar{display:none;}
 #actionBar button,#actionBar a{
@@ -76,12 +66,13 @@ body.texting #actionBar{display:none;}
 #stopBtn{background:rgba(255,255,255,0.92);color:#111;}
 body.paused #stopBtn{background:#fed100;color:#111;}
 @keyframes pulse{
-  0%,100%{box-shadow:0 0 24px 8px rgba(255,205,0,0.30),inset 0 0 14px rgba(255,200,0,0.25);}
-  50%{box-shadow:0 0 52px 16px rgba(255,215,0,0.62),inset 0 0 22px rgba(255,210,0,0.45);}
+  0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
+  50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
 }
+body.connecting #orb,body.active #orb{animation:pulseOn 1.1s ease-in-out infinite alternate;}
 @keyframes pulseOn{
-  from{box-shadow:0 0 40px 12px rgba(255,255,255,0.55),inset 0 0 18px rgba(255,220,0,0.4);}
-  to{box-shadow:0 0 90px 26px rgba(255,225,0,0.9),inset 0 0 28px rgba(255,230,0,0.55);}
+  from{box-shadow:0 0 50px 12px rgba(255,255,255,0.55);}
+  to{box-shadow:0 0 110px 30px rgba(255,225,0,0.9);}
 }
 /* ---- Type-instead fallback (for loud places) ---- */
 #textPanel{
@@ -118,16 +109,13 @@ body.noisy #textPanel .note{display:block;}
 </style>
 </head>
 <body class="idle">
-<div id="bgWrap"><img id="bg" src="/email/talk-bg.png" alt=""/></div>
+<div id="bgWrap"><img id="bg" src="/email/talk-bg-clean.png" alt=""/></div>
 <div id="outreachPage" aria-hidden="true">
   <div class="a1Mark">A1</div>
   <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
   <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
 </div>
-<div id="orbHit" role="button" tabindex="0" aria-label="Talk">
-  <div id="orbShade"></div>
-  <div id="orbRing"></div>
-</div>
+<div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
 <div id="actionBar">
   <button id="textToggle" type="button">Type instead</button>
   <button id="stopBtn" type="button">Pause</button>
@@ -152,58 +140,47 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=1024;          // original talk-bg.png — never edit this file
-const ORB_CX=0.5130,ORB_CY=0.4268;   // eclipse center px 788, 437 — working-good
-const GLOW_D=0.5100;                  // dark back shade — always 0.51 in artwork
-const RING_D=0.1270;                  // bright ring px 195 — centered inside shade
-const ARCH_Y=0.0781;                  // arch tip row 80 in image file
-const bgEl=document.getElementById('bg');
-const orbHit=document.getElementById('orbHit');
-const orbShade=document.getElementById('orbShade');
-const orbRing=document.getElementById('orbRing');
+const IMG_W=1536,IMG_H=1024;          // full artwork — tabs/footer masked in image file only
+const ORB_CX=0.5130,ORB_CY=0.4268;   // bright ring center — measured px 788, 437
+const ORB_D=0.24;                    // bright ring diam 0.24 — dark glow 0.51 in artwork
+const ACTION_CY=0.866;               // below WITH OUR EMAIL (px 887 / 1024)
+const DOCK_CLEAR=72;                 // px above footer dock — measured
+const orb=document.getElementById('orb');
 const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
 function coverMap(){
   const vw=window.innerWidth,vh=window.innerHeight;
   const scale=Math.max(vw/IMG_W,vh/IMG_H);
   const rw=IMG_W*scale,rh=IMG_H*scale;
-  let posY=0;
-  if(rh>vh){
-    /* Wide screen: crop dead Gmail white at top, keep arch tip ~4% from viewport top. */
-    posY=(0.04*vh-ARCH_Y*rh)/(vh-rh);
-    posY=Math.max(0,Math.min(1,posY));
-  }
-  const offX=(vw-rw)/2,offY=(vh-rh)*posY;
-  if(bgEl)bgEl.style.objectPosition='center '+(posY*100)+'%';
+  const offX=(vw-rw)/2,offY=0; /* object-position: center top */
   return {rw,rh,offX,offY};
-}
-function placeBox(el,cx,cy,d,offX,offY,rw,rh){
-  const left=offX+cx*rw-d/2,top=offY+cy*rh-d/2;
-  el.style.width=d+'px';el.style.height=d+'px';
-  el.style.left=left+'px';el.style.top=top+'px';
 }
 function placeLayout(){
   const vw=window.innerWidth,vh=window.innerHeight;
   if(isOutreach){
-    const ring=Math.max(112,Math.min(Math.min(vw,vh)*0.24,190));
-    const glow=ring*1.35;
-    const left=(vw-glow)/2,top=Math.max(vh*0.36,240);
-    orbShade.style.width=glow+'px';orbShade.style.height=glow+'px';
-    orbShade.style.left=left+'px';orbShade.style.top=top+'px';
-    orbRing.style.width=ring+'px';orbRing.style.height=ring+'px';
-    orbRing.style.left=(left+(glow-ring)/2)+'px';
-    orbRing.style.top=(top+(glow-ring)/2)+'px';
-    orbHit.style.left=left+'px';orbHit.style.top=top+'px';
-    orbHit.style.width=glow+'px';orbHit.style.height=glow+'px';
+    const d=Math.max(112,Math.min(Math.min(vw,vh)*0.24,190));
+    const left=(vw-d)/2;
+    const top=Math.max(vh*0.38,260);
+    orb.style.width=d+'px';
+    orb.style.height=d+'px';
+    orb.style.left=left+'px';
+    orb.style.top=top+'px';
+    actionBar.style.left=(left+d/2)+'px';
+    actionBar.style.top=(top+d+70)+'px';
     return;
   }
   const {rw,rh,offX,offY}=coverMap();
-  const glow=GLOW_D*rw,ring=RING_D*rw;
-  placeBox(orbShade,ORB_CX,ORB_CY,glow,offX,offY,rw,rh);
-  placeBox(orbRing,ORB_CX,ORB_CY,ring,offX,offY,rw,rh);
-  orbHit.style.left=(offX+ORB_CX*rw-glow/2)+'px';
-  orbHit.style.top=(offY+ORB_CY*rh-glow/2)+'px';
-  orbHit.style.width=glow+'px';orbHit.style.height=glow+'px';
+  const d=ORB_D*rw;
+  const left=offX+ORB_CX*rw-d/2;
+  const top=offY+ORB_CY*rh-d/2;
+  orb.style.width=d+'px';
+  orb.style.height=d+'px';
+  orb.style.left=left+'px';
+  orb.style.top=top+'px';
+  const wantBarY=offY+ACTION_CY*rh;
+  const maxBarY=vh-DOCK_CLEAR;
+  actionBar.style.left=(offX+ORB_CX*rw)+'px';
+  actionBar.style.top=Math.min(wantBarY,maxBarY)+'px';
 }
 function placeOrb(){placeLayout();}
 placeOrb();
@@ -325,8 +302,8 @@ function toggleVoice(){
     if(!resumeAudio())pauseSession();
   }else{start();}
 }
-orbHit.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
-orbHit.addEventListener('keydown',function(e){
+orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
+orb.addEventListener('keydown',function(e){
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice();}
 });
 stopBtn.addEventListener('click',function(e){
