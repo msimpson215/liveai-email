@@ -143,13 +143,13 @@ body.noisy #textPanel .note{display:block;}
   <div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
 </div>
 <div id="textPanel" aria-live="polite">
-  <div class="note">Sorry, it&rsquo;s a little loud right now. Please type your question here and I&rsquo;ll answer out loud &mdash; you can switch back to voice once it&rsquo;s quieter.</div>
+  <div class="note">It sounds loud where you are, so I&rsquo;ve switched us to text to make sure I get everything exactly right. Type your question below &mdash; and tap <b>Resume voice</b> whenever it&rsquo;s quieter.</div>
   <div id="answer"></div>
   <div class="trow">
     <input id="textInput" type="text" placeholder="Type your question&hellip;" autocomplete="off" enterkeyhint="send"/>
     <button id="sendBtn" type="button">Send</button>
   </div>
-  <button id="voiceBack" type="button">Use voice instead</button>
+  <button id="voiceBack" type="button">Resume voice (it&rsquo;s quieter now)</button>
 </div>
 <script>
 /* ---- position the live orb exactly on the orb drawn in the image ---- */
@@ -377,21 +377,26 @@ function openText(auto){
 }
 function closeText(){
   isTexting=false;isNoisy=false;
+  /* Re-arm the loud-noise safety net so it can offer text again if it gets
+     loud again later (e.g. they stepped outside, then went back in). */
+  autoTexted=false;loudFrames=0;
   refreshMic();
   applyClasses();
 }
-/* When the room is too loud, the AI announces the switch and we open text mode. */
+/* When the room is too loud, the AI says (uninterruptibly) that it's switching
+   to text, then we open the text box and stop listening (voice "paused").
+   The user reads/answers by typing, and taps "Resume voice" when it's quieter. */
 function enterNoiseMode(){
   if(isTexting||autoTexted)return;
   autoTexted=true;
-  /* Only speak the hand-off if the AI isn't already mid-sentence (avoids
-     creating a second response while one is active). The on-screen note
-     explains it either way. */
-  const line="Hi — it sounds like there's a lot of background noise right now. Let's switch to text so I can make sure I get you the right answer. Just type your question below.";
-  if(!aiSpeaking&&dc&&dc.readyState==='open'){
-    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly, word for word: "'+line+'"'}}));}catch(e){}
-  }
+  /* Open text FIRST so the mic is already off — nothing in the room can
+     interrupt the hand-off line, and the voice is effectively paused. */
   openText(true);
+  const line="I'm sorry — it sounds like where you are is pretty loud right now. Let's switch to text so I can be sure I get everything exactly right. Whenever it's quieter, just tap Resume voice and we'll keep talking.";
+  /* Don't stack a second response if the AI is already mid-sentence. */
+  if(!aiSpeaking&&dc&&dc.readyState==='open'){
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
+  }
 }
 function sendText(){
   const text=(textInput.value||'').trim();
