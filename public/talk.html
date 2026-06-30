@@ -12,19 +12,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
    the orb math exactly. JS zooms enough on every device to pin the arch to the
    top and crop the Gmail header, white gap and Promotions/Updates tabs. */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
-#bg{position:absolute;inset:0;background-image:url('/email/talk-bg-nogap.png');
+#bg{position:absolute;inset:0;background-image:url('/email/talk-bg-v2.png');
   background-repeat:no-repeat;background-position:0 0;background-size:100% 100%;}
-/* Thin footer dock — sits on the email list area, NOT on CONVERSATION text. */
+/* Footer dock — taller so the three buttons read clearly. */
 #dock{
   position:fixed;left:0;right:0;bottom:0;z-index:5;
-  background:rgba(14,14,14,0.92);
-  border-top:1px solid rgba(255,255,255,0.10);
-  padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+  background:rgba(12,12,12,0.95);
+  border-top:1px solid rgba(255,255,255,0.12);
+  padding:14px 12px calc(14px + env(safe-area-inset-bottom));
 }
 body.texting #dock{display:none;}
 #poweredBy{
-  text-align:center;pointer-events:auto;margin-top:5px;
-  font:600 10px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.55);
+  text-align:center;pointer-events:auto;margin-top:9px;
+  font:600 11px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.55);
 }
 #poweredBy a{color:rgba(255,255,255,0.80);text-decoration:none;}
 #poweredBy a:hover{text-decoration:underline;}
@@ -41,27 +41,30 @@ body.outreach #outreachPage{
 .a1Brand{font-weight:900;font-size:clamp(22px,5vw,44px);line-height:1.05;margin-top:10px;}
 .a1Brand span{display:block;color:#f1be00;}
 .a1Sub{max-width:760px;margin-top:14px;font-size:clamp(16px,2.4vw,24px);font-weight:650;color:#333;line-height:1.35;}
-/* Eclipse orb (all positioned by JS):
-   - orbShade: large dark shaded circle over the gold
-   - orbRing:  bright ring with a dark center = the eclipse, in the middle */
+/* Soft "sun" eclipse — no hard lines. All circles fade out like a glow.
+   - orbShade: gentle dark center that makes the eclipse middle (kept small so it
+     never darkens the logo above or the CONVERSATION text below)
+   - orbRingDim: large, dim, blurred halo that fades out (the flare)
+   - orbRing: brighter soft ring that gently pulses */
 #orbShade{
   position:fixed;border-radius:50%;pointer-events:none;z-index:2;
   background:radial-gradient(circle,
-    rgba(8,5,0,0.82) 0%, rgba(12,8,0,0.66) 42%, rgba(22,14,0,0.32) 66%,
-    rgba(30,18,0,0.12) 84%, transparent 100%);
+    rgba(4,3,0,0.72) 0%, rgba(8,5,0,0.5) 38%, rgba(14,9,0,0.2) 62%, transparent 80%);
+  filter:blur(3px);
 }
-/* Dimmer, larger eclipse ring (static) */
 #orbRingDim{
   position:fixed;border-radius:50%;pointer-events:none;z-index:3;
-  background:#0c0801;border-style:solid;border-color:rgba(210,150,15,0.55);
-  box-shadow:0 0 30px 8px rgba(210,150,0,0.28), inset 0 0 26px rgba(200,140,0,0.25);
+  background:radial-gradient(circle,
+    transparent 40%, rgba(255,196,46,0.22) 55%, rgba(255,168,0,0.08) 70%, transparent 84%);
+  filter:blur(8px);
 }
-/* Brighter eclipse ring in the middle (pulsates) */
 #orbRing{
   position:fixed;border-radius:50%;pointer-events:none;z-index:4;
-  background:#0c0801;border-style:solid;border-color:rgba(255,205,32,1);
-  box-shadow:0 0 24px 5px rgba(255,190,0,0.55), inset 0 0 18px rgba(255,180,0,0.45);
-  animation:pulse 2.4s ease-in-out infinite;
+  background:radial-gradient(circle,
+    transparent 34%, rgba(255,214,74,0.0) 42%, rgba(255,214,74,0.85) 52%,
+    rgba(255,182,0,0.35) 60%, rgba(255,170,0,0.0) 74%);
+  filter:blur(4px);
+  animation:pulse 3s ease-in-out infinite;
 }
 #orb{position:fixed;border-radius:50%;cursor:pointer;z-index:5;background:transparent;}
 /* Controls live inside the bottom dock only. */
@@ -69,25 +72,28 @@ body.outreach #outreachPage{
   display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap;
 }
 /* All three buttons are always visible. */
+#controls{gap:10px;}
 #controls button,#controls a{
-  padding:7px 11px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:inline-block;
-  font:700 11px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:1;min-width:0;
+  padding:12px 20px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:inline-block;
+  font:800 15px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:0;
 }
-#textToggle{background:rgba(50,50,50,0.95);color:#fff;border:1px solid rgba(255,255,255,0.22);}
+#textToggle{background:rgba(55,55,55,0.96);color:#fff;border:1px solid rgba(255,255,255,0.28);}
 #humanLink{background:#fed100;color:#111;display:inline-block;}
-#stopBtn{background:rgba(255,255,255,0.88);color:#111;}
+#stopBtn{background:rgba(255,255,255,0.92);color:#111;}
 @media (max-width:600px){
-  #controls button,#controls a{padding:7px 9px;font-size:10px;}
+  #controls{gap:8px;}
+  #controls button,#controls a{padding:11px 16px;font-size:14px;}
 }
 body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
+/* Gentle breathing glow — soft flare, no hard edges. */
 @keyframes pulse{
-  0%,100%{box-shadow:0 0 22px 4px rgba(255,188,0,0.4), inset 0 0 18px rgba(255,176,0,0.35);}
-  50%{box-shadow:0 0 40px 10px rgba(255,200,0,0.6), inset 0 0 26px rgba(255,190,0,0.5);}
+  0%,100%{opacity:0.78;transform:scale(0.975);}
+  50%{opacity:1;transform:scale(1.045);}
 }
-body.connecting #orbRing,body.active #orbRing{animation:pulseOn 1.1s ease-in-out infinite alternate;}
+body.connecting #orbRing,body.active #orbRing{animation:pulseOn 1.5s ease-in-out infinite alternate;}
 @keyframes pulseOn{
-  from{box-shadow:0 0 28px 6px rgba(255,210,40,0.55), inset 0 0 22px rgba(255,190,0,0.45);}
-  to{box-shadow:0 0 56px 14px rgba(255,225,0,0.85), inset 0 0 32px rgba(255,205,0,0.6);}
+  from{opacity:0.72;transform:scale(0.96);}
+  to{opacity:1;transform:scale(1.075);}
 }
 /* ---- Type-instead fallback (for loud places) ---- */
 #textPanel{
@@ -157,12 +163,12 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-/* talk-bg-nogap.png = Joe's artwork with the blank white band removed (1536x979). */
-const IMG_W=1536,IMG_H=979;         // gap-free background natural size
+/* talk-bg-v2.png = gap-free artwork with the Promotions/Updates tabs painted out. */
+const IMG_W=1536,IMG_H=979;         // background natural size
 const RING_CX=0.512, RING_CY=0.499; // eclipse center (px 786, 488 measured)
-const RING_D=0.135;                 // bright middle ring (pulsates)
-const RINGDIM_D=0.215;              // dimmer outer eclipse ring
-const SHADE_D=0.38;                 // bigger dark shaded circle
+const RING_D=0.255;                 // bright soft ring (its glow band lands on the art ring)
+const RINGDIM_D=0.40;               // large dim flare that fades out
+const SHADE_D=0.20;                 // small dark eclipse center (won't reach logo/text)
 const bgEl=document.getElementById('bg');
 const orb=document.getElementById('orb');
 const orbShade=document.getElementById('orbShade');
@@ -172,14 +178,12 @@ const humanLink=document.getElementById('humanLink');
 function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
   if(isOutreach){
-    const ring=Math.max(110,Math.min(Math.min(vw,vh)*0.22,190));
-    const cx=vw/2,cy=Math.max(vh*0.42,280);
-    setBox(orbShade,cx,cy,ring*2.8);
+    const ring=Math.max(150,Math.min(Math.min(vw,vh)*0.32,300));
+    const cx=vw/2,cy=Math.max(vh*0.44,300);
+    setBox(orbShade,cx,cy,ring*0.78);
     setBox(orbRingDim,cx,cy,ring*1.55);
-    orbRingDim.style.borderWidth=Math.max(3,ring*1.55*0.04)+'px';
     setBox(orbRing,cx,cy,ring);
-    orbRing.style.borderWidth=Math.max(4,ring*0.05)+'px';
-    setBox(orb,cx,cy,ring*1.6);
+    setBox(orb,cx,cy,ring*0.95);
     return;
   }
   /* Cover, top-aligned. The gap-free image means the header sits right above
@@ -193,13 +197,9 @@ function placeOrb(){
   }
   const cx=offX+RING_CX*rw,cy=offY+RING_CY*rh;
   setBox(orbShade,cx,cy,SHADE_D*rw);
-  const dp=RINGDIM_D*rw;
-  setBox(orbRingDim,cx,cy,dp);
-  orbRingDim.style.borderWidth=Math.max(2,dp*0.04)+'px';
-  const rp=RING_D*rw;
-  setBox(orbRing,cx,cy,rp);
-  orbRing.style.borderWidth=Math.max(3,rp*0.05)+'px';
-  setBox(orb,cx,cy,dp*1.1);
+  setBox(orbRingDim,cx,cy,RINGDIM_D*rw);
+  setBox(orbRing,cx,cy,RING_D*rw);
+  setBox(orb,cx,cy,RING_D*rw*0.95);
 }
 function setBox(el,cx,cy,d){
   el.style.width=d+'px';el.style.height=d+'px';
