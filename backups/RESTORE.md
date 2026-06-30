@@ -1,49 +1,44 @@
-# RESTORE POINT — approved eclipse + gap-free layout (June 30, 2026)
+# RESTORE POINTS
 
-This is the version the client approved ("Wow, well done. Save, save, save.").
+## CURRENT APPROVED — visual refresh (June 30, 2026)
 
-**Tag:** `working-good`
-**Commit:** `0b3ae56`
-**Backups:**
-- `backups/talk-GOOD-eclipse-gapfree.html` (exact copy of public/talk.html)
-- `backups/talk-working.html` (same)
-- `backups/talk-bg-nogap.png` (the gap-free background)
+Client-approved: tabs removed, soft "sun" eclipse, logo above the circle,
+readable text, bigger dock buttons, loud-environment hint.
 
-## To restore this exact version
+**Tag:** `working-good` and `approved-visual-refresh`
+**Background image:** `public/email/talk-bg-v2.png` (tabs painted out)
+**Backups:** `backups/talk-GOOD-visual-refresh.html`, `backups/talk-working.html`,
+`backups/talk-bg-v2.png`
 
+### Restore this version
 ```bash
-git checkout working-good -- public/talk.html public/email/talk-bg-nogap.png
+git checkout approved-visual-refresh -- public/talk.html public/email/talk-bg-v2.png
 git push origin main
 ```
 
-Or from the file backup:
+### What it has (verified by rendering 2560x1440, 1440x900, 390x844)
+- `talk-bg-v2.png`: Joe's artwork, blank top band removed AND Primary/Promotions/
+  Updates tabs painted out (above the arch; arch/logo untouched).
+- Soft sun eclipse: blurred radial glows that fade out (no hard ring lines),
+  gentle breathing pulse. Logo sits clearly ABOVE the circle.
+- Small dark center keeps the eclipse look without darkening the text.
+- "Now You Can Have a / CONVERSATION / WITH OUR EMAIL" is readable.
+- Taller dock; big buttons: Type instead / Human team / Pause.
+- Loud-environment hint above the buttons.
+- Loud-room auto hand-off: AI says it's switching to text (uninterruptible),
+  voice pauses, "Resume voice" when quieter.
 
-```bash
-cp backups/talk-GOOD-eclipse-gapfree.html public/talk.html
-cp backups/talk-bg-nogap.png public/email/talk-bg-nogap.png
-git add public/talk.html public/email/talk-bg-nogap.png
-git commit -m "Restore approved eclipse + gap-free layout"
-git push origin main
-```
+---
 
-## What this version has (verified by rendering at 5 screen sizes)
+## EARLIER SAFE POINTS
+- `approved-eclipse-gapfree` (commit 445419e): the gap-free layout with the
+  layered hard-ring eclipse, BEFORE the soft-sun visual refresh. Uses
+  `talk-bg-nogap.png`.
+- `working-save`: original pause/resume build.
 
-- **Background:** `talk-bg-nogap.png` — Joe's artwork with ONLY the blank white
-  band (original rows 63–107) removed. Logo/arch/eclipse untouched. The original
-  `talk-bg.png` is still in the repo, unedited.
-- **No white gap** at the top on phone, laptop, or 31" monitor.
-- **Full logo width** on phone (plain CSS `cover`, no zoom — zoom was what cut it).
-- **Eclipse orb:** big dark shadow + dimmer outer ring + brighter middle ring that
-  pulsates. Layers: `#orbShade` (0.38) + `#orbRingDim` (0.215) + `#orbRing` (0.135),
-  centered at frac (0.512, 0.499) on the 1536×979 gap-free image.
-- **Three buttons always visible:** Type instead / Human team / Pause, in the dock.
-- Voice / pause / greeting logic unchanged.
-
-## How it was verified
-
-Rendered with headless Chrome at 2560×1440, 3840×2160, 1920×1080, 1440×900,
-and 390×844 (phone). Do this again before changing layout — do not guess.
+## How to verify before changing layout
+Render with headless Chrome at 2560x1440, 3840x2160, 1920x1080, 1440x900, 390x844
+and LOOK at each. Do not guess.
 
 ## Live URL
-
 https://liveai-email.onrender.com/talk.html?name=Mr.%20Grawe
