@@ -1,27 +1,26 @@
-# Restore point — pause/resume build (saved before layout tweaks)
+# Restore point — Joe's original artwork + working layout
 
-**Tag:** `working-save`  
+**Commit:** `40310ee`  
 **File backup:** `backups/talk-working.html`
 
 ## To restore this exact version
 
 ```bash
-git checkout working-save -- public/talk.html
-git push origin main
-```
-
-Or copy the backup file:
-
-```bash
+git checkout 40310ee -- public/talk.html
 cp backups/talk-working.html public/talk.html
+git push origin main
 ```
 
 ## What this version has
 
-- Pause / Resume (no second greeting)
-- Voice cannot be interrupted by saying "stop"
-- Type-your-question fallback for loud rooms
-- Powered by Axon AI link at bottom
+- **talk-bg.png** — Joe's original logo/arch, never painted over
+- Single orb overlay, three buttons, footer dock
+- Pause / Resume, voice cannot be interrupted
+- Type-instead fallback, Powered by Axon AI
+
+## Do NOT use talk-bg-clean.png
+
+That file masks tabs by painting over the image and damages the logo.
 
 ## Live URL
 
