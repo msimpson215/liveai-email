@@ -1,26 +1,28 @@
-# Restore point — Joe's original artwork + working layout
+# Restore point — before layout was destroyed (June 29)
 
-**Commit:** `40310ee`  
+**Commit:** `51aab37`  
 **File backup:** `backups/talk-working.html`
 
-## To restore this exact version
+## To restore
 
 ```bash
-git checkout 40310ee -- public/talk.html
-cp backups/talk-working.html public/talk.html
+git checkout 51aab37 -- public/talk.html
 git push origin main
 ```
 
 ## What this version has
 
-- **talk-bg.png** — Joe's original logo/arch, never painted over
-- Single orb overlay, three buttons, footer dock
-- Pause / Resume, voice cannot be interrupted
-- Type-instead fallback, Powered by Axon AI
+- **talk-bg.png** — Joe's original artwork (never talk-bg-clean.png)
+- Background zoom/position crops Gmail white bar and tabs (`scale 1.20`, `object-position 42%`)
+- Smaller orb overlay (`ORB_D 0.165`) aligned to painted ring
+- Three buttons in footer dock: Type instead, Human team, Pause
+- Pause/Resume, no second greeting, voice cannot be interrupted
+- Powered by Axon AI
 
-## Do NOT use talk-bg-clean.png
+## What went wrong after this
 
-That file masks tabs by painting over the image and damages the logo.
+Commits after `51aab37` started changing orb size, switching to talk-bg-clean.png,
+and repositioning — that destroyed the logo and circles.
 
 ## Live URL
 

@@ -8,25 +8,24 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;
   -webkit-tap-highlight-color:transparent;user-select:none;}
-/* Background: original artwork — do not edit the image file. */
+/* Background: zoom hides Gmail Promotions tab (top) and footer links (bottom). */
 #bgWrap{position:fixed;inset:0;overflow:hidden;background:#1a1a1a;}
-#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
-/* Footer: measured replacement for baked-in "Click anywhere to stop" text. */
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  object-position:center 42%;transform:scale(1.20);transform-origin:center center;}
+@media (max-width:600px){
+  #bg{object-position:center 36%;transform:scale(1.30);}
+}
+/* Thin footer dock — sits on the email list area, NOT on CONVERSATION text. */
 #dock{
   position:fixed;left:0;right:0;bottom:0;z-index:5;
-  background:rgba(14,14,14,0.94);
+  background:rgba(14,14,14,0.92);
   border-top:1px solid rgba(255,255,255,0.10);
-  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
-  text-align:center;
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom));
 }
 body.texting #dock{display:none;}
-#footerStop{
-  font:700 13px/1.3 system-ui,sans-serif;color:#fff;letter-spacing:0.02em;
-  cursor:pointer;padding:2px 0 4px;
-}
 #poweredBy{
-  pointer-events:auto;margin-top:4px;
-  font:600 10px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.50);
+  text-align:center;pointer-events:auto;margin-top:5px;
+  font:600 10px/1.2 system-ui,sans-serif;color:rgba(255,255,255,0.55);
 }
 #poweredBy a{color:rgba(255,255,255,0.80);text-decoration:none;}
 #poweredBy a:hover{text-decoration:underline;}
@@ -50,21 +49,23 @@ body.outreach #outreachPage{
   box-shadow:0 0 34px 8px rgba(255,205,0,0.35);
   animation:pulse 2.6s ease-in-out infinite;
 }
-/* Action buttons: pinned to image coordinates (where "click anywhere" was). */
-#actionBar{
-  position:fixed;z-index:6;display:flex;justify-content:center;align-items:center;
-  gap:8px;transform:translate(-50%,-50%);pointer-events:auto;
+/* Controls live inside the bottom dock only. */
+#controls{
+  display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:nowrap;
 }
-body.texting #actionBar{display:none;}
-#actionBar button,#actionBar a{
-  padding:8px 14px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;
-  font:700 12px/1 system-ui,sans-serif;white-space:nowrap;
-  box-shadow:0 6px 22px rgba(0,0,0,0.45);
+#controls button,#controls a{
+  padding:7px 11px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:none;
+  font:700 11px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:1;min-width:0;
 }
-#textToggle{background:rgba(30,30,30,0.88);color:#fff;border:1px solid rgba(255,255,255,0.25);}
+#textToggle{background:rgba(50,50,50,0.95);color:#fff;border:1px solid rgba(255,255,255,0.22);}
 #humanLink{background:#fed100;color:#111;display:inline-block;}
-#stopBtn{background:rgba(255,255,255,0.92);color:#111;}
-body.paused #stopBtn{background:#fed100;color:#111;}
+#stopBtn{background:rgba(255,255,255,0.88);color:#111;}
+@media (max-width:600px){
+  #controls button,#controls a{padding:7px 9px;font-size:10px;}
+}
+body.active #textToggle,body.connecting #textToggle{display:inline-block;}
+body.active #stopBtn,body.connecting #stopBtn,body.paused #stopBtn{display:inline-block;}
+body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
 @keyframes pulse{
   0%,100%{box-shadow:0 0 30px 6px rgba(255,205,0,0.30);}
   50%{box-shadow:0 0 64px 18px rgba(255,215,0,0.62);}
@@ -116,13 +117,12 @@ body.noisy #textPanel .note{display:block;}
   <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
 </div>
 <div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
-<div id="actionBar">
-  <button id="textToggle" type="button">Type instead</button>
-  <button id="stopBtn" type="button">Pause</button>
-  <a id="humanLink" href="tel:+16189293301">Human team</a>
-</div>
 <div id="dock">
-  <div id="footerStop" role="button" tabindex="0">Click anywhere to stop</div>
+  <div id="controls">
+    <button id="textToggle" type="button">Type instead</button>
+    <a id="humanLink" href="tel:+16189293301">Human team</a>
+    <button id="stopBtn" type="button">Pause</button>
+  </div>
   <div id="poweredBy">Powered by <a href="https://axon.ai" target="_blank" rel="noopener noreferrer"><b>Axon AI</b></a></div>
 </div>
 <div id="textPanel" aria-live="polite">
@@ -140,22 +140,12 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-const IMG_W=1536,IMG_H=1024;          // original talk-bg.png — never edit this file
-const ORB_CX=0.5189,ORB_CY=0.3906;   // bright ring — measured px 797, 400 (788,437 is white center)
-const ORB_D=0.24;                    // bright ring diam 0.24 — dark glow 0.51 in artwork
-const ACTION_CY=0.866;               // below WITH OUR EMAIL (px 887 / 1024)
-const DOCK_CLEAR=72;                 // px above footer dock — measured
+const IMG_W=1536,IMG_H=1024;        // background natural size
+const ORB_CX=0.508,ORB_CY=0.523;    // orb center as fraction of the image
+const ORB_D=0.165;                  // orb diameter as fraction of image width
 const orb=document.getElementById('orb');
-const actionBar=document.getElementById('actionBar');
 const humanLink=document.getElementById('humanLink');
-function coverMap(){
-  const vw=window.innerWidth,vh=window.innerHeight;
-  const scale=Math.max(vw/IMG_W,vh/IMG_H);
-  const rw=IMG_W*scale,rh=IMG_H*scale;
-  const offX=(vw-rw)/2,offY=0; /* object-position: center top */
-  return {rw,rh,offX,offY};
-}
-function placeLayout(){
+function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
   if(isOutreach){
     const d=Math.max(112,Math.min(Math.min(vw,vh)*0.24,190));
@@ -165,24 +155,20 @@ function placeLayout(){
     orb.style.height=d+'px';
     orb.style.left=left+'px';
     orb.style.top=top+'px';
-    actionBar.style.left=(left+d/2)+'px';
-    actionBar.style.top=(top+d+70)+'px';
     return;
   }
-  const {rw,rh,offX,offY}=coverMap();
+  const scale=Math.max(vw/IMG_W,vh/IMG_H);   // object-fit: cover (full-bleed)
+  const rw=IMG_W*scale,rh=IMG_H*scale;
+  const offX=(vw-rw)/2,offY=(vh-rh)/2;
   const d=ORB_D*rw;
   const left=offX+ORB_CX*rw-d/2;
-  const top=offY+ORB_CY*rh-d/2;
+  const topNudge=(vw<600)?vh*0.07:(vw<900)?vh*0.03:0;
+  const top=offY+ORB_CY*rh-d/2-topNudge;
   orb.style.width=d+'px';
   orb.style.height=d+'px';
   orb.style.left=left+'px';
   orb.style.top=top+'px';
-  const wantBarY=offY+ACTION_CY*rh;
-  const maxBarY=vh-DOCK_CLEAR;
-  actionBar.style.left=(offX+ORB_CX*rw)+'px';
-  actionBar.style.top=Math.min(wantBarY,maxBarY)+'px';
 }
-function placeOrb(){placeLayout();}
 placeOrb();
 window.addEventListener('resize',placeOrb);
 
@@ -309,14 +295,6 @@ orb.addEventListener('keydown',function(e){
 stopBtn.addEventListener('click',function(e){
   e.stopPropagation();
   if(isPaused)resumeSession();else pauseSession();
-});
-const footerStop=document.getElementById('footerStop');
-footerStop.addEventListener('click',function(e){
-  e.stopPropagation();
-  if(isPaused)resumeSession();else if(pc||starting)pauseSession();
-});
-footerStop.addEventListener('keydown',function(e){
-  if(e.key==='Enter'||e.key===' '){e.preventDefault();footerStop.click();}
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pc)pauseSession();});
 document.addEventListener('visibilitychange',function(){
