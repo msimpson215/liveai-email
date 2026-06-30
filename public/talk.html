@@ -47,8 +47,8 @@ body.outreach #outreachPage{
 #orbHit{position:fixed;cursor:pointer;z-index:2;}
 #orbShade{
   position:fixed;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,rgba(18,12,0,0.72) 0%,rgba(35,25,0,0.45) 52%,rgba(50,35,0,0.12) 72%,transparent 100%);
-  box-shadow:0 0 90px 36px rgba(25,18,0,0.55);
+  background:radial-gradient(circle,rgba(12,8,0,0.82) 0%,rgba(30,20,0,0.55) 45%,rgba(45,32,0,0.22) 68%,transparent 100%);
+  box-shadow:0 0 120px 50px rgba(20,14,0,0.65);
 }
 #orbRing{
   position:fixed;border-radius:50%;pointer-events:none;
@@ -153,9 +153,11 @@ const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
 const IMG_W=1536,IMG_H=1024;          // original talk-bg.png — never edit this file
-const ORB_CX=0.5143,ORB_CY=0.3516;   // eclipse center px 790, 360
-const GLOW_D=0.5100;                  // dark back shade — measured in artwork
-const RING_D=0.1172;                  // bright ring only px 180
+const ORB_CX=0.5130,ORB_CY=0.4268;   // eclipse center px 788, 437 — working-good
+const GLOW_D=0.5100;                  // dark back shade — always 0.51 in artwork
+const RING_D=0.1270;                  // bright ring px 195 — centered inside shade
+const ARCH_Y=0.0781;                  // arch tip row 80 in image file
+const bgEl=document.getElementById('bg');
 const orbHit=document.getElementById('orbHit');
 const orbShade=document.getElementById('orbShade');
 const orbRing=document.getElementById('orbRing');
@@ -165,7 +167,14 @@ function coverMap(){
   const vw=window.innerWidth,vh=window.innerHeight;
   const scale=Math.max(vw/IMG_W,vh/IMG_H);
   const rw=IMG_W*scale,rh=IMG_H*scale;
-  const offX=(vw-rw)/2,offY=0; /* object-position: center top */
+  let posY=0;
+  if(rh>vh){
+    /* Wide screen: crop dead Gmail white at top, keep arch tip ~4% from viewport top. */
+    posY=(0.04*vh-ARCH_Y*rh)/(vh-rh);
+    posY=Math.max(0,Math.min(1,posY));
+  }
+  const offX=(vw-rw)/2,offY=(vh-rh)*posY;
+  if(bgEl)bgEl.style.objectPosition='center '+(posY*100)+'%';
   return {rw,rh,offX,offY};
 }
 function placeBox(el,cx,cy,d,offX,offY,rw,rh){
