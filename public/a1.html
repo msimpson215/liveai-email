@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<title>A1 Professional Asphalt &mdash; Conversation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff;
+  -webkit-tap-highlight-color:transparent;user-select:none;}
+/* Background: a div whose size/position JS sets in pixels, so it always matches
+   the orb math exactly. JS zooms enough on every device to pin the arch to the
+   top and crop the Gmail header, white gap and Promotions/Updates tabs. */
+#bgWrap{position:fixed;inset:0;overflow:hidden;background:#f5f4f4;}
+#bg{position:absolute;inset:0;background-image:url('/email/talk-bg-v3.png?v=3');
+  background-repeat:no-repeat;background-position:0 0;background-size:100% 100%;}
+/* Controls float as small glassy chips over the inbox — NO solid bar, so the
+   Gmail illusion shows through. */
+#dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;background:transparent;border:0;
+  padding:0 12px calc(16px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;
+}
+#dock>*{pointer-events:auto;}
+body.texting #dock{display:none;}
+#loudHint{
+  font:650 12.5px/1.2 system-ui,sans-serif;color:#fff;
+  background:rgba(18,18,18,0.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  padding:6px 13px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,0.28);
+}
+#loudHint b{color:#fed100;font-weight:850;}
+#poweredBy{
+  font:600 10.5px/1.2 system-ui,sans-serif;color:#fff;
+  background:rgba(18,18,18,0.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  padding:3px 11px;border-radius:999px;
+}
+#poweredBy a{color:#fed100;text-decoration:none;}
+#poweredBy a:hover{text-decoration:underline;}
+#poweredBy b{font-weight:800;color:rgba(255,255,255,0.90);}
+#outreachPage{display:none;}
+body.outreach{background:#fff;}
+body.outreach #bg{display:none;}
+body.outreach #outreachPage{
+  position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;background:#fff;color:#111;font-family:system-ui,sans-serif;
+  padding:clamp(22px,5vw,54px) 22px;text-align:center;
+}
+.a1Mark{font-weight:950;letter-spacing:-0.05em;font-size:clamp(56px,12vw,112px);line-height:0.8;color:#111;}
+.a1Brand{font-weight:900;font-size:clamp(22px,5vw,44px);line-height:1.05;margin-top:10px;}
+.a1Brand span{display:block;color:#f1be00;}
+.a1Sub{max-width:760px;margin-top:14px;font-size:clamp(16px,2.4vw,24px);font-weight:650;color:#333;line-height:1.35;}
+/* Soft "sun" eclipse — no hard lines. All circles fade out like a glow.
+   - orbShade: gentle dark center that makes the eclipse middle (kept small so it
+     never darkens the logo above or the CONVERSATION text below)
+   - orbRingDim: large, dim, blurred halo that fades out (the flare)
+   - orbRing: brighter soft ring that gently pulses */
+#orbShade{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(circle,
+    rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.82) 46%, rgba(0,0,0,0.32) 74%, transparent 92%);
+  filter:blur(2px);
+}
+#orbRingDim{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:3;
+  background:radial-gradient(circle,
+    transparent 40%, rgba(255,196,46,0.22) 55%, rgba(255,168,0,0.08) 70%, transparent 84%);
+  filter:blur(8px);
+}
+#orbRing{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:4;
+  background:radial-gradient(circle,
+    transparent 34%, rgba(255,214,74,0.0) 42%, rgba(255,214,74,0.85) 52%,
+    rgba(255,182,0,0.35) 60%, rgba(255,170,0,0.0) 74%);
+  filter:blur(4px);
+  animation:pulse 3s ease-in-out infinite;
+}
+#orb{position:fixed;border-radius:50%;cursor:pointer;z-index:5;background:transparent;}
+/* All three buttons are always visible. */
+#controls{display:flex;justify-content:center;align-items:center;gap:9px;}
+#controls button,#controls a{
+  padding:11px 18px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:inline-block;
+  font:800 14px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:0;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:0 6px 20px rgba(0,0,0,0.35);
+}
+#textToggle{background:rgba(28,28,28,0.78);color:#fff;border:1px solid rgba(255,255,255,0.30);}
+#humanLink{background:#fed100;color:#111;display:inline-block;}
+#stopBtn{background:rgba(255,255,255,0.94);color:#111;}
+@media (max-width:600px){
+  #controls{gap:8px;}
+  #controls button,#controls a{padding:11px 15px;font-size:13.5px;}
+}
+body.paused #stopBtn{background:rgba(254,209,0,0.92);color:#111;}
+/* Gentle breathing glow — soft flare, no hard edges. */
+@keyframes pulse{
+  0%,100%{opacity:0.78;transform:scale(0.975);}
+  50%{opacity:1;transform:scale(1.045);}
+}
+body.connecting #orbRing,body.active #orbRing{animation:pulseOn 1.5s ease-in-out infinite alternate;}
+@keyframes pulseOn{
+  from{opacity:0.72;transform:scale(0.96);}
+  to{opacity:1;transform:scale(1.075);}
+}
+/* ---- Type-instead fallback (for loud places) ---- */
+#textPanel{
+  position:fixed;z-index:6;left:0;right:0;bottom:0;display:none;background:#fff;
+  border-top:1px solid #e6e6e6;box-shadow:0 -10px 44px rgba(0,0,0,0.22);
+  padding:14px 14px calc(16px + env(safe-area-inset-bottom));
+}
+body.texting #textPanel{display:block;}
+#textPanel .note{
+  font:600 13px/1.4 system-ui,sans-serif;color:#7a5d00;background:#fff8df;border:1px solid #ffe39a;
+  border-radius:10px;padding:9px 11px;margin-bottom:10px;display:none;
+}
+body.noisy #textPanel .note{display:block;}
+#answer{
+  max-height:34vh;overflow:auto;font:500 15px/1.55 system-ui,sans-serif;color:#111;
+  margin-bottom:10px;white-space:pre-wrap;-webkit-user-select:text;user-select:text;
+}
+#answer:empty{display:none;}
+#answer .you{color:#555;font-weight:700;}
+.trow{display:flex;gap:8px;}
+#textInput{
+  flex:1;padding:13px 14px;border:1px solid #ccc;border-radius:12px;
+  font:500 16px/1.2 system-ui,sans-serif;outline:none;background:#fff;color:#111;
+}
+#textInput:focus{border-color:#fed100;box-shadow:0 0 0 3px rgba(254,209,0,0.25);}
+#sendBtn{
+  padding:13px 20px;border:0;border-radius:12px;background:#fed100;color:#111;
+  font:800 14px/1 system-ui,sans-serif;cursor:pointer;
+}
+#voiceBack{
+  display:block;margin:11px auto 0;background:none;border:0;color:#666;
+  font:600 13px/1 system-ui,sans-serif;cursor:pointer;text-decoration:underline;
+}
+</style>
+</head>
+<body class="idle">
+<div id="bgWrap"><div id="bg"></div></div>
+<div id="outreachPage" aria-hidden="true">
+  <div class="a1Mark">A1</div>
+  <div class="a1Brand">Professional <span>Asphalt &amp; Sealing</span></div>
+  <div class="a1Sub">Ask our AI team member about asphalt, sealcoating, concrete, parking lot repairs, or future bids.</div>
+</div>
+<div id="orbShade"></div>
+<div id="orbRingDim"></div>
+<div id="orbRing"></div>
+<div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
+<div id="dock">
+  <div id="loudHint">Loud environment? <b>Type instead</b></div>
+  <div id="controls">
+    <button id="textToggle" type="button">Type instead</button>
+    <a id="humanLink" href="tel:+16189293301">Human team</a>
+    <button id="stopBtn" type="button">Pause</button>
+  </div>
+</div>
+<div id="textPanel" aria-live="polite">
+  <div class="note">It sounds loud where you are, so I&rsquo;ve switched us to text to make sure I get everything exactly right. Type your question below &mdash; and tap <b>Resume voice</b> whenever it&rsquo;s quieter.</div>
+  <div id="answer"></div>
+  <div class="trow">
+    <input id="textInput" type="text" placeholder="Type your question&hellip;" autocomplete="off" enterkeyhint="send"/>
+    <button id="sendBtn" type="button">Send</button>
+  </div>
+  <button id="voiceBack" type="button">Resume voice (it&rsquo;s quieter now)</button>
+</div>
+<script>
+/* ---- position the live orb exactly on the orb drawn in the image ---- */
+const params=new URLSearchParams(location.search);
+const source=(params.get('src')||'email').toLowerCase();
+const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
+const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
+/* talk-bg-v2.png = gap-free artwork with the Promotions/Updates tabs painted out. */
+const IMG_W=1536,IMG_H=979;         // background natural size
+const RING_CX=0.512, RING_CY=0.499; // eclipse center (px 786, 488 measured)
+const RING_D=0.255;                 // bright soft ring (its glow band lands on the art ring)
+const RINGDIM_D=0.40;               // large dim flare that fades out
+const SHADE_D=0.12;                 // dark eclipse center — stays INSIDE the bright ring
+const ARCH_F=0.1624;                // arch-tip row (px159/979) — pin near the top
+const TOP_F=0.03;                   // desired top margin above the arch
+const LOGO_EDGE=217;                // (logo right px971 + margin) - IMG_W/2, keeps logo on phone
+const bgEl=document.getElementById('bg');
+const orb=document.getElementById('orb');
+const orbShade=document.getElementById('orbShade');
+const orbRingDim=document.getElementById('orbRingDim');
+const orbRing=document.getElementById('orbRing');
+const humanLink=document.getElementById('humanLink');
+function placeOrb(){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  if(isOutreach){
+    const ring=Math.max(150,Math.min(Math.min(vw,vh)*0.32,300));
+    const cx=vw/2,cy=Math.max(vh*0.44,300);
+    setBox(orbShade,cx,cy,ring*0.78);
+    setBox(orbRingDim,cx,cy,ring*1.55);
+    setBox(orbRing,cx,cy,ring);
+    setBox(orb,cx,cy,ring*0.95);
+    return;
+  }
+  /* Zoom to pin the arch near the top and fill the screen (no dead space top or
+     bottom). On wide screens this fully slides up; on a narrow phone the zoom is
+     capped so the whole A1 logo still fits. */
+  const scaleCover=Math.max(vw/IMG_W,vh/IMG_H);
+  const scaleArch=((1-TOP_F)/(1-ARCH_F))*vh/IMG_H;  // fills AND arch at TOP_F
+  const scaleLogo=vw/(2*LOGO_EDGE);                 // keep full logo width visible
+  const scale=Math.max(scaleCover,Math.min(scaleArch,scaleLogo));
+  const rw=IMG_W*scale,rh=IMG_H*scale;
+  const offX=(vw-rw)/2;
+  /* Pin arch at TOP_F. On narrow/portrait a small area at the very bottom may fall
+     below the image; #bgWrap is the inbox color so it blends, and the floating
+     controls sit over it — so the arch reaches the top on every device. */
+  let offY=Math.min(0,TOP_F*vh-ARCH_F*rh);
+  if(bgEl){
+    bgEl.style.backgroundSize=rw+'px '+rh+'px';
+    bgEl.style.backgroundPosition=offX+'px '+offY+'px';
+  }
+  const cx=offX+RING_CX*rw,cy=offY+RING_CY*rh;
+  setBox(orbShade,cx,cy,SHADE_D*rw);
+  setBox(orbRingDim,cx,cy,RINGDIM_D*rw);
+  setBox(orbRing,cx,cy,RING_D*rw);
+  setBox(orb,cx,cy,RING_D*rw*0.95);
+}
+function setBox(el,cx,cy,d){
+  el.style.width=d+'px';el.style.height=d+'px';
+  el.style.left=(cx-d/2)+'px';el.style.top=(cy-d/2)+'px';
+}
+placeOrb();
+window.addEventListener('resize',placeOrb);
+
+/* ---- Axon AI voice (OpenAI Realtime, GA) ---- */
+let pc=null,localStream=null,starting=false,audioEl=null;
+let dc=null,micTrack=null,noiseTimer=null,autoTexted=false;
+let aiSpeaking=false,analyserTrack=null;
+const recipientName=params.get('name')||'';
+const autostart=params.get('autostart')==='1';
+const sessionParams=new URLSearchParams({src:sessionSource});
+if(recipientName)sessionParams.set('name',recipientName);
+const sessionUrl='/session?'+sessionParams.toString();
+let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=false;
+function applyClasses(){
+  let c=connState+(isOutreach?' outreach':'');
+  if(isTexting)c+=' texting';
+  if(isNoisy)c+=' noisy';
+  if(isPaused)c+=' paused';
+  document.body.className=c;
+}
+function setState(s){connState=s;applyClasses();}
+
+function ensureAudio(){
+  if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}
+  return audioEl;
+}
+function resumeAudio(){
+  if(audioEl&&audioEl.paused){audioEl.play().catch(function(){});return true;}
+  return false;
+}
+async function stop(){
+  stopNoiseMonitor();
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;micTrack=null;aiSpeaking=false;
+  isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
+  starting=false;setState('idle');
+  if(stopBtn)stopBtn.textContent='Pause';
+}
+function pauseSession(){
+  if(!pc&&!starting)return;
+  isPaused=true;
+  if(audioEl)audioEl.muted=true;
+  if(micTrack)micTrack.enabled=false;
+  connState='paused';
+  applyClasses();
+  if(stopBtn)stopBtn.textContent='Resume';
+}
+function resumeSession(){
+  if(!pc)return;
+  isPaused=false;
+  if(audioEl){audioEl.muted=false;audioEl.play().catch(function(){});}
+  connState='active';
+  refreshMic();
+  applyClasses();
+  if(stopBtn)stopBtn.textContent='Pause';
+}
+async function connectVoice(){
+  const r=await fetch(sessionUrl,{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+    setupAiMeter(e.streams[0]);
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  micTrack=localStream.getAudioTracks()[0];
+  pc.addTrack(micTrack);
+  /* A separate, always-on copy of the mic feeds the noise meter only, so we can
+     mute the real mic during AI speech (no interruptions) and still hear the room.
+     Clone FIRST (while live), then mute the real mic. */
+  try{analyserTrack=micTrack.clone();analyserTrack.enabled=true;}catch(e){analyserTrack=null;}
+  /* Start with the mic OFF so the opening can never be interrupted. The AI
+     voice meter keeps it off the whole time the AI is talking. */
+  aiSpeaking=true;micTrack.enabled=false;
+  dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){
+    try{
+      /* Opening greeting plays once per page visit. Pause/resume and orb
+         restarts keep the conversation — no second "Hello Mr. Grawe". */
+      if(!greetingDone){dc.send(JSON.stringify({type:'response.create'}));}
+    }catch(e){}
+  });
+  dc.addEventListener('message',handleEvent);
+  startNoiseMonitor();
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setState('active');
+}
+async function start(){
+  if(pc||starting)return;
+  starting=true;setState('connecting');
+  try{await connectVoice();}
+  catch(e){
+    console.error(e);
+    await stop();
+  }
+  starting=false;
+}
+
+/* Pause keeps the session alive and picks up the conversation — no second greeting.
+   Tap Resume or the orb to continue. Leaving the page fully ends the session. */
+const stopBtn=document.getElementById('stopBtn');
+function toggleVoice(){
+  if(isPaused){resumeSession();return;}
+  if(pc||starting){
+    if(!resumeAudio())pauseSession();
+  }else{start();}
+}
+orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
+orb.addEventListener('keydown',function(e){
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice();}
+});
+stopBtn.addEventListener('click',function(e){
+  e.stopPropagation();
+  if(isPaused)resumeSession();else pauseSession();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pc)pauseSession();});
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden&&(pc||starting))stop();
+});
+window.addEventListener('pagehide',function(){if(pc||starting)stop();});
+window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
+
+/* ---- Type-instead fallback for loud environments ---- */
+const textToggle=document.getElementById('textToggle');
+const textPanel=document.getElementById('textPanel');
+const textInput=document.getElementById('textInput');
+const sendBtn=document.getElementById('sendBtn');
+const voiceBack=document.getElementById('voiceBack');
+const answerEl=document.getElementById('answer');
+let curAI=null;
+
+function appendAI(text){
+  if(!curAI){curAI=document.createElement('div');answerEl.appendChild(curAI);}
+  curAI.textContent+=text;
+  answerEl.scrollTop=answerEl.scrollHeight;
+}
+/* The real mic is ON only when the AI is NOT speaking and we're not in text mode.
+   While the AI talks, the mic is OFF — so "stop", "fuck you", or any noise can
+   NOT interrupt it. It always finishes. */
+function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting&&!isPaused);}}
+/* Read the AI's spoken words as text so it works even when you can't hear it,
+   and track when it starts/stops talking. */
+function handleEvent(ev){
+  let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
+  const t=msg.type||'';
+  if(t==='response.done'){greetingDone=true;}
+  if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
+  else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
+  else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}
+}
+function openText(auto){
+  if(!pc&&!starting){start();}
+  isTexting=true;
+  if(auto){isNoisy=true;autoTexted=true;}
+  refreshMic();
+  applyClasses();
+  setTimeout(function(){try{textInput.focus();}catch(e){}},60);
+}
+function closeText(){
+  isTexting=false;isNoisy=false;
+  /* Re-arm the loud-noise safety net so it can offer text again if it gets
+     loud again later (e.g. they stepped outside, then went back in). */
+  autoTexted=false;loudFrames=0;
+  refreshMic();
+  applyClasses();
+}
+/* When the room is too loud, the AI says (uninterruptibly) that it's switching
+   to text, then we open the text box and stop listening (voice "paused").
+   The user reads/answers by typing, and taps "Resume voice" when it's quieter. */
+function enterNoiseMode(){
+  if(isTexting||autoTexted)return;
+  autoTexted=true;
+  /* Open text FIRST so the mic is already off — nothing in the room can
+     interrupt the hand-off line, and the voice is effectively paused. */
+  openText(true);
+  const line="I'm sorry — it sounds like where you are is pretty loud right now. Let's switch to text so I can be sure I get everything exactly right. Whenever it's quieter, just tap Resume voice and we'll keep talking.";
+  /* Don't stack a second response if the AI is already mid-sentence. */
+  if(!aiSpeaking&&dc&&dc.readyState==='open'){
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
+  }
+}
+function sendText(){
+  const text=(textInput.value||'').trim();
+  if(!text)return;
+  const you=document.createElement('div');you.className='you';you.textContent='You: '+text;
+  answerEl.appendChild(you);curAI=null;answerEl.scrollTop=answerEl.scrollHeight;
+  textInput.value='';
+  if(dc&&dc.readyState==='open'){
+    try{
+      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:text}]}}));
+      dc.send(JSON.stringify({type:'response.create'}));
+    }catch(e){}
+  }
+}
+textToggle.addEventListener('click',function(){openText(false);});
+sendBtn.addEventListener('click',sendText);
+voiceBack.addEventListener('click',closeText);
+textInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();sendText();}});
+
+/* ---- AI voice meter: mic is OFF whenever the AI is making sound ----
+   This is the hard guarantee that nothing (a word, a yell, noise) can
+   interrupt the AI. The mic only comes back ~0.7s after the AI goes quiet. */
+let aiAnalyser=null,aiData=null,aiMeterTimer=null,lastAiSound=0;
+function setupAiMeter(stream){
+  try{
+    if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
+    if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
+    const src=audioCtx.createMediaStreamSource(stream);
+    aiAnalyser=audioCtx.createAnalyser();aiAnalyser.fftSize=512;
+    aiData=new Uint8Array(aiAnalyser.frequencyBinCount);
+    src.connect(aiAnalyser);
+    lastAiSound=Date.now();
+    if(aiMeterTimer)clearInterval(aiMeterTimer);
+    aiMeterTimer=setInterval(checkAiSound,100);
+  }catch(e){}
+}
+function checkAiSound(){
+  if(!aiAnalyser||isPaused)return;
+  aiAnalyser.getByteTimeDomainData(aiData);
+  let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
+  const rms=Math.sqrt(sum/aiData.length);
+  const now=Date.now();
+  if(rms>0.025){
+    lastAiSound=now;
+    if(!aiSpeaking){aiSpeaking=true;refreshMic();}
+  }else if(aiSpeaking&&(now-lastAiSound)>700){
+    aiSpeaking=false;refreshMic();
+  }
+}
+
+/* ---- Noise watch: if it stays loud, auto-offer the text box once ---- */
+let audioCtx=null,analyser=null,noiseData=null,loudFrames=0;
+function startNoiseMonitor(){
+  try{
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
+    const meterStream=analyserTrack?new MediaStream([analyserTrack]):localStream;
+    const src=audioCtx.createMediaStreamSource(meterStream);
+    analyser=audioCtx.createAnalyser();analyser.fftSize=512;
+    noiseData=new Uint8Array(analyser.frequencyBinCount);
+    src.connect(analyser);
+    loudFrames=0;
+    noiseTimer=setInterval(checkNoise,250);
+  }catch(e){}
+}
+function checkNoise(){
+  if(!analyser||isTexting||autoTexted)return;
+  analyser.getByteTimeDomainData(noiseData);
+  let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
+  const rms=Math.sqrt(sum/noiseData.length);
+  if(rms>0.15){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
+  if(loudFrames>=10){enterNoiseMode();}   /* ~2.5s of sustained loud -> switch to text */
+}
+function stopNoiseMonitor(){
+  if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
+  if(aiMeterTimer){clearInterval(aiMeterTimer);aiMeterTimer=null;}
+  if(audioCtx){try{audioCtx.close()}catch(e){}audioCtx=null;}
+  if(analyserTrack){try{analyserTrack.stop()}catch(e){}analyserTrack=null;}
+  analyser=null;aiAnalyser=null;loudFrames=0;
+}
+
+setState('idle');
+/* Always auto-start the moment the page opens (no button, no extra click). */
+setTimeout(start,250);
+</script>
+</body>
+</html>
