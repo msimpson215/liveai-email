@@ -11,7 +11,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#fff;
 /* Background: a div whose size/position JS sets in pixels, so it always matches
    the orb math exactly. JS zooms enough on every device to pin the arch to the
    top and crop the Gmail header, white gap and Promotions/Updates tabs. */
-#bgWrap{position:fixed;inset:0;overflow:hidden;background:#fff;}
+#bgWrap{position:fixed;inset:0;overflow:hidden;background:#f5f4f4;}
 #bg{position:absolute;inset:0;background-image:url('/email/talk-bg-v2.png');
   background-repeat:no-repeat;background-position:0 0;background-size:100% 100%;}
 /* Controls float as small glassy chips over the inbox — NO solid bar, so the
@@ -204,8 +204,10 @@ function placeOrb(){
   const scale=Math.max(scaleCover,Math.min(scaleArch,scaleLogo));
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2;
-  let offY=TOP_F*vh-ARCH_F*rh;
-  offY=Math.max(vh-rh,Math.min(0,offY)); // never a blank at top or bottom
+  /* Pin arch at TOP_F. On narrow/portrait a small area at the very bottom may fall
+     below the image; #bgWrap is the inbox color so it blends, and the floating
+     controls sit over it — so the arch reaches the top on every device. */
+  let offY=Math.min(0,TOP_F*vh-ARCH_F*rh);
   if(bgEl){
     bgEl.style.backgroundSize=rw+'px '+rh+'px';
     bgEl.style.backgroundPosition=offX+'px '+offY+'px';
