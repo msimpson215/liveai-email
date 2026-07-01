@@ -65,16 +65,20 @@ body.outreach #outreachPage{
 }
 #orbRingDim{
   position:fixed;border-radius:50%;pointer-events:none;z-index:3;
+  /* all fade stops are transparent GOLD (not transparent black) -> no green midtone */
   background:radial-gradient(circle,
-    transparent 40%, rgba(255,196,46,0.22) 55%, rgba(255,168,0,0.08) 70%, transparent 84%);
+    rgba(255,196,40,0) 40%, rgba(255,196,40,0.22) 55%, rgba(255,170,0,0.08) 70%, rgba(255,170,0,0) 84%);
   filter:blur(8px);
 }
 #orbRing{
   position:fixed;border-radius:50%;pointer-events:none;z-index:4;
+  /* Dominant, saturated sun-gold ring (blue≈0, near-opaque at the band) so it
+     covers the artwork's pale glow and reads as bright yellow, never white/green.
+     Fade stops are transparent gold -> no green midtone. */
   background:radial-gradient(circle,
-    transparent 34%, rgba(255,214,74,0.0) 42%, rgba(255,214,74,0.85) 52%,
-    rgba(255,182,0,0.35) 60%, rgba(255,170,0,0.0) 74%);
-  filter:blur(4px);
+    rgba(255,193,0,0) 30%, rgba(255,199,6,0.92) 47%, rgba(255,206,16,1) 53%,
+    rgba(255,176,0,0.85) 62%, rgba(255,160,0,0) 78%);
+  filter:blur(3px);
   animation:pulse 3s ease-in-out infinite;
 }
 #orb{position:fixed;border-radius:50%;cursor:pointer;z-index:5;background:transparent;}
@@ -150,7 +154,7 @@ body.noisy #textPanel .note{display:block;}
 <div id="orbRing"></div>
 <div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
 <div id="dock">
-  <div id="loudHint">Loud environment? <b>Type instead</b></div>
+  <div id="loudHint"><b>Loud environment?</b></div>
   <div id="controls">
     <button id="textToggle" type="button">Type instead</button>
     <a id="humanLink" href="tel:+16189293301">Human team</a>
