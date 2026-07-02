@@ -242,6 +242,12 @@ const sessionParams=new URLSearchParams({src:sessionSource});
 if(recipientName)sessionParams.set('name',recipientName);
 const sessionUrl='/session?'+sessionParams.toString();
 let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=false;
+/* canInterrupt flips true once the opening greeting has finished. Before that the
+   mic stays muted while the AI talks (greeting can't be cut off); after that the
+   mic stays live while the AI talks, so the caller CAN interrupt normally.
+   protectLine mutes the mic for one specific spoken line (the noise offer) so that
+   line can't be cut off by the very noise it's warning about. */
+let canInterrupt=false,protectLine=false,noiseAskUntil=0;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
@@ -377,16 +383,26 @@ function appendAI(text){
   curAI.textContent+=text;
   answerEl.scrollTop=answerEl.scrollHeight;
 }
-/* The real mic is ON only when the AI is NOT speaking and we're not in text mode.
-   While the AI talks, the mic is OFF — so "stop", "fuck you", or any noise can
-   NOT interrupt it. It always finishes. */
-function refreshMic(){if(micTrack){micTrack.enabled=(!aiSpeaking&&!isTexting&&!isPaused);}}
+/* The mic is muted while the AI speaks ONLY during the opening greeting (before
+   canInterrupt) or during a protected line (the noise offer) — so those can't be
+   cut off. After the greeting the mic stays live even while the AI talks, so the
+   caller can interrupt normally. It's always off in text mode or while paused. */
+function refreshMic(){
+  if(!micTrack)return;
+  const lockWhileSpeaking=(!canInterrupt||protectLine)&&aiSpeaking;
+  micTrack.enabled=!(lockWhileSpeaking||isTexting||isPaused);
+}
 /* Read the AI's spoken words as text so it works even when you can't hear it,
    and track when it starts/stops talking. */
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
-  if(t==='response.done'){greetingDone=true;}
+  if(t==='response.done'){
+    greetingDone=true;
+    canInterrupt=true;   /* opening is over -> interruptions allowed from here on */
+    protectLine=false;   /* release the protected noise-offer line if it was set */
+    refreshMic();
+  }
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}
@@ -407,18 +423,21 @@ function closeText(){
   refreshMic();
   applyClasses();
 }
-/* When the room is too loud, the AI says (uninterruptibly) that it's switching
-   to text, then we open the text box and stop listening (voice "paused").
-   The user reads/answers by typing, and taps "Resume voice" when it's quieter. */
+/* When the room stays loud, the AI VERBALLY OFFERS to switch to text — it asks,
+   it doesn't force it. The offer line is protected (mic muted just for it) so the
+   noise can't cut it off. If the caller wants text, they tap "Type instead"; if it
+   gets quieter they just keep talking. We only ask when it's the AI's turn, and no
+   more than once every 30 seconds so it never nags. */
 function enterNoiseMode(){
-  if(isTexting||autoTexted)return;
-  autoTexted=true;
-  /* Open text FIRST so the mic is already off — nothing in the room can
-     interrupt the hand-off line, and the voice is effectively paused. */
-  openText(true);
-  const line="I'm sorry — it sounds like where you are is pretty loud right now. Let's switch to text so I can be sure I get everything exactly right. Whenever it's quieter, just tap Resume voice and we'll keep talking.";
-  /* Don't stack a second response if the AI is already mid-sentence. */
-  if(!aiSpeaking&&dc&&dc.readyState==='open'){
+  if(isTexting)return;
+  if(aiSpeaking)return;                 /* wait until it's our turn to speak */
+  const now=Date.now();
+  if(now<noiseAskUntil)return;          /* cooldown so it never nags */
+  noiseAskUntil=now+30000;
+  loudFrames=0;
+  const line="It sounds like there's a lot of background noise where you are. Would you like to switch to text so I don't miss anything? Just tap Type instead, and we'll keep going.";
+  if(dc&&dc.readyState==='open'){
+    protectLine=true;refreshMic();      /* deliver the offer without it being cut off */
     try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
   }
 }
@@ -487,12 +506,13 @@ function startNoiseMonitor(){
   }catch(e){}
 }
 function checkNoise(){
-  if(!analyser||isTexting||autoTexted)return;
+  if(!analyser||isTexting||!greetingDone)return;   /* only offer after the opening */
+  if(aiSpeaking){loudFrames=Math.max(0,loudFrames-1);return;} /* don't count the AI's own voice */
   analyser.getByteTimeDomainData(noiseData);
   let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
   const rms=Math.sqrt(sum/noiseData.length);
   if(rms>0.15){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
-  if(loudFrames>=10){enterNoiseMode();}   /* ~2.5s of sustained loud -> switch to text */
+  if(loudFrames>=10){enterNoiseMode();}   /* ~2.5s of sustained loud -> offer text */
 }
 function stopNoiseMonitor(){
   if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}

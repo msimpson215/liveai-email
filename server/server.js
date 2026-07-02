@@ -52,15 +52,15 @@ After you have said this greeting once, you must NEVER say it again. If the user
 
 const A1_EMAIL_SPOKEN = name => {
   const hello = name ? `Hello ${name}.` : 'Hello.'
-  return `${hello} I'm an AI team member for A1 Professional Asphalt and Sealing, and you can ask me anything about what we do. If you'd like, I can walk you through our services, like paving, sealcoating, concrete, and parking lot repairs. Anytime you'd rather talk to a real person, just tap the team member button below and we'll connect you. Thanks for trying this out, and feel free to save this message and come back anytime.`
+  return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing — ask me anything about our asphalt, sealcoating, concrete, or parking lot work. Anytime you'd rather talk to a person, just tap the human team button below.`
 }
 
 const A1_EMAIL_GREETING = name => {
-  return `OPENING — your VERY FIRST words must be these FOUR sentences, EXACTLY, word for word, one time, before anything else:
+  return `OPENING — your VERY FIRST words must be this greeting, EXACTLY, word for word, one time, before anything else:
 "${A1_EMAIL_SPOKEN(name)}"
 Rules for this opening:
-- Say exactly those four sentences, word for word. Do NOT add a fifth sentence and do NOT improvise.
-- Do NOT say "What can I do for you", "welcome to A1", "this is A1 Asphalt", or any other opening. ONLY the four sentences above.
+- Say it exactly, word for word. Do NOT add extra sentences and do NOT improvise.
+- Do NOT say "What can I do for you", "welcome to A1", "this is A1 Asphalt", or any other opening. ONLY the greeting above.
 - Do NOT say "blank" or any placeholder. If no name was given, just say "Hello".
 - After you have said this opening once, never repeat it. If the user says "hello" or "hi" afterward, answer their question directly in 1–3 sentences.`
 }
@@ -299,6 +299,11 @@ If asked who you are: "I'm Convo AI, your live AI team member."`
 
 const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
+// Sources served by talk.html, where the client keeps the mic muted during the
+// opening greeting so it cannot be interrupted, then re-enables it so the rest
+// of the conversation IS interruptible. Enable server-side interruption for them.
+const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web'])
+
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
     .replace(/[^a-zA-Z0-9 .,'-]/g, '')
@@ -348,6 +353,7 @@ app.get('/session', async (req, res) => {
     const raw = String(req.query.src || 'web').toLowerCase()
     const source = VALID_SOURCES.has(raw) ? raw : 'web'
     const recipientName = sanitizeRecipientName(req.query.name)
+    const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
@@ -363,13 +369,14 @@ app.get('/session', async (req, res) => {
             input: {
               turn_detection: {
                 type: 'server_vad',
-                // Hard-disable interruptions. Outside noise, a human talking,
-                // a jet engine, a rock concert — none of it cuts the AI off.
-                // It always finishes its full turn, then listens.
-                threshold: 0.95,
-                silence_duration_ms: 1200,
+                // For the A1 voice (talk.html): the client mutes the mic during the
+                // opening greeting so it always finishes, then re-enables the mic so
+                // the rest of the conversation can be interrupted normally.
+                // For demo products: keep it uninterruptible so intros always finish.
+                threshold: interruptible ? 0.5 : 0.95,
+                silence_duration_ms: interruptible ? 600 : 1200,
                 prefix_padding_ms: 300,
-                interrupt_response: false,
+                interrupt_response: interruptible,
                 create_response: true
               }
             },
