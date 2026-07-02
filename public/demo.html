@@ -76,7 +76,8 @@ const DEFAULT_BACKGROUNDS={
   bandage:'/demo/bandage.png',
   dna:'/demo/home%20dna%20paternity.png',
   std:'/demo/std.png',
-  aipoint:'/demo/aipoint.png'
+  aipoint:'/demo/aipoint.png',
+  convo:'/demo/convo.png'
 };
 const BG=params.get('bg')||DEFAULT_BACKGROUNDS[SRC]||'/images/canva-index.png';
 const TITLES={
@@ -85,7 +86,8 @@ const TITLES={
   bandage:'No More Ouchies',
   dna:'DNA Solutions',
   std:'STD Testing',
-  aipoint:'AI Point'
+  aipoint:'AI Point',
+  convo:'Convo AI'
 };
 document.title=(TITLES[SRC]||'Demo')+' — Talk to AI';
 document.body.setAttribute('data-title',TITLES[SRC]||'Demo');
