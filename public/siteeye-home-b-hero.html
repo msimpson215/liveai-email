@@ -13,14 +13,16 @@ a{color:inherit;text-decoration:none}
 .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
 header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;gap:20px;height:64px}
-.brand{font-weight:900;font-size:22px;letter-spacing:-.02em}.brand .eye{color:var(--orange)}.brand sup{font-size:10px;color:var(--muted)}
+.brand{font-weight:900;font-size:22px;letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}.brand .eye{color:var(--orange)}
+.brand .live{color:#ff3b30;font-weight:900;display:inline-flex;align-items:center;gap:5px}
+.brand .live .d{width:9px;height:9px;border-radius:50%;background:#ff2b20;box-shadow:0 0 9px #ff2b20;animation:blink 1.1s infinite}
 .spacer{flex:1}.tab{color:var(--muted);font-weight:700;font-size:14px}.tab:hover{color:#fff}
 .axon{background:#fff;color:#111;font-weight:800;padding:9px 15px;border-radius:8px;font-size:14px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
 .axon .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite}@keyframes blink{50%{opacity:.3}}
 .menu-btn{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:7px 10px}
 /* hero as a live screen */
 .screen{position:relative;min-height:86vh;display:flex;align-items:flex-start;overflow:hidden;border-bottom:1px solid var(--line);
-  background:url(/images/cam-nocord-crew.png) center 20%/cover no-repeat, #08090c}
+  background:url(/images/cam-modern-aimed.png) center 26%/cover no-repeat, #08090c}
 .screen .flag{position:absolute;inset:0;opacity:.05;background:
   repeating-linear-gradient(0deg,#c22 0 8.3%,transparent 8.3% 16.6%)}
 .screen .flag::before{content:"";position:absolute;left:0;top:0;width:38%;height:54%;background:#1f3a93;opacity:.6}
@@ -29,16 +31,15 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
   linear-gradient(180deg,rgba(6,9,14,.04),rgba(6,9,14,.34))}
 /* phone showing the LIVE view FROM the camera lens (not a shot of the tripod) */
 /* landscape phone (held long-ways) so it shows the whole job site */
-.media{position:absolute;right:16px;bottom:16px;z-index:4;display:flex;gap:12px;align-items:flex-end;max-width:64vw}
-.officebox{position:relative;width:min(360px,36vw);background:#0a0a0c;border:8px solid #1c1e24;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.officebox{position:absolute;left:16px;bottom:16px;z-index:4;width:min(330px,31vw);background:#0a0a0c;border:8px solid #1c1e24;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
 .officebox img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
 .officebox .ob-cap{position:absolute;left:0;right:0;bottom:0;font:700 10px/1.3 system-ui,sans-serif;color:#eaf0f7;padding:16px 9px 8px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8))}
-.campho{position:relative;z-index:4;width:min(250px,26vw);
+.campho{position:absolute;right:16px;bottom:16px;z-index:4;width:min(250px,26vw);
   background:#0a0a0c;border:8px solid #1c1e24;border-radius:18px;overflow:hidden;
   box-shadow:0 26px 70px rgba(0,0,0,.65)}
 .campho .notch{display:none}
 .campho .cam{position:absolute;top:50%;left:7px;transform:translateY(-50%);z-index:3;width:6px;height:6px;border-radius:50%;background:#12314a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/cam-nocord-crew.png) 48% 56%/205% no-repeat;overflow:hidden}
+.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/cam-modern-aimed.png) 66% 60%/210% no-repeat;overflow:hidden}
 .ph-screen::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,transparent 66%,rgba(0,0,0,.32));pointer-events:none}
 .ph-hud{position:absolute;left:8px;top:8px;z-index:2;display:flex;gap:6px;align-items:center;font:800 10px/1 system-ui,sans-serif;color:#fff}
 .ph-live{display:flex;gap:6px;align-items:center;color:#fff;background:#e11;padding:5px 11px;border-radius:6px;letter-spacing:.06em;font-size:12px}
@@ -65,7 +66,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .hud .crosshair::before,.hud .crosshair::after{content:"";position:absolute;background:rgba(120,200,255,.35)}
 .hud .crosshair::before{left:50%;top:-16px;width:1px;height:152px;transform:translateX(-50%)}
 .hud .crosshair::after{top:50%;left:-16px;height:1px;width:152px;transform:translateY(-50%)}
-.hero-c{position:relative;z-index:3;max-width:620px;padding:74px 0 40px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.hero-c{position:relative;z-index:3;max-width:620px;padding:44px 0 40px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .eyebrow{display:inline-flex;gap:8px;align-items:center;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--orange);border:1px solid rgba(255,106,0,.4);padding:6px 12px;border-radius:999px;background:rgba(255,106,0,.08)}
 h1{font-size:clamp(36px,6vw,66px);line-height:1;letter-spacing:-.02em;font-weight:900;margin:18px 0 14px}
 .hl{color:var(--orange)}
@@ -78,9 +79,9 @@ h1{font-size:clamp(36px,6vw,66px);line-height:1;letter-spacing:-.02em;font-weigh
 .res-photo{display:block;width:100%;max-width:620px;margin:24px auto 0;border-radius:16px;border:1px solid rgba(91,182,255,.4);box-shadow:0 22px 60px rgba(0,0,0,.5)}
 #contact{position:relative;overflow:hidden}
 #contact .flagbg{position:absolute;inset:0;z-index:0}
-#contact .fstripes{position:absolute;inset:0;opacity:.8;background:repeating-linear-gradient(180deg,#c8213f 0 7.69%,#ffffff 7.69% 15.38%)}
+#contact .fstripes{position:absolute;inset:0;opacity:.95;background:repeating-linear-gradient(180deg,#b31942 0 7.69%,#ffffff 7.69% 15.38%)}
 #contact .fstars{position:absolute;left:0;top:0;width:34%;height:52%;opacity:.85;background-color:#0a3161;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpolygon fill='%23ffffff' points='14,3 16.6,10.1 24.1,10.3 18.1,14.9 20.2,22.1 14,17.9 7.8,22.1 9.9,14.9 3.9,10.3 11.4,10.1'/%3E%3C/svg%3E");background-size:13% 22%;background-repeat:repeat}
-#contact .fscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,12,.5),rgba(8,9,12,.68))}
+#contact .fscrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,12,.34),rgba(8,9,12,.52))}
 section{padding:72px 0}
 .kicker{color:var(--orange);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
 h2{font-size:clamp(26px,3.4vw,42px);font-weight:900;letter-spacing:-.02em;line-height:1.08;margin:10px 0 14px}
@@ -120,12 +121,12 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 .axon-panel .sheet{position:absolute;right:0;top:0;height:100%;width:min(440px,92vw);background:#0d0e12;border-left:1px solid var(--line);display:flex;flex-direction:column}
 .axon-panel .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#111;border-bottom:1px solid var(--line);font-weight:800}
 .axon-panel .x{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}.axon-panel iframe{flex:1;border:0;width:100%;background:#fff}
-@media(max-width:900px){.split,.axon-grid,.tiers{grid-template-columns:1fr}.tab{display:none}.menu-btn{display:inline-block}.nav.open .tab{display:block;position:absolute;top:64px;left:0;right:0;background:#08090c;padding:14px 24px;border-bottom:1px solid var(--line)}.media,.feedline,.eyering{display:none}}
+@media(max-width:900px){.split,.axon-grid,.tiers{grid-template-columns:1fr}.tab{display:none}.menu-btn{display:inline-block}.nav.open .tab{display:block;position:absolute;top:64px;left:0;right:0;background:#08090c;padding:14px 24px;border-bottom:1px solid var(--line)}.officebox,.campho,.feedline,.eyering{display:none}}
 </style>
 </head>
 <body>
 <header><div class="wrap"><nav class="nav" id="nav">
-  <a href="/" class="brand">Site<span class="eye">Eye</span>360°<sup>™</sup></a>
+  <a href="/" class="brand">Site<span class="eye">Eye</span>360 <span class="live"><span class="d"></span>Live</span></a>
   <div class="spacer"></div>
   <a class="tab" href="#commercial">Commercial</a>
   <a class="tab" href="#how">How it works</a>
@@ -141,21 +142,18 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   </div>
   <div class="wrap"><div class="hero-c">
     <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">● Battery-powered · no wires · live all day</span>
-    <h1>Live job site<br><span class="hl">monitoring.</span></h1>
+    <h1>Know it's getting done<br><span class="hl">right.</span></h1>
     <p class="sub"><strong>Your crew puts it up in the morning and takes it down at day's end.</strong> Watch the whole site from your office or your phone.</p>
   </div></div>
-  <div class="eyering" style="left:18%;top:9%"></div>
-  <div class="media">
-    <div class="officebox">
-      <img src="/images/office-2screens.png" alt="Owner watching the job site live on two office monitors">
-      <div class="ob-cap">Watch from your office.</div>
-    </div>
-    <div class="campho">
-      <div class="notch"></div><div class="cam"></div>
-      <div class="ph-screen">
-        <div class="ph-hud"><span class="ph-live"><i></i>LIVE</span></div>
-        <div class="ph-cap">…or your phone.</div>
-      </div>
+  <div class="officebox">
+    <img src="/images/office-2screens.png" alt="Owner watching the job site live on two office monitors">
+    <div class="ob-cap">Watch from your office…</div>
+  </div>
+  <div class="campho">
+    <div class="notch"></div><div class="cam"></div>
+    <div class="ph-screen">
+      <div class="ph-hud"><span class="ph-live"><i></i>LIVE</span></div>
+      <div class="ph-cap">…or your phone.</div>
     </div>
   </div>
 </div>
@@ -207,9 +205,8 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   <div class="flagbg"><div class="fstripes"></div><div class="fstars"></div><div class="fscrim"></div></div>
   <div class="wrap" style="text-align:center;position:relative;z-index:2">
     <span class="kicker" style="color:#fff;font-size:17px">Get in touch</span>
-    <h2>Put eyes on your next job or event — without having to be there.</h2>
+    <h2>Put eyes on your next job — without having to be there.</h2>
     <div class="cta" style="justify-content:center"><a class="btn btn-white" href="mailto:hello@siteeye360.com">Email us</a><a class="btn btn-white" href="#" onclick="openAxon();return false;">Ask Axon AI</a></div>
-    <div class="usa"><span class="flagdot"></span> Designed &amp; assembled in the U.S.A.</div>
   </div>
 </section>
 
