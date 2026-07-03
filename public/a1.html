@@ -247,7 +247,7 @@ let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=f
    mic stays live while the AI talks, so the caller CAN interrupt normally.
    protectLine mutes the mic for one specific spoken line (the noise offer) so that
    line can't be cut off by the very noise it's warning about. */
-let canInterrupt=false,protectLine=false,noiseAskUntil=0;
+let canInterrupt=false,protectLine=false,noiseAskUntil=0,roomLoud=false;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
@@ -271,6 +271,7 @@ async function stop(){
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
+  roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
 }
@@ -314,6 +315,10 @@ async function connectVoice(){
   /* Start with the mic OFF so the opening can never be interrupted. The AI
      voice meter keeps it off the whole time the AI is talking. */
   aiSpeaking=true;micTrack.enabled=false;
+  /* Protect the opening: if a greeting is about to play, interruption stays off
+     until it finishes. If we're resuming a session that already greeted, allow
+     interruption right away. Start assuming a quiet room. */
+  canInterrupt=greetingDone;protectLine=false;roomLoud=false;loudFrames=0;quietFrames=0;
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){
     try{
@@ -383,13 +388,16 @@ function appendAI(text){
   curAI.textContent+=text;
   answerEl.scrollTop=answerEl.scrollHeight;
 }
-/* The mic is muted while the AI speaks ONLY during the opening greeting (before
-   canInterrupt) or during a protected line (the noise offer) — so those can't be
-   cut off. After the greeting the mic stays live even while the AI talks, so the
-   caller can interrupt normally. It's always off in text mode or while paused. */
+/* ADAPTIVE interruption. The mic is muted while the AI is talking when:
+   - we're still in the opening greeting (canInterrupt false), so it always finishes; or
+   - we're delivering a protected line (the noise offer); or
+   - the ROOM IS LOUD (a bar) — so background noise can't cut the AI off and the
+     caller can actually hear the whole answer.
+   In a QUIET room (an office) the mic stays live while the AI talks, so the caller
+   CAN interrupt. It's always off in text mode or while paused. */
 function refreshMic(){
   if(!micTrack)return;
-  const lockWhileSpeaking=(!canInterrupt||protectLine)&&aiSpeaking;
+  const lockWhileSpeaking=(!canInterrupt||protectLine||roomLoud)&&aiSpeaking;
   micTrack.enabled=!(lockWhileSpeaking||isTexting||isPaused);
 }
 /* Read the AI's spoken words as text so it works even when you can't hear it,
@@ -491,7 +499,7 @@ function checkAiSound(){
 }
 
 /* ---- Noise watch: if it stays loud, auto-offer the text box once ---- */
-let audioCtx=null,analyser=null,noiseData=null,loudFrames=0;
+let audioCtx=null,analyser=null,noiseData=null,loudFrames=0,quietFrames=0;
 function startNoiseMonitor(){
   try{
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
@@ -505,14 +513,26 @@ function startNoiseMonitor(){
     noiseTimer=setInterval(checkNoise,250);
   }catch(e){}
 }
+/* Continuously classify the room as loud (bar) or quiet (office). We only sample
+   when the AI is NOT talking, so we measure the real room, not the AI's own voice.
+   Hysteresis keeps it from flip-flopping on a passing truck or a single word:
+   ~2s of sustained loud enters bar mode, ~3.5s of sustained quiet leaves it. */
 function checkNoise(){
-  if(!analyser||isTexting||!greetingDone)return;   /* only offer after the opening */
-  if(aiSpeaking){loudFrames=Math.max(0,loudFrames-1);return;} /* don't count the AI's own voice */
-  analyser.getByteTimeDomainData(noiseData);
-  let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
-  const rms=Math.sqrt(sum/noiseData.length);
-  if(rms>0.15){loudFrames++;}else{loudFrames=Math.max(0,loudFrames-1);}
-  if(loudFrames>=10){enterNoiseMode();}   /* ~2.5s of sustained loud -> offer text */
+  if(!analyser||isTexting)return;
+  if(!aiSpeaking){
+    analyser.getByteTimeDomainData(noiseData);
+    let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
+    const rms=Math.sqrt(sum/noiseData.length);
+    if(rms>0.15){loudFrames++;quietFrames=0;}
+    else if(rms<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
+    else{loudFrames=Math.max(0,loudFrames-1);}
+  }
+  if(!roomLoud&&loudFrames>=8){          /* ~2s sustained loud -> bar mode */
+    roomLoud=true;refreshMic();
+    if(greetingDone)enterNoiseMode();    /* once we know it's loud, offer text */
+  }else if(roomLoud&&quietFrames>=14){   /* ~3.5s sustained quiet -> office mode */
+    roomLoud=false;refreshMic();
+  }
 }
 function stopNoiseMonitor(){
   if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
