@@ -20,7 +20,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .menu-btn{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:7px 10px}
 /* hero as a live screen */
 .screen{position:relative;min-height:86vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line);
-  background:url(/images/eye-in-sky-hero.png) center 14%/cover no-repeat, #08090c}
+  background:url(/images/watch-scene.png) center 42%/cover no-repeat, #08090c}
 .screen .flag{position:absolute;inset:0;opacity:.05;background:
   repeating-linear-gradient(0deg,#c22 0 8.3%,transparent 8.3% 16.6%)}
 .screen .flag::before{content:"";position:absolute;left:0;top:0;width:38%;height:54%;background:#1f3a93;opacity:.6}
@@ -34,7 +34,8 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .campho .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);z-index:3;
   width:44px;height:5px;border-radius:99px;background:#000}
 .campho .cam{position:absolute;top:8px;right:24px;z-index:3;width:6px;height:6px;border-radius:50%;background:#12314a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.ph-screen{position:relative;aspect-ratio:9/17;background:url(/images/camera-pov.png) center/cover;overflow:hidden}
+.ph-screen{position:relative;aspect-ratio:9/17;background:url(/images/watch-scene.png) 26% 78%/300% no-repeat;overflow:hidden}
+.ph-screen::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,transparent 58%,rgba(0,0,0,.4));pointer-events:none}
 .ph-hud{position:absolute;left:8px;top:8px;z-index:2;display:flex;gap:6px;align-items:center;font:800 10px/1 system-ui,sans-serif;color:#fff}
 .ph-live{display:flex;gap:5px;align-items:center;color:#fff;background:#e11;padding:3px 7px;border-radius:5px;letter-spacing:.05em}
 .ph-live i{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1.1s infinite}
@@ -129,7 +130,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 </nav></div></header>
 
 <div class="screen">
-  <div class="flag"></div><div class="scan"></div>
+  <div class="scan"></div>
   <div class="hud">
     <div class="tl"><span class="rec"><i></i>LIVE</span><span>CAM 01 · 360°</span></div>
     <div class="tr">5G ▮▮▮▮ · Depot Repave</div>
@@ -146,12 +147,12 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
     </div>
   </div></div>
   <svg class="feedline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    <line x1="50" y1="19" x2="82" y2="35" stroke="#ff6a00" stroke-width="2.5" stroke-dasharray="6 5" vector-effect="non-scaling-stroke" opacity=".8">
+    <line x1="82" y1="20" x2="90" y2="50" stroke="#ff6a00" stroke-width="2.5" stroke-dasharray="6 5" vector-effect="non-scaling-stroke" opacity=".85">
       <animate attributeName="stroke-dashoffset" from="11" to="0" dur="0.7s" repeatCount="indefinite"/>
     </line>
   </svg>
-  <div class="eyering" style="left:50%;top:17%"></div>
-  <div class="eyetag" style="left:50%;top:7.5%">360° camera — the eye in the sky</div>
+  <div class="eyering" style="left:82%;top:19%"></div>
+  <div class="eyetag" style="left:76%;top:9%">360° camera — watching live</div>
   <div class="campho">
     <div class="notch"></div><div class="cam"></div>
     <div class="ph-screen">
