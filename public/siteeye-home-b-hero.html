@@ -19,8 +19,8 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .axon .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite}@keyframes blink{50%{opacity:.3}}
 .menu-btn{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:7px 10px}
 /* hero as a live screen */
-.screen{position:relative;min-height:86vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line);
-  background:url(/images/cam-10ft-crew.png) center 8%/cover no-repeat, #08090c}
+.screen{position:relative;min-height:86vh;display:flex;align-items:flex-start;overflow:hidden;border-bottom:1px solid var(--line);
+  background:url(/images/cam-nocord-crew.png) center 20%/cover no-repeat, #08090c}
 .screen .flag{position:absolute;inset:0;opacity:.05;background:
   repeating-linear-gradient(0deg,#c22 0 8.3%,transparent 8.3% 16.6%)}
 .screen .flag::before{content:"";position:absolute;left:0;top:0;width:38%;height:54%;background:#1f3a93;opacity:.6}
@@ -29,12 +29,16 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
   linear-gradient(180deg,rgba(6,9,14,.04),rgba(6,9,14,.34))}
 /* phone showing the LIVE view FROM the camera lens (not a shot of the tripod) */
 /* landscape phone (held long-ways) so it shows the whole job site */
-.campho{position:absolute;right:16px;bottom:16px;z-index:4;width:min(300px,33vw);
-  background:#0a0a0c;border:8px solid #1c1e24;border-radius:22px;overflow:hidden;
+.media{position:absolute;right:16px;bottom:16px;z-index:4;display:flex;gap:12px;align-items:flex-end;max-width:64vw}
+.officebox{position:relative;width:min(360px,36vw);background:#0a0a0c;border:8px solid #1c1e24;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.officebox img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.officebox .ob-cap{position:absolute;left:0;right:0;bottom:0;font:700 10px/1.3 system-ui,sans-serif;color:#eaf0f7;padding:16px 9px 8px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8))}
+.campho{position:relative;z-index:4;width:min(250px,26vw);
+  background:#0a0a0c;border:8px solid #1c1e24;border-radius:18px;overflow:hidden;
   box-shadow:0 26px 70px rgba(0,0,0,.65)}
 .campho .notch{display:none}
 .campho .cam{position:absolute;top:50%;left:7px;transform:translateY(-50%);z-index:3;width:6px;height:6px;border-radius:50%;background:#12314a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/cam-10ft-crew.png) 46% 60%/190% no-repeat;overflow:hidden}
+.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/cam-nocord-crew.png) 48% 56%/205% no-repeat;overflow:hidden}
 .ph-screen::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,transparent 66%,rgba(0,0,0,.32));pointer-events:none}
 .ph-hud{position:absolute;left:8px;top:8px;z-index:2;display:flex;gap:6px;align-items:center;font:800 10px/1 system-ui,sans-serif;color:#fff}
 .ph-live{display:flex;gap:6px;align-items:center;color:#fff;background:#e11;padding:5px 11px;border-radius:6px;letter-spacing:.06em;font-size:12px}
@@ -61,7 +65,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .hud .crosshair::before,.hud .crosshair::after{content:"";position:absolute;background:rgba(120,200,255,.35)}
 .hud .crosshair::before{left:50%;top:-16px;width:1px;height:152px;transform:translateX(-50%)}
 .hud .crosshair::after{top:50%;left:-16px;height:1px;width:152px;transform:translateY(-50%)}
-.hero-c{position:relative;z-index:3;max-width:750px;padding:40px 0;text-shadow:0 2px 16px rgba(0,0,0,.6)}
+.hero-c{position:relative;z-index:3;max-width:620px;padding:74px 0 40px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
 .eyebrow{display:inline-flex;gap:8px;align-items:center;font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--orange);border:1px solid rgba(255,106,0,.4);padding:6px 12px;border-radius:999px;background:rgba(255,106,0,.08)}
 h1{font-size:clamp(36px,6vw,66px);line-height:1;letter-spacing:-.02em;font-weight:900;margin:18px 0 14px}
 .hl{color:var(--orange)}
@@ -116,7 +120,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 .axon-panel .sheet{position:absolute;right:0;top:0;height:100%;width:min(440px,92vw);background:#0d0e12;border-left:1px solid var(--line);display:flex;flex-direction:column}
 .axon-panel .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#111;border-bottom:1px solid var(--line);font-weight:800}
 .axon-panel .x{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}.axon-panel iframe{flex:1;border:0;width:100%;background:#fff}
-@media(max-width:900px){.split,.axon-grid,.tiers{grid-template-columns:1fr}.tab{display:none}.menu-btn{display:inline-block}.nav.open .tab{display:block;position:absolute;top:64px;left:0;right:0;background:#08090c;padding:14px 24px;border-bottom:1px solid var(--line)}.campho,.feedline,.eyering{display:none}}
+@media(max-width:900px){.split,.axon-grid,.tiers{grid-template-columns:1fr}.tab{display:none}.menu-btn{display:inline-block}.nav.open .tab{display:block;position:absolute;top:64px;left:0;right:0;background:#08090c;padding:14px 24px;border-bottom:1px solid var(--line)}.media,.feedline,.eyering{display:none}}
 </style>
 </head>
 <body>
@@ -124,7 +128,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   <a href="/" class="brand">Site<span class="eye">Eye</span>360°<sup>™</sup></a>
   <div class="spacer"></div>
   <a class="tab" href="#commercial">Commercial</a>
-  <a class="tab" href="#residential">Residential &amp; Events</a>
+  <a class="tab" href="#how">How it works</a>
   <a class="tab" href="#partners">Partners</a>
   <a class="axon" href="#" onclick="openAxon();return false;"><span class="dot"></span>Ask Axon AI</a>
   <button class="menu-btn" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
@@ -136,16 +140,22 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
     <div class="tl"><span class="rec"><i></i>LIVE</span></div>
   </div>
   <div class="wrap"><div class="hero-c">
-    <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">● Live job monitoring</span>
-    <h1>You're on site.<br><span class="hl">Without being on site.</span></h1>
-    <p class="sub"><strong>Your crew puts it up in the morning and takes it down at day's end.</strong> Watch the whole site live — from your office or your phone — and see it's done safe and right.</p>
+    <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">● Battery-powered · no wires · live all day</span>
+    <h1>Live job site<br><span class="hl">monitoring.</span></h1>
+    <p class="sub"><strong>Your crew puts it up in the morning and takes it down at day's end.</strong> Watch the whole site from your office or your phone.</p>
   </div></div>
-  <div class="eyering" style="left:15.5%;top:6.5%"></div>
-  <div class="campho">
-    <div class="notch"></div><div class="cam"></div>
-    <div class="ph-screen">
-      <div class="ph-hud"><span class="ph-live"><i></i>LIVE</span></div>
-      <div class="ph-cap">The same crew — live on your phone.</div>
+  <div class="eyering" style="left:18%;top:9%"></div>
+  <div class="media">
+    <div class="officebox">
+      <img src="/images/office-2screens.png" alt="Owner watching the job site live on two office monitors">
+      <div class="ob-cap">Watch from your office.</div>
+    </div>
+    <div class="campho">
+      <div class="notch"></div><div class="cam"></div>
+      <div class="ph-screen">
+        <div class="ph-hud"><span class="ph-live"><i></i>LIVE</span></div>
+        <div class="ph-cap">…or your phone.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -181,16 +191,6 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
       <div class="tier feat"><div class="name">Pro · heavy-duty</div><div class="price">$110 <small>/mo</small></div><div class="note">$900 setup · DeWalt-grade</div><ul><li>Everything in Field</li><li>Heavy-duty pole &amp; base</li><li>Indoor tripod included</li><li>Unlimited crews &amp; sites</li></ul><a class="btn btn-primary" href="#contact">Book a demo</a></div>
       <div class="tier"><div class="name">Buyout</div><div class="price">$2,900</div><div class="note">one-time + data</div><ul><li>Full commercial kit, yours</li><li>BYO 5G or add ours</li><li>Axon AI first year</li><li>On-site training</li></ul><a class="btn btn-ghost" href="#contact">Talk to sales</a></div>
     </div>
-  </div>
-</section>
-
-<section id="residential" style="background:linear-gradient(180deg,#0b1420,#08090c);border-top:1px solid var(--line)">
-  <div class="wrap">
-    <span class="kicker" style="color:#7cc4ff;font-size:20px;letter-spacing:.1em">Residential &amp; Events</span>
-    <h2 style="font-size:clamp(30px,4.2vw,50px)">Watch your child's game from anywhere.</h2>
-    <p class="lead">The host sets one up at the game or the party and shares the live feed — parents and family watch from anywhere. See your kid's game from out of town, or keep an eye on the whole pool. Own the home model for $299, or rent it for the weekend.</p>
-    <div class="cta"><a class="btn btn-white" href="#contact">Buy — $299</a><a class="btn btn-ghost" href="#contact">Rent for an event</a></div>
-    <img class="res-photo" src="/images/pool-highangle.png" alt="A 360° camera watching over the pool — kids in the water, live on your phone"/>
   </div>
 </section>
 
