@@ -1,5 +1,25 @@
 # RESTORE POINTS
 
+## SAVED — greeting + interrupt + noise offer (July 3, 2026)
+
+The "so close, basically done" A1 voice build, saved BEFORE the adaptive
+loud/quiet auto-switch was added. Short 2-sentence greeting that can't be
+interrupted, then the rest of the conversation IS interruptible, and a one-time
+verbal offer to switch to text when it's noisy.
+
+**Tag:** `approved-greeting-interrupt-noise` (commit `3e4cdf2`)
+**Backup file:** `backups/talk-GOOD-greeting-interrupt-noise.html`
+**Note:** `server/server.js` is identical between this point and the adaptive
+version, so restoring `talk.html` + `a1.html` is enough to get this behavior back.
+
+### Restore this version
+```bash
+git checkout approved-greeting-interrupt-noise -- public/talk.html public/a1.html
+git push origin main
+```
+
+---
+
 ## CURRENT APPROVED — visual refresh (June 30, 2026)
 
 Client-approved: tabs removed, soft "sun" eclipse, logo above the circle,
