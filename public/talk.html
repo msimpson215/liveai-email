@@ -438,15 +438,18 @@ function closeText(){
    more than once every 30 seconds so it never nags. */
 function enterNoiseMode(){
   if(isTexting)return;
-  if(aiSpeaking)return;                 /* wait until it's our turn to speak */
   const now=Date.now();
   if(now<noiseAskUntil)return;          /* cooldown so it never nags */
-  noiseAskUntil=now+30000;
+  noiseAskUntil=now+45000;
   loudFrames=0;
-  const line="It sounds like there's a lot of background noise where you are. Would you like to switch to text so I don't miss anything? Just tap Type instead, and we'll keep going.";
+  /* Switch to TEXT first: the mic goes off, so the loud room / a TV can no longer
+     cut the AI off OR get picked up as if the caller were talking. Then the AI
+     explains the switch. Tap "Resume voice" when it's quiet again. */
+  openText(true);
+  const line="I'm having a hard time hearing you over the background noise, so let's switch to text so I don't miss anything. Go ahead and type your question below, and tap Resume voice whenever it's quieter.";
   if(dc&&dc.readyState==='open'){
-    protectLine=true;refreshMic();      /* deliver the offer without it being cut off */
-    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
+    protectLine=true;
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
   }
 }
 function sendText(){

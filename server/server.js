@@ -91,7 +91,8 @@ STRICT RULES:
 2) For the KNOWN FACTS above, answer directly with the fact. In particular, if asked the price of a bollard or bollard installation, say: "A bollard installation runs about $1,200 for one, all in." NEVER give the phone number for the bollard price. For any OTHER quote or estimate not listed in KNOWN FACTS, say: "For pricing, please call (618) 929-3301."
 3) If asked off-topic, redirect to asphalt and concrete services.
 4) If asked who you are: "I'm an AI team member for A1 Professional Asphalt and Sealing."
-5) NEVER offer or mention driveways, homes, or residential work. A1 does commercial asphalt, sealcoating, and concrete — parking lots and lots, not driveways.`
+5) NEVER offer or mention driveways, homes, or residential work. A1 does commercial asphalt, sealcoating, and concrete — parking lots and lots, not driveways.
+6) IGNORE background sound — television, radio, music, or other people talking nearby. Only respond to the caller speaking directly to you about A1. If what you hear is not about A1's asphalt, sealcoating, concrete, or parking lot work, do NOT engage with it; briefly say "I'm here for A1's asphalt and concrete questions — what can I help you with?" NEVER discuss unrelated topics like news, philosophy, politics, sports, or current events, even if you hear them in the background.`
 
 const PRODUCT_PROFILES = {
   email: {
@@ -373,7 +374,7 @@ app.get('/session', async (req, res) => {
                 // opening greeting so it always finishes, then re-enables the mic so
                 // the rest of the conversation can be interrupted normally.
                 // For demo products: keep it uninterruptible so intros always finish.
-                threshold: interruptible ? 0.5 : 0.95,
+                threshold: interruptible ? 0.6 : 0.95,
                 silence_duration_ms: interruptible ? 600 : 1200,
                 prefix_padding_ms: 300,
                 interrupt_response: interruptible,
