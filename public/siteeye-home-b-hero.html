@@ -34,7 +34,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
   box-shadow:0 26px 70px rgba(0,0,0,.65)}
 .campho .notch{display:none}
 .campho .cam{position:absolute;top:50%;left:7px;transform:translateY(-50%);z-index:3;width:6px;height:6px;border-radius:50%;background:#12314a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/watch-scene.png) 28% 58%/145% no-repeat;overflow:hidden}
+.ph-screen{position:relative;aspect-ratio:16/9;background:url(/images/camera-pov.png) center/cover no-repeat;overflow:hidden}
 .ph-screen::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,transparent 66%,rgba(0,0,0,.32));pointer-events:none}
 .ph-hud{position:absolute;left:8px;top:8px;z-index:2;display:flex;gap:6px;align-items:center;font:800 10px/1 system-ui,sans-serif;color:#fff}
 .ph-live{display:flex;gap:5px;align-items:center;color:#fff;background:#e11;padding:3px 7px;border-radius:5px;letter-spacing:.05em}
@@ -51,14 +51,6 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
   background:rgba(255,106,0,.95);padding:6px 10px;border-radius:7px;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.45);pointer-events:none}
 .eyetag::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(255,106,0,.95)}
 @media(max-width:900px){.eyetag{display:none}}
-/* use-case strip */
-.usecases{background:#0b0c10;border-bottom:1px solid var(--line);padding:40px 0}
-.uc-title{text-align:center;margin-bottom:20px}
-.uc-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.uc{flex:1 1 0;min-width:160px;background:#14161c;border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center}
-.uc .i{font-size:28px}
-.uc h4{font-size:15px;margin:8px 0 3px;color:#fff}
-.uc p{font-size:12.5px;color:#fff}
 .hud{position:absolute;inset:0;pointer-events:none;font-weight:800;font-size:12px;color:#cfe6ff}
 .hud .tl{position:absolute;left:20px;top:16px;display:flex;gap:10px;align-items:center}
 .hud .rec{color:#ff5a5a;display:flex;gap:6px;align-items:center}.hud .rec i{width:9px;height:9px;border-radius:50%;background:#ff3b3b;animation:blink 1.1s infinite}
@@ -169,19 +161,6 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
     </div>
   </div>
 </div>
-
-<section class="usecases">
-  <div class="wrap">
-    <div class="uc-title"><span class="kicker">Built for the one-day job</span><h2 style="margin-top:8px">One camera. Every kind of day job.</h2></div>
-    <div class="uc-row">
-      <div class="uc"><div class="i">🛢️</div><h4>Sealcoating &amp; paving</h4><p>Watch every pass and every coat.</p></div>
-      <div class="uc"><div class="i">🎨</div><h4>Painting</h4><p>One coat or two? Now you'll know.</p></div>
-      <div class="uc"><div class="i">🏠</div><h4>Roofing</h4><p>Eyes on the whole roof, safely.</p></div>
-      <div class="uc"><div class="i">🌳</div><h4>Tree &amp; landscaping</h4><p>Track crews across the property.</p></div>
-      <div class="uc"><div class="i">🏗️</div><h4>Remodels</h4><p>Indoor tripod for interior jobs.</p></div>
-    </div>
-  </div>
-</section>
 
 <section id="why">
   <div class="wrap">
