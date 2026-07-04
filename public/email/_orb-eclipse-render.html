@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:606px;height:730px;overflow:hidden;background:#ffffff;}
+.card{
+  position:relative;width:606px;height:730px;background:#ffffff;
+  /* soft warm sun-glow behind the orb, fades into white on all edges */
+  background:
+    radial-gradient(circle at 50% 56%, rgba(255,214,90,0.55) 0%, rgba(255,224,130,0.34) 26%,
+      rgba(255,236,180,0.14) 46%, rgba(255,255,255,0) 66%);
+  font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+}
+.logo{position:absolute;top:44px;left:50%;transform:translateX(-50%);width:320px;height:auto;display:block;}
+/* eclipse orb — same look as the live talk.html page */
+.orbCx{position:absolute;left:50%;top:378px;transform:translate(-50%,-50%);}
+.ring,.ringdim,.shade{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;}
+.shade{
+  width:150px;height:150px;
+  background:radial-gradient(circle,
+    rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.82) 46%, rgba(0,0,0,0.32) 74%, transparent 92%);
+  filter:blur(2px);z-index:2;
+}
+.ringdim{
+  width:500px;height:500px;
+  background:radial-gradient(circle,
+    rgba(255,196,40,0) 40%, rgba(255,196,40,0.22) 55%, rgba(255,170,0,0.08) 70%, rgba(255,170,0,0) 84%);
+  filter:blur(8px);z-index:3;
+}
+.ring{
+  width:318px;height:318px;
+  background:radial-gradient(circle,
+    rgba(255,193,0,0) 30%, rgba(255,199,6,0.92) 47%, rgba(255,206,16,1) 53%,
+    rgba(255,176,0,0.85) 62%, rgba(255,160,0,0) 78%);
+  filter:blur(3px);z-index:4;
+}
+.cta{
+  position:absolute;top:566px;left:0;right:0;text-align:center;z-index:6;
+}
+.cta .t1{font-size:22px;font-weight:700;color:#20242b;letter-spacing:.2px;}
+.cta .t2{margin-top:9px;font-size:13px;font-weight:600;color:#8a8f98;letter-spacing:.3px;}
+.arrow{
+  position:absolute;right:34px;bottom:34px;width:58px;height:58px;border-radius:50%;
+  background:#ffffff;box-shadow:0 6px 20px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.06);
+  display:flex;align-items:center;justify-content:center;z-index:7;
+}
+.arrow svg{width:24px;height:24px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <img class="logo" src="a1-logo.jpg" alt="A1 Professional Asphalt & Sealing"/>
+  <div class="orbCx">
+    <div class="ringdim"></div>
+    <div class="ring"></div>
+    <div class="shade"></div>
+  </div>
+  <div class="cta">
+    <div class="t1">Talk to our AI team member now</div>
+    <div class="t2">Powered by Axon AI</div>
+  </div>
+  <div class="arrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#20242b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</div>
+</body>
+</html>
