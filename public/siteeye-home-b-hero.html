@@ -20,6 +20,25 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .axon{background:#fff;color:#111;font-weight:800;padding:9px 15px;border-radius:8px;font-size:14px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
 .axon .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite}@keyframes blink{50%{opacity:.3}}
 .menu-btn{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:7px 10px}
+/* industries strip */
+.industries{background:#08090c;border-bottom:1px solid var(--line)}
+.ind-row{display:grid;grid-template-columns:repeat(9,1fr);gap:2px}
+.ind{position:relative;aspect-ratio:4/3;overflow:hidden;background:#111;display:block}
+.ind img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.ind:hover img{transform:scale(1.07)}
+.ind::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.78))}
+.ind .lbl{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:6px;justify-content:center;
+  padding:9px 5px;font:800 10.5px/1.1 system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#fff;text-align:center;text-shadow:0 1px 5px rgba(0,0,0,.9)}
+.ind .lbl b{width:6px;height:6px;border-radius:50%;background:var(--orange);flex:none;box-shadow:0 0 8px rgba(255,106,0,.8)}
+.tagbar{background:#0a0c11;border-bottom:1px solid var(--line);text-align:center;padding:15px 16px}
+.tagbar span{font:900 clamp(18px,2.7vw,27px)/1 system-ui,sans-serif;letter-spacing:.03em;color:#fff}
+.tagbar span .o{color:var(--orange)}
+@media(max-width:860px){
+  .ind-row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:40%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ind-row::-webkit-scrollbar{display:none}
+  .ind{scroll-snap-align:start}
+  .ind .lbl{font-size:11px}
+}
 /* hero as a live screen */
 .screen{position:relative;min-height:86vh;display:flex;align-items:flex-start;overflow:hidden;border-bottom:1px solid var(--line);
   background:url(/images/cam-modern-aimed.png) center 26%/cover no-repeat, #08090c}
@@ -126,12 +145,28 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 <header><div class="wrap"><nav class="nav" id="nav">
   <a href="/" class="brand">Site<span class="eye">Eye</span>360 <span class="live"><span class="d"></span>Live</span></a>
   <div class="spacer"></div>
+  <a class="tab" href="#industries">Industries</a>
   <a class="tab" href="#commercial">Commercial</a>
   <a class="tab" href="#how">How it works</a>
   <a class="tab" href="#partners">Partners</a>
   <a class="axon" href="#" onclick="openAxon();return false;"><span class="dot"></span>Ask Axon AI</a>
   <button class="menu-btn" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
 </nav></div></header>
+
+<section class="industries" id="industries" aria-label="Job sites we cover">
+  <div class="ind-row">
+    <a class="ind" href="#commercial"><img src="/images/ind-roofing.jpg" alt="Roofing crew on a job site"><span class="lbl"><b></b>Roofing</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-asphalt.jpg" alt="Asphalt paving crew"><span class="lbl"><b></b>Asphalt</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-concrete.jpg" alt="Concrete finishing crew"><span class="lbl"><b></b>Concrete</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-painting.jpg" alt="Commercial painting crew"><span class="lbl"><b></b>Painting</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-landscaping.jpg" alt="Landscaping crew"><span class="lbl"><b></b>Landscaping</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-excavation.jpg" alt="Excavation crew"><span class="lbl"><b></b>Excavation</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-utilities.jpg" alt="Utility line crew"><span class="lbl"><b></b>Utilities</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-demolition.jpg" alt="Demolition site"><span class="lbl"><b></b>Demolition</span></a>
+    <a class="ind" href="#commercial"><img src="/images/ind-pressure-washing.jpg" alt="Pressure washing crew"><span class="lbl"><b></b>Pressure Washing</span></a>
+  </div>
+</section>
+<div class="tagbar"><span>ONE TOOL. <span class="o">ANY JOB SITE.</span></span></div>
 
 <div class="screen">
   <div class="scan"></div>
@@ -140,7 +175,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   </div>
   <div class="wrap"><div class="hero-c">
     <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">● Battery-powered · no wires · live all day</span>
-    <h1>A couple hours or all day.<br><span class="hl">Watch it live.</span></h1>
+    <h1>Know what's happening on every job—<br><span class="hl">without being there.</span></h1>
     <p class="sub"><strong>Your crew puts it up in the morning and takes it down at day's end.</strong> Watch the whole site from your office or your phone.</p>
   </div></div>
   <div class="officebox">
