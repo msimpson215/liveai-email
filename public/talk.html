@@ -255,12 +255,13 @@ let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=f
    protectLine mutes the mic for one specific spoken line (the noise offer) so that
    line can't be cut off by the very noise it's warning about. */
 let canInterrupt=false,protectLine=false,noiseAskUntil=0,roomLoud=false;
-/* Tap-to-talk (half-duplex): while ptt is on, the mic stays CLOSED — noise can
-   never interrupt or trigger the AI. The caller taps the orb ("excuse me") to
-   open the mic for their turn; when the AI answers, the mic closes again.
-   pttAuto = engaged automatically because the room got loud (auto-reverts when
-   it's quiet again); a manual toggle stays until the caller turns it off. */
-let ptt=false,pttAuto=false,listening=false;
+/* Tap-to-talk (half-duplex) is the DEFAULT. While ptt is on, the mic stays
+   CLOSED — noise can never interrupt or trigger the AI. The caller taps the orb
+   ("excuse me") to open the mic for their turn; when the AI answers, the mic
+   closes again. The only way to interrupt the AI is a deliberate tap, so a noise
+   machine / bar / truck can't cut it off. A "Hands-free" toggle lets the caller
+   opt into open-mic (interruptible) if they're somewhere quiet. */
+let ptt=true,pttAuto=false,listening=false;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
@@ -286,7 +287,7 @@ async function stop(){
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
-  ptt=false;pttAuto=false;listening=false;
+  ptt=true;pttAuto=false;listening=false;
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
@@ -425,6 +426,7 @@ function refreshMic(){
 }
 /* ---- Tap-to-talk (half-duplex) ---- */
 const pttToggle=document.getElementById('pttToggle');
+const loudHint=document.getElementById('loudHint');
 function setPttHint(){
   if(!loudHint)return;
   loudHint.innerHTML=listening?'<b>Listening&hellip; tap the orb when you\u2019re done</b>':'<b>Tap the orb to talk</b>';
@@ -613,6 +615,7 @@ function stopNoiseMonitor(){
   analyser=null;aiAnalyser=null;loudFrames=0;
 }
 
+setPtt(true,false);   /* tap-to-talk is the default so noise can never interrupt */
 setState('idle');
 /* Always auto-start the moment the page opens (no button, no extra click). */
 setTimeout(start,250);
