@@ -32,6 +32,12 @@ body.texting #dock{display:none;}
   padding:6px 13px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,0.28);
 }
 #loudHint b{color:#fed100;font-weight:850;}
+/* Tap-to-talk (half-duplex): hint hidden unless we're in tap-to-talk mode. */
+#loudHint{display:none;}
+body.ptt #loudHint{display:block;}
+body.ptt.listening #loudHint b{color:#7CFC7A;}
+body.ptt #pttToggle{background:#fed100;color:#111;border-color:#fed100;}
+body.ptt.listening #orb{box-shadow:0 0 0 4px rgba(124,252,122,.55),0 0 34px rgba(124,252,122,.6);border-radius:50%;}
 #poweredBy{
   font:600 10.5px/1.2 system-ui,sans-serif;color:#fff;
   background:rgba(18,18,18,0.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
@@ -83,14 +89,14 @@ body.outreach #outreachPage{
 }
 #orb{position:fixed;border-radius:50%;cursor:pointer;z-index:5;background:transparent;}
 /* All three buttons are always visible. */
-#controls{display:flex;justify-content:center;align-items:center;gap:9px;}
+#controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:9px;}
 #controls button,#controls a{
   padding:11px 18px;border-radius:999px;cursor:pointer;border:0;text-decoration:none;display:inline-block;
   font:800 14px/1 system-ui,sans-serif;white-space:nowrap;flex-shrink:0;
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   box-shadow:0 6px 20px rgba(0,0,0,0.35);
 }
-#textToggle{background:rgba(28,28,28,0.78);color:#fff;border:1px solid rgba(255,255,255,0.30);}
+#textToggle,#pttToggle{background:rgba(28,28,28,0.78);color:#fff;border:1px solid rgba(255,255,255,0.30);}
 #humanLink{background:#fed100;color:#111;display:inline-block;}
 #stopBtn{background:rgba(255,255,255,0.94);color:#111;}
 @media (max-width:600px){
@@ -156,6 +162,7 @@ body.noisy #textPanel .note{display:block;}
 <div id="dock">
   <div id="loudHint"><b>Loud environment?</b></div>
   <div id="controls">
+    <button id="pttToggle" type="button">Tap to talk</button>
     <button id="textToggle" type="button">Type instead</button>
     <a id="humanLink" href="tel:+16189293301">Human team</a>
     <button id="stopBtn" type="button">Pause</button>
@@ -248,11 +255,19 @@ let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=f
    protectLine mutes the mic for one specific spoken line (the noise offer) so that
    line can't be cut off by the very noise it's warning about. */
 let canInterrupt=false,protectLine=false,noiseAskUntil=0,roomLoud=false;
+/* Tap-to-talk (half-duplex): while ptt is on, the mic stays CLOSED — noise can
+   never interrupt or trigger the AI. The caller taps the orb ("excuse me") to
+   open the mic for their turn; when the AI answers, the mic closes again.
+   pttAuto = engaged automatically because the room got loud (auto-reverts when
+   it's quiet again); a manual toggle stays until the caller turns it off. */
+let ptt=false,pttAuto=false,listening=false;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
   if(isNoisy)c+=' noisy';
   if(isPaused)c+=' paused';
+  if(ptt)c+=' ptt';
+  if(listening)c+=' listening';
   document.body.className=c;
 }
 function setState(s){connState=s;applyClasses();}
@@ -271,6 +286,7 @@ async function stop(){
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
+  ptt=false;pttAuto=false;listening=false;
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
@@ -354,6 +370,7 @@ async function start(){
    Tap Resume or the orb to continue. Leaving the page fully ends the session. */
 const stopBtn=document.getElementById('stopBtn');
 function toggleVoice(){
+  if(ptt&&(pc||starting)){pttTalk();return;}
   if(isPaused){resumeSession();return;}
   if(pc||starting){
     if(!resumeAudio())pauseSession();
@@ -397,9 +414,40 @@ function appendAI(text){
    CAN interrupt. It's always off in text mode or while paused. */
 function refreshMic(){
   if(!micTrack)return;
+  if(ptt){
+    /* Half-duplex: the mic is open ONLY while the caller is holding the floor
+       (listening). Otherwise it's closed, so background noise reaches nothing. */
+    micTrack.enabled=listening&&!isPaused&&!isTexting;
+    return;
+  }
   const lockWhileSpeaking=(!canInterrupt||protectLine||roomLoud)&&aiSpeaking;
   micTrack.enabled=!(lockWhileSpeaking||isTexting||isPaused);
 }
+/* ---- Tap-to-talk (half-duplex) ---- */
+const pttToggle=document.getElementById('pttToggle');
+function setPttHint(){
+  if(!loudHint)return;
+  loudHint.innerHTML=listening?'<b>Listening&hellip; tap the orb when you\u2019re done</b>':'<b>Tap the orb to talk</b>';
+}
+function setPtt(on,auto){
+  ptt=!!on;pttAuto=on?!!auto:false;listening=false;
+  if(pttToggle)pttToggle.textContent=ptt?'Hands-free':'Tap to talk';
+  setPttHint();
+  refreshMic();applyClasses();
+}
+/* The orb tap in tap-to-talk mode = "my turn": interrupt the AI, open the mic. */
+function pttTalk(){
+  if(!pc&&!starting){start();return;}
+  if(isPaused){resumeSession();}
+  if(listening){                       /* tap again = done; close mic, let AI answer */
+    listening=false;refreshMic();setPttHint();applyClasses();return;
+  }
+  listening=true;
+  try{if(dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
+  aiSpeaking=false;
+  refreshMic();setPttHint();applyClasses();
+}
+if(pttToggle)pttToggle.addEventListener('click',function(e){e.stopPropagation();setPtt(!ptt,false);});
 /* Read the AI's spoken words as text so it works even when you can't hear it,
    and track when it starts/stops talking. */
 function handleEvent(ev){
@@ -495,7 +543,12 @@ function checkAiSound(){
   const now=Date.now();
   if(rms>0.025){
     lastAiSound=now;
-    if(!aiSpeaking){aiSpeaking=true;refreshMic();}
+    if(!aiSpeaking){
+      aiSpeaking=true;
+      /* AI is answering -> the caller's turn is over in tap-to-talk. */
+      if(ptt&&listening){listening=false;setPttHint();applyClasses();}
+      refreshMic();
+    }
   }else if(aiSpeaking&&(now-lastAiSound)>700){
     aiSpeaking=false;refreshMic();
   }
@@ -532,9 +585,24 @@ function checkNoise(){
   }
   if(!roomLoud&&loudFrames>=8){          /* ~2s sustained loud -> bar mode */
     roomLoud=true;refreshMic();
-    if(greetingDone)enterNoiseMode();    /* once we know it's loud, offer text */
+    if(greetingDone)enterPushToTalk();   /* loud room -> switch to tap-to-talk */
   }else if(roomLoud&&quietFrames>=14){   /* ~3.5s sustained quiet -> office mode */
     roomLoud=false;refreshMic();
+  }
+  /* If tap-to-talk was auto-engaged by noise, drop back to hands-free once it's
+     been quiet a good while (~10s) so a quiet office never has to tap. */
+  if(pttAuto&&!listening&&quietFrames>=40){setPtt(false,false);}
+}
+/* Loud room: switch to tap-to-talk (not text) and tell the caller once, warmly. */
+function enterPushToTalk(){
+  if(ptt||isTexting)return;
+  const now=Date.now();
+  if(now<noiseAskUntil)return;           /* cooldown so it never nags */
+  noiseAskUntil=now+45000;loudFrames=0;
+  setPtt(true,true);
+  const line="It's loud where you are, so let's switch to tap-to-talk. Whenever you want to say something, just tap the glowing orb and talk \u2014 that way the background noise can't cut us off.";
+  if(dc&&dc.readyState==='open'){
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}}));}catch(e){}
   }
 }
 function stopNoiseMonitor(){
