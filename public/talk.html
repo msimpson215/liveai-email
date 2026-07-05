@@ -103,6 +103,8 @@ body.ptt.listening #orbLabel{color:#7CFC7A;}
   box-shadow:0 6px 20px rgba(0,0,0,0.35);
 }
 #textToggle,#pttToggle{background:rgba(28,28,28,0.78);color:#fff;border:1px solid rgba(255,255,255,0.30);}
+/* Hands-free experience: no tap-to-talk / type buttons (kept in code, hidden). */
+#controls #pttToggle,#controls #textToggle{display:none;}
 #humanLink{background:#fed100;color:#111;display:inline-block;}
 #stopBtn{background:rgba(255,255,255,0.94);color:#111;}
 @media (max-width:600px){
@@ -261,13 +263,12 @@ let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=f
    protectLine mutes the mic for one specific spoken line (the noise offer) so that
    line can't be cut off by the very noise it's warning about. */
 let canInterrupt=false,protectLine=false,noiseAskUntil=0,roomLoud=false;
-/* Tap-to-talk (half-duplex) is the DEFAULT. While ptt is on, the mic stays
-   CLOSED — noise can never interrupt or trigger the AI. The caller taps the orb
-   ("excuse me") to open the mic for their turn; when the AI answers, the mic
-   closes again. The only way to interrupt the AI is a deliberate tap, so a noise
-   machine / bar / truck can't cut it off. A "Hands-free" toggle lets the caller
-   opt into open-mic (interruptible) if they're somewhere quiet. */
-let ptt=true,pttAuto=false,listening=false;
+/* HANDS-FREE by default (like the ChatGPT app): after the greeting the mic stays
+   open the whole time; you just talk, and you can interrupt naturally. Semantic
+   turn-detection on the server decides when you're actually done, so background
+   noise / a TV / a sound machine doesn't cut it off. Tap-to-talk (ptt) is still
+   available as an opt-in for anyone who truly needs a push-to-talk in a bar. */
+let ptt=false,pttAuto=false,listening=false;
 function applyClasses(){
   let c=connState+(isOutreach?' outreach':'');
   if(isTexting)c+=' texting';
@@ -293,7 +294,7 @@ async function stop(){
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
-  ptt=true;pttAuto=false;listening=false;
+  ptt=false;pttAuto=false;listening=false;
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
@@ -305,6 +306,7 @@ function pauseSession(){
   if(micTrack)micTrack.enabled=false;
   connState='paused';
   applyClasses();
+  setPttHint();
   if(stopBtn)stopBtn.textContent='Resume';
 }
 function resumeSession(){
@@ -314,6 +316,7 @@ function resumeSession(){
   connState='active';
   refreshMic();
   applyClasses();
+  setPttHint();
   if(stopBtn)stopBtn.textContent='Pause';
 }
 async function connectVoice(){
@@ -428,8 +431,12 @@ function refreshMic(){
     micTrack.enabled=listening&&!isPaused&&!isTexting;
     return;
   }
-  const lockWhileSpeaking=(!canInterrupt||protectLine||roomLoud)&&aiSpeaking;
-  micTrack.enabled=!(lockWhileSpeaking||isTexting||isPaused);
+  /* Hands-free (ChatGPT-style): the mic is muted ONLY during the opening greeting
+     so it always finishes. After that the mic stays open the whole time, so the
+     caller can talk and interrupt naturally; semantic turn-detection + echo
+     cancellation handle noise and the AI's own voice. */
+  const lockGreeting=(!canInterrupt||protectLine)&&aiSpeaking;
+  micTrack.enabled=!(lockGreeting||isTexting||isPaused);
 }
 /* ---- Tap-to-talk (half-duplex) ---- */
 const pttToggle=document.getElementById('pttToggle');
@@ -438,10 +445,12 @@ const orbLabel=document.getElementById('orbLabel');
 function setPttHint(){
   if(loudHint)loudHint.innerHTML=listening?'<b>Listening&hellip; go ahead, then tap when done</b>':'<b>Tap the orb, then talk</b>';
   if(orbLabel){
-    if(!ptt)orbLabel.textContent='';
-    else if(listening)orbLabel.textContent='Listening\u2026';
-    else if(aiSpeaking)orbLabel.textContent='';
-    else orbLabel.textContent='Tap to talk';
+    if(ptt){
+      orbLabel.textContent=listening?'Listening\u2026':(aiSpeaking?'':'Tap to talk');
+    }else{
+      /* hands-free: gentle "Listening…" cue when it's the caller's turn */
+      orbLabel.textContent=(pc&&greetingDone&&!aiSpeaking&&!isPaused&&!isTexting)?'Listening\u2026':'';
+    }
   }
 }
 function setPtt(on,auto){
@@ -474,6 +483,7 @@ function handleEvent(ev){
     canInterrupt=true;   /* opening is over -> interruptions allowed from here on */
     protectLine=false;   /* release the protected noise-offer line if it was set */
     refreshMic();
+    setPttHint();        /* greeting over -> show the "Listening…" cue */
   }
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
@@ -563,12 +573,12 @@ function checkAiSound(){
       aiSpeaking=true;
       /* AI is answering -> the caller's turn is over in tap-to-talk. */
       if(ptt&&listening){listening=false;applyClasses();}
-      if(ptt)setPttHint();
+      setPttHint();
       refreshMic();
     }
   }else if(aiSpeaking&&(now-lastAiSound)>700){
     aiSpeaking=false;refreshMic();
-    if(ptt)setPttHint();   /* AI finished -> show "Tap to talk" on the orb again */
+    setPttHint();   /* AI finished -> back to the caller's turn */
   }
 }
 
@@ -601,15 +611,8 @@ function checkNoise(){
     else if(rms<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
     else{loudFrames=Math.max(0,loudFrames-1);}
   }
-  if(!roomLoud&&loudFrames>=8){          /* ~2s sustained loud -> bar mode */
-    roomLoud=true;refreshMic();
-    if(greetingDone)enterPushToTalk();   /* loud room -> switch to tap-to-talk */
-  }else if(roomLoud&&quietFrames>=14){   /* ~3.5s sustained quiet -> office mode */
-    roomLoud=false;refreshMic();
-  }
-  /* If tap-to-talk was auto-engaged by noise, drop back to hands-free once it's
-     been quiet a good while (~10s) so a quiet office never has to tap. */
-  if(pttAuto&&!listening&&quietFrames>=40){setPtt(false,false);}
+  /* Hands-free: we no longer auto-switch modes on noise. Semantic turn-detection
+     on the server handles noisy rooms, so it stays hands-free like ChatGPT. */
 }
 /* Loud room: switch to tap-to-talk (not text) and tell the caller once, warmly. */
 function enterPushToTalk(){
@@ -631,7 +634,7 @@ function stopNoiseMonitor(){
   analyser=null;aiAnalyser=null;loudFrames=0;
 }
 
-setPtt(true,false);   /* tap-to-talk is the default so noise can never interrupt */
+setPtt(false,false);   /* hands-free by default, like the ChatGPT app */
 setState('idle');
 /* Always auto-start the moment the page opens (no button, no extra click). */
 setTimeout(start,250);

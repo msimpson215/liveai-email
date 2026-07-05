@@ -52,7 +52,7 @@ After you have said this greeting once, you must NEVER say it again. If the user
 
 const A1_EMAIL_SPOKEN = name => {
   const hello = name ? `Hello ${name}.` : 'Hello.'
-  return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing. Whenever you'd like to ask me something — about our asphalt, sealcoating, concrete, or parking lot work — just tap the glowing orb, then talk. Anytime you'd rather reach a real person, tap the human team button below.`
+  return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing — just talk to me like a person and ask me anything about our asphalt, sealcoating, concrete, or parking lot work. Anytime you'd rather reach a real person, tap the human team button below.`
 }
 
 const A1_EMAIL_GREETING = name => {
@@ -373,16 +373,22 @@ app.get('/session', async (req, res) => {
           instructions: buildInstructions(source, { recipientName }),
           audio: {
             input: {
-              turn_detection: {
+              turn_detection: interruptible ? {
+                // Semantic turn-detection — same idea as the ChatGPT app: a model
+                // decides when the caller has actually finished, so a TV, music, a
+                // sound machine, or room chatter doesn't cut the AI off or fire false
+                // turns. Fully hands-free and interruptible, no tap needed.
+                type: 'semantic_vad',
+                eagerness: 'medium',
+                interrupt_response: true,
+                create_response: true
+              } : {
+                // Demo intros stay uninterruptible so they always finish.
                 type: 'server_vad',
-                // For the A1 voice (talk.html): the client mutes the mic during the
-                // opening greeting so it always finishes, then re-enables the mic so
-                // the rest of the conversation can be interrupted normally.
-                // For demo products: keep it uninterruptible so intros always finish.
-                threshold: interruptible ? 0.6 : 0.95,
-                silence_duration_ms: interruptible ? 600 : 1200,
+                threshold: 0.95,
+                silence_duration_ms: 1200,
                 prefix_padding_ms: 300,
-                interrupt_response: interruptible,
+                interrupt_response: false,
                 create_response: true
               }
             },
