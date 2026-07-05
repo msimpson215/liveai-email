@@ -137,7 +137,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 .axon-panel{position:fixed;inset:0;z-index:80;display:none}.axon-panel.open{display:block}.axon-panel .scrim{position:absolute;inset:0;background:rgba(0,0,0,.6)}
 .axon-panel .sheet{position:absolute;right:0;top:0;height:100%;width:min(440px,92vw);background:#0d0e12;border-left:1px solid var(--line);display:flex;flex-direction:column}
 .axon-panel .sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#111;border-bottom:1px solid var(--line);font-weight:800}
-.axon-panel .x{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}.axon-panel iframe{flex:1;border:0;width:100%;background:#fff}
+.axon-panel .x{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}.axon-panel iframe{flex:1;border:0;width:100%;background:#0b0d12}
 @media(max-width:900px){.split,.axon-grid,.tiers{grid-template-columns:1fr}.tab{display:none}.menu-btn{display:inline-block}.nav.open .tab{display:block;position:absolute;top:64px;left:0;right:0;background:#08090c;padding:14px 24px;border-bottom:1px solid var(--line)}.officebox,.campho,.feedline,.eyering{display:none}}
 </style>
 </head>
@@ -253,7 +253,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   <div class="sheet"><div class="hd"><span>Axon AI — your team member</span><button class="x" onclick="closeAxon()">×</button></div>
   <iframe id="axonFrame" title="Axon AI" src="about:blank" allow="microphone"></iframe></div></div>
 <script>
-function openAxon(){var f=document.getElementById('axonFrame');if(!f.src||f.src==='about:blank')f.src='/demo.html?src=siteeye';document.getElementById('axonPanel').classList.add('open');}
+function openAxon(){var f=document.getElementById('axonFrame');if(!f.src||f.src==='about:blank')f.src='/siteeye-ai.html';document.getElementById('axonPanel').classList.add('open');}
 function closeAxon(){document.getElementById('axonPanel').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAxon();});
 </script>
