@@ -457,8 +457,8 @@ app.post('/api/send-orb', async (req, res) => {
     })
   }
 
-  const gifPath = path.join(__dirname, '..', 'public', 'email', 'orb-pulse.gif')
-  if (!fs.existsSync(gifPath)) {
+  const orbPath = path.join(__dirname, '..', 'public', 'email', 'a1-orb-eclipse.png')
+  if (!fs.existsSync(orbPath)) {
     return res.status(500).json({ error: 'Orb image missing on server.' })
   }
 
@@ -467,7 +467,7 @@ app.post('/api/send-orb', async (req, res) => {
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
 <tr><td align="center" style="padding:20px;">
 <a href="${EMAIL_ORB_LINK}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
-<img src="cid:orb" alt="" width="240" height="240" style="display:block;border:0;border-radius:50%;"/>
+<img src="cid:orb" alt="Talk to our AI team member now — powered by Axon AI" width="480" height="578" style="display:block;border:0;max-width:100%;height:auto;"/>
 </a>
 </td></tr>
 </table>
@@ -488,8 +488,8 @@ app.post('/api/send-orb', async (req, res) => {
       subject: 'Click the orb',
       html,
       attachments: [{
-        filename: 'orb-pulse.gif',
-        path: gifPath,
+        filename: 'a1-orb-eclipse.png',
+        path: orbPath,
         cid: 'orb'
       }]
     })
