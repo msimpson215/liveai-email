@@ -34,8 +34,10 @@ body.texting #dock{display:none;}
 #loudHint b{color:#fed100;font-weight:850;}
 /* Tap-to-talk (half-duplex): hint hidden unless we're in tap-to-talk mode. */
 #loudHint{display:none;}
-body.ptt #loudHint{display:block;}
+body.ptt #loudHint{display:block;font-size:15px;padding:9px 18px;animation:tappulse 1.6s ease-in-out infinite;}
+body.ptt.listening #loudHint{animation:none;}
 body.ptt.listening #loudHint b{color:#7CFC7A;}
+@keyframes tappulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.07);opacity:1}}
 body.ptt #pttToggle{background:#fed100;color:#111;border-color:#fed100;}
 body.ptt.listening #orb{box-shadow:0 0 0 4px rgba(124,252,122,.55),0 0 34px rgba(124,252,122,.6);border-radius:50%;}
 #poweredBy{
@@ -429,7 +431,7 @@ const pttToggle=document.getElementById('pttToggle');
 const loudHint=document.getElementById('loudHint');
 function setPttHint(){
   if(!loudHint)return;
-  loudHint.innerHTML=listening?'<b>Listening&hellip; tap the orb when you\u2019re done</b>':'<b>Tap the orb to talk</b>';
+  loudHint.innerHTML=listening?'<b>Listening&hellip; go ahead, then tap when done</b>':'<b>Tap the orb, then talk</b>';
 }
 function setPtt(on,auto){
   ptt=!!on;pttAuto=on?!!auto:false;listening=false;
@@ -445,7 +447,8 @@ function pttTalk(){
     listening=false;refreshMic();setPttHint();applyClasses();return;
   }
   listening=true;
-  try{if(dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
+  /* Only cancel if the AI is actually mid-sentence (a real interruption). */
+  try{if(aiSpeaking&&dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
   aiSpeaking=false;
   refreshMic();setPttHint();applyClasses();
 }

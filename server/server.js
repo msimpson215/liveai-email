@@ -52,7 +52,7 @@ After you have said this greeting once, you must NEVER say it again. If the user
 
 const A1_EMAIL_SPOKEN = name => {
   const hello = name ? `Hello ${name}.` : 'Hello.'
-  return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing — ask me anything about our asphalt, sealcoating, concrete, or parking lot work. Anytime you'd rather talk to a person, just tap the human team button below.`
+  return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing. Whenever you'd like to ask me something — about our asphalt, sealcoating, concrete, or parking lot work — just tap the glowing orb, then talk. Anytime you'd rather reach a real person, tap the human team button below.`
 }
 
 const A1_EMAIL_GREETING = name => {
