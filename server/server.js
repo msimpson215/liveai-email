@@ -373,6 +373,10 @@ app.get('/session', async (req, res) => {
           instructions: buildInstructions(source, { recipientName }),
           audio: {
             input: {
+              // Server-side noise reduction — the same class of processing the
+              // ChatGPT app leans on. near_field = phone/headset held close; it
+              // strips room noise (TV, music, a sound machine) before turn-detection.
+              noise_reduction: { type: 'near_field' },
               turn_detection: interruptible ? {
                 // Semantic turn-detection — same idea as the ChatGPT app: a model
                 // decides when the caller has actually finished, so a TV, music, a
