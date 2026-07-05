@@ -208,7 +208,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
   <div class="sheet"><div class="hd"><span>Axon AI — your team member</span><button class="x" onclick="closeAxon()">×</button></div>
   <iframe id="axonFrame" title="Axon AI" src="about:blank" allow="microphone"></iframe></div></div>
 <script>
-function openAxon(){var f=document.getElementById('axonFrame');if(!f.src||f.src==='about:blank')f.src='/a1.html';document.getElementById('axonPanel').classList.add('open');}
+function openAxon(){var f=document.getElementById('axonFrame');if(!f.src||f.src==='about:blank')f.src='/demo.html?src=siteeye';document.getElementById('axonPanel').classList.add('open');}
 function closeAxon(){document.getElementById('axonPanel').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAxon();});
 </script>
