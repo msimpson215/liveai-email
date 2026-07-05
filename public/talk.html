@@ -90,6 +90,10 @@ body.outreach #outreachPage{
   animation:pulse 3s ease-in-out infinite;
 }
 #orb{position:fixed;border-radius:50%;cursor:pointer;z-index:5;background:transparent;}
+#orbLabel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;
+  color:#fff;font:800 clamp(13px,3.4vw,18px)/1.15 system-ui,sans-serif;text-align:center;
+  white-space:nowrap;pointer-events:none;letter-spacing:.02em;text-shadow:0 2px 12px rgba(0,0,0,.9),0 1px 3px rgba(0,0,0,.9);}
+body.ptt.listening #orbLabel{color:#7CFC7A;}
 /* All three buttons are always visible. */
 #controls{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:9px;}
 #controls button,#controls a{
@@ -160,7 +164,7 @@ body.noisy #textPanel .note{display:block;}
 <div id="orbShade"></div>
 <div id="orbRingDim"></div>
 <div id="orbRing"></div>
-<div id="orb" role="button" tabindex="0" aria-label="Talk"></div>
+<div id="orb" role="button" tabindex="0" aria-label="Tap to talk"><span id="orbLabel"></span></div>
 <div id="dock">
   <div id="loudHint"><b>Loud environment?</b></div>
   <div id="controls">
@@ -334,6 +338,7 @@ async function connectVoice(){
   /* Start with the mic OFF so the opening can never be interrupted. The AI
      voice meter keeps it off the whole time the AI is talking. */
   aiSpeaking=true;micTrack.enabled=false;
+  setPttHint();   /* orb shows nothing while the greeting plays; "Tap to talk" after */
   /* Protect the opening: if a greeting is about to play, interruption stays off
      until it finishes. If we're resuming a session that already greeted, allow
      interruption right away. Start assuming a quiet room. */
@@ -429,9 +434,15 @@ function refreshMic(){
 /* ---- Tap-to-talk (half-duplex) ---- */
 const pttToggle=document.getElementById('pttToggle');
 const loudHint=document.getElementById('loudHint');
+const orbLabel=document.getElementById('orbLabel');
 function setPttHint(){
-  if(!loudHint)return;
-  loudHint.innerHTML=listening?'<b>Listening&hellip; go ahead, then tap when done</b>':'<b>Tap the orb, then talk</b>';
+  if(loudHint)loudHint.innerHTML=listening?'<b>Listening&hellip; go ahead, then tap when done</b>':'<b>Tap the orb, then talk</b>';
+  if(orbLabel){
+    if(!ptt)orbLabel.textContent='';
+    else if(listening)orbLabel.textContent='Listening\u2026';
+    else if(aiSpeaking)orbLabel.textContent='';
+    else orbLabel.textContent='Tap to talk';
+  }
 }
 function setPtt(on,auto){
   ptt=!!on;pttAuto=on?!!auto:false;listening=false;
@@ -551,11 +562,13 @@ function checkAiSound(){
     if(!aiSpeaking){
       aiSpeaking=true;
       /* AI is answering -> the caller's turn is over in tap-to-talk. */
-      if(ptt&&listening){listening=false;setPttHint();applyClasses();}
+      if(ptt&&listening){listening=false;applyClasses();}
+      if(ptt)setPttHint();
       refreshMic();
     }
   }else if(aiSpeaking&&(now-lastAiSound)>700){
     aiSpeaking=false;refreshMic();
+    if(ptt)setPttHint();   /* AI finished -> show "Tap to talk" on the orb again */
   }
 }
 
