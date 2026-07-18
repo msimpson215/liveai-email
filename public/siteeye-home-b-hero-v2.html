@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="SiteEye360°™ — you're on site without being on site. Temporary live 360° monitoring for crews that come and go."/>
-<title>SiteEye360°™ — Watch the Crew Live. Without Being On Site.</title>
+<meta name="description" content="SiteEye360 Live — a camera for the day. Portable live video that rides with your crew. Not long-term security."/>
+<title>SiteEye360 Live — A Camera for the Day. Eyes on the Job.</title>
 <style>
 :root{--orange:#ff6a00;--orange-2:#ff8a2b;--ink:#08090c;--text:#ffffff;--muted:#ffffff;--line:rgba(255,255,255,.12);--font:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
@@ -20,27 +20,27 @@ header{position:sticky;top:0;z-index:40;background:rgba(8,9,12,.85);backdrop-fil
 .axon{background:#fff;color:#111;font-weight:800;padding:9px 15px;border-radius:8px;font-size:14px;display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
 .axon .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:blink 1.5s infinite}@keyframes blink{50%{opacity:.3}}
 .menu-btn{display:none;background:none;border:1px solid var(--line);color:#fff;border-radius:8px;padding:7px 10px}
-/* industries strip */
-.industries{background:#08090c;border-bottom:1px solid var(--line)}
-.ind-row{display:grid;grid-template-columns:repeat(9,1fr);gap:2px}
-.ind{position:relative;aspect-ratio:4/3;overflow:hidden;background:#111;display:block}
-.ind img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.ind:hover img{transform:scale(1.07)}
-.ind::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.78))}
-.ind .lbl{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:6px;justify-content:center;
-  padding:9px 5px;font:800 10.5px/1.1 system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#fff;text-align:center;text-shadow:0 1px 5px rgba(0,0,0,.9)}
-.ind .lbl b{width:6px;height:6px;border-radius:50%;background:var(--orange);flex:none;box-shadow:0 0 8px rgba(255,106,0,.8)}
-.tagbar{background:#0a0c11;border-bottom:1px solid var(--line);text-align:center;padding:15px 16px}
-.tagbar span{font:900 clamp(18px,2.7vw,27px)/1 system-ui,sans-serif;letter-spacing:.03em;color:#fff}
+/* industries strip — tight under nav, slow continuous loop */
+.industries{background:#08090c;border-bottom:none;overflow:hidden;line-height:0}
+.ind-track{display:flex;width:max-content;animation:ind-scroll 48s linear infinite;will-change:transform}
+.ind-track:hover{animation-play-state:paused}
+.ind{position:relative;width:clamp(118px,11vw,148px);height:clamp(72px,7.5vw,92px);flex:none;overflow:hidden;background:#111;display:block;margin-right:2px}
+.ind img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ind::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.82))}
+.ind .lbl{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:5px;justify-content:center;
+  padding:6px 4px;font:800 10px/1.1 system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;text-shadow:0 1px 5px rgba(0,0,0,.9)}
+.ind .lbl b{width:5px;height:5px;border-radius:50%;background:var(--orange);flex:none;box-shadow:0 0 8px rgba(255,106,0,.8)}
+@keyframes ind-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tagbar{background:linear-gradient(180deg,#12141a,#0a0c11);border-bottom:1px solid var(--line);text-align:center;padding:8px 14px}
+.tagbar span{font:800 clamp(13px,1.8vw,16px)/1.25 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff}
 .tagbar span .o{color:var(--orange)}
 @media(max-width:860px){
-  .ind-row{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:40%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .ind-row::-webkit-scrollbar{display:none}
-  .ind{scroll-snap-align:start}
-  .ind .lbl{font-size:11px}
+  .ind{width:130px;height:78px}
+  .ind .lbl{font-size:10px}
+  .ind-track{animation-duration:36s}
 }
 /* hero as a live screen */
-.screen{position:relative;min-height:86vh;display:flex;align-items:flex-start;overflow:hidden;border-bottom:1px solid var(--line);
+.screen{position:relative;min-height:78vh;display:flex;align-items:flex-start;overflow:hidden;border-bottom:1px solid var(--line);
   background:url(/images/hero-cam-los.jpg) center 42%/cover no-repeat, #08090c}
 /* push hero content left (just clear of the camera on the far left) */
 .screen>.wrap{max-width:none;margin:0;padding-left:min(21vw,300px);padding-right:24px}
@@ -157,7 +157,7 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 </nav></div></header>
 
 <section class="industries" id="industries" aria-label="Job sites we cover">
-  <div class="ind-row">
+  <div class="ind-track">
     <a class="ind" href="#commercial"><img src="/images/ind-roofing.jpg" alt="Roofing crew on a job site"><span class="lbl"><b></b>Roofing</span></a>
     <a class="ind" href="#commercial"><img src="/images/ind-asphalt.jpg" alt="Asphalt paving crew"><span class="lbl"><b></b>Asphalt</span></a>
     <a class="ind" href="#commercial"><img src="/images/ind-concrete.jpg" alt="Concrete finishing crew"><span class="lbl"><b></b>Concrete</span></a>
@@ -167,9 +167,18 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
     <a class="ind" href="#commercial"><img src="/images/ind-utilities.jpg" alt="Utility line crew"><span class="lbl"><b></b>Utilities</span></a>
     <a class="ind" href="#commercial"><img src="/images/ind-demolition.jpg" alt="Demolition site"><span class="lbl"><b></b>Demolition</span></a>
     <a class="ind" href="#commercial"><img src="/images/ind-pressure-washing.jpg" alt="Pressure washing crew"><span class="lbl"><b></b>Pressure Washing</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-roofing.jpg" alt=""><span class="lbl"><b></b>Roofing</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-asphalt.jpg" alt=""><span class="lbl"><b></b>Asphalt</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-concrete.jpg" alt=""><span class="lbl"><b></b>Concrete</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-painting.jpg" alt=""><span class="lbl"><b></b>Painting</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-landscaping.jpg" alt=""><span class="lbl"><b></b>Landscaping</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-excavation.jpg" alt=""><span class="lbl"><b></b>Excavation</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-utilities.jpg" alt=""><span class="lbl"><b></b>Utilities</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-demolition.jpg" alt=""><span class="lbl"><b></b>Demolition</span></a>
+    <a class="ind" href="#commercial" aria-hidden="true"><img src="/images/ind-pressure-washing.jpg" alt=""><span class="lbl"><b></b>Pressure Washing</span></a>
   </div>
 </section>
-<div class="tagbar"><span>ONE TOOL. <span class="o">ANY JOB SITE.</span></span></div>
+<div class="tagbar"><span>Temporary by design. <span class="o">A camera for the day — not a 6-month security install.</span></span></div>
 
 <div class="screen">
   <div class="scan"></div>
@@ -177,9 +186,9 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
     <div class="tl"><span class="rec"><i></i>LIVE</span></div>
   </div>
   <div class="wrap"><div class="hero-c">
-    <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">● Battery-powered · no wires · live all day</span>
-    <h1>Know what's happening on every job—<br><span class="hl">without being there.</span></h1>
-    <p class="sub"><strong>SiteEye360 Live</strong> is a portable live-video system that rides to the job with your crew, streams the work while it's happening, then goes back in the truck when the job's done.</p>
+    <span class="eyebrow" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.1)">Not long-term security · Just for the day</span>
+    <h1>A camera for the day.<br><span class="hl">Eyes on the job — live.</span></h1>
+    <p class="sub"><strong>SiteEye360 Live</strong> is a portable live-video system that rides to the job with your crew, lets you watch the work in real time, then goes back in the truck when the day's done.</p>
   </div></div>
   <div class="officebox">
     <img src="/images/office-contractor.png" alt="A contractor watching the same job site live on two office monitors">
@@ -196,9 +205,9 @@ footer{background:#050608;border-top:1px solid var(--line);padding:40px 0}.foot{
 
 <section id="why">
   <div class="wrap">
-    <span class="kicker" style="font-size:17px">Temporary by design</span>
-    <h2>This isn't long-term security. It's just for the day.</h2>
-    <p class="lead" style="font-size:19px">Not the camera bolted to the building for nights and break-ins. This one goes up in the morning and comes down at day's end — there to watch the work get done right, not to guard an empty lot overnight.</p>
+    <span class="kicker" style="font-size:17px">Already have security cameras?</span>
+    <h2>Those stay for months. This rides with the crew.</h2>
+    <p class="lead" style="font-size:19px">Security cameras watch the empty lot overnight. SiteEye360 Live watches <em>today's job</em> — morning setup, live eyes while the crew works, packed up at day's end. Temporary by design. Built for daily jobs, not 6-month installs.</p>
   </div>
 </section>
 
