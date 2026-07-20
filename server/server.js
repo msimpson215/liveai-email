@@ -5,7 +5,9 @@ import nodemailer from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import multer from 'multer'
 import * as quickbooks from './quickbooks.js'
+import * as joeKnowledge from './joe-knowledge.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -303,18 +305,21 @@ ASPHALT SEALER:
 If asked who you are: "I'm Convo AI, your live AI team member."`
   },
   qb: {
-    instructions: (context) => `You are Axon AI — a warm, clear, professional woman's voice. You are Joe's AI team member.
+    instructions: (context) => `You are Joe's Professional Assistant — a warm, clear, professional woman's voice. Powered by Axon AI.
 ${VOICE_RULES}
 
 GREETING — say this ONE TIME ONLY at the very start:
-"Hey — I'm Axon AI. What can I help you with?"
+"Hey — I'm Joe's Professional Assistant. What can I help you with?"
 After that greeting once, never repeat it.
 
 ${context.qbSnapshot || ''}
 
-You can talk about the books when asked (profit and loss, payroll trends, income, expenses). Prefer the SNAPSHOT numbers above when they match. If the mode is DEMO, you may briefly say these are demo books until QuickBooks is connected.
+${context.knowledge || ''}
+
+You help Joe with the business: books questions (profit and loss, payroll), and anything in the teaching docs he uploaded.
+Prefer TEACHING DOCS and the QuickBooks SNAPSHOT over guessing. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
 Keep answers short: 1–4 sentences unless asked for detail.
-If asked who you are: "I'm Axon AI."`
+If asked who you are: "I'm Joe's Professional Assistant, powered by Axon AI."`
   }
 }
 
@@ -342,12 +347,18 @@ function buildInstructions(source, context = {}) {
 async function buildInstructionsAsync(source, context = {}) {
   if (source === 'qb') {
     let qbSnapshot = ''
+    let knowledge = ''
     try {
       qbSnapshot = await quickbooks.voiceContextSnippet()
     } catch {
       qbSnapshot = 'QUICKBOOKS MODE: demo — snapshot unavailable this session.'
     }
-    return buildInstructions(source, { ...context, qbSnapshot })
+    try {
+      knowledge = joeKnowledge.knowledgeSnippet()
+    } catch {
+      knowledge = 'TEACHING DOCS: unavailable this session.'
+    }
+    return buildInstructions(source, { ...context, qbSnapshot, knowledge })
   }
   return buildInstructions(source, context)
 }
@@ -357,7 +368,7 @@ async function buildInstructionsAsync(source, context = {}) {
 function buildSpokenGreeting(source, context = {}) {
   if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
   if (source === 'qb') {
-    return "Hey — I'm Axon AI. What can I help you with?"
+    return "Hey — I'm Joe's Professional Assistant. What can I help you with?"
   }
   return ''
 }
@@ -547,11 +558,78 @@ app.post('/api/send-orb', async (req, res) => {
   }
 })
 
-/* ---------- Axon AI Brain ↔ QuickBooks ---------- */
+/* ---------- Joe's Professional Assistant (books + teaching docs) ---------- */
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024, files: 1 }
+})
+
+async function extractUploadedText(file) {
+  const name = file.originalname || 'document'
+  const lower = name.toLowerCase()
+  const mime = file.mimetype || ''
+
+  if (lower.endsWith('.txt') || lower.endsWith('.md') || mime.startsWith('text/')) {
+    return file.buffer.toString('utf8')
+  }
+  if (lower.endsWith('.docx') || mime.includes('wordprocessingml')) {
+    const mammoth = await import('mammoth')
+    const result = await mammoth.extractRawText({ buffer: file.buffer })
+    return result.value || ''
+  }
+  if (lower.endsWith('.pdf') || mime === 'application/pdf') {
+    const pdfParse = (await import('pdf-parse')).default
+    const result = await pdfParse(file.buffer)
+    return result.text || ''
+  }
+  throw new Error('Use a .txt, .md, .pdf, or .docx file.')
+}
 
 app.get('/api/brain/status', (_req, res) => {
   res.set('Cache-Control', 'no-store')
-  res.json({ ok: true, ...quickbooks.status(), openai: hasApiKey() })
+  let docs = []
+  try { docs = joeKnowledge.listDocs() } catch { docs = [] }
+  res.json({
+    ok: true,
+    ...quickbooks.status(),
+    openai: hasApiKey(),
+    docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
+  })
+})
+
+app.get('/api/brain/docs', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    res.json({ ok: true, docs: joeKnowledge.listDocs() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'list failed' })
+  }
+})
+
+app.post('/api/brain/teach', upload.single('file'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, error: 'Choose a file to upload.' })
+    }
+    const text = await extractUploadedText(req.file)
+    const saved = joeKnowledge.saveDoc(req.file.originalname, text)
+    res.json({
+      ok: true,
+      doc: saved,
+      message: `Got it — I learned from “${req.file.originalname}”.`
+    })
+  } catch (error) {
+    res.status(400).json({ ok: false, error: error.message || 'Upload failed.' })
+  }
+})
+
+app.delete('/api/brain/docs/:id', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const ok = joeKnowledge.deleteDoc(req.params.id)
+  if (!ok) return res.status(404).json({ ok: false, error: 'Doc not found.' })
+  res.json({ ok: true })
 })
 
 app.post('/api/brain/ask', async (req, res) => {
@@ -565,6 +643,72 @@ app.post('/api/brain/ask', async (req, res) => {
       ok: false,
       answer: 'The brain hit a snag reading the books. Try again in a moment.',
       error: error.message || 'ask failed'
+    })
+  }
+})
+
+app.post('/api/brain/chat', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const question = String(req.body?.question || req.body?.q || '').trim()
+  if (!question) {
+    return res.status(400).json({ ok: false, answer: 'Type a question first.' })
+  }
+
+  // Books-shaped questions → structured QuickBooks/demo answer
+  try {
+    const intent = quickbooks.detectIntent(question)
+    if (intent.type === 'pnl' || intent.type === 'payroll_chart') {
+      const result = await quickbooks.ask(question)
+      return res.json(result)
+    }
+  } catch { /* fall through to chat */ }
+
+  if (!hasApiKey()) {
+    return res.status(503).json({
+      ok: false,
+      answer: 'Text chat needs OPENAI_API_KEY on the server.'
+    })
+  }
+
+  try {
+    let knowledge = ''
+    let qbSnapshot = ''
+    try { knowledge = joeKnowledge.knowledgeSnippet() } catch { /* ignore */ }
+    try { qbSnapshot = await quickbooks.voiceContextSnippet() } catch { /* ignore */ }
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+        temperature: 0.4,
+        messages: [
+          {
+            role: 'system',
+            content: `You are Joe's Professional Assistant (powered by Axon AI). Answer briefly and helpfully from the teaching docs and books snapshot. Do not invent dollar amounts not present below. If something is missing, say you'll need that doc or live QuickBooks.
+
+${qbSnapshot}
+
+${knowledge}`
+          },
+          { role: 'user', content: question }
+        ]
+      })
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Chat failed')
+    }
+    const answer = data.choices?.[0]?.message?.content?.trim() || 'I did not get a clear answer — try again.'
+    res.json({ ok: true, intent: 'chat', answer, chart: null })
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      answer: 'Text chat hit a snag. Try again in a moment.',
+      error: error.message || 'chat failed'
     })
   }
 })
