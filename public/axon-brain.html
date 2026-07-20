@@ -189,6 +189,44 @@ body.listening .hint::after{content:"Listening — go ahead"}
 body.error .hint::after{content:"Couldn’t connect — tap to try again"}
 body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
 
+.demo-ask{
+  margin-top:1.35rem;
+  max-width:min(92vw,380px);
+  padding:0 .5rem;
+  text-align:center;
+}
+.demo-ask .lead{
+  font-size:.78rem;
+  font-weight:600;
+  color:#888;
+  line-height:1.45;
+  margin-bottom:.65rem;
+}
+.demo-ask ol{
+  list-style:none;
+  text-align:left;
+  counter-reset:q;
+}
+.demo-ask li{
+  counter-increment:q;
+  font-size:.82rem;
+  line-height:1.45;
+  color:#444;
+  padding:.55rem 0;
+  border-top:1px solid #f0f0f0;
+}
+.demo-ask li:first-child{border-top:0;padding-top:0}
+.demo-ask li::before{
+  content:counter(q) ".";
+  font-weight:750;
+  color:#b8860b;
+  margin-right:.45rem;
+}
+.demo-ask q{
+  font-style:normal;
+  color:#222;
+}
+
 .dock{
   position:fixed;left:50%;bottom:3.35rem;transform:translateX(-50%);
   width:min(100% - 2rem,440px);z-index:7;
@@ -220,17 +258,6 @@ body.split .dock{
 .btn.yellow{background:#F5C518;color:#111}
 .teach{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
 .teach-meta{font-size:.72rem;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.reply{
-  display:none;padding:.75rem .9rem;border-radius:14px;background:rgba(247,247,247,.95);
-  border:1px solid #eee;font-size:.86rem;line-height:1.45;color:#222;
-  max-height:18vh;overflow:auto;-webkit-user-select:text;user-select:text;
-  backdrop-filter:blur(8px);
-}
-.reply.show{display:block}
-.reply .meta{
-  font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-  color:#888;margin-bottom:.3rem;
-}
 
 .powered{
   position:fixed;right:clamp(.85rem,3vw,1.35rem);bottom:clamp(.7rem,2.5vw,1.1rem);
@@ -298,14 +325,17 @@ body.split .dock{
         <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
       </div>
       <div class="hint" aria-live="polite"></div>
+      <div class="demo-ask" id="demoAsk">
+        <p class="lead">Mock-up — connect demo books, tap the orb, and ask:</p>
+        <ol>
+          <li><q>Put the XY chart of payroll for the past two years on screen.</q></li>
+          <li><q>Give me the profit and loss for May of last year.</q></li>
+        </ol>
+      </div>
     </div>
   </div>
 
   <div class="dock">
-    <div class="reply" id="reply">
-      <div class="meta" id="replyMeta" hidden></div>
-      <div class="answer" id="replyText"></div>
-    </div>
     <form class="row" id="textForm">
       <input id="q" type="text" autocomplete="off" placeholder="Loud room? Type here…" enterkeyhint="send" aria-label="Type your question"/>
       <button class="btn" type="submit" id="sendBtn">Send</button>
@@ -338,9 +368,6 @@ const orb=document.getElementById('orb');
 const qInput=document.getElementById('q');
 const textForm=document.getElementById('textForm');
 const sendBtn=document.getElementById('sendBtn');
-const reply=document.getElementById('reply');
-const replyMeta=document.getElementById('replyMeta');
-const replyText=document.getElementById('replyText');
 const teachMeta=document.getElementById('teachMeta');
 const uploadBtn=document.getElementById('uploadBtn');
 const fileInput=document.getElementById('file');
@@ -397,13 +424,41 @@ function openBoard(){
   syncBodyClass();
 }
 
-function showReply(text,opts){
-  opts=opts||{};
-  if(!text){reply.classList.remove('show');replyText.textContent='';replyMeta.hidden=true;return}
-  reply.classList.add('show');
-  replyText.textContent=text;
-  if(opts.meta){replyMeta.hidden=false;replyMeta.textContent=opts.meta}
-  else replyMeta.hidden=true;
+function showBooksResult(d){
+  if(d.intent==='pnl'&&d.report){
+    lastChart=null;
+    renderPnL(d.report);
+  }else if(d.intent==='payroll_chart'&&d.chart){
+    lastChart=d.chart;
+    drawChart(d.chart);
+  }
+}
+
+function looksLikeBooksAsk(text){
+  const t=String(text||'').toLowerCase();
+  return /payroll|wages|salar|p\s*&\s*l|\bpnl\b|profit\s*and\s*loss|income statement|xy chart|chart.*payroll|payroll.*chart|profit and loss.*may|may.*profit|may of last year|may last year/i.test(t);
+}
+
+let lastSpeechKey='';
+let speechTimer=null;
+async function maybeOpenBoardFromSpeech(transcript){
+  const t=String(transcript||'').trim();
+  if(!t||t.length<10||!looksLikeBooksAsk(t))return;
+  clearTimeout(speechTimer);
+  speechTimer=setTimeout(async()=>{
+    const key=t.toLowerCase().replace(/\s+/g,' ').slice(0,120);
+    if(key===lastSpeechKey)return;
+    lastSpeechKey=key;
+    try{
+      const r=await fetch('/api/brain/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question:t})
+      });
+      const d=await r.json();
+      showBooksResult(d);
+    }catch(e){}
+  },700);
 }
 
 function renderPnL(report){
@@ -536,20 +591,6 @@ function drawChart(chart){
   });
 }
 
-function showBooksResult(d){
-  const meta=d.intent==='pnl'?'QuickBooks mock · Profit & Loss'
-    :d.intent==='payroll_chart'?'QuickBooks mock · Payroll trend'
-    :'QuickBooks mock';
-  showReply(d.answer||'No answer.',{meta});
-  if(d.intent==='pnl'&&d.report){
-    lastChart=null;
-    renderPnL(d.report);
-  }else if(d.chart){
-    lastChart=d.chart;
-    drawChart(d.chart);
-  }
-}
-
 function ensureAudio(){
   if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true}
   return audioEl;
@@ -629,49 +670,19 @@ async function toggleVoice(){
   starting=false;
 }
 
-function looksLikeBooksAsk(text){
-  return /payroll|p\s*&\s*l|pnl|profit|income statement|chart|graph|xy|wages|salary|may|screen|split/i.test(String(text||''));
-}
-
-let lastSpeechBoard='';
-async function maybeOpenBoardFromSpeech(transcript){
-  const t=String(transcript||'').trim();
-  if(!t||t.length<8)return;
-  if(!looksLikeBooksAsk(t))return;
-  // de-dupe near-identical repeats
-  if(t===lastSpeechBoard)return;
-  lastSpeechBoard=t;
-  try{
-    const r=await fetch('/api/brain/chat',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({question:t})
-    });
-    const d=await r.json();
-    if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
-  }catch(e){}
-}
-
 async function sendText(question,opts){
   const q=String(question||'').trim();
   if(!q)return;
   sendBtn.disabled=true;
   setMode('texting');
-  showReply('…');
 
   if(!(opts&&opts.forceHttp)&&dc&&dc.readyState==='open'){
     try{
       dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
       dc.send(JSON.stringify({type:'response.create'}));
-      // Typed while voice is live — still open boards from the words
       if(looksLikeBooksAsk(q)){
         fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
-          .then(r=>r.json()).then(d=>{
-            if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
-            else showReply('Sent — listening for the answer…');
-          }).catch(()=>showReply('Sent — listening for the answer…'));
-      }else{
-        showReply('Sent — listening for the answer…');
+          .then(r=>r.json()).then(d=>showBooksResult(d)).catch(()=>{});
       }
       qInput.value='';sendBtn.disabled=false;setMode('listening');return;
     }catch(e){}
@@ -680,12 +691,9 @@ async function sendText(question,opts){
   try{
     const r=await fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
     const d=await r.json();
-    if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
-    else showReply(d.answer||d.error||'No answer.',{meta:d.mode==='demo'?'QuickBooks mock':'Assistant'});
+    showBooksResult(d);
     qInput.value='';
-  }catch(e){
-    showReply('Could not reach the assistant. Try again.');
-  }
+  }catch(e){}
   sendBtn.disabled=false;
 }
 
@@ -703,23 +711,21 @@ fileInput.addEventListener('change',async()=>{
     const r=await fetch('/api/brain/teach',{method:'POST',body:fd});
     const d=await r.json();
     if(!r.ok||!d.ok)throw new Error(d.error||'Upload failed');
-    showReply(d.message||'Learned.');
     await refreshDocs();
-  }catch(e){showReply(e.message||'Upload failed.');await refreshDocs()}
+  }catch(e){await refreshDocs()}
   uploadBtn.disabled=false;
 });
 
 function openSheet(){scrim.classList.add('open')}
 function closeSheet(){scrim.classList.remove('open')}
 qbBtn.addEventListener('click',()=>{
-  if(qbOn){setQbConnected(false);closeBoard();showReply('QuickBooks mock disconnected.');return}
+  if(qbOn){setQbConnected(false);closeBoard();return}
   openSheet();
 });
 sheetCancel.addEventListener('click',closeSheet);
 scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
 sheetConnect.addEventListener('click',()=>{
   setQbConnected(true);closeSheet();
-  showReply('Connected to A1 Demo Books. Just ask out loud — like putting payroll on screen, or May last year’s P&L.',{meta:'QuickBooks mock'});
 });
 boardClose.addEventListener('click',closeBoard);
 
