@@ -5,15 +5,27 @@ Yellow pulsating orb on **live AI email**. Joe asks the books in plain English �
 **Page:** https://liveai-email.onrender.com/axon-brain.html  
 **Local:** http://localhost:3000/axon-brain.html
 
-## QuickBooks mock (no Joe login yet)
+## Tomorrow — Joe’s real QuickBooks (not a password / API key)
 
-On the page: **Connect mock** → “Connect demo books.”  
-Then try the chips or type:
+**What you have now:** a **mock**. We did **not** log into Intuit. The numbers are sample A1 demo books so the UX works today.
 
-- “A year ago in the month of May, give me a profit and loss”
-- “On an XY chart, look at my payroll over the past five years”
+QuickBooks Online does **not** hand you a single “API key” from Joe’s normal login. Tomorrow you’ll need an **Intuit developer app** connected once to his company:
 
-Same link later becomes live Intuit OAuth when credentials are on Render.
+1. Create/open an app at [developer.intuit.com](https://developer.intuit.com/)
+2. OAuth once into Joe’s QuickBooks company (sandbox first is fine)
+3. Copy these four values into Render → `liveai-email` → Environment:
+
+| Env var | What it is |
+|---------|------------|
+| `QUICKBOOKS_CLIENT_ID` | App client id |
+| `QUICKBOOKS_CLIENT_SECRET` | App client secret |
+| `QUICKBOOKS_REFRESH_TOKEN` | From that one OAuth connect |
+| `QUICKBOOKS_REALM_ID` | His company id |
+| `QUICKBOOKS_ENV` | `sandbox` or `production` |
+
+4. Redeploy. The pill flips to **Live QuickBooks** and the same questions hit his real books.
+
+Joe’s everyday QuickBooks **username/password alone is not enough** to paste in — Intuit requires the OAuth app + refresh token. If you want, when you have access we can walk the OAuth playground together and drop the four values in.
 
 ## Demo vs live
 
