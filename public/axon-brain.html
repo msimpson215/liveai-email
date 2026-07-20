@@ -4,51 +4,56 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="cache-control" content="no-store"/>
-<title>Axon AI</title>
+<title>Joe’s Professional Assistant</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
   width:100%;
   height:100%;
-  overflow:hidden;
-  background:#ffffff;
+  background:#fff;
+  color:#111;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
+body{
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  font-family:system-ui,-apple-system,sans-serif;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+  min-height:100%;
+  padding:1.25rem 1rem 5.5rem;
+  overflow-x:hidden;
 }
 .brand{
   position:fixed;
-  top:clamp(1.25rem,4vh,2.5rem);
+  top:clamp(1.1rem,3.5vh,2rem);
   left:0;right:0;
   text-align:center;
-  font-weight:800;
-  font-size:clamp(1.35rem,4vw,1.85rem);
-  letter-spacing:-0.02em;
+  font-weight:750;
+  font-size:clamp(1.15rem,3.6vw,1.55rem);
+  letter-spacing:-0.025em;
   color:#111;
-  z-index:2;
+  z-index:3;
 }
 .orb-wrap{
   position:relative;
-  width:min(72vw,260px);
-  height:min(72vw,260px);
+  width:min(68vw,240px);
+  height:min(68vw,240px);
   display:grid;
   place-items:center;
+  flex-shrink:0;
 }
 .halo{
   position:absolute;
   inset:-22%;
   border-radius:50%;
-  background:radial-gradient(circle,rgba(245,197,24,.55) 0%,rgba(245,197,24,.18) 40%,transparent 70%);
+  background:radial-gradient(circle,rgba(245,197,24,.5) 0%,rgba(245,197,24,.14) 42%,transparent 70%);
   animation:halo 2.8s ease-in-out infinite;
   pointer-events:none;
 }
 @keyframes halo{
   0%,100%{transform:scale(1);opacity:.85}
-  50%{transform:scale(1.12);opacity:1}
+  50%{transform:scale(1.1);opacity:1}
 }
 .orb{
   position:relative;
@@ -64,56 +69,186 @@ html,body{
   box-shadow:
     0 0 0 3px rgba(255,240,160,.55),
     0 0 60px rgba(245,197,24,.65),
-    0 0 120px rgba(245,197,24,.35),
+    0 0 120px rgba(245,197,24,.32),
     inset 0 -16px 32px rgba(80,50,0,.28),
     inset 0 12px 22px rgba(255,255,220,.5);
   animation:pulse 2.8s ease-in-out infinite;
 }
 .orb:focus-visible{outline:3px solid #111;outline-offset:6px;}
 @keyframes pulse{
-  0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(255,240,160,.55),0 0 60px rgba(245,197,24,.65),0 0 120px rgba(245,197,24,.35),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.5)}
-  50%{transform:scale(1.07);box-shadow:0 0 0 5px rgba(255,250,200,.75),0 0 90px rgba(245,197,24,.9),0 0 170px rgba(245,197,24,.45),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.55)}
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06);box-shadow:0 0 0 5px rgba(255,250,200,.7),0 0 90px rgba(245,197,24,.88),0 0 160px rgba(245,197,24,.4),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.55)}
 }
-body.connecting .orb,body.active .orb{
+body.connecting .orb,body.listening .orb{
   animation:live 1.1s ease-in-out infinite alternate;
 }
 @keyframes live{
-  from{transform:scale(1.03)}
-  to{transform:scale(1.1);filter:brightness(1.08)}
+  from{transform:scale(1.02)}
+  to{transform:scale(1.09);filter:brightness(1.06)}
 }
 body.error .orb{
   background:radial-gradient(circle at 32% 28%,#ffd0c8 0%,#e85d04 50%,#7a1a00 100%);
   animation:none;
 }
 .hint{
-  position:fixed;
-  bottom:clamp(1.5rem,5vh,2.75rem);
-  left:0;right:0;
+  margin-top:1.1rem;
+  font-weight:600;
+  font-size:.9rem;
+  color:#555;
   text-align:center;
-  font-weight:700;
-  font-size:.95rem;
-  color:#333;
-  z-index:2;
+  min-height:1.25rem;
 }
-body.connecting .hint::after{content:"Connecting…"}
-body.active .hint::after{content:"Listening — talk to Axon AI"}
 body.idle .hint::after{content:"Tap the orb to talk"}
+body.connecting .hint::after{content:"Connecting…"}
+body.listening .hint::after{content:"Listening — go ahead"}
 body.error .hint::after{content:"Couldn’t connect — tap to try again"}
-.hint::after{content:""}
+body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
+
+.dock{
+  position:fixed;
+  left:50%;
+  bottom:3.4rem;
+  transform:translateX(-50%);
+  width:min(100% - 2rem,420px);
+  z-index:4;
+  display:flex;
+  flex-direction:column;
+  gap:.55rem;
+}
+.row{
+  display:flex;
+  gap:.45rem;
+  align-items:center;
+}
+.row input[type="text"]{
+  flex:1;
+  min-width:0;
+  border:1px solid #e6e6e6;
+  background:#fafafa;
+  border-radius:999px;
+  padding:.72rem 1rem;
+  font:500 .9rem/1.3 system-ui,sans-serif;
+  color:#111;
+}
+.row input[type="text"]:focus{
+  outline:none;
+  border-color:#F5C518;
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(245,197,24,.2);
+}
+.row input[type="text"]::placeholder{color:#999}
+.btn{
+  border:0;
+  border-radius:999px;
+  background:#111;
+  color:#fff;
+  font:700 .82rem/1 system-ui,sans-serif;
+  padding:.72rem 1rem;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{
+  background:transparent;
+  color:#666;
+  border:1px solid #e4e4e4;
+  padding:.55rem .85rem;
+  font-weight:600;
+  font-size:.75rem;
+}
+.btn.ghost:hover{border-color:#ccc;color:#111}
+.teach{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.5rem;
+}
+.teach-meta{
+  font-size:.72rem;
+  color:#888;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.reply{
+  display:none;
+  margin-top:.15rem;
+  padding:.75rem .9rem;
+  border-radius:14px;
+  background:#f7f7f7;
+  border:1px solid #eee;
+  font-size:.88rem;
+  line-height:1.45;
+  color:#222;
+  max-height:28vh;
+  overflow:auto;
+  -webkit-user-select:text;
+  user-select:text;
+}
+.reply.show{display:block}
+.powered{
+  position:fixed;
+  right:clamp(.85rem,3vw,1.35rem);
+  bottom:clamp(.7rem,2.5vw,1.1rem);
+  z-index:5;
+  font-size:.68rem;
+  font-weight:600;
+  letter-spacing:.02em;
+  color:#999;
+}
+.powered b{
+  color:#777;
+  font-weight:700;
+}
+#file{display:none}
+@media(max-width:420px){
+  .dock{bottom:3.1rem}
+  .teach{flex-wrap:wrap}
+}
 </style>
 </head>
 <body class="idle">
-  <div class="brand">Axon AI</div>
+  <h1 class="brand">Joe’s Professional Assistant</h1>
+
   <div class="orb-wrap">
     <div class="halo" aria-hidden="true"></div>
-    <button type="button" class="orb" id="orb" aria-label="Tap to talk to Axon AI"></button>
+    <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
   </div>
   <div class="hint" aria-live="polite"></div>
-<script>
-let pc=null,localStream=null,starting=false,audioEl=null;
-const orb=document.getElementById('orb');
 
-function setState(s){document.body.className=s}
+  <div class="dock">
+    <div class="reply" id="reply" aria-live="polite"></div>
+    <form class="row" id="textForm">
+      <input id="q" type="text" autocomplete="off" placeholder="Loud room? Type here…" enterkeyhint="send" aria-label="Type your question"/>
+      <button class="btn" type="submit" id="sendBtn">Send</button>
+    </form>
+    <div class="teach">
+      <span class="teach-meta" id="teachMeta">No teaching docs yet</span>
+      <div class="row" style="gap:.4rem;flex:0 0 auto">
+        <button type="button" class="btn ghost" id="uploadBtn">Upload docs</button>
+        <input id="file" type="file" accept=".txt,.md,.pdf,.docx,text/plain,application/pdf"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="powered">Powered by <b>Axon AI</b></div>
+
+<script>
+const orb=document.getElementById('orb');
+const qInput=document.getElementById('q');
+const textForm=document.getElementById('textForm');
+const sendBtn=document.getElementById('sendBtn');
+const reply=document.getElementById('reply');
+const teachMeta=document.getElementById('teachMeta');
+const uploadBtn=document.getElementById('uploadBtn');
+const fileInput=document.getElementById('file');
+
+let pc=null,localStream=null,dc=null,starting=false,audioEl=null,mode='idle';
+
+function setMode(s){
+  mode=s;
+  document.body.className=s;
+}
 
 function ensureAudio(){
   if(!audioEl){
@@ -124,14 +259,35 @@ function ensureAudio(){
   return audioEl;
 }
 
-async function stop(){
-  if(pc){try{pc.close()}catch(e){}pc=null}
-  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  starting=false;
-  setState('idle');
+function showReply(text){
+  if(!text){reply.classList.remove('show');reply.textContent='';return}
+  reply.textContent=text;
+  reply.classList.add('show');
 }
 
-async function connect(){
+async function refreshDocs(){
+  try{
+    const r=await fetch('/api/brain/docs',{cache:'no-store'});
+    const d=await r.json();
+    const n=(d.docs||[]).length;
+    teachMeta.textContent=n
+      ? (n===1?'1 teaching doc loaded':n+' teaching docs loaded')
+      : 'No teaching docs yet';
+  }catch(e){
+    teachMeta.textContent='';
+  }
+}
+refreshDocs();
+
+async function stopVoice(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;
+  starting=false;
+  if(mode!=='texting')setMode('idle');
+}
+
+async function connectVoice(){
   const r=await fetch('/session?src=qb',{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
@@ -148,7 +304,7 @@ async function connect(){
   };
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
-  const dc=pc.createDataChannel('oai-events');
+  dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',()=>{
     try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
   });
@@ -162,29 +318,100 @@ async function connect(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  setState('active');
+  setMode('listening');
 }
 
-async function toggle(){
-  if(pc||starting){await stop();return}
+async function toggleVoice(){
+  if(pc||starting){await stopVoice();return}
   starting=true;
-  setState('connecting');
+  setMode('connecting');
   try{
-    await connect();
+    await connectVoice();
   }catch(e){
     console.error(e);
-    await stop();
-    setState('error');
+    await stopVoice();
+    setMode('error');
   }
   starting=false;
 }
 
-orb.addEventListener('click',toggle);
-orb.addEventListener('keydown',e=>{
-  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
+async function sendText(question){
+  const q=String(question||'').trim();
+  if(!q)return;
+  sendBtn.disabled=true;
+  setMode('texting');
+  showReply('…');
+
+  // If voice is live, prefer sending over the data channel so it speaks back
+  if(dc&&dc.readyState==='open'){
+    try{
+      dc.send(JSON.stringify({
+        type:'conversation.item.create',
+        item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}
+      }));
+      dc.send(JSON.stringify({type:'response.create'}));
+      showReply('Sent — listening for the answer…');
+      qInput.value='';
+      sendBtn.disabled=false;
+      setMode('listening');
+      return;
+    }catch(e){/* fall through to HTTP */}
+  }
+
+  try{
+    const r=await fetch('/api/brain/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:q})
+    });
+    const d=await r.json();
+    showReply(d.answer||d.error||'No answer.');
+    qInput.value='';
+  }catch(e){
+    showReply('Could not reach the assistant. Try again.');
+  }
+  sendBtn.disabled=false;
+}
+
+textForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  sendText(qInput.value);
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')stop()});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&(pc||starting))stop()});
+
+qInput.addEventListener('focus',()=>{
+  if(mode==='idle'||mode==='error')setMode('texting');
+});
+
+uploadBtn.addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',async()=>{
+  const file=fileInput.files&&fileInput.files[0];
+  fileInput.value='';
+  if(!file)return;
+  uploadBtn.disabled=true;
+  teachMeta.textContent='Teaching from “'+file.name+'”…';
+  try{
+    const fd=new FormData();
+    fd.append('file',file);
+    const r=await fetch('/api/brain/teach',{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw new Error(d.error||'Upload failed');
+    showReply(d.message||'Learned.');
+    await refreshDocs();
+  }catch(e){
+    showReply(e.message||'Upload failed.');
+    await refreshDocs();
+  }
+  uploadBtn.disabled=false;
+});
+
+orb.addEventListener('click',toggleVoice);
+orb.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')stopVoice()});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&(pc||starting))stopVoice();
+});
 </script>
 </body>
 </html>
