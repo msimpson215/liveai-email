@@ -189,44 +189,6 @@ body.listening .hint::after{content:"Listening — go ahead"}
 body.error .hint::after{content:"Couldn’t connect — tap to try again"}
 body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
 
-.demo-ask{
-  margin-top:1.35rem;
-  max-width:min(92vw,380px);
-  padding:0 .5rem;
-  text-align:center;
-}
-.demo-ask .lead{
-  font-size:.78rem;
-  font-weight:600;
-  color:#888;
-  line-height:1.45;
-  margin-bottom:.65rem;
-}
-.demo-ask ol{
-  list-style:none;
-  text-align:left;
-  counter-reset:q;
-}
-.demo-ask li{
-  counter-increment:q;
-  font-size:.82rem;
-  line-height:1.45;
-  color:#444;
-  padding:.55rem 0;
-  border-top:1px solid #f0f0f0;
-}
-.demo-ask li:first-child{border-top:0;padding-top:0}
-.demo-ask li::before{
-  content:counter(q) ".";
-  font-weight:750;
-  color:#b8860b;
-  margin-right:.45rem;
-}
-.demo-ask q{
-  font-style:normal;
-  color:#222;
-}
-
 .dock{
   position:fixed;left:50%;bottom:3.35rem;transform:translateX(-50%);
   width:min(100% - 2rem,440px);z-index:7;
@@ -325,13 +287,6 @@ body.split .dock{
         <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
       </div>
       <div class="hint" aria-live="polite"></div>
-      <div class="demo-ask" id="demoAsk">
-        <p class="lead">Mock-up — connect demo books, tap the orb, and ask:</p>
-        <ol>
-          <li><q>Put the XY chart of payroll for the past two years on screen.</q></li>
-          <li><q>Give me the profit and loss for May of last year.</q></li>
-        </ol>
-      </div>
     </div>
   </div>
 
