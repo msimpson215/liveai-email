@@ -16,6 +16,13 @@ Render service **liveai-email** should track repo **liveai-email** branch **main
 | Key | Required |
 |-----|----------|
 | `OPENAI_API_KEY` | Yes — Axon AI voice (Realtime API) |
+| `QUICKBOOKS_CLIENT_ID` | Optional — Axon AI Brain live books |
+| `QUICKBOOKS_CLIENT_SECRET` | Optional — with client id |
+| `QUICKBOOKS_REFRESH_TOKEN` | Optional — from Intuit OAuth |
+| `QUICKBOOKS_REALM_ID` | Optional — Joe’s company id |
+| `QUICKBOOKS_ENV` | Optional — `sandbox` or `production` |
+
+Axon AI Brain (yellow orb + QuickBooks): `/axon-brain.html` — see `docs/AXON-QB-BRAIN.md`.
 
 ## Test locally
 

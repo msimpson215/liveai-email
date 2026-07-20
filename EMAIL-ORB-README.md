@@ -16,6 +16,8 @@ Do **not** use `a1-fence` for the email orb / Gmail plate illusion. That was the
 
 Click orb → Axon AI voice (OpenAI Realtime). Popup is **236×236px**, transparent background.
 
+**Axon AI Brain (QuickBooks):** `/axon-brain.html` — yellow pulsating orb; ask for P&amp;L / payroll charts. Demo books until Intuit credentials are set (`docs/AXON-QB-BRAIN.md`).
+
 ## Deploy
 
 Connect **this** repo on Render. Set `OPENAI_API_KEY` in Environment.
