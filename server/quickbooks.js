@@ -305,9 +305,13 @@ function parseRelativeMay(now = new Date()) {
 }
 
 function parseYearSpan(question, fallback = 5) {
-  const m = question.match(/past\s+(\d+)\s+years?/i) || question.match(/last\s+(\d+)\s+years?/i)
+  const m = question.match(/past\s+(\d+)\s+years?/i)
+    || question.match(/last\s+(\d+)\s+years?/i)
+    || question.match(/over\s+(?:the\s+)?(?:past\s+|last\s+)?(\d+)\s+years?/i)
   if (m) return Math.min(10, Math.max(2, Number(m[1])))
   if (/five years|5 years/i.test(question)) return 5
+  if (/two years|2 years/i.test(question)) return 2
+  if (/three years|3 years/i.test(question)) return 3
   return fallback
 }
 
@@ -316,7 +320,7 @@ function detectIntent(question) {
   const lower = q.toLowerCase()
   if (!q) return { type: 'empty' }
 
-  const wantsChart = /chart|graph|plot|xy|trend|over the|visualize|show me/i.test(q)
+  const wantsChart = /chart|graph|plot|xy|trend|over the|visualize|show me|put .+ on|on screen|split screen|screen one|pull up|bring up/i.test(q)
   const wantsPayroll = /payroll|wages|salary|salaries|labor cost/i.test(q)
   const wantsPnL = /profit\s*and\s*loss|p\s*&\s*l|pnl|income statement|net income|profit/i.test(q)
   const mayAgo = /year ago.*may|may.*year ago|in the month of may|last may|may of last year/i.test(q)
