@@ -592,7 +592,13 @@ async function connectVoice(){
   pc.addTrack(localStream.getTracks()[0]);
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',()=>{
-    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+    const line="Hello Joe, how are you today? What can I do for you today?";
+    try{
+      dc.send(JSON.stringify({
+        type:'response.create',
+        response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}
+      }));
+    }catch(e){}
   });
 
   const offer=await pc.createOffer();
