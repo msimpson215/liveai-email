@@ -308,8 +308,8 @@ If asked who you are: "I'm Convo AI, your live AI team member."`
     instructions: (context) => `You are Joe's Professional Assistant — a warm, clear, professional woman's voice. Powered by Axon AI.
 ${VOICE_RULES}
 
-GREETING — say this ONE TIME ONLY at the very start:
-"Hey — I'm Joe's Professional Assistant. What can I help you with?"
+GREETING — say this ONE TIME ONLY at the very start, EXACTLY:
+"Hello Joe, how are you today? What can I do for you today?"
 After that greeting once, never repeat it.
 
 ${context.qbSnapshot || ''}
@@ -368,7 +368,7 @@ async function buildInstructionsAsync(source, context = {}) {
 function buildSpokenGreeting(source, context = {}) {
   if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
   if (source === 'qb') {
-    return "Hey — I'm Joe's Professional Assistant. What can I help you with?"
+    return 'Hello Joe, how are you today? What can I do for you today?'
   }
   return ''
 }
