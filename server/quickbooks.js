@@ -317,15 +317,18 @@ function parseYearSpan(question, fallback = 5) {
 
 function detectIntent(question) {
   const q = String(question || '').trim()
-  const lower = q.toLowerCase()
   if (!q) return { type: 'empty' }
 
   const wantsChart = /chart|graph|plot|xy|trend|over the|visualize|show me|put .+ on|on screen|split screen|screen one|pull up|bring up/i.test(q)
   const wantsPayroll = /payroll|wages|salary|salaries|labor cost/i.test(q)
-  const wantsPnL = /profit\s*and\s*loss|p\s*&\s*l|pnl|income statement|net income|profit/i.test(q)
+  const wantsPnL = /profit\s*and\s*loss|p\s*&\s*l|\bpnl\b|income statement|net income/i.test(q)
   const mayAgo = /year ago.*may|may.*year ago|in the month of may|last may|may of last year/i.test(q)
 
-  if (wantsPayroll && (wantsChart || /past|last|over|years/i.test(q))) {
+  // Payroll + chart always wins (avoids misrouting to P&L)
+  if (wantsPayroll && (wantsChart || /past|last|over|\d+\s*years?/i.test(q))) {
+    return { type: 'payroll_chart', years: parseYearSpan(q, 5) }
+  }
+  if (wantsPayroll) {
     return { type: 'payroll_chart', years: parseYearSpan(q, 5) }
   }
   if (wantsPnL || mayAgo) {
@@ -356,9 +359,6 @@ function detectIntent(question) {
       period.label = `Year ${year}`
     }
     return { type: 'pnl', period, chart: wantsChart }
-  }
-  if (wantsPayroll) {
-    return { type: 'payroll_chart', years: parseYearSpan(q, 5) }
   }
   return { type: 'chat', question: q }
 }
