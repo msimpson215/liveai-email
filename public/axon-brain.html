@@ -21,24 +21,63 @@ body{
   align-items:center;
   justify-content:center;
   min-height:100%;
-  padding:1.25rem 1rem 5.5rem;
+  padding:4.5rem 1rem 6.5rem;
   overflow-x:hidden;
 }
 .brand{
   position:fixed;
-  top:clamp(1.1rem,3.5vh,2rem);
+  top:clamp(1rem,3vh,1.6rem);
   left:0;right:0;
   text-align:center;
   font-weight:750;
-  font-size:clamp(1.15rem,3.6vw,1.55rem);
+  font-size:clamp(1.1rem,3.5vw,1.5rem);
   letter-spacing:-0.025em;
   color:#111;
   z-index:3;
 }
+.qb-bar{
+  position:fixed;
+  top:clamp(2.7rem,6.5vh,3.4rem);
+  left:0;right:0;
+  z-index:3;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.55rem;
+  padding:0 1rem;
+}
+.qb-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  border:1px solid #ececec;
+  background:#fafafa;
+  border-radius:999px;
+  padding:.28rem .7rem;
+  font-size:.7rem;
+  font-weight:600;
+  color:#666;
+}
+.qb-pill .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#ccc;
+}
+.qb-pill.on .dot{
+  background:#2f9e44;
+  box-shadow:0 0 0 3px rgba(47,158,68,.15);
+}
+.qb-pill.on{color:#333;border-color:#e2eee4;background:#f6fbf7}
+.qb-link{
+  border:0;background:none;
+  color:#888;font:600 .7rem/1 system-ui,sans-serif;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+}
+.qb-link:hover{color:#111}
+
 .orb-wrap{
   position:relative;
-  width:min(68vw,240px);
-  height:min(68vw,240px);
+  width:min(64vw,220px);
+  height:min(64vw,220px);
   display:grid;
   place-items:center;
   flex-shrink:0;
@@ -91,7 +130,7 @@ body.error .orb{
   animation:none;
 }
 .hint{
-  margin-top:1.1rem;
+  margin-top:1rem;
   font-weight:600;
   font-size:.9rem;
   color:#555;
@@ -104,16 +143,41 @@ body.listening .hint::after{content:"Listening — go ahead"}
 body.error .hint::after{content:"Couldn’t connect — tap to try again"}
 body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
 
+.chips{
+  display:none;
+  flex-wrap:wrap;
+  gap:.4rem;
+  justify-content:center;
+  margin-top:.85rem;
+  max-width:420px;
+  padding:0 .25rem;
+}
+body.qb-on .chips{display:flex}
+.chip{
+  border:1px solid #ececec;
+  background:#fff;
+  color:#444;
+  border-radius:999px;
+  padding:.4rem .7rem;
+  font:500 .72rem/1.2 system-ui,sans-serif;
+  cursor:pointer;
+}
+.chip:hover,.chip:focus-visible{
+  border-color:#F5C518;
+  outline:none;
+  background:#fffdf3;
+}
+
 .dock{
   position:fixed;
   left:50%;
-  bottom:3.4rem;
+  bottom:3.35rem;
   transform:translateX(-50%);
-  width:min(100% - 2rem,420px);
+  width:min(100% - 2rem,440px);
   z-index:4;
   display:flex;
   flex-direction:column;
-  gap:.55rem;
+  gap:.5rem;
 }
 .row{
   display:flex;
@@ -157,6 +221,10 @@ body.texting .hint::after{content:"Type below — quieter than yelling over the 
   font-size:.75rem;
 }
 .btn.ghost:hover{border-color:#ccc;color:#111}
+.btn.yellow{
+  background:#F5C518;
+  color:#111;
+}
 .teach{
   display:flex;
   align-items:center;
@@ -172,20 +240,32 @@ body.texting .hint::after{content:"Type below — quieter than yelling over the 
 }
 .reply{
   display:none;
-  margin-top:.15rem;
-  padding:.75rem .9rem;
+  padding:.8rem .9rem .85rem;
   border-radius:14px;
   background:#f7f7f7;
   border:1px solid #eee;
   font-size:.88rem;
   line-height:1.45;
   color:#222;
-  max-height:28vh;
+  max-height:34vh;
   overflow:auto;
   -webkit-user-select:text;
   user-select:text;
 }
 .reply.show{display:block}
+.reply .meta{
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:#888;
+  margin-bottom:.35rem;
+}
+.reply .answer{margin-bottom:.15rem}
+#chartBox{display:none;width:100%;height:160px;margin-top:.55rem}
+#chartBox.show{display:block}
+#chart{width:100%;height:100%;display:block}
+
 .powered{
   position:fixed;
   right:clamp(.85rem,3vw,1.35rem);
@@ -196,19 +276,66 @@ body.texting .hint::after{content:"Type below — quieter than yelling over the 
   letter-spacing:.02em;
   color:#999;
 }
-.powered b{
-  color:#777;
-  font-weight:700;
+.powered b{color:#777;font-weight:700}
+
+/* Mock QuickBooks connect sheet */
+.scrim{
+  position:fixed;inset:0;z-index:20;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:1.25rem;
+}
+.scrim.open{display:flex}
+.sheet{
+  width:min(100%,360px);
+  background:#fff;
+  border:1px solid #ececec;
+  border-radius:18px;
+  padding:1.25rem 1.2rem 1.15rem;
+  box-shadow:0 18px 50px rgba(0,0,0,.08);
+}
+.sheet h2{
+  font-size:1.05rem;
+  font-weight:750;
+  letter-spacing:-0.02em;
+  margin-bottom:.35rem;
+}
+.sheet p{
+  font-size:.86rem;
+  line-height:1.45;
+  color:#555;
+  margin-bottom:1rem;
+}
+.sheet .actions{
+  display:flex;
+  gap:.45rem;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+.sheet .note{
+  margin-top:.85rem;
+  font-size:.72rem;
+  color:#999;
+  line-height:1.4;
 }
 #file{display:none}
 @media(max-width:420px){
   .dock{bottom:3.1rem}
   .teach{flex-wrap:wrap}
+  #chartBox{height:140px}
 }
 </style>
 </head>
 <body class="idle">
   <h1 class="brand">Joe’s Professional Assistant</h1>
+
+  <div class="qb-bar">
+    <span class="qb-pill" id="qbPill"><span class="dot"></span><span id="qbLabel">QuickBooks · not connected</span></span>
+    <button type="button" class="qb-link" id="qbBtn">Connect mock</button>
+  </div>
 
   <div class="orb-wrap">
     <div class="halo" aria-hidden="true"></div>
@@ -216,8 +343,17 @@ body.texting .hint::after{content:"Type below — quieter than yelling over the 
   </div>
   <div class="hint" aria-live="polite"></div>
 
+  <div class="chips" id="chips">
+    <button type="button" class="chip" data-q="A year ago in the month of May, give me a profit and loss statement">May last year P&amp;L</button>
+    <button type="button" class="chip" data-q="On an XY chart, look at my payroll over the past five years">Payroll · 5 years</button>
+  </div>
+
   <div class="dock">
-    <div class="reply" id="reply" aria-live="polite"></div>
+    <div class="reply" id="reply" aria-live="polite">
+      <div class="meta" id="replyMeta" hidden></div>
+      <div class="answer" id="replyText"></div>
+      <div id="chartBox"><canvas id="chart"></canvas></div>
+    </div>
     <form class="row" id="textForm">
       <input id="q" type="text" autocomplete="off" placeholder="Loud room? Type here…" enterkeyhint="send" aria-label="Type your question"/>
       <button class="btn" type="submit" id="sendBtn">Send</button>
@@ -233,22 +369,60 @@ body.texting .hint::after{content:"Type below — quieter than yelling over the 
 
   <div class="powered">Powered by <b>Axon AI</b></div>
 
+  <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet">
+      <h2 id="sheetTitle">Connect QuickBooks</h2>
+      <p>Mock for now — no Joe login needed. We’ll pretend you’re connected to A1’s books so you can ask real questions against sample numbers.</p>
+      <div class="actions">
+        <button type="button" class="btn ghost" id="sheetCancel">Cancel</button>
+        <button type="button" class="btn yellow" id="sheetConnect">Connect demo books</button>
+      </div>
+      <p class="note">Later this becomes a real Intuit OAuth connect. Same questions, live numbers.</p>
+    </div>
+  </div>
+
 <script>
 const orb=document.getElementById('orb');
 const qInput=document.getElementById('q');
 const textForm=document.getElementById('textForm');
 const sendBtn=document.getElementById('sendBtn');
 const reply=document.getElementById('reply');
+const replyMeta=document.getElementById('replyMeta');
+const replyText=document.getElementById('replyText');
+const chartBox=document.getElementById('chartBox');
+const canvas=document.getElementById('chart');
+const ctx=canvas.getContext('2d');
 const teachMeta=document.getElementById('teachMeta');
 const uploadBtn=document.getElementById('uploadBtn');
 const fileInput=document.getElementById('file');
+const qbPill=document.getElementById('qbPill');
+const qbLabel=document.getElementById('qbLabel');
+const qbBtn=document.getElementById('qbBtn');
+const scrim=document.getElementById('scrim');
+const sheetCancel=document.getElementById('sheetCancel');
+const sheetConnect=document.getElementById('sheetConnect');
 
-let pc=null,localStream=null,dc=null,starting=false,audioEl=null,mode='idle';
+const QB_KEY='joeAssistant.qbMock';
+let pc=null,localStream=null,dc=null,starting=false,audioEl=null,mode='idle',lastChart=null,qbOn=false;
 
 function setMode(s){
   mode=s;
-  document.body.className=s;
+  document.body.className=s+(qbOn?' qb-on':'');
 }
+
+function setQbConnected(on){
+  qbOn=!!on;
+  try{localStorage.setItem(QB_KEY,on?'1':'0')}catch(e){}
+  qbPill.classList.toggle('on',qbOn);
+  qbLabel.textContent=qbOn?'QuickBooks · demo books':'QuickBooks · not connected';
+  qbBtn.textContent=qbOn?'Disconnect':'Connect mock';
+  document.body.classList.toggle('qb-on',qbOn);
+  if(mode==='idle'||mode==='texting'||mode==='listening'||mode==='connecting'||mode==='error'){
+    setMode(mode);
+  }
+}
+
+try{setQbConnected(localStorage.getItem(QB_KEY)==='1')}catch(e){setQbConnected(false)}
 
 function ensureAudio(){
   if(!audioEl){
@@ -259,10 +433,122 @@ function ensureAudio(){
   return audioEl;
 }
 
-function showReply(text){
-  if(!text){reply.classList.remove('show');reply.textContent='';return}
-  reply.textContent=text;
+function money(n){
+  return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0);
+}
+
+function fitCanvas(){
+  const box=chartBox;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const w=box.clientWidth||300;
+  const h=box.clientHeight||160;
+  canvas.width=Math.floor(w*dpr);
+  canvas.height=Math.floor(h*dpr);
+  canvas.style.width=w+'px';
+  canvas.style.height=h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {w,h};
+}
+
+function roundRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);
+  c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+
+function drawChart(chart){
+  if(!chart){chartBox.classList.remove('show');return}
+  chartBox.classList.add('show');
+  const {w,h}=fitCanvas();
+  ctx.clearRect(0,0,w,h);
+  const pad={t:10,r:8,b:28,l:44};
+  const iw=w-pad.l-pad.r;
+  const ih=h-pad.t-pad.b;
+
+  if(chart.type==='line'||(chart.series&&chart.series[0]&&chart.type!=='waterfall'&&chart.type!=='bar')){
+    const series=chart.series[0];
+    const pts=series.points||[];
+    if(!pts.length)return;
+    const ys=pts.map(p=>Number(p.y)||0);
+    let minY=Math.min(...ys)*0.92;
+    let maxY=Math.max(...ys)*1.06;
+    if(minY===maxY){maxY=minY+1}
+    ctx.strokeStyle='#eee';
+    for(let i=0;i<=3;i++){
+      const y=pad.t+ih*(i/3);
+      ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();
+      const val=maxY-(maxY-minY)*(i/3);
+      ctx.fillStyle='#999';
+      ctx.font='10px system-ui,sans-serif';
+      ctx.textAlign='right';
+      ctx.fillText(money(val),pad.l-6,y+3);
+    }
+    ctx.beginPath();
+    pts.forEach((p,i)=>{
+      const x=pad.l+(pts.length===1?iw/2:(i/(pts.length-1))*iw);
+      const y=pad.t+ih*((maxY-p.y)/(maxY-minY));
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle='#D4A017';
+    ctx.lineWidth=2.4;
+    ctx.stroke();
+    pts.forEach((p,i)=>{
+      const x=pad.l+(pts.length===1?iw/2:(i/(pts.length-1))*iw);
+      const y=pad.t+ih*((maxY-p.y)/(maxY-minY));
+      ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);
+      ctx.fillStyle='#F5C518';ctx.fill();
+      ctx.fillStyle='#888';
+      ctx.font='10px system-ui,sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText(String(p.x),x,h-8);
+    });
+    return;
+  }
+
+  const points=chart.points||[];
+  if(!points.length)return;
+  const ys=points.map(p=>Math.abs(Number(p.y)||0));
+  const maxY=Math.max(...ys,1);
+  const gap=10;
+  const bw=(iw-(points.length-1)*gap)/points.length;
+  points.forEach((p,i)=>{
+    const val=Number(p.y)||0;
+    const bh=(Math.abs(val)/maxY)*ih*0.88;
+    const x=pad.l+i*(bw+gap);
+    const y=pad.t+ih-bh;
+    ctx.fillStyle=p.color||'#F5C518';
+    roundRect(ctx,x,y,bw,bh,7);ctx.fill();
+    ctx.fillStyle='#666';
+    ctx.font='10px system-ui,sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText(String(p.x),x+bw/2,h-8);
+  });
+}
+
+function showReply(text,opts){
+  opts=opts||{};
+  if(!text&&!opts.chart){
+    reply.classList.remove('show');
+    replyText.textContent='';
+    replyMeta.hidden=true;
+    chartBox.classList.remove('show');
+    lastChart=null;
+    return;
+  }
   reply.classList.add('show');
+  replyText.textContent=text||'';
+  if(opts.meta){
+    replyMeta.hidden=false;
+    replyMeta.textContent=opts.meta;
+  }else{
+    replyMeta.hidden=true;
+  }
+  lastChart=opts.chart||null;
+  drawChart(lastChart);
 }
 
 async function refreshDocs(){
@@ -335,27 +621,37 @@ async function toggleVoice(){
   starting=false;
 }
 
-async function sendText(question){
+async function sendText(question,opts){
   const q=String(question||'').trim();
   if(!q)return;
   sendBtn.disabled=true;
   setMode('texting');
   showReply('…');
 
-  // If voice is live, prefer sending over the data channel so it speaks back
-  if(dc&&dc.readyState==='open'){
+  if(!(opts&&opts.forceHttp) && dc&&dc.readyState==='open'){
     try{
       dc.send(JSON.stringify({
         type:'conversation.item.create',
         item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}
       }));
       dc.send(JSON.stringify({type:'response.create'}));
-      showReply('Sent — listening for the answer…');
+      // Also pull a chart for books questions
+      fetch('/api/brain/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question:q})
+      }).then(r=>r.json()).then(d=>{
+        if(d.chart)showReply(d.answer||'Sent — listening for the answer…',{
+          meta:d.intent==='pnl'?'QuickBooks mock · P&L':d.intent==='payroll_chart'?'QuickBooks mock · Payroll':'QuickBooks mock',
+          chart:d.chart
+        });
+        else showReply('Sent — listening for the answer…');
+      }).catch(()=>showReply('Sent — listening for the answer…'));
       qInput.value='';
       sendBtn.disabled=false;
       setMode('listening');
       return;
-    }catch(e){/* fall through to HTTP */}
+    }catch(e){/* fall through */}
   }
 
   try{
@@ -365,7 +661,10 @@ async function sendText(question){
       body:JSON.stringify({question:q})
     });
     const d=await r.json();
-    showReply(d.answer||d.error||'No answer.');
+    const meta=d.intent==='pnl'?'QuickBooks mock · Profit & Loss'
+      :d.intent==='payroll_chart'?'QuickBooks mock · Payroll trend'
+      :(d.mode==='demo'?'QuickBooks mock':'Assistant');
+    showReply(d.answer||d.error||'No answer.',{meta,chart:d.chart||null});
     qInput.value='';
   }catch(e){
     showReply('Could not reach the assistant. Try again.');
@@ -375,7 +674,14 @@ async function sendText(question){
 
 textForm.addEventListener('submit',e=>{
   e.preventDefault();
-  sendText(qInput.value);
+  sendText(qInput.value,{forceHttp:true});
+});
+
+document.querySelectorAll('.chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(!qbOn){openSheet();return}
+    sendText(btn.getAttribute('data-q'),{forceHttp:true});
+  });
 });
 
 qInput.addEventListener('focus',()=>{
@@ -404,14 +710,41 @@ fileInput.addEventListener('change',async()=>{
   uploadBtn.disabled=false;
 });
 
+function openSheet(){scrim.classList.add('open')}
+function closeSheet(){scrim.classList.remove('open')}
+
+qbBtn.addEventListener('click',()=>{
+  if(qbOn){
+    setQbConnected(false);
+    showReply('QuickBooks mock disconnected.');
+    return;
+  }
+  openSheet();
+});
+sheetCancel.addEventListener('click',closeSheet);
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
+sheetConnect.addEventListener('click',()=>{
+  setQbConnected(true);
+  closeSheet();
+  showReply('Connected to A1 Demo Books (mock QuickBooks). Try May last year P&L or a 5-year payroll chart.',{
+    meta:'QuickBooks mock'
+  });
+});
+
 orb.addEventListener('click',toggleVoice);
 orb.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice()}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape')stopVoice()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(scrim.classList.contains('open'))closeSheet();
+    else stopVoice();
+  }
+});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden&&(pc||starting))stopVoice();
 });
+window.addEventListener('resize',()=>{if(lastChart)drawChart(lastChart)});
 </script>
 </body>
 </html>

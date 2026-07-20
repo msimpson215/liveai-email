@@ -5,13 +5,15 @@ Yellow pulsating orb on **live AI email**. Joe asks the books in plain English �
 **Page:** https://liveai-email.onrender.com/axon-brain.html  
 **Local:** http://localhost:3000/axon-brain.html
 
-## What it does
+## QuickBooks mock (no Joe login yet)
 
-| Ask | Result |
-|-----|--------|
-| “A year ago in the month of May, give me a profit and loss” | Narrated P&amp;L + waterfall / bar chart |
-| “On an XY chart, look at my payroll over the past five years” | Line chart + % change |
-| Tap the yellow orb | Voice session (`/session?src=qb`) with the same books context |
+On the page: **Connect mock** → “Connect demo books.”  
+Then try the chips or type:
+
+- “A year ago in the month of May, give me a profit and loss”
+- “On an XY chart, look at my payroll over the past five years”
+
+Same link later becomes live Intuit OAuth when credentials are on Render.
 
 ## Demo vs live
 
