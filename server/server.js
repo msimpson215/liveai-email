@@ -5,6 +5,7 @@ import nodemailer from 'nodemailer'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import * as quickbooks from './quickbooks.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -300,6 +301,20 @@ ASPHALT SEALER:
 - We can apply coal tar, but only if the customer specifically asks for coal tar.
 
 If asked who you are: "I'm Convo AI, your live AI team member."`
+  },
+  qb: {
+    instructions: (context) => `You are Axon AI — a warm, clear, professional woman's voice. You are Joe's AI team member.
+${VOICE_RULES}
+
+GREETING — say this ONE TIME ONLY at the very start:
+"Hey — I'm Axon AI. What can I help you with?"
+After that greeting once, never repeat it.
+
+${context.qbSnapshot || ''}
+
+You can talk about the books when asked (profit and loss, payroll trends, income, expenses). Prefer the SNAPSHOT numbers above when they match. If the mode is DEMO, you may briefly say these are demo books until QuickBooks is connected.
+Keep answers short: 1–4 sentences unless asked for detail.
+If asked who you are: "I'm Axon AI."`
   }
 }
 
@@ -308,7 +323,7 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 // Sources served by talk.html, where the client keeps the mic muted during the
 // opening greeting so it cannot be interrupted, then re-enables it so the rest
 // of the conversation IS interruptible. Enable server-side interruption for them.
-const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web'])
+const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb'])
 
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
@@ -324,10 +339,26 @@ function buildInstructions(source, context = {}) {
   return PRODUCT_PROFILES[key].instructions(context)
 }
 
+async function buildInstructionsAsync(source, context = {}) {
+  if (source === 'qb') {
+    let qbSnapshot = ''
+    try {
+      qbSnapshot = await quickbooks.voiceContextSnippet()
+    } catch {
+      qbSnapshot = 'QUICKBOOKS MODE: demo — snapshot unavailable this session.'
+    }
+    return buildInstructions(source, { ...context, qbSnapshot })
+  }
+  return buildInstructions(source, context)
+}
+
 // Exact words the AI must speak first. Used to force the opening over the
 // data channel so the model cannot improvise its own greeting.
 function buildSpokenGreeting(source, context = {}) {
   if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
+  if (source === 'qb') {
+    return "Hey — I'm Axon AI. What can I help you with?"
+  }
   return ''
 }
 
@@ -360,6 +391,7 @@ app.get('/session', async (req, res) => {
     const source = VALID_SOURCES.has(raw) ? raw : 'web'
     const recipientName = sanitizeRecipientName(req.query.name)
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
+    const instructions = await buildInstructionsAsync(source, { recipientName })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {
@@ -370,7 +402,7 @@ app.get('/session', async (req, res) => {
         session: {
           type: 'realtime',
           model: REALTIME_MODEL,
-          instructions: buildInstructions(source, { recipientName }),
+          instructions,
           audio: {
             input: {
               // Server-side noise reduction — the same class of processing the
@@ -512,6 +544,28 @@ app.post('/api/send-orb', async (req, res) => {
     res.json({ ok: true })
   } catch (error) {
     res.status(500).json({ error: 'Could not send email. Check Gmail app password on server.' })
+  }
+})
+
+/* ---------- Axon AI Brain ↔ QuickBooks ---------- */
+
+app.get('/api/brain/status', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.json({ ok: true, ...quickbooks.status(), openai: hasApiKey() })
+})
+
+app.post('/api/brain/ask', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    const question = String(req.body?.question || req.body?.q || '').trim()
+    const result = await quickbooks.ask(question)
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      answer: 'The brain hit a snag reading the books. Try again in a moment.',
+      error: error.message || 'ask failed'
+    })
   }
 })
 

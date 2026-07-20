@@ -20,6 +20,7 @@ Review demos one at a time: **https://liveai-email.onrender.com/demo/catalog.htm
 
 | # | Product | Demo URL | Playbook key |
 |---|---------|----------|--------------|
+| — | **Axon AI Brain (QuickBooks)** | `/axon-brain.html` | `qb` |
 | 1 | Convo Email — A1 Asphalt | `/talk.html` | `email` / `web` |
 | 2 | WorkSite I 360 (SiteEye) | `/demo.html?src=siteeye` | `siteeye` |
 | 3 | Pre-De-Icer | `/demo.html?src=predeicer` | `predeicer` |

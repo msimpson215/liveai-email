@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="cache-control" content="no-store"/>
+<title>Axon AI</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-family:system-ui,-apple-system,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.brand{
+  position:fixed;
+  top:clamp(1.25rem,4vh,2.5rem);
+  left:0;right:0;
+  text-align:center;
+  font-weight:800;
+  font-size:clamp(1.35rem,4vw,1.85rem);
+  letter-spacing:-0.02em;
+  color:#111;
+  z-index:2;
+}
+.orb-wrap{
+  position:relative;
+  width:min(72vw,260px);
+  height:min(72vw,260px);
+  display:grid;
+  place-items:center;
+}
+.halo{
+  position:absolute;
+  inset:-22%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(245,197,24,.55) 0%,rgba(245,197,24,.18) 40%,transparent 70%);
+  animation:halo 2.8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes halo{
+  0%,100%{transform:scale(1);opacity:.85}
+  50%{transform:scale(1.12);opacity:1}
+}
+.orb{
+  position:relative;
+  z-index:1;
+  width:78%;
+  height:78%;
+  border-radius:50%;
+  border:0;
+  cursor:pointer;
+  appearance:none;
+  background:
+    radial-gradient(circle at 32% 28%,#fff8c8 0%,#ffe566 16%,#F5C518 42%,#d4a017 72%,#8a6208 100%);
+  box-shadow:
+    0 0 0 3px rgba(255,240,160,.55),
+    0 0 60px rgba(245,197,24,.65),
+    0 0 120px rgba(245,197,24,.35),
+    inset 0 -16px 32px rgba(80,50,0,.28),
+    inset 0 12px 22px rgba(255,255,220,.5);
+  animation:pulse 2.8s ease-in-out infinite;
+}
+.orb:focus-visible{outline:3px solid #111;outline-offset:6px;}
+@keyframes pulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(255,240,160,.55),0 0 60px rgba(245,197,24,.65),0 0 120px rgba(245,197,24,.35),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.5)}
+  50%{transform:scale(1.07);box-shadow:0 0 0 5px rgba(255,250,200,.75),0 0 90px rgba(245,197,24,.9),0 0 170px rgba(245,197,24,.45),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.55)}
+}
+body.connecting .orb,body.active .orb{
+  animation:live 1.1s ease-in-out infinite alternate;
+}
+@keyframes live{
+  from{transform:scale(1.03)}
+  to{transform:scale(1.1);filter:brightness(1.08)}
+}
+body.error .orb{
+  background:radial-gradient(circle at 32% 28%,#ffd0c8 0%,#e85d04 50%,#7a1a00 100%);
+  animation:none;
+}
+.hint{
+  position:fixed;
+  bottom:clamp(1.5rem,5vh,2.75rem);
+  left:0;right:0;
+  text-align:center;
+  font-weight:700;
+  font-size:.95rem;
+  color:#333;
+  z-index:2;
+}
+body.connecting .hint::after{content:"Connecting…"}
+body.active .hint::after{content:"Listening — talk to Axon AI"}
+body.idle .hint::after{content:"Tap the orb to talk"}
+body.error .hint::after{content:"Couldn’t connect — tap to try again"}
+.hint::after{content:""}
+</style>
+</head>
+<body class="idle">
+  <div class="brand">Axon AI</div>
+  <div class="orb-wrap">
+    <div class="halo" aria-hidden="true"></div>
+    <button type="button" class="orb" id="orb" aria-label="Tap to talk to Axon AI"></button>
+  </div>
+  <div class="hint" aria-live="polite"></div>
+<script>
+let pc=null,localStream=null,starting=false,audioEl=null;
+const orb=document.getElementById('orb');
+
+function setState(s){document.body.className=s}
+
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;
+    audioEl.playsInline=true;
+  }
+  return audioEl;
+}
+
+async function stop(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setState('idle');
+}
+
+async function connect(){
+  const r=await fetch('/session?src=qb',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){
+      audio.srcObject=e.streams[0];
+      audio.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc.addTrack(localStream.getTracks()[0]);
+  const dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',()=>{
+    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',
+    body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setState('active');
+}
+
+async function toggle(){
+  if(pc||starting){await stop();return}
+  starting=true;
+  setState('connecting');
+  try{
+    await connect();
+  }catch(e){
+    console.error(e);
+    await stop();
+    setState('error');
+  }
+  starting=false;
+}
+
+orb.addEventListener('click',toggle);
+orb.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')stop()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&(pc||starting))stop()});
+</script>
+</body>
+</html>
