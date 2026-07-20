@@ -189,17 +189,6 @@ body.listening .hint::after{content:"Listening — go ahead"}
 body.error .hint::after{content:"Couldn’t connect — tap to try again"}
 body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
 
-.chips{
-  display:none;flex-wrap:wrap;gap:.4rem;justify-content:center;
-  margin-top:.85rem;max-width:420px;padding:0 .25rem;
-}
-body.qb-on .chips{display:flex}
-.chip{
-  border:1px solid #ececec;background:#fff;color:#444;border-radius:999px;
-  padding:.4rem .7rem;font:500 .72rem/1.2 system-ui,sans-serif;cursor:pointer;
-}
-.chip:hover,.chip:focus-visible{border-color:#F5C518;outline:none;background:#fffdf3}
-
 .dock{
   position:fixed;left:50%;bottom:3.35rem;transform:translateX(-50%);
   width:min(100% - 2rem,440px);z-index:7;
@@ -276,9 +265,6 @@ body.split .dock{
     width:min(100% - 2rem,440px);
   }
   body.split .orb-side{opacity:.18;pointer-events:none}
-  body.split .orb-side .orb,
-  body.split .orb-side .chip{pointer-events:auto}
-  body.split .orb-side{pointer-events:none}
   body.split .board{pointer-events:auto}
 }
 </style>
@@ -312,10 +298,6 @@ body.split .dock{
         <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
       </div>
       <div class="hint" aria-live="polite"></div>
-      <div class="chips" id="chips">
-        <button type="button" class="chip" data-q="A year ago in the month of May, give me a profit and loss statement">May last year P&amp;L</button>
-        <button type="button" class="chip" data-q="On an XY chart, look at my payroll over the past five years">Payroll · 5 years</button>
-      </div>
     </div>
   </div>
 
@@ -342,7 +324,7 @@ body.split .dock{
   <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="sheet">
       <h2 id="sheetTitle">Connect QuickBooks</h2>
-      <p>Mock for now — no Joe login needed. We’ll pretend you’re connected to A1’s books so you can ask real questions against sample numbers.</p>
+      <p>Mock for now — no Joe login needed. Connect demo books, then just talk: ask for a P&amp;L or to put a payroll chart on screen. No buttons for questions — you ask, it puts it up.</p>
       <div class="actions">
         <button type="button" class="btn ghost" id="sheetCancel">Cancel</button>
         <button type="button" class="btn yellow" id="sheetConnect">Connect demo books</button>
@@ -603,8 +585,30 @@ async function connectVoice(){
   pc.addTrack(localStream.getTracks()[0]);
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',()=>{
+    try{
+      dc.send(JSON.stringify({
+        type:'session.update',
+        session:{
+          type:'realtime',
+          audio:{
+            input:{
+              transcription:{model:'gpt-4o-mini-transcribe'}
+            }
+          }
+        }
+      }));
+    }catch(e){}
     const line="Hello Joe, how are you today? What can I do for you today?";
     try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      // When Joe finishes speaking a books ask, open the board from his words
+      if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
+        maybeOpenBoardFromSpeech(msg.transcript);
+      }
+    }catch(e){}
   });
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
@@ -625,6 +629,29 @@ async function toggleVoice(){
   starting=false;
 }
 
+function looksLikeBooksAsk(text){
+  return /payroll|p\s*&\s*l|pnl|profit|income statement|chart|graph|xy|wages|salary|may|screen|split/i.test(String(text||''));
+}
+
+let lastSpeechBoard='';
+async function maybeOpenBoardFromSpeech(transcript){
+  const t=String(transcript||'').trim();
+  if(!t||t.length<8)return;
+  if(!looksLikeBooksAsk(t))return;
+  // de-dupe near-identical repeats
+  if(t===lastSpeechBoard)return;
+  lastSpeechBoard=t;
+  try{
+    const r=await fetch('/api/brain/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:t})
+    });
+    const d=await r.json();
+    if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
+  }catch(e){}
+}
+
 async function sendText(question,opts){
   const q=String(question||'').trim();
   if(!q)return;
@@ -636,11 +663,16 @@ async function sendText(question,opts){
     try{
       dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
       dc.send(JSON.stringify({type:'response.create'}));
-      fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
-        .then(r=>r.json()).then(d=>{
-          if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
-          else showReply('Sent — listening for the answer…');
-        }).catch(()=>showReply('Sent — listening for the answer…'));
+      // Typed while voice is live — still open boards from the words
+      if(looksLikeBooksAsk(q)){
+        fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
+          .then(r=>r.json()).then(d=>{
+            if(d.intent==='pnl'||d.intent==='payroll_chart'||d.chart)showBooksResult(d);
+            else showReply('Sent — listening for the answer…');
+          }).catch(()=>showReply('Sent — listening for the answer…'));
+      }else{
+        showReply('Sent — listening for the answer…');
+      }
       qInput.value='';sendBtn.disabled=false;setMode('listening');return;
     }catch(e){}
   }
@@ -658,12 +690,6 @@ async function sendText(question,opts){
 }
 
 textForm.addEventListener('submit',e=>{e.preventDefault();sendText(qInput.value,{forceHttp:true})});
-document.querySelectorAll('.chip').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    if(!qbOn){openSheet();return}
-    sendText(btn.getAttribute('data-q'),{forceHttp:true});
-  });
-});
 qInput.addEventListener('focus',()=>{if(mode==='idle'||mode==='error')setMode('texting')});
 uploadBtn.addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',async()=>{
@@ -693,7 +719,7 @@ sheetCancel.addEventListener('click',closeSheet);
 scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
 sheetConnect.addEventListener('click',()=>{
   setQbConnected(true);closeSheet();
-  showReply('Connected to A1 Demo Books. Ask for May P&L — it opens on the left. Ask for payroll chart — split screen.',{meta:'QuickBooks mock'});
+  showReply('Connected to A1 Demo Books. Just ask out loud — like putting payroll on screen, or May last year’s P&L.',{meta:'QuickBooks mock'});
 });
 boardClose.addEventListener('click',closeBoard);
 
