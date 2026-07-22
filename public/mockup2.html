@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<!-- Mockup 2: same assistant as axon-brain.html — no PDF/image download buttons -->
+<!-- Mockup 2: Joe assistant with Download PDF / Download image to hard drive -->
 <meta name="cache-control" content="no-store"/>
 <title>Joe's Professional Assistant · Mockup 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
@@ -95,6 +96,14 @@ body.split .board{display:flex}
 .board-hd .sub{
   font-size:.72rem;color:#888;font-weight:600;margin-top:.2rem;
 }
+.board-actions{display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.board-dl{
+  border:1px solid #e6e6e6;background:#fff;border-radius:999px;
+  padding:.4rem .7rem;font:600 .72rem/1 system-ui,sans-serif;
+  color:#444;cursor:pointer;white-space:nowrap;
+}
+.board-dl:hover{border-color:#F5C518;color:#111;background:#fffdf3}
+.board-dl:disabled{opacity:.45;cursor:not-allowed}
 .board-x{
   border:0;background:#fff;border:1px solid #e6e6e6;border-radius:999px;
   width:28px;height:28px;cursor:pointer;color:#666;font-size:1rem;line-height:1;
@@ -261,7 +270,6 @@ body.split .dock{
 </head>
 <body class="idle">
   <h1 class="brand">Joe’s Professional Assistant</h1>
-
   <div class="qb-bar">
     <span class="qb-pill" id="qbPill"><span class="dot"></span><span id="qbLabel">QuickBooks · not connected</span></span>
     <button type="button" class="qb-link" id="qbBtn">Connect mock</button>
@@ -272,9 +280,13 @@ body.split .dock{
       <div class="board-hd">
         <div>
           <h2 id="boardTitle">Report</h2>
-          <div class="sub" id="boardSub">QuickBooks mock</div>
+          <div class="sub" id="boardSub">QuickBooks mock · Mockup 2</div>
         </div>
-        <button type="button" class="board-x" id="boardClose" aria-label="Close">×</button>
+        <div class="board-actions">
+          <button type="button" class="board-dl" id="dlPdf" disabled>Download PDF</button>
+          <button type="button" class="board-dl" id="dlFile" disabled>Download image</button>
+          <button type="button" class="board-x" id="boardClose" aria-label="Close">×</button>
+        </div>
       </div>
       <div class="board-body" id="boardBody">
         <div id="pnlView"></div>
@@ -315,7 +327,7 @@ body.split .dock{
         <button type="button" class="btn ghost" id="sheetCancel">Cancel</button>
         <button type="button" class="btn yellow" id="sheetConnect">Connect demo books</button>
       </div>
-      <p class="note">This is a mock — we are not logged into Intuit yet. Tomorrow, Joe’s company connects once via Intuit OAuth (Client ID, Secret, Refresh Token, Realm ID on Render). Not a single API key from his password.</p>
+      <p class="note">Mockup 2 — Download PDF / Download image saves the open report to your hard drive. Powered by Axon AI stays bottom-right. Tomorrow: real Intuit OAuth (Client ID, Secret, Refresh Token, Realm ID).</p>
     </div>
   </div>
 
@@ -338,14 +350,16 @@ const boardBody=document.getElementById('boardBody');
 const boardTitle=document.getElementById('boardTitle');
 const boardSub=document.getElementById('boardSub');
 const boardClose=document.getElementById('boardClose');
+const dlPdf=document.getElementById('dlPdf');
+const dlFile=document.getElementById('dlFile');
 const pnlView=document.getElementById('pnlView');
 const chartView=document.getElementById('chartView');
 const canvas=document.getElementById('boardChart');
 const ctx=canvas.getContext('2d');
 
-const QB_KEY='joeAssistant.qbMock';
+const QB_KEY='joeAssistant.mockup1.qbMock';
 let pc=null,localStream=null,dc=null,starting=false,audioEl=null;
-let mode='idle',lastChart=null,qbOn=false,splitOn=false;
+let mode='idle',lastChart=null,lastReport=null,boardMode=null,qbOn=false,splitOn=false;
 
 function syncBodyClass(){
   document.body.className=[mode,qbOn?'qb-on':'',splitOn?'split':''].filter(Boolean).join(' ');
@@ -369,23 +383,36 @@ function money(n){
 function closeBoard(){
   splitOn=false;
   lastChart=null;
+  lastReport=null;
+  boardMode=null;
   pnlView.classList.remove('show');
   chartView.classList.remove('show');
   boardBody.classList.remove('chart-mode');
+  setDownloadEnabled(false);
   syncBodyClass();
 }
 
 function openBoard(){
   splitOn=true;
+  setDownloadEnabled(true);
   syncBodyClass();
+}
+
+function setDownloadEnabled(on){
+  dlPdf.disabled=!on;
+  dlFile.disabled=!on||boardMode!=='chart';
 }
 
 function showBooksResult(d){
   if(d.intent==='pnl'&&d.report){
     lastChart=null;
+    lastReport=d.report;
+    boardMode='pnl';
     renderPnL(d.report);
   }else if(d.intent==='payroll_chart'&&d.chart){
+    lastReport=null;
     lastChart=d.chart;
+    boardMode='chart';
     drawChart(d.chart);
   }
 }
@@ -439,7 +466,7 @@ function renderPnL(report){
   chartView.classList.remove('show');
   boardBody.classList.remove('chart-mode');
   boardTitle.textContent='Profit & Loss';
-  boardSub.textContent='QuickBooks mock'+(period.label?' · '+period.label:'');
+  boardSub.textContent='QuickBooks mock · Mockup 2'+(period.label?' · '+period.label:'');
   openBoard();
 }
 
@@ -475,7 +502,7 @@ function drawChart(chart){
   chartView.classList.add('show');
   boardBody.classList.add('chart-mode');
   boardTitle.textContent=chart.title||'Chart';
-  boardSub.textContent='QuickBooks mock · XY';
+  boardSub.textContent='QuickBooks mock · XY · Mockup 1';
   openBoard();
   requestAnimationFrame(()=>{
     const {w,h}=fitCanvas();
@@ -683,7 +710,111 @@ scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
 sheetConnect.addEventListener('click',()=>{
   setQbConnected(true);closeSheet();
 });
+function safeFilename(s){
+  return String(s||'report').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(0,60);
+}
+
+function downloadBlob(filename, blob){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+
+function downloadPdf(){
+  if(!splitOn||(!lastReport&&!lastChart))return;
+  const {jsPDF}=window.jspdf||{};
+  if(!jsPDF){
+    // Fallback: open print dialog so they can Save as PDF
+    window.print();
+    return;
+  }
+  const doc=new jsPDF({unit:'pt',format:'letter'});
+  const margin=48;
+  let y=56;
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(16);
+  doc.text(boardTitle.textContent||'Report',margin,y);
+  y+=22;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text((boardSub.textContent||'')+'  ·  Powered by Axon AI',margin,y);
+  doc.setTextColor(0);
+  y+=28;
+
+  if(boardMode==='pnl'&&lastReport){
+    const r=lastReport;
+    doc.setFontSize(11);
+    doc.text('Period: '+(r.period&&r.period.label||''),margin,y);y+=20;
+    doc.setFont('helvetica','bold');
+    doc.text('Income',margin,y);y+=16;
+    doc.setFont('helvetica','normal');
+    (r.income||[]).forEach(row=>{
+      doc.text(String(row.name),margin,y);
+      doc.text(money(row.amount),550,y,{align:'right'});
+      y+=14;
+      if(y>720){doc.addPage();y=56}
+    });
+    doc.setFont('helvetica','bold');
+    doc.text('Total income',margin,y);
+    doc.text(money(r.totals&&r.totals.income),550,y,{align:'right'});
+    y+=22;
+    doc.text('Expenses',margin,y);y+=16;
+    doc.setFont('helvetica','normal');
+    (r.expenses||[]).forEach(row=>{
+      doc.text(String(row.name),margin,y);
+      doc.text(money(row.amount),550,y,{align:'right'});
+      y+=14;
+      if(y>720){doc.addPage();y=56}
+    });
+    doc.setFont('helvetica','bold');
+    doc.text('Total expenses',margin,y);
+    doc.text(money(r.totals&&r.totals.expenses),550,y,{align:'right'});
+    y+=20;
+    doc.setFontSize(13);
+    doc.text('Net income',margin,y);
+    doc.text(money(r.totals&&r.totals.netIncome),550,y,{align:'right'});
+    doc.save(safeFilename('PnL_'+(r.period&&r.period.label||'report'))+'.pdf');
+    return;
+  }
+
+  if(boardMode==='chart'&&lastChart){
+    doc.setFontSize(11);
+    doc.text(lastChart.title||'Chart',margin,y);
+    y+=16;
+    try{
+      const img=canvas.toDataURL('image/png',1);
+      const pageW=612-margin*2;
+      const pageH=320;
+      doc.addImage(img,'PNG',margin,y,pageW,pageH);
+    }catch(e){}
+    y+=340;
+    const pts=(lastChart.series&&lastChart.series[0]&&lastChart.series[0].points)||[];
+    doc.setFontSize(10);
+    pts.forEach(p=>{
+      doc.text(String(p.x)+': '+money(p.y),margin,y);
+      y+=14;
+    });
+    doc.save(safeFilename(lastChart.title||'chart')+'.pdf');
+  }
+}
+
+function downloadImage(){
+  if(boardMode!=='chart'||!lastChart)return;
+  try{
+    canvas.toBlob(function(blob){
+      if(!blob)return;
+      downloadBlob(safeFilename(lastChart.title||'chart')+'.png',blob);
+    },'image/png');
+  }catch(e){}
+}
+
 boardClose.addEventListener('click',closeBoard);
+dlPdf.addEventListener('click',downloadPdf);
+dlFile.addEventListener('click',downloadImage);
 
 orb.addEventListener('click',toggleVoice);
 orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice()}});
