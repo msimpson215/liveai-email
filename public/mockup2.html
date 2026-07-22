@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- Mockup 2: same assistant as axon-brain.html — no PDF/image download buttons -->
+<meta name="cache-control" content="no-store"/>
+<title>Joe's Professional Assistant · Mockup 2</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;
+  height:100%;
+  background:#fff;
+  color:#111;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
+body{
+  min-height:100%;
+  overflow:hidden;
+}
+.brand{
+  position:fixed;
+  top:clamp(1rem,3vh,1.6rem);
+  left:0;right:0;
+  text-align:center;
+  font-weight:750;
+  font-size:clamp(1.1rem,3.5vw,1.5rem);
+  letter-spacing:-0.025em;
+  color:#111;
+  z-index:6;
+}
+.qb-bar{
+  position:fixed;
+  top:clamp(2.7rem,6.5vh,3.4rem);
+  left:0;right:0;
+  z-index:6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.55rem;
+  padding:0 1rem;
+}
+.qb-pill{
+  display:inline-flex;align-items:center;gap:.4rem;
+  border:1px solid #ececec;background:#fafafa;border-radius:999px;
+  padding:.28rem .7rem;font-size:.7rem;font-weight:600;color:#666;
+}
+.qb-pill .dot{width:7px;height:7px;border-radius:50%;background:#ccc}
+.qb-pill.on .dot{background:#2f9e44;box-shadow:0 0 0 3px rgba(47,158,68,.15)}
+.qb-pill.on{color:#333;border-color:#e2eee4;background:#f6fbf7}
+.qb-link{
+  border:0;background:none;color:#888;font:600 .7rem/1 system-ui,sans-serif;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px;
+}
+.qb-link:hover{color:#111}
+
+.stage{
+  position:fixed;
+  inset:0;
+  display:grid;
+  grid-template-columns:1fr;
+  transition:grid-template-columns .45s cubic-bezier(.2,.8,.2,1);
+}
+body.split .stage{
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+}
+
+/* Left board — slides in for P&L / chart */
+.board{
+  position:relative;
+  display:none;
+  flex-direction:column;
+  min-width:0;
+  height:100%;
+  padding:5.5rem 1.1rem 6.8rem 1.25rem;
+  background:linear-gradient(180deg,#fbfbfb 0%,#f4f4f4 100%);
+  border-right:1px solid #ececec;
+  overflow:hidden;
+  animation:boardIn .45s cubic-bezier(.2,.8,.2,1) both;
+}
+body.split .board{display:flex}
+@keyframes boardIn{
+  from{opacity:0;transform:translateX(-18px)}
+  to{opacity:1;transform:none}
+}
+.board-hd{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;
+  margin-bottom:.85rem;flex-shrink:0;
+}
+.board-hd h2{
+  font-size:1rem;font-weight:750;letter-spacing:-0.02em;color:#111;
+}
+.board-hd .sub{
+  font-size:.72rem;color:#888;font-weight:600;margin-top:.2rem;
+}
+.board-x{
+  border:0;background:#fff;border:1px solid #e6e6e6;border-radius:999px;
+  width:28px;height:28px;cursor:pointer;color:#666;font-size:1rem;line-height:1;
+  flex-shrink:0;
+}
+.board-x:hover{color:#111;border-color:#ccc}
+.board-body{
+  flex:1;min-height:0;overflow:auto;
+  background:#fff;border:1px solid #ececec;border-radius:16px;
+  padding:1rem 1.05rem;
+  -webkit-user-select:text;user-select:text;
+}
+.board-body.chart-mode{
+  display:flex;flex-direction:column;padding:.85rem .9rem 1rem;
+}
+#pnlView{display:none}
+#pnlView.show{display:block}
+#chartView{display:none;flex:1;min-height:220px;flex-direction:column}
+#chartView.show{display:flex}
+#boardChart{width:100%;flex:1;min-height:200px;display:block}
+
+.pnl-period{font-size:.78rem;color:#888;margin-bottom:.75rem}
+.pnl-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.pnl-table th{
+  text-align:left;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;
+  color:#999;font-weight:700;padding:.35rem 0;border-bottom:1px solid #eee;
+}
+.pnl-table td{padding:.38rem 0;border-bottom:1px solid #f3f3f3;vertical-align:top}
+.pnl-table td.amt{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pnl-table tr.section td{padding-top:.85rem;font-weight:700;color:#111;border-bottom:0}
+.pnl-table tr.total td{
+  font-weight:750;border-bottom:0;border-top:1px solid #e8e8e8;padding-top:.55rem;
+}
+.pnl-table tr.net td{color:#111;font-size:.95rem;padding-top:.7rem}
+.pnl-table tr.net.pos td.amt{color:#1f7a3a}
+.pnl-table tr.net.neg td.amt{color:#c0392b}
+
+/* Right / center — orb side */
+.orb-side{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:0;height:100%;
+  padding:4.5rem 1rem 6.5rem;
+}
+.orb-wrap{
+  position:relative;
+  width:min(64vw,220px);height:min(64vw,220px);
+  display:grid;place-items:center;flex-shrink:0;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1);
+}
+body.split .orb-wrap{width:min(48vw,180px);height:min(48vw,180px)}
+.halo{
+  position:absolute;inset:-22%;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,197,24,.5) 0%,rgba(245,197,24,.14) 42%,transparent 70%);
+  animation:halo 2.8s ease-in-out infinite;pointer-events:none;
+}
+@keyframes halo{
+  0%,100%{transform:scale(1);opacity:.85}
+  50%{transform:scale(1.1);opacity:1}
+}
+.orb{
+  position:relative;z-index:1;width:78%;height:78%;border-radius:50%;border:0;
+  cursor:pointer;appearance:none;
+  background:radial-gradient(circle at 32% 28%,#fff8c8 0%,#ffe566 16%,#F5C518 42%,#d4a017 72%,#8a6208 100%);
+  box-shadow:
+    0 0 0 3px rgba(255,240,160,.55),
+    0 0 60px rgba(245,197,24,.65),
+    0 0 120px rgba(245,197,24,.32),
+    inset 0 -16px 32px rgba(80,50,0,.28),
+    inset 0 12px 22px rgba(255,255,220,.5);
+  animation:pulse 2.8s ease-in-out infinite;
+}
+.orb:focus-visible{outline:3px solid #111;outline-offset:6px}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06);box-shadow:0 0 0 5px rgba(255,250,200,.7),0 0 90px rgba(245,197,24,.88),0 0 160px rgba(245,197,24,.4),inset 0 -16px 32px rgba(80,50,0,.28),inset 0 12px 22px rgba(255,255,220,.55)}
+}
+body.connecting .orb,body.listening .orb{animation:live 1.1s ease-in-out infinite alternate}
+@keyframes live{
+  from{transform:scale(1.02)}
+  to{transform:scale(1.09);filter:brightness(1.06)}
+}
+body.error .orb{
+  background:radial-gradient(circle at 32% 28%,#ffd0c8 0%,#e85d04 50%,#7a1a00 100%);
+  animation:none;
+}
+.hint{
+  margin-top:1rem;font-weight:600;font-size:.9rem;color:#555;text-align:center;min-height:1.25rem;
+}
+body.idle .hint::after{content:"Tap the orb to talk"}
+body.connecting .hint::after{content:"Connecting…"}
+body.listening .hint::after{content:"Listening — go ahead"}
+body.error .hint::after{content:"Couldn’t connect — tap to try again"}
+body.texting .hint::after{content:"Type below — quieter than yelling over the room"}
+
+.dock{
+  position:fixed;left:50%;bottom:3.35rem;transform:translateX(-50%);
+  width:min(100% - 2rem,440px);z-index:7;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+body.split .dock{
+  left:auto;right:clamp(.75rem,3vw,1.5rem);transform:none;
+  width:min(calc(50% - 2rem),400px);
+}
+.row{display:flex;gap:.45rem;align-items:center}
+.row input[type="text"]{
+  flex:1;min-width:0;border:1px solid #e6e6e6;background:#fafafa;border-radius:999px;
+  padding:.72rem 1rem;font:500 .9rem/1.3 system-ui,sans-serif;color:#111;
+}
+.row input[type="text"]:focus{
+  outline:none;border-color:#F5C518;background:#fff;box-shadow:0 0 0 3px rgba(245,197,24,.2);
+}
+.row input[type="text"]::placeholder{color:#999}
+.btn{
+  border:0;border-radius:999px;background:#111;color:#fff;
+  font:700 .82rem/1 system-ui,sans-serif;padding:.72rem 1rem;cursor:pointer;white-space:nowrap;
+}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{
+  background:transparent;color:#666;border:1px solid #e4e4e4;
+  padding:.55rem .85rem;font-weight:600;font-size:.75rem;
+}
+.btn.ghost:hover{border-color:#ccc;color:#111}
+.btn.yellow{background:#F5C518;color:#111}
+.teach{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.teach-meta{font-size:.72rem;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.powered{
+  position:fixed;right:clamp(.85rem,3vw,1.35rem);bottom:clamp(.7rem,2.5vw,1.1rem);
+  z-index:8;font-size:.68rem;font-weight:600;letter-spacing:.02em;color:#999;
+}
+.powered b{color:#777;font-weight:700}
+
+.scrim{
+  position:fixed;inset:0;z-index:30;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:1.25rem;
+}
+.scrim.open{display:flex}
+.sheet{
+  width:min(100%,360px);background:#fff;border:1px solid #ececec;border-radius:18px;
+  padding:1.25rem 1.2rem 1.15rem;box-shadow:0 18px 50px rgba(0,0,0,.08);
+}
+.sheet h2{font-size:1.05rem;font-weight:750;letter-spacing:-0.02em;margin-bottom:.35rem}
+.sheet p{font-size:.86rem;line-height:1.45;color:#555;margin-bottom:1rem}
+.sheet .actions{display:flex;gap:.45rem;justify-content:flex-end;flex-wrap:wrap}
+.sheet .note{margin-top:.85rem;font-size:.72rem;color:#999;line-height:1.4}
+#file{display:none}
+
+@media(max-width:820px){
+  body.split .stage{grid-template-columns:1fr}
+  .board{
+    position:absolute;inset:0;z-index:5;
+    padding:5.2rem 1rem 7.2rem;border-right:0;
+    background:rgba(255,255,255,.97);
+  }
+  body.split .dock{
+    left:50%;right:auto;transform:translateX(-50%);
+    width:min(100% - 2rem,440px);
+  }
+  body.split .orb-side{opacity:.18;pointer-events:none}
+  body.split .board{pointer-events:auto}
+}
+</style>
+</head>
+<body class="idle">
+  <h1 class="brand">Joe’s Professional Assistant</h1>
+
+  <div class="qb-bar">
+    <span class="qb-pill" id="qbPill"><span class="dot"></span><span id="qbLabel">QuickBooks · not connected</span></span>
+    <button type="button" class="qb-link" id="qbBtn">Connect mock</button>
+  </div>
+
+  <div class="stage">
+    <aside class="board" id="board" aria-live="polite">
+      <div class="board-hd">
+        <div>
+          <h2 id="boardTitle">Report</h2>
+          <div class="sub" id="boardSub">QuickBooks mock</div>
+        </div>
+        <button type="button" class="board-x" id="boardClose" aria-label="Close">×</button>
+      </div>
+      <div class="board-body" id="boardBody">
+        <div id="pnlView"></div>
+        <div id="chartView"><canvas id="boardChart"></canvas></div>
+      </div>
+    </aside>
+
+    <div class="orb-side">
+      <div class="orb-wrap">
+        <div class="halo" aria-hidden="true"></div>
+        <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
+      </div>
+      <div class="hint" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="dock">
+    <form class="row" id="textForm">
+      <input id="q" type="text" autocomplete="off" placeholder="Loud room? Type here…" enterkeyhint="send" aria-label="Type your question"/>
+      <button class="btn" type="submit" id="sendBtn">Send</button>
+    </form>
+    <div class="teach">
+      <span class="teach-meta" id="teachMeta">No teaching docs yet</span>
+      <div class="row" style="gap:.4rem;flex:0 0 auto">
+        <button type="button" class="btn ghost" id="uploadBtn">Upload docs</button>
+        <input id="file" type="file" accept=".txt,.md,.pdf,.docx,text/plain,application/pdf"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="powered">Powered by <b>Axon AI</b></div>
+
+  <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet">
+      <h2 id="sheetTitle">Connect QuickBooks</h2>
+      <p>Mock for now — no Joe login needed. Connect demo books, then just talk: ask for a P&amp;L or to put a payroll chart on screen. No buttons for questions — you ask, it puts it up.</p>
+      <div class="actions">
+        <button type="button" class="btn ghost" id="sheetCancel">Cancel</button>
+        <button type="button" class="btn yellow" id="sheetConnect">Connect demo books</button>
+      </div>
+      <p class="note">This is a mock — we are not logged into Intuit yet. Tomorrow, Joe’s company connects once via Intuit OAuth (Client ID, Secret, Refresh Token, Realm ID on Render). Not a single API key from his password.</p>
+    </div>
+  </div>
+
+<script>
+const orb=document.getElementById('orb');
+const qInput=document.getElementById('q');
+const textForm=document.getElementById('textForm');
+const sendBtn=document.getElementById('sendBtn');
+const teachMeta=document.getElementById('teachMeta');
+const uploadBtn=document.getElementById('uploadBtn');
+const fileInput=document.getElementById('file');
+const qbPill=document.getElementById('qbPill');
+const qbLabel=document.getElementById('qbLabel');
+const qbBtn=document.getElementById('qbBtn');
+const scrim=document.getElementById('scrim');
+const sheetCancel=document.getElementById('sheetCancel');
+const sheetConnect=document.getElementById('sheetConnect');
+const board=document.getElementById('board');
+const boardBody=document.getElementById('boardBody');
+const boardTitle=document.getElementById('boardTitle');
+const boardSub=document.getElementById('boardSub');
+const boardClose=document.getElementById('boardClose');
+const pnlView=document.getElementById('pnlView');
+const chartView=document.getElementById('chartView');
+const canvas=document.getElementById('boardChart');
+const ctx=canvas.getContext('2d');
+
+const QB_KEY='joeAssistant.qbMock';
+let pc=null,localStream=null,dc=null,starting=false,audioEl=null;
+let mode='idle',lastChart=null,qbOn=false,splitOn=false;
+
+function syncBodyClass(){
+  document.body.className=[mode,qbOn?'qb-on':'',splitOn?'split':''].filter(Boolean).join(' ');
+}
+function setMode(s){mode=s;syncBodyClass()}
+
+function setQbConnected(on){
+  qbOn=!!on;
+  try{localStorage.setItem(QB_KEY,on?'1':'0')}catch(e){}
+  qbPill.classList.toggle('on',qbOn);
+  qbLabel.textContent=qbOn?'QuickBooks · demo books':'QuickBooks · not connected';
+  qbBtn.textContent=qbOn?'Disconnect':'Connect mock';
+  syncBodyClass();
+}
+try{setQbConnected(localStorage.getItem(QB_KEY)==='1')}catch(e){setQbConnected(false)}
+
+function money(n){
+  return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0);
+}
+
+function closeBoard(){
+  splitOn=false;
+  lastChart=null;
+  pnlView.classList.remove('show');
+  chartView.classList.remove('show');
+  boardBody.classList.remove('chart-mode');
+  syncBodyClass();
+}
+
+function openBoard(){
+  splitOn=true;
+  syncBodyClass();
+}
+
+function showBooksResult(d){
+  if(d.intent==='pnl'&&d.report){
+    lastChart=null;
+    renderPnL(d.report);
+  }else if(d.intent==='payroll_chart'&&d.chart){
+    lastChart=d.chart;
+    drawChart(d.chart);
+  }
+}
+
+function looksLikeBooksAsk(text){
+  const t=String(text||'').toLowerCase();
+  return /payroll|wages|salar|p\s*&\s*l|\bpnl\b|profit\s*and\s*loss|income statement|xy chart|chart.*payroll|payroll.*chart|profit and loss.*may|may.*profit|may of last year|may last year/i.test(t);
+}
+
+let lastSpeechKey='';
+let speechTimer=null;
+async function maybeOpenBoardFromSpeech(transcript){
+  const t=String(transcript||'').trim();
+  if(!t||t.length<10||!looksLikeBooksAsk(t))return;
+  clearTimeout(speechTimer);
+  speechTimer=setTimeout(async()=>{
+    const key=t.toLowerCase().replace(/\s+/g,' ').slice(0,120);
+    if(key===lastSpeechKey)return;
+    lastSpeechKey=key;
+    try{
+      const r=await fetch('/api/brain/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question:t})
+      });
+      const d=await r.json();
+      showBooksResult(d);
+    }catch(e){}
+  },700);
+}
+
+function renderPnL(report){
+  if(!report)return;
+  const period=report.period||{};
+  const totals=report.totals||{};
+  const income=report.income||[];
+  const expenses=report.expenses||[];
+  const net=totals.netIncome||0;
+  let html='<div class="pnl-period">'+((period.label||'')+(report.source==='demo'?' · demo books':''))+'</div>';
+  html+='<table class="pnl-table"><thead><tr><th>Account</th><th style="text-align:right">Amount</th></tr></thead><tbody>';
+  html+='<tr class="section"><td colspan="2">Income</td></tr>';
+  income.forEach(r=>{html+='<tr><td>'+esc(r.name)+'</td><td class="amt">'+money(r.amount)+'</td></tr>'});
+  html+='<tr class="total"><td>Total income</td><td class="amt">'+money(totals.income)+'</td></tr>';
+  html+='<tr class="section"><td colspan="2">Expenses</td></tr>';
+  expenses.forEach(r=>{html+='<tr><td>'+esc(r.name)+'</td><td class="amt">'+money(r.amount)+'</td></tr>'});
+  html+='<tr class="total"><td>Total expenses</td><td class="amt">'+money(totals.expenses)+'</td></tr>';
+  html+='<tr class="net '+(net>=0?'pos':'neg')+'"><td>Net income</td><td class="amt">'+money(net)+'</td></tr>';
+  html+='</tbody></table>';
+  pnlView.innerHTML=html;
+  pnlView.classList.add('show');
+  chartView.classList.remove('show');
+  boardBody.classList.remove('chart-mode');
+  boardTitle.textContent='Profit & Loss';
+  boardSub.textContent='QuickBooks mock'+(period.label?' · '+period.label:'');
+  openBoard();
+}
+
+function esc(s){
+  return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fitCanvas(){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const w=chartView.clientWidth||320;
+  const h=Math.max(chartView.clientHeight||240,220);
+  canvas.width=Math.floor(w*dpr);
+  canvas.height=Math.floor(h*dpr);
+  canvas.style.width=w+'px';
+  canvas.style.height=h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {w,h};
+}
+
+function roundRect(c,x,y,w,h,r){
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r);
+  c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);
+  c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+
+function drawChart(chart){
+  if(!chart)return;
+  pnlView.classList.remove('show');
+  chartView.classList.add('show');
+  boardBody.classList.add('chart-mode');
+  boardTitle.textContent=chart.title||'Chart';
+  boardSub.textContent='QuickBooks mock · XY';
+  openBoard();
+  requestAnimationFrame(()=>{
+    const {w,h}=fitCanvas();
+    ctx.clearRect(0,0,w,h);
+    const pad={t:18,r:14,b:36,l:54};
+    const iw=w-pad.l-pad.r;
+    const ih=h-pad.t-pad.b;
+
+    if(chart.type==='line'||(chart.series&&chart.series[0]&&chart.type!=='waterfall')){
+      const pts=(chart.series[0].points)||[];
+      if(!pts.length)return;
+      const ys=pts.map(p=>Number(p.y)||0);
+      let minY=Math.min(...ys)*0.9;
+      let maxY=Math.max(...ys)*1.08;
+      if(minY===maxY)maxY=minY+1;
+      ctx.strokeStyle='#eee';
+      for(let i=0;i<=4;i++){
+        const y=pad.t+ih*(i/4);
+        ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+iw,y);ctx.stroke();
+        const val=maxY-(maxY-minY)*(i/4);
+        ctx.fillStyle='#999';ctx.font='11px system-ui,sans-serif';ctx.textAlign='right';
+        ctx.fillText(money(val),pad.l-8,y+4);
+      }
+      // area
+      ctx.beginPath();
+      pts.forEach((p,i)=>{
+        const x=pad.l+(pts.length===1?iw/2:(i/(pts.length-1))*iw);
+        const y=pad.t+ih*((maxY-p.y)/(maxY-minY));
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });
+      ctx.strokeStyle='#D4A017';ctx.lineWidth=2.6;ctx.stroke();
+      const last=pts[pts.length-1];
+      const xLast=pad.l+iw;
+      const yLast=pad.t+ih*((maxY-last.y)/(maxY-minY));
+      ctx.lineTo(xLast,pad.t+ih);ctx.lineTo(pad.l,pad.t+ih);ctx.closePath();
+      const g=ctx.createLinearGradient(0,pad.t,0,pad.t+ih);
+      g.addColorStop(0,'rgba(245,197,24,.28)');g.addColorStop(1,'rgba(245,197,24,0)');
+      ctx.fillStyle=g;ctx.fill();
+      pts.forEach((p,i)=>{
+        const x=pad.l+(pts.length===1?iw/2:(i/(pts.length-1))*iw);
+        const y=pad.t+ih*((maxY-p.y)/(maxY-minY));
+        ctx.beginPath();ctx.arc(x,y,4.5,0,Math.PI*2);
+        ctx.fillStyle='#F5C518';ctx.fill();
+        ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle='#666';ctx.font='11px system-ui,sans-serif';ctx.textAlign='center';
+        ctx.fillText(String(p.x),x,h-12);
+      });
+      return;
+    }
+
+    const points=chart.points||[];
+    if(!points.length)return;
+    const ys=points.map(p=>Math.abs(Number(p.y)||0));
+    const maxY=Math.max(...ys,1);
+    const gap=14;
+    const bw=(iw-(points.length-1)*gap)/points.length;
+    points.forEach((p,i)=>{
+      const val=Number(p.y)||0;
+      const bh=(Math.abs(val)/maxY)*ih*0.88;
+      const x=pad.l+i*(bw+gap);
+      const y=pad.t+ih-bh;
+      ctx.fillStyle=p.color||'#F5C518';
+      roundRect(ctx,x,y,bw,bh,8);ctx.fill();
+      ctx.fillStyle='#666';ctx.font='11px system-ui,sans-serif';ctx.textAlign='center';
+      ctx.fillText(String(p.x),x+bw/2,h-12);
+      ctx.fillStyle='#333';ctx.font='600 11px system-ui,sans-serif';
+      ctx.fillText(money(val),x+bw/2,y-8);
+    });
+  });
+}
+
+function ensureAudio(){
+  if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true}
+  return audioEl;
+}
+
+async function refreshDocs(){
+  try{
+    const r=await fetch('/api/brain/docs',{cache:'no-store'});
+    const d=await r.json();
+    const n=(d.docs||[]).length;
+    teachMeta.textContent=n?(n===1?'1 teaching doc loaded':n+' teaching docs loaded'):'No teaching docs yet';
+  }catch(e){teachMeta.textContent=''}
+}
+refreshDocs();
+
+async function stopVoice(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;starting=false;
+  if(mode!=='texting')setMode('idle');
+}
+
+async function connectVoice(){
+  const r=await fetch('/session?src=qb',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc.addTrack(localStream.getTracks()[0]);
+  dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',()=>{
+    try{
+      dc.send(JSON.stringify({
+        type:'session.update',
+        session:{
+          type:'realtime',
+          audio:{
+            input:{
+              transcription:{model:'gpt-4o-mini-transcribe'}
+            }
+          }
+        }
+      }));
+    }catch(e){}
+    const line="Hello Joe, how are you today? What can I do for you today?";
+    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      // When Joe finishes speaking a books ask, open the board from his words
+      if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
+        maybeOpenBoardFromSpeech(msg.transcript);
+      }
+    }catch(e){}
+  });
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setMode('listening');
+}
+
+async function toggleVoice(){
+  if(pc||starting){await stopVoice();return}
+  starting=true;setMode('connecting');
+  try{await connectVoice()}
+  catch(e){console.error(e);await stopVoice();setMode('error')}
+  starting=false;
+}
+
+async function sendText(question,opts){
+  const q=String(question||'').trim();
+  if(!q)return;
+  sendBtn.disabled=true;
+  setMode('texting');
+
+  if(!(opts&&opts.forceHttp)&&dc&&dc.readyState==='open'){
+    try{
+      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
+      dc.send(JSON.stringify({type:'response.create'}));
+      if(looksLikeBooksAsk(q)){
+        fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
+          .then(r=>r.json()).then(d=>showBooksResult(d)).catch(()=>{});
+      }
+      qInput.value='';sendBtn.disabled=false;setMode('listening');return;
+    }catch(e){}
+  }
+
+  try{
+    const r=await fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const d=await r.json();
+    showBooksResult(d);
+    qInput.value='';
+  }catch(e){}
+  sendBtn.disabled=false;
+}
+
+textForm.addEventListener('submit',e=>{e.preventDefault();sendText(qInput.value,{forceHttp:true})});
+qInput.addEventListener('focus',()=>{if(mode==='idle'||mode==='error')setMode('texting')});
+uploadBtn.addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',async()=>{
+  const file=fileInput.files&&fileInput.files[0];
+  fileInput.value='';
+  if(!file)return;
+  uploadBtn.disabled=true;
+  teachMeta.textContent='Teaching from “'+file.name+'”…';
+  try{
+    const fd=new FormData();fd.append('file',file);
+    const r=await fetch('/api/brain/teach',{method:'POST',body:fd});
+    const d=await r.json();
+    if(!r.ok||!d.ok)throw new Error(d.error||'Upload failed');
+    await refreshDocs();
+  }catch(e){await refreshDocs()}
+  uploadBtn.disabled=false;
+});
+
+function openSheet(){scrim.classList.add('open')}
+function closeSheet(){scrim.classList.remove('open')}
+qbBtn.addEventListener('click',()=>{
+  if(qbOn){setQbConnected(false);closeBoard();return}
+  openSheet();
+});
+sheetCancel.addEventListener('click',closeSheet);
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
+sheetConnect.addEventListener('click',()=>{
+  setQbConnected(true);closeSheet();
+});
+boardClose.addEventListener('click',closeBoard);
+
+orb.addEventListener('click',toggleVoice);
+orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice()}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(scrim.classList.contains('open'))closeSheet();
+    else if(splitOn)closeBoard();
+    else stopVoice();
+  }
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&(pc||starting))stopVoice()});
+window.addEventListener('resize',()=>{if(lastChart&&splitOn)drawChart(lastChart)});
+</script>
+</body>
+</html>
