@@ -561,7 +561,30 @@ async function refreshDocs(){
 }
 refreshDocs();
 
+
+/* ---- Automatic long-term memory (silent) ---- */
+const sessionTurns=[];
+let memoryFlushing=false;
+function noteTurn(role,text){
+  const t=String(text||'').trim();
+  if(!t)return;
+  sessionTurns.push({role:role==='assistant'?'assistant':'user',text:t.slice(0,2000)});
+  if(sessionTurns.length>80)sessionTurns.splice(0,sessionTurns.length-80);
+}
+function flushMemory(source){
+  if(memoryFlushing||sessionTurns.length<1)return;
+  const turns=sessionTurns.splice(0,sessionTurns.length);
+  memoryFlushing=true;
+  fetch('/api/brain/memory/remember',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({turns,source:source||'voice'}),
+    keepalive:true
+  }).catch(()=>{}).finally(()=>{memoryFlushing=false});
+}
+
 async function stopVoice(){
+  flushMemory('voice');
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   dc=null;starting=false;
@@ -602,7 +625,11 @@ async function connectVoice(){
       const msg=JSON.parse(ev.data);
       // When Joe finishes speaking a books ask, open the board from his words
       if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
+        noteTurn('user',msg.transcript);
         maybeOpenBoardFromSpeech(msg.transcript);
+      }
+      if((msg.type==='response.audio_transcript.done'||msg.type==='response.output_audio_transcript.done')&&msg.transcript){
+        noteTurn('assistant',msg.transcript);
       }
     }catch(e){}
   });
@@ -633,7 +660,8 @@ async function sendText(question,opts){
 
   if(!(opts&&opts.forceHttp)&&dc&&dc.readyState==='open'){
     try{
-      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
+      noteTurn('user',q);
+dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
       dc.send(JSON.stringify({type:'response.create'}));
       if(looksLikeBooksAsk(q)){
         fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
@@ -693,8 +721,9 @@ document.addEventListener('keydown',e=>{
     else stopVoice();
   }
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&(pc||starting))stopVoice()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(pc||starting)stopVoice();else flushMemory('pagehide')}});
 window.addEventListener('resize',()=>{if(lastChart&&splitOn)drawChart(lastChart)});
+window.addEventListener('pagehide',()=>flushMemory('pagehide'));
 </script>
 </body>
 </html>
