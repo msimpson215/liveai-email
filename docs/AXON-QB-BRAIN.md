@@ -60,8 +60,22 @@ curl -s -X POST https://liveai-email.onrender.com/api/brain/ask \
   -d '{"question":"Chart my payroll over the past five years"}' | jq
 ```
 
+## Long-term memory (automatic)
+
+After Joe talks (voice or text), the server **auto-saves a short summary**. The next session **auto-loads** those summaries into the assistant — no buttons, no “reload.” Feels continuous over months.
+
+| Piece | Role |
+|-------|------|
+| `server/joe-memory.js` | Stores summaries under `data/joe-memory/` |
+| `POST /api/brain/memory/remember` | Accepts conversation turns → summarizes → stores |
+| `GET /api/brain/memory` | Lists saved summaries |
+| Voice/text clients | Silently flush turns when a talk ends |
+
+On Render’s ephemeral disk, memory lasts for the life of the instance unless you attach a persistent disk or move storage to a DB later — same pattern as teaching docs.
+
 ## Files
 
 - `public/axon-brain.html` — orb UI + charts
 - `server/quickbooks.js` — demo books + live QBO reports
+- `server/joe-memory.js` — automatic session summaries
 - `server/server.js` — `/api/brain/*` + voice playbook `qb`

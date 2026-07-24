@@ -1,4 +1,6 @@
-node_modules/
-npm-debug.log*
 data/joe-knowledge/*
 !data/joe-knowledge/.gitkeep
+data/joe-memory/*
+!data/joe-memory/.gitkeep
+node_modules/
+npm-debug.log*

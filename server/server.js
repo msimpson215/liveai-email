@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url'
 import multer from 'multer'
 import * as quickbooks from './quickbooks.js'
 import * as joeKnowledge from './joe-knowledge.js'
+import * as joeMemory from './joe-memory.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -316,9 +317,12 @@ ${context.qbSnapshot || ''}
 
 ${context.knowledge || ''}
 
+${context.memory || ''}
+
 You help Joe with the business by voice: books questions (profit and loss, payroll charts), and anything in the teaching docs he uploaded.
 When Joe asks you to put a P&L or chart on screen / split screen / to the left, acknowledge briefly — e.g. "Putting that up now" — and answer with the headline numbers. The app will open the visual for him. Do NOT tell him to press a button.
-Prefer TEACHING DOCS and the QuickBooks SNAPSHOT over guessing. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
+Prefer TEACHING DOCS, LONG-TERM MEMORY, and the QuickBooks SNAPSHOT over guessing. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
+Use LONG-TERM MEMORY fluidly — like you have worked with Joe for months. Do not announce "according to my memory" unless he asks what you remember.
 Keep answers short: 1–4 sentences unless asked for detail.
 If asked who you are: "I'm Joe's Professional Assistant, powered by Axon AI."`
   }
@@ -349,6 +353,7 @@ async function buildInstructionsAsync(source, context = {}) {
   if (source === 'qb') {
     let qbSnapshot = ''
     let knowledge = ''
+    let memory = ''
     try {
       qbSnapshot = await quickbooks.voiceContextSnippet()
     } catch {
@@ -359,9 +364,74 @@ async function buildInstructionsAsync(source, context = {}) {
     } catch {
       knowledge = 'TEACHING DOCS: unavailable this session.'
     }
-    return buildInstructions(source, { ...context, qbSnapshot, knowledge })
+    try {
+      memory = joeMemory.memorySnippet()
+    } catch {
+      memory = 'LONG-TERM MEMORY: unavailable this session.'
+    }
+    return buildInstructions(source, { ...context, qbSnapshot, knowledge, memory })
   }
   return buildInstructions(source, context)
+}
+
+/** Turn raw conversation turns into one durable summary and store it. */
+async function rememberTurns(turns, source = 'session') {
+  const cleaned = (Array.isArray(turns) ? turns : [])
+    .map(t => ({
+      role: t?.role === 'assistant' ? 'assistant' : 'user',
+      text: String(t?.text || t?.content || '').trim().slice(0, 2000)
+    }))
+    .filter(t => t.text)
+  if (!cleaned.length) return null
+
+  // Skip pure greeting-only noise
+  const substantive = cleaned.filter(t => {
+    const s = t.text.toLowerCase()
+    if (t.role === 'assistant' && s.includes('hello joe') && s.includes('what can i do')) return false
+    return s.length > 8
+  })
+  if (!substantive.length) return null
+
+  const transcript = substantive
+    .map(t => `${t.role === 'assistant' ? 'Assistant' : 'Joe'}: ${t.text}`)
+    .join('\n')
+    .slice(0, 8000)
+
+  let summary = ''
+  if (hasApiKey()) {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+          temperature: 0.2,
+          messages: [
+            {
+              role: 'system',
+              content: `Summarize this conversation with Joe for long-term memory of Joe's Professional Assistant (Axon AI). Write 2–5 dense sentences covering: preferences, decisions, facts about the business, what he asked for, and anything to recall months later. No greeting fluff. Third person ("Joe asked…"). Max ${joeMemory.MAX_SUMMARY_CHARS} characters.`
+            },
+            { role: 'user', content: transcript }
+          ]
+        })
+      })
+      const data = await response.json()
+      if (response.ok) {
+        summary = data.choices?.[0]?.message?.content?.trim() || ''
+      }
+    } catch { /* fall through */ }
+  }
+  if (!summary) {
+    summary = substantive
+      .slice(0, 6)
+      .map(t => `${t.role === 'assistant' ? 'A' : 'J'}: ${t.text}`)
+      .join(' | ')
+      .slice(0, joeMemory.MAX_SUMMARY_CHARS)
+  }
+  return joeMemory.saveSummary(summary, { source, turns: substantive.length })
 }
 
 // Exact words the AI must speak first. Used to force the opening over the
@@ -590,13 +660,39 @@ async function extractUploadedText(file) {
 app.get('/api/brain/status', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   let docs = []
+  let memory = { count: 0, latestAt: null }
   try { docs = joeKnowledge.listDocs() } catch { docs = [] }
+  try { memory = joeMemory.status() } catch { /* ignore */ }
   res.json({
     ok: true,
     ...quickbooks.status(),
     openai: hasApiKey(),
+    memory,
     docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
   })
+})
+
+app.get('/api/brain/memory', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    res.json({ ok: true, ...joeMemory.status(), memories: joeMemory.listMemories().slice(0, 40) })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'memory list failed' })
+  }
+})
+
+/** Client (or server) posts conversation turns; we summarize + store automatically. */
+app.post('/api/brain/memory/remember', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    const entry = await rememberTurns(req.body?.turns, req.body?.source || 'session')
+    if (!entry) {
+      return res.json({ ok: true, saved: false, reason: 'nothing_to_remember' })
+    }
+    res.json({ ok: true, saved: true, entry: { id: entry.id, at: entry.at }, ...joeMemory.status() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'remember failed' })
+  }
 })
 
 app.get('/api/brain/docs', (_req, res) => {
@@ -660,6 +756,12 @@ app.post('/api/brain/chat', async (req, res) => {
     const intent = quickbooks.detectIntent(question)
     if (intent.type === 'pnl' || intent.type === 'payroll_chart') {
       const result = await quickbooks.ask(question)
+      if (result?.answer) {
+        rememberTurns(
+          [{ role: 'user', text: question }, { role: 'assistant', text: result.answer }],
+          'books'
+        ).catch(() => {})
+      }
       return res.json(result)
     }
   } catch { /* fall through to chat */ }
@@ -674,8 +776,10 @@ app.post('/api/brain/chat', async (req, res) => {
   try {
     let knowledge = ''
     let qbSnapshot = ''
+    let memory = ''
     try { knowledge = joeKnowledge.knowledgeSnippet() } catch { /* ignore */ }
     try { qbSnapshot = await quickbooks.voiceContextSnippet() } catch { /* ignore */ }
+    try { memory = joeMemory.memorySnippet() } catch { /* ignore */ }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -689,11 +793,13 @@ app.post('/api/brain/chat', async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: `You are Joe's Professional Assistant (powered by Axon AI). Answer briefly and helpfully from the teaching docs and books snapshot. Do not invent dollar amounts not present below. If something is missing, say you'll need that doc or live QuickBooks.
+            content: `You are Joe's Professional Assistant (powered by Axon AI). Answer briefly and helpfully from the teaching docs, long-term memory, and books snapshot. Do not invent dollar amounts not present below. If something is missing, say you'll need that doc or live QuickBooks. Use LONG-TERM MEMORY naturally — like you have known Joe for a long time.
 
 ${qbSnapshot}
 
-${knowledge}`
+${knowledge}
+
+${memory}`
           },
           { role: 'user', content: question }
         ]
@@ -704,6 +810,11 @@ ${knowledge}`
       throw new Error(data.error?.message || 'Chat failed')
     }
     const answer = data.choices?.[0]?.message?.content?.trim() || 'I did not get a clear answer — try again.'
+    // Auto-remember this exchange (fire-and-forget)
+    rememberTurns(
+      [{ role: 'user', text: question }, { role: 'assistant', text: answer }],
+      'text'
+    ).catch(() => {})
     res.json({ ok: true, intent: 'chat', answer, chart: null })
   } catch (error) {
     res.status(500).json({
