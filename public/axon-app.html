@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Axon AI"/>
+<meta name="theme-color" content="#0c1220"/>
+<title>Axon AI — Professional AI Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0c1220;
+  --paper:#f7f4ef;
+  --muted:#6b7280;
+  --line:rgba(12,18,32,.12);
+  --gold:#e6b422;
+  --gold-deep:#c49a12;
+  --panel:rgba(255,255,255,.78);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;}
+body{
+  font-family:"DM Sans",system-ui,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #2a3550 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 100%, #1a2235 0%, transparent 45%),
+    linear-gradient(165deg, #0c1220 0%, #141c2e 45%, #1b2438 100%);
+  -webkit-font-smoothing:antialiased;
+}
+.phone{
+  width:min(100%,420px);
+  min-height:100dvh;
+  margin:0 auto;
+  padding:clamp(1.4rem,4vh,2.2rem) 1.25rem 2rem;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+.phone::before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 18%, rgba(230,180,34,.16), transparent 60%),
+    linear-gradient(180deg, transparent 55%, rgba(247,244,239,.97) 78%, #f7f4ef 100%);
+  pointer-events:none;z-index:0;
+}
+.phone > *{position:relative;z-index:1}
+
+.brand{
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  margin-top:clamp(1.5rem,6vh,3rem);
+}
+.mark{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(145deg,#f3d56a 0%, var(--gold) 45%, var(--gold-deep) 100%);
+  color:#0c1220;
+  font-family:"Instrument Serif",Georgia,serif;
+  font-size:2rem;font-weight:400;line-height:1;
+  display:grid;place-items:center;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+  letter-spacing:-.04em;
+}
+.word{
+  display:flex;flex-direction:column;gap:.05rem;
+}
+.word strong{
+  font-size:1.35rem;font-weight:700;letter-spacing:-.03em;
+  color:#fff;
+}
+.word span{
+  font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);
+}
+
+.hero{
+  flex:1;
+  display:flex;flex-direction:column;justify-content:center;
+  text-align:center;
+  padding:2rem 0 1.5rem;
+  max-width:22rem;margin:0 auto;
+}
+.hero h1{
+  font-family:"Instrument Serif",Georgia,serif;
+  font-weight:400;
+  font-size:clamp(2.15rem,7vw,2.75rem);
+  line-height:1.08;
+  letter-spacing:-.02em;
+  color:#fff;
+  margin-bottom:.85rem;
+}
+.hero h1 em{
+  font-style:italic;
+  color:#f0d56a;
+}
+.hero p{
+  font-size:1.02rem;line-height:1.45;font-weight:500;
+  color:rgba(255,255,255,.72);
+}
+
+.actions{
+  display:flex;flex-direction:column;gap:.7rem;
+  margin-top:1.75rem;
+}
+.btn{
+  appearance:none;border:0;cursor:pointer;
+  border-radius:14px;
+  padding:1rem 1.15rem;
+  font:650 1rem/1.1 "DM Sans",system-ui,sans-serif;
+  letter-spacing:-.01em;
+  text-decoration:none;text-align:center;
+  transition:transform .15s ease, filter .15s ease;
+}
+.btn:active{transform:scale(.98)}
+.btn.primary{
+  background:linear-gradient(180deg,#f0d56a,#e6b422);
+  color:#0c1220;
+  box-shadow:0 12px 28px rgba(230,180,34,.28);
+}
+.btn.primary:hover{filter:brightness(1.03)}
+.btn.ghost{
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.18);
+}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
+
+.panel{
+  background:var(--panel);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:20px;
+  padding:1rem 1.05rem 1.1rem;
+  margin-top:1.25rem;
+}
+.panel h2{
+  font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.65rem;
+}
+.upsell{
+  display:flex;align-items:center;gap:.75rem;
+}
+.pin{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(160deg,#1a2235,#0c1220);
+  display:grid;place-items:center;
+  color:var(--gold);font-family:"Instrument Serif",serif;font-size:1.25rem;
+}
+.upsell .copy{flex:1;min-width:0}
+.upsell .copy b{display:block;font-size:.92rem;font-weight:700}
+.upsell .copy small{display:block;font-size:.78rem;color:var(--muted);margin-top:.15rem;line-height:1.3}
+.upsell a{
+  font-size:.78rem;font-weight:700;color:var(--ink);text-decoration:none;
+  white-space:nowrap;padding:.45rem .65rem;border-radius:999px;
+  border:1px solid var(--line);background:#fff;
+}
+
+.foot{
+  margin-top:1.1rem;text-align:center;
+  font-size:.72rem;color:rgba(255,255,255,.42);font-weight:500;
+}
+.foot a{color:rgba(255,255,255,.65);text-decoration:none}
+
+/* signed-in home (demo) */
+.home{display:none}
+body.show-home .gate{display:none}
+body.show-home .home{display:flex;flex-direction:column;flex:1}
+.home .top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.25rem;
+}
+.home .top .who{font-size:.85rem;font-weight:600;color:rgba(255,255,255,.75)}
+.home .orb-wrap{
+  flex:1;display:grid;place-items:center;padding:1rem 0 1.5rem;
+}
+.orb{
+  width:min(42vw,168px);height:min(42vw,168px);border-radius:50%;
+  border:0;cursor:pointer;
+  background:radial-gradient(circle at 35% 30%,#ffe9a0,#e6b422 55%,#b8860b 100%);
+  box-shadow:0 0 0 0 rgba(230,180,34,.45);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(230,180,34,.4),0 18px 40px rgba(0,0,0,.35)}
+  50%{box-shadow:0 0 0 18px rgba(230,180,34,0),0 18px 40px rgba(0,0,0,.35)}
+}
+.home .label{
+  text-align:center;color:rgba(255,255,255,.8);
+  font-size:.95rem;font-weight:600;margin-top:-.5rem;margin-bottom:1.25rem;
+}
+.modes{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem;
+  margin-bottom:1rem;
+}
+.mode{
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.7);
+  border-radius:12px;padding:.65rem .35rem;
+  font:650 .72rem/1.15 "DM Sans",system-ui,sans-serif;
+  text-align:center;cursor:pointer;
+}
+.mode.on{
+  background:rgba(230,180,34,.2);
+  border-color:rgba(230,180,34,.55);
+  color:#ffe9a0;
+}
+.home .links{
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.home .links a{
+  text-align:center;text-decoration:none;
+  color:var(--ink);background:rgba(255,255,255,.92);
+  border-radius:12px;padding:.85rem;font-weight:650;font-size:.9rem;
+}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <header class="brand" aria-label="Axon AI">
+      <div class="mark" aria-hidden="true">A</div>
+      <div class="word">
+        <strong>Axon AI</strong>
+        <span>Professional assistant</span>
+      </div>
+    </header>
+
+    <section class="gate hero" aria-labelledby="heroTitle">
+      <h1 id="heroTitle">Your professional<br/><em>AI assistant</em></h1>
+      <p>Built for work. Quiet until you need it. Memory, books, and day briefs — on your phone.</p>
+      <div class="actions">
+        <button type="button" class="btn primary" id="enterBtn">Open assistant</button>
+        <a class="btn ghost" href="/mockup2.html">Joe demo</a>
+      </div>
+      <div class="panel">
+        <h2>Accessory</h2>
+        <div class="upsell">
+          <div class="pin" aria-hidden="true">A</div>
+          <div class="copy">
+            <b>Axon Pin</b>
+            <small>Optional wearable mic — upsell with the subscription.</small>
+          </div>
+          <a href="#pin">Add-on</a>
+        </div>
+      </div>
+      <p class="foot">Web app shell · Add to Home Screen · <a href="/axon-brain.html">Full orb</a></p>
+    </section>
+
+    <section class="home" aria-label="Assistant home">
+      <div class="top">
+        <div class="brand" style="margin:0;justify-content:flex-start;gap:.55rem">
+          <div class="mark" style="width:40px;height:40px;font-size:1.45rem;border-radius:11px">A</div>
+          <div class="word"><strong style="font-size:1.05rem">Axon AI</strong><span>For Tim</span></div>
+        </div>
+        <div class="who">Signed in</div>
+      </div>
+      <div class="orb-wrap">
+        <button type="button" class="orb" id="orbHome" aria-label="Open voice assistant"></button>
+      </div>
+      <p class="label">Tap to talk · Professional AI assistant</p>
+      <div class="modes" role="group" aria-label="Assistant mode">
+        <button type="button" class="mode on" data-mode="light">Light</button>
+        <button type="button" class="mode" data-mode="moderate">Moderate</button>
+        <button type="button" class="mode" data-mode="advanced">Advanced</button>
+      </div>
+      <div class="links">
+        <a href="/mockup2.html">Open full assistant</a>
+        <a href="/axon-brain.html">Books &amp; boards</a>
+      </div>
+      <p class="foot" style="margin-top:1rem">Modes cut cost · Advanced only when you need it</p>
+    </section>
+  </div>
+<script>
+const enterBtn=document.getElementById('enterBtn');
+const orbHome=document.getElementById('orbHome');
+enterBtn.addEventListener('click',()=>document.body.classList.add('show-home'));
+orbHome.addEventListener('click',()=>{window.location.href='/mockup2.html'});
+document.querySelectorAll('.mode').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mode').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>
