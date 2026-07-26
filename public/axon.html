@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Axon"/>
+<meta name="theme-color" content="#f6f5f2"/>
+<meta name="cache-control" content="no-store"/>
+<title>Axon — AI Life Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#1a1a1c;
+  --soft:#6f6f75;
+  --gold:#f5c518;
+  --gold-deep:#e0ac00;
+  --paper:#f6f5f2;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Outfit",system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* soft dune / halo atmosphere */
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.halo{
+  position:absolute;
+  top:-14%;left:50%;transform:translateX(-50%);
+  width:min(118vw,560px);aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 42%,#ffffff 0%,#fbfaf8 42%,rgba(246,245,242,0) 70%);
+  filter:blur(.3px);
+}
+.dune{
+  position:absolute;left:-10%;right:-10%;
+  height:52vh;bottom:-6vh;
+  background:
+    radial-gradient(120% 70% at 20% 100%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(120% 70% at 85% 92%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 62%);
+}
+.dune::before,.dune::after{
+  content:"";position:absolute;left:-15%;right:-15%;
+  height:60%;border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,0));
+  box-shadow:0 -1px 0 rgba(0,0,0,.028);
+}
+.dune::before{bottom:14%;transform:rotate(-4deg)}
+.dune::after{bottom:0;transform:rotate(3deg)}
+
+.screen{
+  position:relative;z-index:1;
+  width:min(100%,430px);
+  min-height:100dvh;
+  margin:0 auto;
+  padding:clamp(2.4rem,8vh,4rem) 1.5rem clamp(1.6rem,4vh,2.4rem);
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+}
+
+.eyebrow{
+  margin-top:clamp(1.5rem,9vh,4.5rem);
+  font-size:.66rem;font-weight:500;
+  letter-spacing:.42em;text-transform:uppercase;
+  color:#9a9aa0;
+  padding-left:.42em;
+}
+
+.wordmark{
+  margin-top:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  gap:.01em;
+  line-height:.86;
+}
+.wordmark svg{display:block;height:clamp(4.6rem,20vw,6.1rem);width:auto}
+.wordmark .rest{
+  font-size:clamp(4.4rem,19vw,5.9rem);
+  font-weight:500;
+  letter-spacing:-.045em;
+  background:linear-gradient(160deg,#2c2c30 0%,#131315 55%,#3a3a3f 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-left:-.02em;
+}
+
+.rule{
+  margin-top:1.15rem;
+  width:min(62%,220px);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(245,197,24,.75),transparent);
+  position:relative;
+}
+.rule::after{
+  content:"";position:absolute;top:50%;left:50%;
+  width:5px;height:5px;transform:translate(-50%,-50%) rotate(45deg);
+  background:var(--gold);
+}
+
+.tagline{
+  margin-top:1.5rem;
+  font-size:clamp(1.45rem,5.6vw,1.8rem);
+  font-weight:500;
+  letter-spacing:-.025em;
+  line-height:1.2;
+  color:#26262a;
+  max-width:15ch;
+}
+
+.spacer{flex:1;min-height:1.5rem}
+
+.cta{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;gap:.7rem;
+  appearance:none;border:0;cursor:pointer;text-decoration:none;
+  border-radius:16px;
+  padding:1.18rem 1.25rem;
+  background:linear-gradient(180deg,#ffd23f 0%,var(--gold) 55%,var(--gold-deep) 100%);
+  color:#1a1500;
+  font:600 1.06rem/1 "Outfit",system-ui,sans-serif;
+  letter-spacing:-.01em;
+  box-shadow:0 14px 30px rgba(224,172,0,.32),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease;
+}
+.cta:hover{filter:brightness(1.02)}
+.cta:active{transform:translateY(1px) scale(.995);box-shadow:0 8px 18px rgba(224,172,0,.28)}
+.cta.loading{pointer-events:none;filter:saturate(.85)}
+
+.wave{display:flex;align-items:center;gap:3px;height:19px}
+.wave i{
+  display:block;width:3px;border-radius:2px;background:#1a1500;
+  animation:bar 1.15s ease-in-out infinite;
+}
+.wave i:nth-child(1){height:7px;animation-delay:0s}
+.wave i:nth-child(2){height:14px;animation-delay:.12s}
+.wave i:nth-child(3){height:19px;animation-delay:.24s}
+.wave i:nth-child(4){height:12px;animation-delay:.36s}
+.wave i:nth-child(5){height:8px;animation-delay:.48s}
+@keyframes bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+
+.signin{
+  margin-top:1.15rem;
+  font-size:.95rem;font-weight:400;color:#4a4a50;
+  background:none;border:0;cursor:pointer;
+  text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:rgba(74,74,80,.45);
+}
+
+.accessory{
+  margin-top:clamp(1.6rem,5vh,2.6rem);
+  width:100%;
+  display:flex;align-items:center;gap:.85rem;
+  background:none;border:0;cursor:pointer;text-align:left;
+  padding:.35rem .1rem;
+  text-decoration:none;color:inherit;
+}
+.pin{
+  width:44px;height:44px;flex-shrink:0;position:relative;
+  display:grid;place-items:center;
+}
+.pin .head{
+  width:34px;height:34px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#6c6c72,#2a2a2e 70%);
+  display:grid;place-items:center;
+  box-shadow:0 6px 14px rgba(0,0,0,.22);
+}
+.pin .head span{
+  color:#e8e8ea;font-size:.82rem;font-weight:600;line-height:1;
+}
+.pin .stem{
+  position:absolute;bottom:1px;left:50%;transform:translateX(-50%);
+  width:4px;height:12px;border-radius:0 0 2px 2px;
+  background:linear-gradient(180deg,#9a9aa0,#6a6a70);
+}
+.accessory .copy{flex:1;min-width:0}
+.accessory .copy b{display:block;font-size:1rem;font-weight:600;letter-spacing:-.01em}
+.accessory .copy small{display:block;margin-top:.1rem;font-size:.8rem;color:var(--soft);font-weight:400}
+.accessory .chev{color:#9a9aa0;font-size:1.1rem;line-height:1}
+
+.status{
+  margin-top:.9rem;min-height:1.1rem;
+  font-size:.78rem;color:var(--soft);font-weight:400;
+}
+
+/* sign-in sheet */
+.scrim{
+  position:fixed;inset:0;z-index:5;
+  background:rgba(20,20,22,.42);
+  backdrop-filter:blur(3px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.scrim.open{display:flex}
+.sheet{
+  width:min(100%,430px);
+  background:#fff;
+  border-radius:22px 22px 0 0;
+  padding:1.4rem 1.4rem calc(1.6rem + env(safe-area-inset-bottom));
+  box-shadow:0 -18px 50px rgba(0,0,0,.22);
+}
+.sheet h2{font-size:1.15rem;font-weight:600;letter-spacing:-.02em}
+.sheet p{margin-top:.45rem;font-size:.9rem;color:var(--soft);line-height:1.45}
+.sheet .field{
+  margin-top:1rem;width:100%;
+  border:1px solid #e6e4df;border-radius:13px;
+  padding:.95rem 1rem;font:400 1rem "Outfit",system-ui,sans-serif;
+  background:#fbfaf8;color:var(--ink);
+}
+.sheet .field:focus{outline:none;border-color:var(--gold);background:#fff}
+.sheet .row{display:flex;gap:.6rem;margin-top:.9rem}
+.sheet .row .cta{margin:0}
+.sheet .close{
+  flex:0 0 auto;border:1px solid #e6e4df;background:#fff;border-radius:16px;
+  padding:1.18rem 1.15rem;font:600 1rem "Outfit",system-ui,sans-serif;
+  color:#4a4a50;cursor:pointer;
+}
+@media(min-width:520px){
+  .scrim{align-items:center}
+  .sheet{border-radius:22px}
+}
+</style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <div class="halo"></div>
+    <div class="dune"></div>
+  </div>
+
+  <main class="screen">
+    <p class="eyebrow">AI Life Assistant</p>
+
+    <div class="wordmark" role="img" aria-label="Axon">
+      <!-- crossbar-less A -->
+      <svg viewBox="0 0 116 132" aria-hidden="true">
+        <defs>
+          <linearGradient id="axonInk" x1="12%" y1="0%" x2="88%" y2="100%">
+            <stop offset="0%" stop-color="#33333a"/>
+            <stop offset="52%" stop-color="#141416"/>
+            <stop offset="100%" stop-color="#3d3d44"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#axonInk)" d="M46.6 4.5 L69.4 4.5 L116 132 L88.4 132 L58 41.8 L27.6 132 L0 132 Z"/>
+      </svg>
+      <span class="rest">XON</span>
+    </div>
+
+    <div class="rule" aria-hidden="true"></div>
+
+    <h1 class="tagline" id="tagline">Your professional second brain</h1>
+
+    <div class="spacer"></div>
+
+    <a class="cta" id="talkBtn" href="/mockup2.html">
+      <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      Talk to your assistant
+    </a>
+
+    <button type="button" class="signin" id="signinBtn">Sign in</button>
+
+    <a class="accessory" href="#notepin" id="pinBtn">
+      <span class="pin" aria-hidden="true">
+        <span class="stem"></span>
+        <span class="head"><span>A</span></span>
+      </span>
+      <span class="copy">
+        <b>Add NotePin</b>
+        <small>Capture anything, anytime.</small>
+      </span>
+      <span class="chev" aria-hidden="true">›</span>
+    </a>
+
+    <p class="status" id="status" role="status"></p>
+  </main>
+
+  <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet">
+      <h2 id="sheetTitle">Sign in to Axon</h2>
+      <p>Your assistant remembers your work — books, notes, and past conversations.</p>
+      <input class="field" id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.com" aria-label="Email"/>
+      <div class="row">
+        <button type="button" class="close" id="sheetClose">Cancel</button>
+        <button type="button" class="cta" id="sheetGo" style="flex:1">Continue</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const talkBtn=document.getElementById('talkBtn');
+const signinBtn=document.getElementById('signinBtn');
+const scrim=document.getElementById('scrim');
+const sheetClose=document.getElementById('sheetClose');
+const sheetGo=document.getElementById('sheetGo');
+const emailInput=document.getElementById('email');
+const statusEl=document.getElementById('status');
+const pinBtn=document.getElementById('pinBtn');
+
+const WHO_KEY='axon.who';
+
+function setStatus(text){statusEl.textContent=text||''}
+
+function showWho(){
+  let who='';
+  try{who=localStorage.getItem(WHO_KEY)||''}catch(e){}
+  if(who){
+    signinBtn.textContent='Signed in as '+who;
+    setStatus('Your assistant is ready.');
+  }else{
+    signinBtn.textContent='Sign in';
+  }
+}
+showWho();
+
+// Warm the brain so the first tap opens fast, and show live memory state
+fetch('/api/brain/status',{cache:'no-store'})
+  .then(r=>r.json())
+  .then(d=>{
+    if(!d||!d.ok)return;
+    const n=d.memory&&d.memory.count?d.memory.count:0;
+    if(n){
+      setStatus(n===1?'1 conversation remembered':n+' conversations remembered');
+    }
+  })
+  .catch(()=>{});
+
+talkBtn.addEventListener('click',()=>{
+  talkBtn.classList.add('loading');
+  setStatus('Opening your assistant…');
+});
+
+function openSheet(){scrim.classList.add('open');setTimeout(()=>emailInput.focus(),80)}
+function closeSheet(){scrim.classList.remove('open')}
+
+signinBtn.addEventListener('click',openSheet);
+sheetClose.addEventListener('click',closeSheet);
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+
+sheetGo.addEventListener('click',()=>{
+  const v=String(emailInput.value||'').trim();
+  if(!v||!v.includes('@')){emailInput.focus();return}
+  const who=v.split('@')[0];
+  try{localStorage.setItem(WHO_KEY,who)}catch(e){}
+  closeSheet();
+  showWho();
+  setStatus('Welcome back, '+who+'.');
+});
+emailInput.addEventListener('keydown',e=>{if(e.key==='Enter')sheetGo.click()});
+
+pinBtn.addEventListener('click',e=>{
+  e.preventDefault();
+  setStatus('NotePin — wearable mic add-on. Coming with your plan.');
+});
+</script>
+</body>
+</html>
