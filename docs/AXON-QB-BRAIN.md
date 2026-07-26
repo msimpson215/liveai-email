@@ -60,18 +60,19 @@ curl -s -X POST https://liveai-email.onrender.com/api/brain/ask \
   -d '{"question":"Chart my payroll over the past five years"}' | jq
 ```
 
-## Long-term memory (automatic)
+## Long-term memory bank (automatic)
 
-After Joe talks (voice or text), the server **auto-saves a short summary**. The next session **auto-loads** those summaries into the assistant — no buttons, no “reload.” Feels continuous over months.
+After Joe talks (voice or text), the server **auto-saves a short summary** into a memory bank. The next session **auto-loads** that bank — no buttons. Recent sessions stay detailed; older months get **monthly digests** so things from 3–6+ months ago can still be recalled.
 
 | Piece | Role |
 |-------|------|
-| `server/joe-memory.js` | Stores summaries under `data/joe-memory/` |
-| `POST /api/brain/memory/remember` | Accepts conversation turns → summarizes → stores |
-| `GET /api/brain/memory` | Lists saved summaries |
+| `server/joe-memory.js` | Memory bank under `data/joe-memory/summaries.json` |
+| `POST /api/brain/memory/remember` | Conversation turns → summarize → store |
+| `POST /api/brain/memory/rollup` | Rebuild monthly digests for older months |
+| `GET /api/brain/memory` | Lists saved summaries + bank status |
 | Voice/text clients | Silently flush turns when a talk ends |
 
-On Render’s ephemeral disk, memory lasts for the life of the instance unless you attach a persistent disk or move storage to a DB later — same pattern as teaching docs.
+On Render’s default disk, the bank lasts for the life of the instance (redeploys can wipe it). Attach a **persistent disk** (or a DB later) so four-month-old memories survive deploys — same idea as teaching docs.
 
 ## Files
 

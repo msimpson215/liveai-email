@@ -431,7 +431,70 @@ async function rememberTurns(turns, source = 'session') {
       .join(' | ')
       .slice(0, joeMemory.MAX_SUMMARY_CHARS)
   }
-  return joeMemory.saveSummary(summary, { source, turns: substantive.length })
+  const saved = joeMemory.saveSummary(summary, { source, turns: substantive.length })
+  // Keep older months recallable via digests (fire-and-forget)
+  maybeRollupOlderMonths().catch(() => {})
+  return saved
+}
+
+/** Compress prior months into digests so 3–6+ month recall stays in the bank. */
+async function maybeRollupOlderMonths() {
+  const now = new Date()
+  const thisMonth = joeMemory.monthKey(now.toISOString())
+  const memories = joeMemory.listMemories()
+  const sessionMonths = [...new Set(
+    memories
+      .filter(e => (e.kind || 'session') !== 'month_digest')
+      .map(e => joeMemory.monthKey(e.at))
+      .filter(m => m && m !== thisMonth)
+  )]
+  const existingDigests = new Set(
+    memories.filter(e => e.kind === 'month_digest').map(e => e.month)
+  )
+
+  for (const month of sessionMonths.slice(0, 6)) {
+    const sessions = joeMemory.sessionsForMonth(month)
+    if (sessions.length < 2) continue
+    // Refresh digest when month has grown a lot, or create if missing
+    const digest = memories.find(e => e.kind === 'month_digest' && e.month === month)
+    if (digest && sessions.length < 8) continue
+    if (existingDigests.has(month) && sessions.length < 8) continue
+
+    const blob = sessions
+      .map(s => `- ${s.at.slice(0, 10)}: ${s.summary}`)
+      .join('\n')
+      .slice(0, 9000)
+
+    let text = ''
+    if (hasApiKey()) {
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+            temperature: 0.2,
+            messages: [
+              {
+                role: 'system',
+                content: `Create a monthly memory digest for Joe's Professional Assistant (Axon AI) for ${month}. 4–8 dense sentences: lasting prefs, business facts, decisions, recurring asks. Third person. Max ${joeMemory.MAX_SUMMARY_CHARS} chars.`
+              },
+              { role: 'user', content: blob }
+            ]
+          })
+        })
+        const data = await response.json()
+        if (response.ok) text = data.choices?.[0]?.message?.content?.trim() || ''
+      } catch { /* ignore */ }
+    }
+    if (!text) {
+      text = sessions.slice(0, 8).map(s => s.summary).join(' ').slice(0, joeMemory.MAX_SUMMARY_CHARS)
+    }
+    joeMemory.upsertMonthDigest(month, text)
+  }
 }
 
 // Exact words the AI must speak first. Used to force the opening over the
@@ -675,9 +738,20 @@ app.get('/api/brain/status', (_req, res) => {
 app.get('/api/brain/memory', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
-    res.json({ ok: true, ...joeMemory.status(), memories: joeMemory.listMemories().slice(0, 40) })
+    res.json({ ok: true, ...joeMemory.status(), memories: joeMemory.listMemories().slice(0, 60) })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'memory list failed' })
+  }
+})
+
+/** Rebuild monthly digests so older months stay easy to recall. */
+app.post('/api/brain/memory/rollup', async (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    await maybeRollupOlderMonths()
+    res.json({ ok: true, ...joeMemory.status() })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'rollup failed' })
   }
 })
 
