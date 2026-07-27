@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="Axon"/>
 <meta name="theme-color" content="#f6f5f2"/>
 <meta name="cache-control" content="no-store"/>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<link rel="apple-touch-icon" href="/icons/axon-180.png"/>
+<link rel="icon" href="/icons/axon-192.png"/>
 <title>Axon — AI Life Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -114,6 +117,22 @@ body{
 }
 
 .spacer{flex:1;min-height:1.5rem}
+
+.modes{
+  width:100%;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;
+  margin-bottom:.85rem;
+}
+.mode{
+  border:1px solid #e4e2dc;background:rgba(255,255,255,.7);
+  color:#6f6f75;border-radius:11px;padding:.6rem .3rem;
+  font:600 .78rem/1.1 "Outfit",system-ui,sans-serif;
+  cursor:pointer;transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.mode.on{
+  background:#fff;border-color:var(--gold);color:#1a1a1c;
+  box-shadow:0 4px 14px rgba(224,172,0,.16);
+}
 
 .cta{
   width:100%;
@@ -255,6 +274,12 @@ body{
 
     <div class="spacer"></div>
 
+    <div class="modes" role="group" aria-label="Assistant mode">
+      <button type="button" class="mode" data-tier="light">Light</button>
+      <button type="button" class="mode on" data-tier="moderate">Moderate</button>
+      <button type="button" class="mode" data-tier="advanced">Advanced</button>
+    </div>
+
     <a class="cta" id="talkBtn" href="/mockup2.html">
       <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
       Talk to your assistant
@@ -326,6 +351,31 @@ fetch('/api/brain/status',{cache:'no-store'})
     }
   })
   .catch(()=>{});
+
+const TIER_KEY='axon.tier';
+const TIER_NOTE={
+  light:'Light — lowest cost, everyday questions.',
+  moderate:'Moderate — balanced for daily work.',
+  advanced:'Advanced — deepest thinking, highest cost.'
+};
+
+function currentTier(){
+  try{return localStorage.getItem(TIER_KEY)||'moderate'}catch(e){return 'moderate'}
+}
+function applyTier(tier){
+  try{localStorage.setItem(TIER_KEY,tier)}catch(e){}
+  document.querySelectorAll('.mode').forEach(b=>{
+    b.classList.toggle('on',b.dataset.tier===tier);
+  });
+  talkBtn.href='/mockup2.html?tier='+encodeURIComponent(tier);
+}
+applyTier(currentTier());
+document.querySelectorAll('.mode').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    applyTier(btn.dataset.tier);
+    setStatus(TIER_NOTE[btn.dataset.tier]||'');
+  });
+});
 
 talkBtn.addEventListener('click',()=>{
   talkBtn.classList.add('loading');

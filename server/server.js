@@ -25,6 +25,28 @@ const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
 
+// Cost tiers. Light/Moderate run the cheaper realtime model; Advanced uses the
+// full one. Text answers follow the same tier so a Light day stays inexpensive.
+const TIERS = {
+  light: {
+    realtime: process.env.OPENAI_REALTIME_MINI || 'gpt-realtime-mini',
+    chat: process.env.OPENAI_CHAT_LIGHT || 'gpt-4o-mini'
+  },
+  moderate: {
+    realtime: process.env.OPENAI_REALTIME_MINI || 'gpt-realtime-mini',
+    chat: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini'
+  },
+  advanced: {
+    realtime: REALTIME_MODEL,
+    chat: process.env.OPENAI_CHAT_ADVANCED || 'gpt-4o'
+  }
+}
+
+function resolveTier(value) {
+  const key = String(value || '').toLowerCase()
+  return TIERS[key] ? key : 'moderate'
+}
+
 const VOICE_RULES = `IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
 Voice: upbeat, warm, professional woman. Keep answers short unless giving the intro.`
 
@@ -536,6 +558,7 @@ app.get('/session', async (req, res) => {
     const source = VALID_SOURCES.has(raw) ? raw : 'web'
     const recipientName = sanitizeRecipientName(req.query.name)
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
+    const tier = resolveTier(req.query.tier || req.query.mode)
     const instructions = await buildInstructionsAsync(source, { recipientName })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
@@ -546,7 +569,7 @@ app.get('/session', async (req, res) => {
       body: JSON.stringify({
         session: {
           type: 'realtime',
-          model: REALTIME_MODEL,
+          model: TIERS[tier].realtime,
           instructions,
           audio: {
             input: {
@@ -595,7 +618,8 @@ app.get('/session', async (req, res) => {
 
     res.json({
       value,
-      model: REALTIME_MODEL,
+      model: TIERS[tier].realtime,
+      tier,
       voice: REALTIME_VOICE,
       source,
       recipientName,
@@ -769,6 +793,96 @@ app.post('/api/brain/memory/remember', async (req, res) => {
   }
 })
 
+/**
+ * Import a ChatGPT data export (conversations.json) into the memory bank so a
+ * new assistant starts out already knowing the user's history.
+ */
+app.post('/api/brain/memory/import', upload.single('file'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, error: 'Upload conversations.json from your ChatGPT export.' })
+    }
+    let parsed
+    try {
+      parsed = JSON.parse(req.file.buffer.toString('utf8'))
+    } catch {
+      return res.status(400).json({ ok: false, error: 'That file is not valid JSON. Use conversations.json from the export.' })
+    }
+
+    const conversations = extractChatGptConversations(parsed)
+    if (!conversations.length) {
+      return res.status(400).json({ ok: false, error: 'No conversations found in that file.' })
+    }
+
+    const limit = Math.min(Number(req.body?.limit) || 60, 150)
+    const chosen = conversations
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
+      .slice(0, limit)
+
+    let saved = 0
+    for (const convo of chosen) {
+      const entry = await rememberTurns(convo.turns, 'chatgpt-import')
+      if (entry) saved++
+    }
+    maybeRollupOlderMonths().catch(() => {})
+
+    res.json({
+      ok: true,
+      found: conversations.length,
+      imported: saved,
+      ...joeMemory.status()
+    })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message || 'import failed' })
+  }
+})
+
+/** Pull {title, turns[]} out of ChatGPT's export shape (mapping tree per convo). */
+function extractChatGptConversations(parsed) {
+  const list = Array.isArray(parsed) ? parsed : (parsed?.conversations || [])
+  const out = []
+
+  for (const convo of list) {
+    const mapping = convo?.mapping
+    const turns = []
+
+    if (mapping && typeof mapping === 'object') {
+      const nodes = Object.values(mapping)
+        .map(n => n?.message)
+        .filter(Boolean)
+        .sort((a, b) => (a.create_time || 0) - (b.create_time || 0))
+
+      for (const msg of nodes) {
+        const role = msg?.author?.role
+        if (role !== 'user' && role !== 'assistant') continue
+        const parts = msg?.content?.parts
+        const text = Array.isArray(parts)
+          ? parts.filter(p => typeof p === 'string').join('\n').trim()
+          : ''
+        if (text) turns.push({ role, text })
+      }
+    } else if (Array.isArray(convo?.messages)) {
+      for (const msg of convo.messages) {
+        const role = msg?.role === 'assistant' ? 'assistant' : 'user'
+        const text = String(msg?.content || '').trim()
+        if (text) turns.push({ role, text })
+      }
+    }
+
+    if (turns.length) {
+      const title = String(convo?.title || '').trim()
+      if (title) turns.unshift({ role: 'user', text: `Conversation topic: ${title}` })
+      out.push({
+        title,
+        updatedAt: Number(convo?.update_time || convo?.create_time || 0),
+        turns
+      })
+    }
+  }
+  return out
+}
+
 app.get('/api/brain/docs', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
@@ -862,7 +976,7 @@ app.post('/api/brain/chat', async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+        model: TIERS[resolveTier(req.body?.tier)].chat,
         temperature: 0.4,
         messages: [
           {

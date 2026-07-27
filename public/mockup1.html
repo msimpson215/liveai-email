@@ -589,6 +589,16 @@ async function refreshDocs(){
 refreshDocs();
 
 
+
+/* Cost tier chosen on the Axon app screen (light | moderate | advanced) */
+const AXON_TIER=(function(){
+  try{
+    const q=new URLSearchParams(location.search).get('tier');
+    if(q){localStorage.setItem('axon.tier',q);return q}
+    return localStorage.getItem('axon.tier')||'moderate';
+  }catch(e){return 'moderate'}
+})();
+
 /* ---- Automatic long-term memory (silent) ---- */
 const sessionTurns=[];
 let memoryFlushing=false;
@@ -619,7 +629,7 @@ async function stopVoice(){
 }
 
 async function connectVoice(){
-  const r=await fetch('/session?src=qb',{cache:'no-store'});
+  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(AXON_TIER),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
@@ -691,7 +701,7 @@ async function sendText(question,opts){
 dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:q}]}}));
       dc.send(JSON.stringify({type:'response.create'}));
       if(looksLikeBooksAsk(q)){
-        fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
+        fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,tier:AXON_TIER})})
           .then(r=>r.json()).then(d=>showBooksResult(d)).catch(()=>{});
       }
       qInput.value='';sendBtn.disabled=false;setMode('listening');return;
@@ -699,7 +709,7 @@ dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',rol
   }
 
   try{
-    const r=await fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const r=await fetch('/api/brain/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,tier:AXON_TIER})});
     const d=await r.json();
     showBooksResult(d);
     qInput.value='';
