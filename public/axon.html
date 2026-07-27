@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Axon"/>
-<meta name="theme-color" content="#eef5ff"/>
+<meta name="theme-color" content="#1e3a8a"/>
 <meta name="cache-control" content="no-store"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <link rel="apple-touch-icon" href="/icons/axon-180.png"/>
@@ -18,37 +18,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --ink:#0f2540;
-  --body:#4a6789;
-  --muted:#587fae;
-  --blue:#2f7df6;
-  --blue-deep:#1a5fd0;
-  --blue-soft:#8fc0ff;
-  --sky-1:#f4f9ff;
-  --sky-2:#e4f0ff;
+  /* Marty's VoxTalk blues */
+  --pale:#dbeafe;
+  --sky:#93c5fd;
+  --navy:#1e3a8a;
+  --blue:#3b82f6;
+  --blue-mid:#2563eb;
+  --blue-deep:#1e40af;
+  --light:#60a5fa;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(120% 65% at 50% 0%, #ffffff 0%, var(--sky-1) 42%, var(--sky-2) 100%);
+  color:#fff;
+  background:radial-gradient(circle at 50% 18%, var(--pale) 0%, var(--sky) 38%, var(--navy) 88%);
+  background-attachment:fixed;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
-}
-
-/* soft light bloom behind everything */
-.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bloom{
-  position:absolute;top:14%;left:50%;transform:translateX(-50%);
-  width:min(130vw,620px);aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle,rgba(146,193,255,.42) 0%,rgba(196,222,255,.18) 45%,rgba(255,255,255,0) 72%);
-  filter:blur(6px);
-}
-.wash{
-  position:absolute;left:-20%;right:-20%;bottom:-14%;height:46vh;border-radius:50%;
-  background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);
 }
 
 .screen{
@@ -58,97 +45,68 @@ body{
   display:flex;flex-direction:column;align-items:center;text-align:center;
 }
 
-/* wordmark: title case, normal A, blue AI badge */
+/* wordmark — title case, normal A */
 .brand{
   display:flex;align-items:center;justify-content:center;gap:.5rem;
-  margin-top:clamp(.6rem,3vh,1.4rem);
+  margin-top:clamp(.4rem,2vh,1rem);
 }
 .brand .name{
-  font-size:1.65rem;font-weight:800;letter-spacing:-.035em;
-  color:#12325a;
+  font-size:1.6rem;font-weight:800;letter-spacing:-.035em;
+  color:#12306e;
 }
 .brand .ai{
-  font-size:.78rem;font-weight:800;letter-spacing:.06em;
-  color:#fff;
-  background:linear-gradient(180deg,#54a0ff,var(--blue) 60%,var(--blue-deep));
+  font-size:.76rem;font-weight:800;letter-spacing:.06em;color:#fff;
+  background:linear-gradient(180deg,var(--blue) 0%,var(--blue-deep) 100%);
   border-radius:8px;padding:.3rem .45rem .26rem;
-  box-shadow:0 6px 16px rgba(47,125,246,.35);
+  box-shadow:0 6px 16px rgba(37,99,235,.35);
 }
 
-/* the orb */
+/* orb — same gradient + pulse as VoxTalk, bigger and 3D */
 .orb-stage{
-  margin-top:clamp(1.6rem,6vh,3rem);
-  position:relative;
-  width:min(62vw,248px);aspect-ratio:1;
+  margin-top:clamp(2rem,8vh,3.6rem);
+  position:relative;width:min(60vw,240px);aspect-ratio:1;
   display:grid;place-items:center;
-}
-.ring{
-  position:absolute;inset:0;border-radius:50%;
-  border:1px solid rgba(47,125,246,.28);
-  animation:ripple 3.6s cubic-bezier(.25,.6,.35,1) infinite;
-}
-.ring:nth-child(2){animation-delay:1.2s}
-.ring:nth-child(3){animation-delay:2.4s}
-@keyframes ripple{
-  0%{transform:scale(.78);opacity:.55}
-  70%{opacity:0}
-  100%{transform:scale(1.28);opacity:0}
 }
 .orb{
   position:relative;
-  width:78%;aspect-ratio:1;border-radius:50%;
-  border:0;cursor:pointer;padding:0;
-  background:
-    radial-gradient(circle at 34% 28%, #ffffff 0%, #cfe6ff 12%, #6fb0ff 38%, var(--blue) 66%, #1550b8 100%);
+  width:100%;aspect-ratio:1;border-radius:50%;
+  border:0;padding:0;cursor:pointer;
+  background:radial-gradient(circle at 30% 30%, var(--blue), var(--blue-deep));
   box-shadow:
-    0 26px 54px rgba(28,86,180,.34),
-    0 10px 22px rgba(47,125,246,.28),
-    inset 0 -14px 30px rgba(9,44,105,.42),
-    inset 0 10px 26px rgba(255,255,255,.5);
-  animation:breathe 3.4s ease-in-out infinite;
-  transition:transform .18s ease;
+    0 6px 18px rgba(37,99,235,.3),
+    0 26px 60px rgba(15,40,110,.45),
+    inset 0 -18px 38px rgba(10,32,90,.5),
+    inset 0 12px 30px rgba(255,255,255,.28);
+  animation:listenPulse 2.6s ease-in-out infinite, breathe 3.6s ease-in-out infinite;
 }
 .orb::after{
   content:"";position:absolute;
-  top:12%;left:20%;width:42%;height:26%;
-  border-radius:50%;
-  background:radial-gradient(ellipse at 40% 40%,rgba(255,255,255,.92),rgba(255,255,255,0) 70%);
+  top:13%;left:20%;width:40%;height:25%;border-radius:50%;
+  background:radial-gradient(ellipse at 40% 40%,rgba(255,255,255,.85),rgba(255,255,255,0) 70%);
   filter:blur(1px);
 }
-.orb::before{
-  content:"";position:absolute;
-  bottom:9%;left:50%;transform:translateX(-50%);
-  width:56%;height:18%;border-radius:50%;
-  background:radial-gradient(ellipse,rgba(146,200,255,.5),rgba(146,200,255,0) 70%);
-  filter:blur(3px);
+.orb:active{transform:scale(.96)}
+@keyframes listenPulse{
+  0%{box-shadow:0 0 0 0 rgba(59,130,246,.7),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
+  50%{box-shadow:0 0 0 22px rgba(59,130,246,0),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
+  100%{box-shadow:0 0 0 0 rgba(59,130,246,0),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
 }
-.orb:active{transform:scale(.97)}
 @keyframes breathe{
   0%,100%{transform:scale(1)}
-  50%{transform:scale(1.045)}
-}
-.orb-shadow{
-  position:absolute;bottom:-2%;left:50%;transform:translateX(-50%);
-  width:46%;height:9%;border-radius:50%;
-  background:radial-gradient(ellipse,rgba(30,80,160,.22),rgba(30,80,160,0) 70%);
-  filter:blur(4px);
+  50%{transform:scale(1.035)}
 }
 
 .headline{
-  margin-top:clamp(1.6rem,5vh,2.4rem);
-  font-size:clamp(2rem,8.4vw,2.5rem);
-  font-weight:800;letter-spacing:-.035em;line-height:1.08;
-  color:#0f2b4d;
-}
-.headline span{
-  display:block;
-  background:linear-gradient(100deg,var(--blue) 0%,#6aa8ff 55%,#2f7df6 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-top:clamp(2rem,6vh,2.8rem);
+  font-size:clamp(1.85rem,7.6vw,2.25rem);
+  font-weight:800;letter-spacing:-.03em;line-height:1.14;
+  color:#0d2a63;
+  text-shadow:0 1px 0 rgba(255,255,255,.25);
 }
 .sub{
-  margin-top:.85rem;
+  margin-top:.9rem;
   font-size:1.02rem;font-weight:500;line-height:1.5;
-  color:#4a6789;max-width:19rem;
+  color:#153a7e;max-width:19rem;
 }
 
 .spacer{flex:1;min-height:1.2rem}
@@ -157,12 +115,12 @@ body{
   width:100%;display:flex;align-items:center;justify-content:center;gap:.65rem;
   appearance:none;border:0;cursor:pointer;text-decoration:none;
   border-radius:18px;padding:1.2rem 1.25rem;
-  background:linear-gradient(180deg,#4b93ff 0%,var(--blue) 55%,var(--blue-deep) 100%);
+  background:linear-gradient(180deg,var(--light) 0%,var(--blue-mid) 55%,var(--blue-deep) 100%);
   color:#fff;font:700 1.08rem/1 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.015em;
-  box-shadow:0 16px 34px rgba(47,125,246,.36),inset 0 1px 0 rgba(255,255,255,.32);
+  box-shadow:0 16px 34px rgba(20,50,130,.42),inset 0 1px 0 rgba(255,255,255,.3);
   transition:transform .16s ease,filter .16s ease;
 }
-.cta:hover{filter:brightness(1.04)}
+.cta:hover{filter:brightness(1.05)}
 .cta:active{transform:translateY(1px) scale(.995)}
 .wave{display:flex;align-items:center;gap:3px;height:18px}
 .wave i{display:block;width:3px;border-radius:2px;background:#fff;animation:bar 1.15s ease-in-out infinite}
@@ -174,22 +132,19 @@ body{
 @keyframes bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
 
 .under{
-  margin-top:1rem;font-size:.92rem;color:var(--muted);font-weight:500;
+  margin-top:1rem;font-size:.92rem;font-weight:500;
+  color:rgba(255,255,255,.88);
   background:none;border:0;cursor:pointer;
-  text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(88,127,174,.4);
+  text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:rgba(255,255,255,.45);
 }
 
 @media (prefers-reduced-motion:reduce){
-  .orb,.ring,.wave i{animation:none}
+  .orb,.wave i{animation:none}
 }
 </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true">
-    <div class="bloom"></div>
-    <div class="wash"></div>
-  </div>
-
   <main class="screen">
     <div class="brand">
       <span class="name">Axon</span>
@@ -197,15 +152,11 @@ body{
     </div>
 
     <div class="orb-stage">
-      <span class="ring" aria-hidden="true"></span>
-      <span class="ring" aria-hidden="true"></span>
-      <span class="ring" aria-hidden="true"></span>
       <button type="button" class="orb" id="orb" aria-label="Talk to Axon"></button>
-      <span class="orb-shadow" aria-hidden="true"></span>
     </div>
 
-    <h1 class="headline">More than AI.<span>An artificial person.</span></h1>
-    <p class="sub">Here for your day — remembers everything, thinks it through, and talks like a real one.</p>
+    <h1 class="headline">Here to help,<br/>every day.</h1>
+    <p class="sub">Ask it anything, anytime — and it always remembers.</p>
 
     <div class="spacer"></div>
 
@@ -236,8 +187,7 @@ signinBtn.addEventListener('click',()=>{
   try{who=localStorage.getItem(WHO_KEY)||''}catch(e){}
   if(who){
     try{localStorage.removeItem(WHO_KEY)}catch(e){}
-    showWho();
-    return;
+    showWho();return;
   }
   const v=prompt('Your name or email');
   if(!v)return;
