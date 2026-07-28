@@ -272,7 +272,7 @@ const IDLE_PROMPT='What can I do for you?';
 
 /* ---------- greeting ---------- */
 function whoAmI(){
-  try{return localStorage.getItem(NAME_KEY)||'Tim'}catch(e){return 'Tim'}
+  try{return localStorage.getItem(NAME_KEY)||'Joe'}catch(e){return 'Joe'}
 }
 function timeOfDay(){
   const h=new Date().getHours();
