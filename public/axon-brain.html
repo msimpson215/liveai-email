@@ -653,7 +653,12 @@ async function connectVoice(){
     headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
   });
   if(!sdp.ok){
-    const err=new Error(sdp.status===429?'busy':'sdp');
+    let detail='';
+    try{detail=await sdp.text()}catch(e){}
+    // 429 covers two very different things: real throttling, and an OpenAI
+    // account with no credit left. Tell them apart so the screen is honest.
+    const outOfCredit=/insufficient_quota|exceeded your current quota|billing/i.test(detail);
+    const err=new Error(outOfCredit?'quota':(sdp.status===429?'busy':'sdp'));
     err.status=sdp.status;
     throw err;
   }
