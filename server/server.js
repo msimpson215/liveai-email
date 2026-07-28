@@ -22,6 +22,32 @@ app.use(express.static('public', {
 
 const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 
+/**
+ * Personal Axon links: /joe, /tim, /ira all serve the one orb page with that
+ * person's name baked in. One file, several URLs — no duplicated voice code.
+ */
+const AXON_PEOPLE = {
+  joe: { name: 'Joe' },
+  tim: { name: 'Tim' },
+  ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' }
+}
+
+for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
+  app.get(`/${slug}`, (_req, res) => {
+    res.set('Cache-Control', 'no-store')
+    try {
+      const file = path.join(__dirname, '..', 'public', 'axon.html')
+      const html = fs.readFileSync(file, 'utf8').replace(
+        '</head>',
+        `<script>window.AXON_PRESET=${JSON.stringify(preset)}</script>\n</head>`
+      )
+      res.type('html').send(html)
+    } catch {
+      res.status(500).send('Could not load Axon.')
+    }
+  })
+}
+
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
 
