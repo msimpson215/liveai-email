@@ -332,7 +332,11 @@ async function connectVoice(){
 
   const r=await fetch('/session?src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier),{cache:'no-store'});
   const data=await r.json();
-  if(!r.ok||data.error)throw new Error(data.error||'session');
+  if(!r.ok||data.error){
+    const err=new Error(r.status===429?'busy':(data.error||'session'));
+    err.status=r.status;
+    throw err;
+  }
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
 
@@ -390,7 +394,11 @@ async function connectVoice(){
     method:'POST',body:offer.sdp,
     headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
   });
-  if(!sdp.ok)throw new Error('sdp');
+  if(!sdp.ok){
+    const err=new Error(sdp.status===429?'busy':'sdp');
+    err.status=sdp.status;
+    throw err;
+  }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
   setState('listening','Listening…');
 }
@@ -407,7 +415,10 @@ async function toggleVoice(){
     console.error(e);
     starting=false;
     await stopVoice();
-    setState(null,'That did not connect. Tap the orb to try again.');
+    const busy=(e&&(e.message==='busy'||e.status===429));
+    setState(null,busy
+      ?'Too many tries at once. Give it about a minute.'
+      :'That did not connect. Tap the orb to try again.');
     return;
   }
   starting=false;

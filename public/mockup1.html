@@ -631,7 +631,11 @@ async function stopVoice(){
 async function connectVoice(){
   const r=await fetch('/session?src=qb&tier='+encodeURIComponent(AXON_TIER),{cache:'no-store'});
   const data=await r.json();
-  if(!r.ok||data.error)throw new Error(data.error||'session');
+  if(!r.ok||data.error){
+    const err=new Error(r.status===429?'busy':(data.error||'session'));
+    err.status=r.status;
+    throw err;
+  }
   const key=data.value||(data.client_secret&&data.client_secret.value);
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
@@ -675,7 +679,11 @@ async function connectVoice(){
     method:'POST',body:offer.sdp,
     headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
   });
-  if(!sdp.ok)throw new Error('sdp');
+  if(!sdp.ok){
+    const err=new Error(sdp.status===429?'busy':'sdp');
+    err.status=sdp.status;
+    throw err;
+  }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
   setMode('listening');
 }
