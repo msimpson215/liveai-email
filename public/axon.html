@@ -268,10 +268,18 @@ const memLine=document.getElementById('memLine');
 const audioEl=document.getElementById('axonAudio');
 
 const NAME_KEY='axon.name';
-const IDLE_PROMPT='What can I do for you?';
+
+/* A personal link (/joe, /ira, /tim) or ?name= wins over anything saved,
+   so a link sent to someone always greets that person. */
+const PRESET=(window.AXON_PRESET||{});
+const QUERY=new URLSearchParams(location.search);
+const IDLE_PROMPT=PRESET.line||QUERY.get('line')||'What can I do for you?';
+if(PRESET.title)document.title=PRESET.title;
 
 /* ---------- greeting ---------- */
 function whoAmI(){
+  const given=PRESET.name||QUERY.get('name');
+  if(given)return String(given).trim().slice(0,40);
   try{return localStorage.getItem(NAME_KEY)||'Joe'}catch(e){return 'Joe'}
 }
 function timeOfDay(){
@@ -284,6 +292,7 @@ function paintGreeting(){
   greetingEl.textContent=timeOfDay()+', '+whoAmI()+'.';
 }
 paintGreeting();
+promptEl.textContent=IDLE_PROMPT;
 
 /* ---------- state ---------- */
 let pc=null,dc=null,localStream=null,starting=false;
