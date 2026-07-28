@@ -13,7 +13,8 @@
     "express": "^4.18.2",
     "multer": "^2.2.0",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "puppeteer-core": "^25.4.0"
   },
   "devDependencies": {
     "mammoth": "^1.12.0",
