@@ -155,29 +155,13 @@ body.speaking .orb{animation-duration:1.5s}
 
 .spacer{flex:1;min-height:1rem}
 
-/* bottom mic */
-.mic-wrap{
-  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+.orb-hint{
+  margin-top:1.15rem;
+  font-size:.94rem;font-weight:500;
+  color:rgba(178,216,255,.78);
+  transition:opacity .3s ease;
 }
-.mic{
-  width:56px;height:56px;border-radius:50%;
-  border:1.5px solid rgba(178,220,255,.62);
-  background:rgba(20,80,180,.28);
-  color:#fff;cursor:pointer;
-  display:grid;place-items:center;
-  box-shadow:0 0 18px rgba(90,180,255,.35),inset 0 1px 0 rgba(255,255,255,.22);
-  transition:transform .16s ease,background .16s ease,box-shadow .16s ease;
-}
-.mic:hover{background:rgba(30,100,210,.38)}
-.mic:active{transform:scale(.95)}
-body.listening .mic{
-  background:rgba(70,160,255,.5);
-  box-shadow:0 0 26px rgba(120,200,255,.6),inset 0 1px 0 rgba(255,255,255,.3);
-}
-.mic-label{
-  font-size:.92rem;font-weight:500;
-  color:rgba(190,224,255,.9);
-}
+body.listening .orb-hint,body.speaking .orb-hint{opacity:.45}
 
 .powered{
   margin-top:1.15rem;
@@ -250,18 +234,9 @@ body.listening .mic{
       <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
     </div>
 
-    <div class="spacer"></div>
+    <p class="orb-hint" id="orbHint">Tap the orb to talk</p>
 
-    <div class="mic-wrap">
-      <button type="button" class="mic" id="micBtn" aria-label="Tap to talk">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="9" y="2.6" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.7"/>
-          <path d="M5.5 11.2a6.5 6.5 0 0 0 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-          <path d="M12 17.8V21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <span class="mic-label" id="micLabel">Tap to talk</span>
-    </div>
+    <div class="spacer"></div>
 
     <p class="powered">Powered by <b>Axon AI</b></p>
   </main>
@@ -281,8 +256,7 @@ body.listening .mic{
 
 <script>
 const orb=document.getElementById('orb');
-const micBtn=document.getElementById('micBtn');
-const micLabel=document.getElementById('micLabel');
+const orbHint=document.getElementById('orbHint');
 const greetingEl=document.getElementById('greeting');
 const promptEl=document.getElementById('prompt');
 const scrim=document.getElementById('scrim');
@@ -298,7 +272,7 @@ const IDLE_PROMPT='What can I do for you?';
 
 /* ---------- greeting ---------- */
 function whoAmI(){
-  try{return localStorage.getItem(NAME_KEY)||'Joe'}catch(e){return 'Joe'}
+  try{return localStorage.getItem(NAME_KEY)||'Tim'}catch(e){return 'Tim'}
 }
 function timeOfDay(){
   const h=new Date().getHours();
@@ -318,7 +292,8 @@ function setState(state,message){
   document.body.classList.remove('connecting','listening','speaking');
   if(state)document.body.classList.add(state);
   promptEl.textContent=message||IDLE_PROMPT;
-  micLabel.textContent=(state==='listening'||state==='speaking')?'Tap to stop':'Tap to talk';
+  const live=(state==='listening'||state==='speaking');
+  orbHint.textContent=live?'Tap the orb to stop':'Tap the orb to talk';
 }
 
 /* ---------- memory (silent) ---------- */
@@ -355,7 +330,7 @@ async function connectVoice(){
   let tier='moderate';
   try{tier=localStorage.getItem('axon.tier')||'moderate'}catch(e){}
 
-  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(tier),{cache:'no-store'});
+  const r=await fetch('/session?src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
@@ -372,6 +347,7 @@ async function connectVoice(){
   pc.addTrack(localStream.getTracks()[0]);
 
   dc=pc.createDataChannel('oai-events');
+  let greeted=false;
   dc.addEventListener('open',()=>{
     try{
       dc.send(JSON.stringify({
@@ -380,11 +356,12 @@ async function connectVoice(){
       }));
     }catch(e){}
     const line=(data.greeting||'').trim();
-    if(line){
+    if(line&&!greeted){
+      greeted=true;
       try{
         dc.send(JSON.stringify({
           type:'response.create',
-          response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}
+          response:{instructions:'Say exactly this once, warmly, then stop and wait: "'+line+'"'}
         }));
       }catch(e){}
     }
@@ -415,20 +392,24 @@ async function connectVoice(){
 }
 
 async function toggleVoice(){
-  if(pc||starting){await stopVoice();return}
+  // Ignore taps while connecting — double-tapping used to kill the session mid-handshake
+  if(starting)return;
+  if(pc){await stopVoice();return}
   starting=true;
   setState('connecting','One moment…');
-  try{await connectVoice()}
-  catch(e){
+  try{
+    await connectVoice();
+  }catch(e){
     console.error(e);
+    starting=false;
     await stopVoice();
-    setState(null,'Tap again to try that once more.');
+    setState(null,'That did not connect. Tap the orb to try again.');
+    return;
   }
   starting=false;
 }
 
 orb.addEventListener('click',toggleVoice);
-micBtn.addEventListener('click',toggleVoice);
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     if(scrim.classList.contains('open'))closeSheet();
