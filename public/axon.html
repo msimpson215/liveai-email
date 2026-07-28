@@ -370,7 +370,8 @@ async function connectVoice(){
     try{micTrack.enabled=true}catch(e){}
   }
   dc.addEventListener('open',()=>{
-    const line=(data.greeting||'').trim();
+    // A personal link can carry its own opening line; otherwise use the server's.
+    const line=String(PRESET.greeting||data.greeting||'').trim();
     if(!line)openMic();
     if(line&&!greeted){
       greeted=true;
