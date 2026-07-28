@@ -637,24 +637,11 @@ async function connectVoice(){
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
-  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   pc.addTrack(localStream.getTracks()[0]);
   dc=pc.createDataChannel('oai-events');
   let greeted=false;
   dc.addEventListener('open',()=>{
-    try{
-      dc.send(JSON.stringify({
-        type:'session.update',
-        session:{
-          type:'realtime',
-          audio:{
-            input:{
-              transcription:{model:'gpt-4o-mini-transcribe'}
-            }
-          }
-        }
-      }));
-    }catch(e){}
     const line=String((data&&data.greeting)||'Hello Joe, how are you today? What can I do for you?').trim();
     if(line&&!greeted){
       greeted=true;
