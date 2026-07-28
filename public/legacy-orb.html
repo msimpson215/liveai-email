@@ -67,7 +67,7 @@ async function toggle(){
     const audio=document.createElement('audio');
     audio.autoplay=true;
     pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
-    localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
     pc.addTrack(localStream.getTracks()[0]);
     const offer=await pc.createOffer();
     await pc.setLocalDescription(offer);

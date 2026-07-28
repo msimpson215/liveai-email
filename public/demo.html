@@ -122,7 +122,7 @@ async function connectVoice(){
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
-  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   pc.addTrack(localStream.getTracks()[0]);
   const dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});

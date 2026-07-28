@@ -32,8 +32,10 @@ const TIERS = {
     realtime: process.env.OPENAI_REALTIME_MINI || 'gpt-realtime-mini',
     chat: process.env.OPENAI_CHAT_LIGHT || 'gpt-4o-mini'
   },
+  // Default tier keeps the full realtime model so the voice never changes
+  // between an ordinary session and an Advanced one.
   moderate: {
-    realtime: process.env.OPENAI_REALTIME_MINI || 'gpt-realtime-mini',
+    realtime: REALTIME_MODEL,
     chat: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini'
   },
   advanced: {
@@ -611,6 +613,10 @@ app.get('/session', async (req, res) => {
               // ChatGPT app leans on. near_field = phone/headset held close; it
               // strips room noise (TV, music, a sound machine) before turn-detection.
               noise_reduction: { type: 'near_field' },
+              // Set here, not by a client session.update. A partial session.update
+              // from the browser drops audio.output.voice, which made the voice
+              // change between sessions.
+              transcription: { model: 'gpt-4o-mini-transcribe' },
               turn_detection: interruptible ? {
                 // Semantic turn-detection — same idea as the ChatGPT app: a model
                 // decides when the caller has actually finished, so a TV, music, a
