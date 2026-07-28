@@ -612,10 +612,17 @@ async function connectVoice(){
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   pc.addTrack(localStream.getTracks()[0]);
+  const micTrack=localStream.getTracks()[0];
   dc=pc.createDataChannel('oai-events');
-  let greeted=false;
+  let greeted=false,micOpened=false;
+  function openMic(){
+    if(micOpened)return;
+    micOpened=true;
+    try{micTrack.enabled=true}catch(e){}
+  }
   dc.addEventListener('open',()=>{
     const line=String((data&&data.greeting)||'Hello Joe, how are you today? What can I do for you?').trim();
+    if(!line)openMic();
     if(line&&!greeted){
       greeted=true;
       try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say exactly this once, warmly, then stop and wait: "'+line+'"'}}))}catch(e){}
@@ -624,6 +631,7 @@ async function connectVoice(){
   dc.addEventListener('message',ev=>{
     try{
       const msg=JSON.parse(ev.data);
+      if(msg.type==='response.done'||msg.type==='response.audio.done')openMic();
       // When Joe finishes speaking a books ask, open the board from his words
       if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
         noteTurn('user',msg.transcript);

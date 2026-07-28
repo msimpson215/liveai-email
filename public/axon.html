@@ -344,12 +344,21 @@ async function connectVoice(){
     }
   };
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  pc.addTrack(localStream.getTracks()[0]);
-
+  const micTrack=localStream.getTracks()[0];
+  // Silent until the opening line finishes, so input audio cannot trigger
+  // a second response that collides with the greeting.
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
   dc=pc.createDataChannel('oai-events');
-  let greeted=false;
+  let greeted=false,micOpened=false;
+  function openMic(){
+    if(micOpened)return;
+    micOpened=true;
+    try{micTrack.enabled=true}catch(e){}
+  }
   dc.addEventListener('open',()=>{
     const line=(data.greeting||'').trim();
+    if(!line)openMic();
     if(line&&!greeted){
       greeted=true;
       try{
@@ -370,6 +379,7 @@ async function connectVoice(){
         noteTurn('assistant',msg.transcript);
       }
       if(msg.type==='response.created')setState('speaking','Speaking…');
+      if(msg.type==='response.done')openMic();
       if(msg.type==='response.done')setState('listening','Listening…');
     }catch(e){}
   });
