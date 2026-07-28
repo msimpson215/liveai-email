@@ -30,7 +30,12 @@ const AXON_PEOPLE = {
   joe: { name: 'Joe' },
   tim: { name: 'Tim' },
   ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' },
-  mia: { name: 'Mia', line: 'Ask me anything you want', title: 'Hello Mia — your own AI' },
+  mia: {
+    name: 'Mia',
+    line: 'Your dad built this and wanted you to check it out',
+    title: 'Hello Mia — your dad made this for you',
+    greeting: 'Hello Mia, your dad asked me to send this to you. He built it, and he wanted you to check it out. Ask me anything you want.'
+  },
   rachel: { name: 'Rachel', line: 'Ask me anything you want', title: 'Hello Rachel — your own AI' }
 }
 
