@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Axon"/>
-<meta name="theme-color" content="#1e3a8a"/>
+<meta name="theme-color" content="#061a4e"/>
 <meta name="cache-control" content="no-store"/>
 <link rel="manifest" href="/manifest.webmanifest"/>
 <link rel="apple-touch-icon" href="/icons/axon-180.png"/>
@@ -17,184 +17,457 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  /* Marty's VoxTalk blues */
-  --pale:#dbeafe;
-  --sky:#93c5fd;
-  --navy:#1e3a8a;
-  --blue:#3b82f6;
-  --blue-mid:#2563eb;
-  --blue-deep:#1e40af;
-  --light:#60a5fa;
-}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
   color:#fff;
-  background:radial-gradient(circle at 50% 18%, var(--pale) 0%, var(--sky) 38%, var(--navy) 88%);
+  background:
+    radial-gradient(115% 78% at 50% 66%, #2f8bf2 0%, #1a6bd2 24%, #0d4098 48%, #061c56 76%, #030f34 100%);
   background-attachment:fixed;
   -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  overflow:hidden;
 }
 
 .screen{
-  position:relative;z-index:1;
-  width:min(100%,430px);min-height:100dvh;margin:0 auto;
-  padding:clamp(1.8rem,6vh,2.8rem) 1.5rem clamp(1.8rem,5vh,2.6rem);
-  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;
+  width:min(100%,460px);min-height:100dvh;margin:0 auto;
+  padding:calc(env(safe-area-inset-top) + 1.1rem) 1.4rem calc(env(safe-area-inset-bottom) + 1.2rem);
+  display:flex;flex-direction:column;align-items:center;
 }
 
-/* wordmark — title case, normal A */
-.brand{
-  display:flex;align-items:center;justify-content:center;gap:.5rem;
-  margin-top:clamp(.4rem,2vh,1rem);
+/* top bar */
+.topbar{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
 }
-.brand .name{
-  font-size:1.6rem;font-weight:800;letter-spacing:-.035em;
-  color:#12306e;
+.icon-btn{
+  width:40px;height:40px;border:0;background:none;cursor:pointer;
+  display:grid;place-items:center;color:#fff;opacity:.94;
+  transition:opacity .15s ease,transform .15s ease;
 }
-.brand .ai{
-  font-size:.76rem;font-weight:800;letter-spacing:.06em;color:#fff;
-  background:linear-gradient(180deg,var(--blue) 0%,var(--blue-deep) 100%);
-  border-radius:8px;padding:.3rem .45rem .26rem;
-  box-shadow:0 6px 16px rgba(37,99,235,.35);
+.icon-btn:hover{opacity:1}
+.icon-btn:active{transform:scale(.94)}
+.burger{display:flex;flex-direction:column;gap:5px;width:22px}
+.burger i{display:block;height:2px;border-radius:2px;background:#fff}
+.burger i:nth-child(3){width:70%}
+
+/* greeting */
+.greeting{
+  margin-top:clamp(1.2rem,4.4vh,2.1rem);
+  font-size:clamp(1.7rem,7.2vw,2.1rem);
+  font-weight:700;letter-spacing:-.03em;line-height:1.15;
+  text-align:center;
+  text-shadow:0 2px 18px rgba(3,18,54,.45);
+}
+.prompt{
+  margin-top:.6rem;
+  font-size:clamp(.98rem,4.1vw,1.08rem);
+  font-weight:500;text-align:center;
+  color:rgba(214,235,255,.92);
+  min-height:1.5em;
+  transition:opacity .25s ease;
 }
 
-/* orb — same gradient + pulse as VoxTalk, bigger and 3D */
+/* ---------- THE ORB ---------- */
 .orb-stage{
-  margin-top:clamp(2rem,8vh,3.6rem);
-  position:relative;width:min(60vw,240px);aspect-ratio:1;
+  position:relative;
+  margin-top:clamp(1.4rem,5vh,2.4rem);
+  width:min(58vw,222px);aspect-ratio:1;
   display:grid;place-items:center;
+  flex-shrink:0;
+}
+/* wide ambient bloom behind the orb */
+.orb-stage::before{
+  content:"";position:absolute;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  width:230%;height:230%;border-radius:50%;
+  background:radial-gradient(circle,rgba(88,178,255,.30) 0%,rgba(60,140,240,.14) 38%,rgba(10,50,130,0) 68%);
+  pointer-events:none;
+}
+/* outer pulse rings */
+.pulse{
+  position:absolute;inset:-3%;border-radius:50%;
+  border:1.5px solid rgba(150,214,255,.5);
+  box-shadow:0 0 22px rgba(120,200,255,.35);
+  animation:pulseOut 3.8s cubic-bezier(.22,.62,.3,1) infinite;
+  pointer-events:none;
+}
+.pulse:nth-of-type(2){animation-delay:1.27s}
+.pulse:nth-of-type(3){animation-delay:2.54s}
+@keyframes pulseOut{
+  0%{transform:scale(.92);opacity:.62}
+  65%{opacity:0}
+  100%{transform:scale(1.34);opacity:0}
 }
 .orb{
   position:relative;
   width:100%;aspect-ratio:1;border-radius:50%;
   border:0;padding:0;cursor:pointer;
-  background:radial-gradient(circle at 30% 30%, var(--blue), var(--blue-deep));
+  background:
+    radial-gradient(circle at 50% 54%,
+      #ffffff 0%,
+      #f4fbff 6%,
+      #c3e6ff 13%,
+      #74b8f8 22%,
+      #3585e8 34%,
+      #1c66d0 48%,
+      #114ead 64%,
+      #0b3689 82%,
+      #0a2a72 100%);
   box-shadow:
-    0 6px 18px rgba(37,99,235,.3),
-    0 26px 60px rgba(15,40,110,.45),
-    inset 0 -18px 38px rgba(10,32,90,.5),
-    inset 0 12px 30px rgba(255,255,255,.28);
-  animation:listenPulse 2.6s ease-in-out infinite, breathe 3.6s ease-in-out infinite;
+    0 0 0 1.5px rgba(190,232,255,.72),
+    0 0 20px 2px rgba(140,210,255,.75),
+    0 0 46px 10px rgba(90,180,255,.5),
+    0 0 96px 26px rgba(50,140,245,.34),
+    0 26px 58px rgba(3,16,52,.5),
+    inset 0 -30px 56px rgba(4,18,58,.52),
+    inset 0 14px 30px rgba(255,255,255,.1);
+  animation:orbBreathe 4s ease-in-out infinite;
+  transition:transform .2s ease;
 }
+/* glass dome highlight across the top */
+.orb::before{
+  content:"";position:absolute;
+  top:6%;left:14%;width:72%;height:38%;
+  border-radius:50% 50% 46% 46%/64% 64% 36% 36%;
+  background:linear-gradient(180deg,rgba(255,255,255,.17) 0%,rgba(255,255,255,.05) 52%,rgba(255,255,255,0) 100%);
+  border-top:1px solid rgba(255,255,255,.28);
+  pointer-events:none;
+}
+/* soft reflection near the base */
 .orb::after{
   content:"";position:absolute;
-  top:13%;left:20%;width:40%;height:25%;border-radius:50%;
-  background:radial-gradient(ellipse at 40% 40%,rgba(255,255,255,.85),rgba(255,255,255,0) 70%);
-  filter:blur(1px);
+  bottom:7%;left:50%;transform:translateX(-50%);
+  width:52%;height:15%;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(190,228,255,.35),rgba(190,228,255,0) 72%);
+  filter:blur(2px);pointer-events:none;
 }
-.orb:active{transform:scale(.96)}
-@keyframes listenPulse{
-  0%{box-shadow:0 0 0 0 rgba(59,130,246,.7),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
-  50%{box-shadow:0 0 0 22px rgba(59,130,246,0),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
-  100%{box-shadow:0 0 0 0 rgba(59,130,246,0),0 26px 60px rgba(15,40,110,.45),inset 0 -18px 38px rgba(10,32,90,.5),inset 0 12px 30px rgba(255,255,255,.28)}
-}
-@keyframes breathe{
+.orb:active{transform:scale(.975)}
+@keyframes orbBreathe{
   0%,100%{transform:scale(1)}
-  50%{transform:scale(1.035)}
+  50%{transform:scale(1.028)}
+}
+/* live states */
+body.connecting .pulse{animation-duration:1.9s}
+body.listening .orb{animation-duration:2.6s}
+body.listening .pulse{animation-duration:2.4s;border-color:rgba(180,228,255,.65)}
+body.speaking .orb{animation-duration:1.5s}
+
+.spacer{flex:1;min-height:1rem}
+
+/* bottom mic */
+.mic-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+}
+.mic{
+  width:56px;height:56px;border-radius:50%;
+  border:1.5px solid rgba(178,220,255,.62);
+  background:rgba(20,80,180,.28);
+  color:#fff;cursor:pointer;
+  display:grid;place-items:center;
+  box-shadow:0 0 18px rgba(90,180,255,.35),inset 0 1px 0 rgba(255,255,255,.22);
+  transition:transform .16s ease,background .16s ease,box-shadow .16s ease;
+}
+.mic:hover{background:rgba(30,100,210,.38)}
+.mic:active{transform:scale(.95)}
+body.listening .mic{
+  background:rgba(70,160,255,.5);
+  box-shadow:0 0 26px rgba(120,200,255,.6),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.mic-label{
+  font-size:.92rem;font-weight:500;
+  color:rgba(190,224,255,.9);
 }
 
-.headline{
-  margin-top:clamp(2rem,6vh,2.8rem);
-  font-size:clamp(1.85rem,7.6vw,2.25rem);
-  font-weight:800;letter-spacing:-.03em;line-height:1.14;
-  color:#0d2a63;
-  text-shadow:0 1px 0 rgba(255,255,255,.25);
+.powered{
+  margin-top:1.15rem;
+  font-size:.86rem;font-weight:500;
+  color:rgba(160,205,255,.82);
 }
-.sub{
-  margin-top:.9rem;
-  font-size:1.02rem;font-weight:500;line-height:1.5;
-  color:#153a7e;max-width:19rem;
+.powered b{font-weight:700;color:#eaf4ff}
+
+/* menu sheet */
+.scrim{
+  position:fixed;inset:0;z-index:9;
+  background:rgba(3,16,48,.55);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;
 }
-
-.spacer{flex:1;min-height:1.2rem}
-
-.cta{
-  width:100%;display:flex;align-items:center;justify-content:center;gap:.65rem;
-  appearance:none;border:0;cursor:pointer;text-decoration:none;
-  border-radius:18px;padding:1.2rem 1.25rem;
-  background:linear-gradient(180deg,var(--light) 0%,var(--blue-mid) 55%,var(--blue-deep) 100%);
-  color:#fff;font:700 1.08rem/1 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:-.015em;
-  box-shadow:0 16px 34px rgba(20,50,130,.42),inset 0 1px 0 rgba(255,255,255,.3);
-  transition:transform .16s ease,filter .16s ease;
+.scrim.open{display:flex}
+.sheet{
+  width:min(100%,460px);
+  background:linear-gradient(180deg,#0d3d92,#082a68);
+  border-radius:22px 22px 0 0;
+  padding:1.3rem 1.3rem calc(1.5rem + env(safe-area-inset-bottom));
+  box-shadow:0 -20px 50px rgba(2,12,40,.5);
+  border-top:1px solid rgba(150,205,255,.28);
 }
-.cta:hover{filter:brightness(1.05)}
-.cta:active{transform:translateY(1px) scale(.995)}
-.wave{display:flex;align-items:center;gap:3px;height:18px}
-.wave i{display:block;width:3px;border-radius:2px;background:#fff;animation:bar 1.15s ease-in-out infinite}
-.wave i:nth-child(1){height:7px;animation-delay:0s}
-.wave i:nth-child(2){height:13px;animation-delay:.12s}
-.wave i:nth-child(3){height:18px;animation-delay:.24s}
-.wave i:nth-child(4){height:11px;animation-delay:.36s}
-.wave i:nth-child(5){height:8px;animation-delay:.48s}
-@keyframes bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
-
-.under{
-  margin-top:1rem;font-size:.92rem;font-weight:500;
-  color:rgba(255,255,255,.88);
-  background:none;border:0;cursor:pointer;
-  text-decoration:underline;text-underline-offset:4px;
-  text-decoration-color:rgba(255,255,255,.45);
+.sheet h2{font-size:1.1rem;font-weight:700;letter-spacing:-.02em}
+.sheet .memline{
+  margin-top:.35rem;font-size:.88rem;color:rgba(185,220,255,.88);font-weight:500;
+}
+.sheet a,.sheet button.row{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;margin-top:.7rem;
+  background:rgba(255,255,255,.09);border:1px solid rgba(160,210,255,.22);
+  border-radius:14px;padding:.95rem 1.05rem;
+  color:#fff;text-decoration:none;cursor:pointer;
+  font:600 .98rem/1 "Plus Jakarta Sans",system-ui,sans-serif;
+}
+.sheet a:hover,.sheet button.row:hover{background:rgba(255,255,255,.14)}
+.sheet .chev{opacity:.65}
+.sheet .close{
+  width:100%;margin-top:1rem;background:none;border:0;cursor:pointer;
+  color:rgba(190,222,255,.85);font:600 .95rem "Plus Jakarta Sans",system-ui,sans-serif;
+  padding:.6rem;
 }
 
 @media (prefers-reduced-motion:reduce){
-  .orb,.wave i{animation:none}
+  .orb,.pulse{animation:none}
 }
 </style>
 </head>
 <body>
   <main class="screen">
-    <div class="brand">
-      <span class="name">Axon</span>
-      <span class="ai">AI</span>
+    <div class="topbar">
+      <button type="button" class="icon-btn" id="menuBtn" aria-label="Menu">
+        <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <button type="button" class="icon-btn" id="gearBtn" aria-label="Settings">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.11A1.7 1.7 0 0 0 8.9 19.3a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.11A1.7 1.7 0 0 0 4.7 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1.03-1.56V3a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.49 1.03Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
+
+    <h1 class="greeting" id="greeting">Good morning, Joe.</h1>
+    <p class="prompt" id="prompt">What can I do for you?</p>
 
     <div class="orb-stage">
-      <button type="button" class="orb" id="orb" aria-label="Talk to Axon"></button>
+      <span class="pulse" aria-hidden="true"></span>
+      <span class="pulse" aria-hidden="true"></span>
+      <span class="pulse" aria-hidden="true"></span>
+      <button type="button" class="orb" id="orb" aria-label="Tap to talk"></button>
     </div>
-
-    <h1 class="headline">Here to help,<br/>every day.</h1>
-    <p class="sub">Ask it anything, anytime — and it always remembers.</p>
 
     <div class="spacer"></div>
 
-    <a class="cta" id="talkBtn" href="/mockup2.html">
-      <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-      Talk
-    </a>
-    <button type="button" class="under" id="signinBtn">Sign in</button>
+    <div class="mic-wrap">
+      <button type="button" class="mic" id="micBtn" aria-label="Tap to talk">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="9" y="2.6" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M5.5 11.2a6.5 6.5 0 0 0 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M12 17.8V21" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span class="mic-label" id="micLabel">Tap to talk</span>
+    </div>
+
+    <p class="powered">Powered by <b>Axon AI</b></p>
   </main>
+
+  <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="sheet">
+      <h2 id="sheetTitle">Axon AI</h2>
+      <p class="memline" id="memLine">Checking memory…</p>
+      <a href="/mockup2.html">Books &amp; charts <span class="chev">›</span></a>
+      <a href="/axon-brain.html">Teach it something <span class="chev">›</span></a>
+      <button type="button" class="row" id="clearName">Change name <span class="chev">›</span></button>
+      <button type="button" class="close" id="sheetClose">Close</button>
+    </div>
+  </div>
+
+  <audio id="axonAudio" autoplay playsinline></audio>
 
 <script>
 const orb=document.getElementById('orb');
-const talkBtn=document.getElementById('talkBtn');
-const signinBtn=document.getElementById('signinBtn');
-const WHO_KEY='axon.who';
+const micBtn=document.getElementById('micBtn');
+const micLabel=document.getElementById('micLabel');
+const greetingEl=document.getElementById('greeting');
+const promptEl=document.getElementById('prompt');
+const scrim=document.getElementById('scrim');
+const menuBtn=document.getElementById('menuBtn');
+const gearBtn=document.getElementById('gearBtn');
+const sheetClose=document.getElementById('sheetClose');
+const clearName=document.getElementById('clearName');
+const memLine=document.getElementById('memLine');
+const audioEl=document.getElementById('axonAudio');
 
-orb.addEventListener('click',()=>{window.location.href=talkBtn.getAttribute('href')});
+const NAME_KEY='axon.name';
+const IDLE_PROMPT='What can I do for you?';
 
-function showWho(){
-  let who='';
-  try{who=localStorage.getItem(WHO_KEY)||''}catch(e){}
-  signinBtn.textContent=who?who:'Sign in';
+/* ---------- greeting ---------- */
+function whoAmI(){
+  try{return localStorage.getItem(NAME_KEY)||'Joe'}catch(e){return 'Joe'}
 }
-showWho();
+function timeOfDay(){
+  const h=new Date().getHours();
+  if(h<12)return 'Good morning';
+  if(h<18)return 'Good afternoon';
+  return 'Good evening';
+}
+function paintGreeting(){
+  greetingEl.textContent=timeOfDay()+', '+whoAmI()+'.';
+}
+paintGreeting();
 
-signinBtn.addEventListener('click',()=>{
-  let who='';
-  try{who=localStorage.getItem(WHO_KEY)||''}catch(e){}
-  if(who){
-    try{localStorage.removeItem(WHO_KEY)}catch(e){}
-    showWho();return;
+/* ---------- state ---------- */
+let pc=null,dc=null,localStream=null,starting=false;
+
+function setState(state,message){
+  document.body.classList.remove('connecting','listening','speaking');
+  if(state)document.body.classList.add(state);
+  promptEl.textContent=message||IDLE_PROMPT;
+  micLabel.textContent=(state==='listening'||state==='speaking')?'Tap to stop':'Tap to talk';
+}
+
+/* ---------- memory (silent) ---------- */
+const turns=[];
+let flushing=false;
+function noteTurn(role,text){
+  const t=String(text||'').trim();
+  if(!t)return;
+  turns.push({role:role==='assistant'?'assistant':'user',text:t.slice(0,2000)});
+  if(turns.length>80)turns.splice(0,turns.length-80);
+}
+function flushMemory(source){
+  if(flushing||!turns.length)return;
+  const batch=turns.splice(0,turns.length);
+  flushing=true;
+  fetch('/api/brain/memory/remember',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({turns:batch,source:source||'orb'}),
+    keepalive:true
+  }).catch(()=>{}).finally(()=>{flushing=false});
+}
+
+/* ---------- voice ---------- */
+async function stopVoice(){
+  flushMemory('orb');
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;starting=false;
+  setState(null);
+}
+
+async function connectVoice(){
+  let tier='moderate';
+  try{tier=localStorage.getItem('axon.tier')||'moderate'}catch(e){}
+
+  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(tier),{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  pc.ontrack=e=>{
+    if(audioEl.srcObject!==e.streams[0]){
+      audioEl.srcObject=e.streams[0];
+      audioEl.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  pc.addTrack(localStream.getTracks()[0]);
+
+  dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',()=>{
+    try{
+      dc.send(JSON.stringify({
+        type:'session.update',
+        session:{type:'realtime',audio:{input:{transcription:{model:'gpt-4o-mini-transcribe'}}}}
+      }));
+    }catch(e){}
+    const line=(data.greeting||'').trim();
+    if(line){
+      try{
+        dc.send(JSON.stringify({
+          type:'response.create',
+          response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}
+        }));
+      }catch(e){}
+    }
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
+        noteTurn('user',msg.transcript);
+      }
+      if((msg.type==='response.audio_transcript.done'||msg.type==='response.output_audio_transcript.done')&&msg.transcript){
+        noteTurn('assistant',msg.transcript);
+      }
+      if(msg.type==='response.created')setState('speaking','Speaking…');
+      if(msg.type==='response.done')setState('listening','Listening…');
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setState('listening','Listening…');
+}
+
+async function toggleVoice(){
+  if(pc||starting){await stopVoice();return}
+  starting=true;
+  setState('connecting','One moment…');
+  try{await connectVoice()}
+  catch(e){
+    console.error(e);
+    await stopVoice();
+    setState(null,'Tap again to try that once more.');
   }
-  const v=prompt('Your name or email');
-  if(!v)return;
-  const name=String(v).split('@')[0].trim();
-  if(!name)return;
-  try{localStorage.setItem(WHO_KEY,name)}catch(e){}
-  showWho();
+  starting=false;
+}
+
+orb.addEventListener('click',toggleVoice);
+micBtn.addEventListener('click',toggleVoice);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(scrim.classList.contains('open'))closeSheet();
+    else if(pc||starting)stopVoice();
+  }
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    if(pc||starting)stopVoice();
+    else flushMemory('pagehide');
+  }
+});
+window.addEventListener('pagehide',()=>flushMemory('pagehide'));
+
+/* ---------- menu ---------- */
+function openSheet(){
+  scrim.classList.add('open');
+  fetch('/api/brain/status',{cache:'no-store'})
+    .then(r=>r.json())
+    .then(d=>{
+      const n=(d&&d.memory&&d.memory.count)||0;
+      memLine.textContent=n
+        ? (n===1?'Remembering 1 conversation':'Remembering '+n+' conversations')
+        : 'Memory starts building as you talk.';
+    })
+    .catch(()=>{memLine.textContent=''});
+}
+function closeSheet(){scrim.classList.remove('open')}
+menuBtn.addEventListener('click',openSheet);
+gearBtn.addEventListener('click',openSheet);
+sheetClose.addEventListener('click',closeSheet);
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeSheet()});
+clearName.addEventListener('click',()=>{
+  const v=prompt('What should I call you?',whoAmI());
+  if(v&&v.trim()){
+    try{localStorage.setItem(NAME_KEY,v.trim().split('@')[0])}catch(e){}
+    paintGreeting();
+  }
+  closeSheet();
 });
 </script>
 </body>
