@@ -629,8 +629,14 @@ async function stopVoice(){
   if(mode!=='texting')setMode('idle');
 }
 
+/* Time of day from this device, so the spoken greeting matches the caller's clock */
+function axonTimeOfDay(){
+  const h=new Date().getHours();
+  return h<12?'morning':(h<18?'afternoon':'evening');
+}
+
 async function connectVoice(){
-  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(AXON_TIER),{cache:'no-store'});
+  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(AXON_TIER)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));

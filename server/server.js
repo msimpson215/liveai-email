@@ -591,14 +591,27 @@ async function maybeRollupOlderMonths() {
 
 // Exact words the AI must speak first. Used to force the opening over the
 // data channel so the model cannot improvise its own greeting.
+/**
+ * Time of day comes from the caller's own device, since the server clock is UTC
+ * and would greet a St. Louis morning as afternoon.
+ */
+function resolveTimeOfDay(value) {
+  const v = String(value || '').toLowerCase()
+  if (v === 'morning' || v === 'afternoon' || v === 'evening') {
+    return `Good ${v}`
+  }
+  return 'Hello'
+}
+
 function buildSpokenGreeting(source, context = {}) {
   if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
+  const opener = resolveTimeOfDay(context.timeOfDay)
   if (source === 'qb') {
-    return 'Hello Joe, how are you today? What can I do for you?'
+    return `${opener} Joe, how are you today? What can I do for you?`
   }
   if (source === 'axon') {
     const name = context.recipientName ? ` ${context.recipientName}` : ''
-    return `Hello${name}, how are you today? What can I do for you?`
+    return `${opener}${name}, how are you today? What can I do for you?`
   }
   return ''
 }
@@ -633,6 +646,7 @@ app.get('/session', async (req, res) => {
     const recipientName = sanitizeRecipientName(req.query.name)
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const tier = resolveTier(req.query.tier || req.query.mode)
+    const timeOfDay = req.query.tod
     const instructions = await buildInstructionsAsync(source, { recipientName })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
@@ -702,7 +716,7 @@ app.get('/session', async (req, res) => {
       voice: REALTIME_VOICE,
       source,
       recipientName,
-      greeting: buildSpokenGreeting(source, { recipientName })
+      greeting: buildSpokenGreeting(source, { recipientName, timeOfDay })
     })
   } catch (error) {
     res.status(500).json({ error: 'API Failure' })
