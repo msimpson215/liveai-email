@@ -382,6 +382,11 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 // of the conversation IS interruptible. Enable server-side interruption for them.
 const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon'])
 
+// Everyday assistants live in noisy rooms (shop radio, truck, jobsite). They wait
+// longer before deciding you finished talking, so background noise cannot make
+// them answer themselves.
+const PATIENT_SOURCES = new Set(['qb', 'axon'])
+
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
     .replace(/[^a-zA-Z0-9 .,'-]/g, '')
@@ -618,12 +623,13 @@ app.get('/session', async (req, res) => {
               // change between sessions.
               transcription: { model: 'gpt-4o-mini-transcribe' },
               turn_detection: interruptible ? {
-                // Semantic turn-detection — same idea as the ChatGPT app: a model
-                // decides when the caller has actually finished, so a TV, music, a
-                // sound machine, or room chatter doesn't cut the AI off or fire false
-                // turns. Fully hands-free and interruptible, no tap needed.
+                // Semantic turn-detection — a model decides when the caller has
+                // actually finished, so a TV, music, or room chatter doesn't cut
+                // the AI off. Hands-free and interruptible, no tap needed.
+                // 'low' eagerness waits longer before answering: slightly slower,
+                // but it stops a radio or shop noise from making it talk to itself.
                 type: 'semantic_vad',
-                eagerness: 'medium',
+                eagerness: PATIENT_SOURCES.has(source) ? 'low' : 'medium',
                 interrupt_response: true,
                 create_response: true
               } : {
