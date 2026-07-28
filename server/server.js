@@ -29,7 +29,9 @@ const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 const AXON_PEOPLE = {
   joe: { name: 'Joe' },
   tim: { name: 'Tim' },
-  ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' }
+  ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' },
+  mia: { name: 'Mia', line: 'Ask me anything you want', title: 'Hello Mia — your own AI' },
+  rachel: { name: 'Rachel', line: 'Ask me anything you want', title: 'Hello Rachel — your own AI' }
 }
 
 for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
