@@ -643,8 +643,12 @@ async function connectVoice(){
   const audio=ensureAudio();
   pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  pc.addTrack(localStream.getTracks()[0]);
   const micTrack=localStream.getTracks()[0];
+  // Silent until the opening line finishes, so nothing the mic hears - the
+  // caller saying "hi", or the speaker feeding back - can trigger a second
+  // response that talks over the greeting.
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
   dc=pc.createDataChannel('oai-events');
   let greeted=false,micOpened=false;
   function openMic(){
