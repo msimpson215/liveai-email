@@ -613,6 +613,7 @@ async function connectVoice(){
   localStream=await navigator.mediaDevices.getUserMedia({audio:true});
   pc.addTrack(localStream.getTracks()[0]);
   dc=pc.createDataChannel('oai-events');
+  let greeted=false;
   dc.addEventListener('open',()=>{
     try{
       dc.send(JSON.stringify({
@@ -627,8 +628,11 @@ async function connectVoice(){
         }
       }));
     }catch(e){}
-    const line="Hello Joe, how are you today? What can I do for you today?";
-    try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say this once, warmly and clearly, word for word: "'+line+'"'}}))}catch(e){}
+    const line=String((data&&data.greeting)||'Hello Joe, how are you today? What can I do for you?').trim();
+    if(line&&!greeted){
+      greeted=true;
+      try{dc.send(JSON.stringify({type:'response.create',response:{instructions:'Say exactly this once, warmly, then stop and wait: "'+line+'"'}}))}catch(e){}
+    }
   });
   dc.addEventListener('message',ev=>{
     try{
@@ -655,10 +659,11 @@ async function connectVoice(){
 }
 
 async function toggleVoice(){
-  if(pc||starting){await stopVoice();return}
+  if(starting)return;
+  if(pc){await stopVoice();return}
   starting=true;setMode('connecting');
   try{await connectVoice()}
-  catch(e){console.error(e);await stopVoice();setMode('error')}
+  catch(e){console.error(e);starting=false;await stopVoice();setMode('error');return}
   starting=false;
 }
 
