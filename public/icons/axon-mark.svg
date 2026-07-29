@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Axon Partner">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#1e4fb8"/>
+      <stop offset="35%" stop-color="#123a8c"/>
+      <stop offset="70%" stop-color="#0a2466"/>
+      <stop offset="100%" stop-color="#061a4e"/>
+    </radialGradient>
+    <linearGradient id="a" x1="0" y1="230" x2="0" y2="790" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="25%" stop-color="#bfdbfe"/>
+      <stop offset="55%" stop-color="#60a5fa"/>
+      <stop offset="85%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <path d="M250 780 L456 250 H568 L774 780" fill="none" stroke="url(#a)" stroke-width="108" stroke-linejoin="miter"/>
+</svg>

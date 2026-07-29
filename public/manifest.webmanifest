@@ -1,13 +1,13 @@
 {
-  "name": "Axon AI",
+  "name": "Axon Partner",
   "short_name": "Axon",
-  "description": "Your professional AI assistant — books, notes, and memory that lasts.",
+  "description": "Your Axon Partner — open AI help with memory that lasts.",
   "start_url": "/axon.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f6f5f2",
-  "theme_color": "#f6f5f2",
+  "background_color": "#061a4e",
+  "theme_color": "#061a4e",
   "icons": [
     {
       "src": "/icons/axon-192.png",
