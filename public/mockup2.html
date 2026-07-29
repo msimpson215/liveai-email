@@ -331,6 +331,7 @@ body.split .dock{
     </div>
   </div>
 
+<script src="/js/axon-web-tools.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const qInput=document.getElementById('q');
@@ -673,7 +674,15 @@ async function connectVoice(){
   dc.addEventListener('message',ev=>{
     try{
       const msg=JSON.parse(ev.data);
-      if(msg.type==='response.done'||msg.type==='response.audio.done')openMic();
+      if(msg.type==='response.done'||msg.type==='response.audio.done'){
+        if(msg.type==='response.done'&&window.AxonWebTools&&window.AxonWebTools.handleRealtimeWebTools){
+          window.AxonWebTools.handleRealtimeWebTools(msg,dc,{onStatus:function(){setMode('speaking')}}).then(function(handled){
+            if(!handled)openMic();
+          }).catch(function(){openMic()});
+        }else{
+          openMic();
+        }
+      }
       // When Joe finishes speaking a books ask, open the board from his words
       if(msg.type==='conversation.item.input_audio_transcription.completed'&&msg.transcript){
         noteTurn('user',msg.transcript);
