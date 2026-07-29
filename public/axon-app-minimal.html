@@ -4,19 +4,23 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Axon AI"/>
-<meta name="theme-color" content="#faf8f4"/>
+<meta name="apple-mobile-web-app-title" content="Axon Partner"/>
+<meta name="theme-color" content="#061a4e"/>
 <meta name="cache-control" content="no-store"/>
-<title>Axon AI — Talk to your assistant</title>
+<link rel="manifest" href="/manifest.webmanifest"/>
+<link rel="apple-touch-icon" href="/icons/axon-180.png"/>
+<link rel="icon" href="/icons/axon-192.png"/>
+<title>Axon Partner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --ink:#15161a;
-  --muted:#8b8779;
-  --gold:#d9a520;
-  --gold-soft:#f0d98a;
+  --ink:#0b1f4a;
+  --muted:#5b6b8c;
+  --blue:#3b82f6;
+  --blue-deep:#1e40af;
+  --blue-soft:#93c5fd;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -24,8 +28,8 @@ body{
   font-family:"Outfit",system-ui,sans-serif;
   color:var(--ink);
   background:
-    radial-gradient(70% 45% at 50% 20%, #fffdf7 0%, transparent 70%),
-    linear-gradient(178deg,#faf8f4 0%,#f4f1ea 100%);
+    radial-gradient(70% 45% at 50% 18%, rgba(147,197,253,.35) 0%, transparent 70%),
+    linear-gradient(178deg,#eef4ff 0%,#dbeafe 100%);
   -webkit-font-smoothing:antialiased;
 }
 .screen{
@@ -41,13 +45,13 @@ body{
 
 .mark{
   width:56px;height:56px;border-radius:16px;
-  background:linear-gradient(150deg,var(--gold-soft) 0%,var(--gold) 60%,#b8860b 100%);
-  color:#1b1608;
+  background:linear-gradient(150deg,var(--blue-soft) 0%,var(--blue) 60%,var(--blue-deep) 100%);
+  color:#eff6ff;
   font-family:"Instrument Serif",Georgia,serif;
   font-size:2.1rem;line-height:1;
   display:grid;place-items:center;
   letter-spacing:-.05em;
-  box-shadow:0 14px 34px rgba(217,165,32,.28);
+  box-shadow:0 14px 34px rgba(37,99,235,.28);
   margin-top:clamp(1rem,7vh,3.5rem);
 }
 
@@ -85,11 +89,11 @@ body{
   text-decoration:none;
   border-radius:999px;
   padding:1.15rem 1.25rem;
-  background:linear-gradient(180deg,#f2d67c,var(--gold));
-  color:#1b1608;
+  background:linear-gradient(180deg,#60a5fa,var(--blue));
+  color:#eff6ff;
   font:600 1.02rem/1 "Outfit",system-ui,sans-serif;
   letter-spacing:-.01em;
-  box-shadow:0 16px 34px rgba(217,165,32,.3);
+  box-shadow:0 16px 34px rgba(37,99,235,.3);
   transition:transform .15s ease, filter .15s ease;
 }
 .cta:active{transform:scale(.985)}
@@ -108,7 +112,7 @@ body{
 
     <div class="word">
       <h1>Axon</h1>
-      <span>AI</span>
+      <span>Partner</span>
     </div>
 
     <p class="line">Your professional assistant.</p>
