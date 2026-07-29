@@ -1,10 +1,13 @@
 /**
- * Joe's Professional Assistant — long-term memory bank.
+ * Axon long-term memory bank.
  *
  * Every talk is auto-summarized and stored. Next session loads those
  * summaries silently so the assistant can recall things from months ago.
  *
- * Storage: data/joe-memory/summaries.json
+ * Each person gets their OWN bank file, so what Rachel says never leaks
+ * into Tim's session. Storage: data/joe-memory/<person>.json
+ * Joe keeps the original summaries.json so existing history survives.
+ *
  * Retention: keeps many months of session summaries + monthly digests.
  */
 
@@ -14,7 +17,32 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..', 'data', 'joe-memory')
-const INDEX = path.join(ROOT, 'summaries.json')
+const DEFAULT_PERSON = 'joe'
+
+/** Person name/slug → safe file key. Anything unusable falls back to Joe. */
+function personKey(person) {
+  const key = String(person || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+  return key || DEFAULT_PERSON
+}
+
+/**
+ * Joe's history predates per-person banks and lives in summaries.json.
+ * Everyone else gets <person>.json.
+ */
+function bankFile(person) {
+  const key = personKey(person)
+  return key === DEFAULT_PERSON
+    ? path.join(ROOT, 'summaries.json')
+    : path.join(ROOT, `${key}.json`)
+}
+
+function bankRelPath(person) {
+  return path.join('data', 'joe-memory', path.basename(bankFile(person)))
+}
 
 /** Plenty of headroom for ~daily use over many months. */
 const MAX_ENTRIES = 800
@@ -29,24 +57,25 @@ function ensureDir() {
   if (!fs.existsSync(ROOT)) fs.mkdirSync(ROOT, { recursive: true })
 }
 
-function readAll() {
+function readAll(person) {
   ensureDir()
-  if (!fs.existsSync(INDEX)) return []
+  const file = bankFile(person)
+  if (!fs.existsSync(file)) return []
   try {
-    const raw = JSON.parse(fs.readFileSync(INDEX, 'utf8'))
+    const raw = JSON.parse(fs.readFileSync(file, 'utf8'))
     return Array.isArray(raw) ? raw : []
   } catch {
     return []
   }
 }
 
-function writeAll(entries) {
+function writeAll(entries, person) {
   ensureDir()
-  fs.writeFileSync(INDEX, JSON.stringify(entries, null, 2), 'utf8')
+  fs.writeFileSync(bankFile(person), JSON.stringify(entries, null, 2), 'utf8')
 }
 
-function listMemories() {
-  return readAll().slice().sort((a, b) => String(b.at).localeCompare(String(a.at)))
+function listMemories(person) {
+  return readAll(person).slice().sort((a, b) => String(b.at).localeCompare(String(a.at)))
 }
 
 function monthKey(iso) {
@@ -62,6 +91,7 @@ function daysAgo(iso) {
 function saveSummary(summary, meta = {}) {
   const clean = String(summary || '').replace(/\0/g, '').trim().slice(0, MAX_SUMMARY_CHARS)
   if (!clean) return null
+  const person = personKey(meta.person)
   const entry = {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     at: new Date().toISOString(),
@@ -69,12 +99,13 @@ function saveSummary(summary, meta = {}) {
     source: meta.source || 'session',
     kind: meta.kind || 'session',
     month: monthKey(new Date().toISOString()),
+    person,
     turns: Number(meta.turns) || 0
   }
-  const all = readAll()
+  const all = readAll(person)
   all.push(entry)
   const trimmed = all.length > MAX_ENTRIES ? all.slice(all.length - MAX_ENTRIES) : all
-  writeAll(trimmed)
+  writeAll(trimmed, person)
   return entry
 }
 
@@ -82,10 +113,11 @@ function saveSummary(summary, meta = {}) {
  * Build / refresh a monthly digest from session summaries in that month.
  * Keeps older months recallable without stuffing every session into the prompt.
  */
-function upsertMonthDigest(month, text) {
+function upsertMonthDigest(month, text, person) {
   const clean = String(text || '').replace(/\0/g, '').trim().slice(0, MAX_SUMMARY_CHARS)
   if (!month || !clean) return null
-  const all = readAll()
+  const key = personKey(person)
+  const all = readAll(key)
   const existingIdx = all.findIndex(e => e.kind === 'month_digest' && e.month === month)
   const entry = {
     id: existingIdx >= 0 ? all[existingIdx].id : `digest-${month}`,
@@ -94,27 +126,32 @@ function upsertMonthDigest(month, text) {
     source: 'rollup',
     kind: 'month_digest',
     month,
+    person: key,
     turns: 0
   }
   if (existingIdx >= 0) all[existingIdx] = entry
   else all.push(entry)
-  writeAll(all.length > MAX_ENTRIES ? all.slice(all.length - MAX_ENTRIES) : all)
+  writeAll(all.length > MAX_ENTRIES ? all.slice(all.length - MAX_ENTRIES) : all, key)
   return entry
 }
 
 /** Sessions for a month (excludes digests). */
-function sessionsForMonth(month) {
-  return readAll().filter(e => (e.kind || 'session') !== 'month_digest' && monthKey(e.at) === month)
+function sessionsForMonth(month, person) {
+  return readAll(person).filter(
+    e => (e.kind || 'session') !== 'month_digest' && monthKey(e.at) === month
+  )
 }
 
 /**
  * Compact block injected into voice + text instructions automatically.
  * Recent sessions in detail; older months via digests / short dated lines.
  */
-function memorySnippet() {
-  const all = listMemories()
+function memorySnippet(person) {
+  const who = personKey(person)
+  const label = who.charAt(0).toUpperCase() + who.slice(1)
+  const all = listMemories(who)
   if (!all.length) {
-    return 'LONG-TERM MEMORY: none yet. As you talk with Joe, summaries will accumulate automatically in the memory bank.'
+    return `LONG-TERM MEMORY: none yet. As you talk with ${label}, summaries will accumulate automatically in their own private memory bank.`
   }
 
   const sessions = all.filter(e => (e.kind || 'session') !== 'month_digest')
@@ -128,9 +165,9 @@ function memorySnippet() {
 
   let budget = MAX_INJECT_CHARS
   const parts = [
-    `LONG-TERM MEMORY BANK (${sessions.length} session summaries` +
+    `LONG-TERM MEMORY BANK for ${label} only (${sessions.length} session summaries` +
       (digests.length ? `, ${digests.length} monthly digests` : '') +
-      ` — use naturally, like you have known Joe for months. Do NOT dump this list unless he asks what you remember):`,
+      `) — these are ${label}'s own conversations. Use naturally, like you have known them for months. Do NOT dump this list unless they ask what you remember:`,
     '',
     'RECENT (last ~45 days):'
   ]
@@ -171,17 +208,19 @@ function memorySnippet() {
   return parts.join('\n')
 }
 
-function status() {
-  const all = listMemories()
+function status(person) {
+  const who = personKey(person)
+  const all = listMemories(who)
   const sessions = all.filter(e => (e.kind || 'session') !== 'month_digest')
   const digests = all.filter(e => e.kind === 'month_digest')
   const oldest = sessions.length ? sessions[sessions.length - 1] : null
   return {
+    person: who,
     count: sessions.length,
     digests: digests.length,
     latestAt: sessions[0]?.at || null,
     oldestAt: oldest?.at || null,
-    bankPath: 'data/joe-memory/summaries.json'
+    bankPath: bankRelPath(who)
   }
 }
 
@@ -192,6 +231,7 @@ export {
   sessionsForMonth,
   memorySnippet,
   status,
+  personKey,
   ROOT,
   MAX_SUMMARY_CHARS,
   monthKey

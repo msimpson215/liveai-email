@@ -445,7 +445,9 @@ async function buildInstructionsAsync(source, context = {}) {
     let knowledge = ''
     let memory = ''
     try { knowledge = joeKnowledge.knowledgeSnippet() } catch { /* ignore */ }
-    try { memory = joeMemory.memorySnippet() } catch { /* ignore */ }
+    // Each named link reads only its own bank, so Rachel's talks never
+    // surface in Tim's session.
+    try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
     return buildInstructions(source, { ...context, knowledge, memory })
   }
   if (source === 'qb') {
@@ -473,7 +475,9 @@ async function buildInstructionsAsync(source, context = {}) {
 }
 
 /** Turn raw conversation turns into one durable summary and store it. */
-async function rememberTurns(turns, source = 'session') {
+async function rememberTurns(turns, source = 'session', person = 'joe') {
+  const who = joeMemory.personKey(person)
+  const label = who.charAt(0).toUpperCase() + who.slice(1)
   const cleaned = (Array.isArray(turns) ? turns : [])
     .map(t => ({
       role: t?.role === 'assistant' ? 'assistant' : 'user',
@@ -485,13 +489,13 @@ async function rememberTurns(turns, source = 'session') {
   // Skip pure greeting-only noise
   const substantive = cleaned.filter(t => {
     const s = t.text.toLowerCase()
-    if (t.role === 'assistant' && s.includes('hello joe') && s.includes('what can i do')) return false
+    if (t.role === 'assistant' && s.includes(`hello ${who}`) && s.includes('what can i do')) return false
     return s.length > 8
   })
   if (!substantive.length) return null
 
   const transcript = substantive
-    .map(t => `${t.role === 'assistant' ? 'Assistant' : 'Joe'}: ${t.text}`)
+    .map(t => `${t.role === 'assistant' ? 'Assistant' : label}: ${t.text}`)
     .join('\n')
     .slice(0, 8000)
 
@@ -510,7 +514,7 @@ async function rememberTurns(turns, source = 'session') {
           messages: [
             {
               role: 'system',
-              content: `Summarize this conversation with Joe for long-term memory of Joe's Professional Assistant (Axon AI). Write 2–5 dense sentences covering: preferences, decisions, facts about the business, what he asked for, and anything to recall months later. No greeting fluff. Third person ("Joe asked…"). Max ${joeMemory.MAX_SUMMARY_CHARS} characters.`
+              content: `Summarize this conversation with ${label} for ${label}'s own long-term Axon memory bank. Write 2–5 dense sentences covering: preferences, decisions, facts, what they asked for, and anything to recall months later. No greeting fluff. Third person ("${label} asked…"). Max ${joeMemory.MAX_SUMMARY_CHARS} characters.`
             },
             { role: 'user', content: transcript }
           ]
@@ -525,21 +529,27 @@ async function rememberTurns(turns, source = 'session') {
   if (!summary) {
     summary = substantive
       .slice(0, 6)
-      .map(t => `${t.role === 'assistant' ? 'A' : 'J'}: ${t.text}`)
+      .map(t => `${t.role === 'assistant' ? 'A' : label.charAt(0)}: ${t.text}`)
       .join(' | ')
       .slice(0, joeMemory.MAX_SUMMARY_CHARS)
   }
-  const saved = joeMemory.saveSummary(summary, { source, turns: substantive.length })
+  const saved = joeMemory.saveSummary(summary, {
+    source,
+    person: who,
+    turns: substantive.length
+  })
   // Keep older months recallable via digests (fire-and-forget)
-  maybeRollupOlderMonths().catch(() => {})
+  maybeRollupOlderMonths(who).catch(() => {})
   return saved
 }
 
 /** Compress prior months into digests so 3–6+ month recall stays in the bank. */
-async function maybeRollupOlderMonths() {
+async function maybeRollupOlderMonths(person = 'joe') {
+  const who = joeMemory.personKey(person)
+  const label = who.charAt(0).toUpperCase() + who.slice(1)
   const now = new Date()
   const thisMonth = joeMemory.monthKey(now.toISOString())
-  const memories = joeMemory.listMemories()
+  const memories = joeMemory.listMemories(who)
   const sessionMonths = [...new Set(
     memories
       .filter(e => (e.kind || 'session') !== 'month_digest')
@@ -551,7 +561,7 @@ async function maybeRollupOlderMonths() {
   )
 
   for (const month of sessionMonths.slice(0, 6)) {
-    const sessions = joeMemory.sessionsForMonth(month)
+    const sessions = joeMemory.sessionsForMonth(month, who)
     if (sessions.length < 2) continue
     // Refresh digest when month has grown a lot, or create if missing
     const digest = memories.find(e => e.kind === 'month_digest' && e.month === month)
@@ -578,7 +588,7 @@ async function maybeRollupOlderMonths() {
             messages: [
               {
                 role: 'system',
-                content: `Create a monthly memory digest for Joe's Professional Assistant (Axon AI) for ${month}. 4–8 dense sentences: lasting prefs, business facts, decisions, recurring asks. Third person. Max ${joeMemory.MAX_SUMMARY_CHARS} chars.`
+                content: `Create a monthly memory digest of ${label}'s Axon conversations for ${month}. 4–8 dense sentences: lasting prefs, facts, decisions, recurring asks. Third person. Max ${joeMemory.MAX_SUMMARY_CHARS} chars.`
               },
               { role: 'user', content: blob }
             ]
@@ -591,7 +601,7 @@ async function maybeRollupOlderMonths() {
     if (!text) {
       text = sessions.slice(0, 8).map(s => s.summary).join(' ').slice(0, joeMemory.MAX_SUMMARY_CHARS)
     }
-    joeMemory.upsertMonthDigest(month, text)
+    joeMemory.upsertMonthDigest(month, text, who)
   }
 }
 
@@ -845,12 +855,12 @@ async function extractUploadedText(file) {
   throw new Error('Use a .txt, .md, .pdf, or .docx file.')
 }
 
-app.get('/api/brain/status', (_req, res) => {
+app.get('/api/brain/status', (req, res) => {
   res.set('Cache-Control', 'no-store')
   let docs = []
   let memory = { count: 0, latestAt: null }
   try { docs = joeKnowledge.listDocs() } catch { docs = [] }
-  try { memory = joeMemory.status() } catch { /* ignore */ }
+  try { memory = joeMemory.status(req.query.person || req.query.name) } catch { /* ignore */ }
   res.json({
     ok: true,
     ...quickbooks.status(),
@@ -860,21 +870,27 @@ app.get('/api/brain/status', (_req, res) => {
   })
 })
 
-app.get('/api/brain/memory', (_req, res) => {
+app.get('/api/brain/memory', (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
-    res.json({ ok: true, ...joeMemory.status(), memories: joeMemory.listMemories().slice(0, 60) })
+    const person = joeMemory.personKey(req.query.person || req.query.name)
+    res.json({
+      ok: true,
+      ...joeMemory.status(person),
+      memories: joeMemory.listMemories(person).slice(0, 60)
+    })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'memory list failed' })
   }
 })
 
 /** Rebuild monthly digests so older months stay easy to recall. */
-app.post('/api/brain/memory/rollup', async (_req, res) => {
+app.post('/api/brain/memory/rollup', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
-    await maybeRollupOlderMonths()
-    res.json({ ok: true, ...joeMemory.status() })
+    const person = joeMemory.personKey(req.body?.person || req.query.person)
+    await maybeRollupOlderMonths(person)
+    res.json({ ok: true, ...joeMemory.status(person) })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'rollup failed' })
   }
@@ -884,11 +900,17 @@ app.post('/api/brain/memory/rollup', async (_req, res) => {
 app.post('/api/brain/memory/remember', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
-    const entry = await rememberTurns(req.body?.turns, req.body?.source || 'session')
+    const person = joeMemory.personKey(req.body?.person || req.body?.name)
+    const entry = await rememberTurns(req.body?.turns, req.body?.source || 'session', person)
     if (!entry) {
       return res.json({ ok: true, saved: false, reason: 'nothing_to_remember' })
     }
-    res.json({ ok: true, saved: true, entry: { id: entry.id, at: entry.at }, ...joeMemory.status() })
+    res.json({
+      ok: true,
+      saved: true,
+      entry: { id: entry.id, at: entry.at },
+      ...joeMemory.status(person)
+    })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'remember failed' })
   }
@@ -921,18 +943,19 @@ app.post('/api/brain/memory/import', upload.single('file'), async (req, res) => 
       .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
       .slice(0, limit)
 
+    const person = joeMemory.personKey(req.body?.person || req.body?.name)
     let saved = 0
     for (const convo of chosen) {
-      const entry = await rememberTurns(convo.turns, 'chatgpt-import')
+      const entry = await rememberTurns(convo.turns, 'chatgpt-import', person)
       if (entry) saved++
     }
-    maybeRollupOlderMonths().catch(() => {})
+    maybeRollupOlderMonths(person).catch(() => {})
 
     res.json({
       ok: true,
       found: conversations.length,
       imported: saved,
-      ...joeMemory.status()
+      ...joeMemory.status(person)
     })
   } catch (error) {
     res.status(500).json({ ok: false, error: error.message || 'import failed' })

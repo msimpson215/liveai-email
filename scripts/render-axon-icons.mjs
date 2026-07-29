@@ -121,7 +121,7 @@ try {
 }
 
 for (const size of sizes) {
-  const out = path.join(outDir, `axon-${size}.png`)
+  const out = path.join(outDir, `axon-blue-${size}.png`)
   const r = spawnSync(
     'ffmpeg',
     ['-y', '-i', masterPath, '-vf', `scale=${size}:${size}`, out],
