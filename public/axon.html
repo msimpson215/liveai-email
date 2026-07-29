@@ -254,6 +254,7 @@ body.listening .orb-hint,body.speaking .orb-hint{opacity:.45}
 
   <audio id="axonAudio" autoplay playsinline></audio>
 
+<script src="/js/axon-web-tools.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const orbHint=document.getElementById('orbHint');
@@ -399,8 +400,17 @@ async function connectVoice(){
         noteTurn('assistant',msg.transcript);
       }
       if(msg.type==='response.created')setState('speaking','Speaking…');
-      if(msg.type==='response.done')openMic();
-      if(msg.type==='response.done')setState('listening','Listening…');
+      if(msg.type==='response.done'){
+        const tools=window.AxonWebTools;
+        if(tools&&tools.handleRealtimeWebTools){
+          tools.handleRealtimeWebTools(msg,dc,{onStatus:function(s){setState('speaking',s)}}).then(function(handled){
+            if(!handled){openMic();setState('listening','Listening…')}
+          }).catch(function(){openMic();setState('listening','Listening…')});
+        }else{
+          openMic();
+          setState('listening','Listening…');
+        }
+      }
     }catch(e){}
   });
 

@@ -9,6 +9,7 @@ import multer from 'multer'
 import * as quickbooks from './quickbooks.js'
 import * as joeKnowledge from './joe-knowledge.js'
 import * as joeMemory from './joe-memory.js'
+import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -374,9 +375,10 @@ ${context.knowledge || ''}
 
 ${context.memory || ''}
 
-You help Joe with the business by voice: books questions (profit and loss, payroll charts), and anything in the teaching docs he uploaded.
+You are an OPEN general assistant for Joe — like ChatGPT by voice. Help with business AND everyday life: books, payroll, bids, cars and parts, shopping, news, politics, travel, home, planning.
 When Joe asks you to put a P&L or chart on screen / split screen / to the left, acknowledge briefly — e.g. "Putting that up now" — and answer with the headline numbers. The app will open the visual for him. Do NOT tell him to press a button.
-Prefer TEACHING DOCS, LONG-TERM MEMORY, and the QuickBooks SNAPSHOT over guessing. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
+Prefer TEACHING DOCS, LONG-TERM MEMORY, and the QuickBooks SNAPSHOT for books questions. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
+LIVE WEB: you have a web_search tool. Use it for current prices, stock, product pages, news, politics, sports, weather, or anything that needs today's facts. Never say you cannot access the web or look up prices. After search results come back, answer with concrete numbers and site names.
 Use LONG-TERM MEMORY fluidly — like you have worked with Joe for months. Do not announce "according to my memory" unless he asks what you remember.
 Keep answers short: 1–4 sentences unless asked for detail.
 If asked who you are: "I'm Joe's Professional Assistant, powered by Axon AI."`
@@ -388,14 +390,14 @@ ${VOICE_RULES}
 
 OPENING — do NOT greet on your own and do NOT speak first. The app sends the exact opening line for you to say. Say it once when asked, then never repeat it. If they say "hello" later, answer directly instead of greeting again.
 
-YOU ARE AN OPEN, GENERAL BRAIN. There are no blinders here. Help with anything they bring you:
+YOU ARE AN OPEN, GENERAL BRAIN — like ChatGPT by voice. There are no blinders. Help with anything they bring you:
 - Business, books, payroll, bids, employees, pricing
-- Cars and parts (e.g. "I have a 1975 Corvette and need a distributor cap" — name likely parts sources such as NAPA, RockAuto, Summit Racing, or a Corvette specialty supplier, and say what to check)
+- Cars and parts (e.g. 1975 Corvette distributors — look up live prices and product pages)
 - Home, repairs, travel, shopping, letters and emails, planning a day
-- Explaining things, thinking through decisions, general knowledge
-Never say a topic is outside what you handle. If you genuinely do not know, say so plainly and suggest the best next step.
+- News, politics, sports, weather, explaining things, decisions, general knowledge
+Never say a topic is outside what you handle.
 
-HONESTY: you cannot browse the live internet, so you cannot quote today's prices or stock. Say that plainly when it matters, then give the best guidance you can from what you know.
+LIVE WEB: you have a web_search tool. Use it whenever they need current prices, stock, websites, news, politics, or other live facts. Never say you cannot access the internet or quote prices. After results return, give concrete numbers, store names, and links when available. If search fails, say so and give the best next step.
 
 ${context.knowledge || ''}
 
@@ -419,6 +421,10 @@ const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', '
 // longer before deciding you finished talking, so background noise cannot make
 // them answer themselves.
 const PATIENT_SOURCES = new Set(['qb', 'axon'])
+
+// Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
+// etc.) stay locked to their company script — no browsing.
+const OPEN_WEB_SOURCES = new Set(['qb', 'axon'])
 
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
@@ -659,6 +665,7 @@ app.get('/session', async (req, res) => {
           type: 'realtime',
           model: TIERS[tier].realtime,
           instructions,
+          ...(OPEN_WEB_SOURCES.has(source) ? { tools: [WEB_SEARCH_TOOL] } : {}),
           audio: {
             input: {
               // Server-side noise reduction — the same class of processing the
@@ -716,6 +723,7 @@ app.get('/session', async (req, res) => {
       voice: REALTIME_VOICE,
       source,
       recipientName,
+      webSearch: OPEN_WEB_SOURCES.has(source),
       greeting: buildSpokenGreeting(source, { recipientName, timeOfDay })
     })
   } catch (error) {
@@ -1025,6 +1033,35 @@ app.post('/api/brain/ask', async (req, res) => {
   }
 })
 
+app.post('/api/brain/web-search', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (!hasApiKey()) {
+    return res.status(503).json({
+      ok: false,
+      summary: 'Web search needs OPENAI_API_KEY on the server.',
+      sources: []
+    })
+  }
+  const query = String(req.body?.query || req.body?.q || '').trim()
+  if (!query) {
+    return res.status(400).json({ ok: false, summary: 'Missing search query.', sources: [] })
+  }
+  try {
+    const result = await webSearch(query, {
+      apiKey: process.env.OPENAI_API_KEY,
+      model: process.env.OPENAI_WEB_SEARCH_MODEL || TIERS[resolveTier(req.body?.tier)].chat
+    })
+    const status = result.ok ? 200 : 502
+    return res.status(status).json(result)
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      summary: error.message || 'Web search failed.',
+      sources: []
+    })
+  }
+})
+
 app.post('/api/brain/chat', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   const question = String(req.body?.question || req.body?.q || '').trim()
@@ -1062,27 +1099,38 @@ app.post('/api/brain/chat', async (req, res) => {
     try { qbSnapshot = await quickbooks.voiceContextSnippet() } catch { /* ignore */ }
     try { memory = joeMemory.memorySnippet() } catch { /* ignore */ }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const tier = resolveTier(req.body?.tier)
+    // Open brain text chat uses Responses + live web_search (ChatGPT-like).
+    const response = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: TIERS[resolveTier(req.body?.tier)].chat,
-        temperature: 0.4,
-        messages: [
+        model: TIERS[tier].chat,
+        tools: [{ type: 'web_search' }],
+        tool_choice: 'auto',
+        input: [
           {
             role: 'system',
-            content: `You are Joe's Professional Assistant (powered by Axon AI). Answer briefly and helpfully from the teaching docs, long-term memory, and books snapshot. Do not invent dollar amounts not present below. If something is missing, say you'll need that doc or live QuickBooks. Use LONG-TERM MEMORY naturally — like you have known Joe for a long time.
+            content: [
+              {
+                type: 'input_text',
+                text: `You are Joe's Professional Assistant (powered by Axon AI) — an open general brain like ChatGPT. Use live web search for current prices, stock, product pages, news, and politics. Prefer teaching docs, long-term memory, and the books snapshot for company books questions — do not invent dollar amounts that are not in those sources. Answer briefly and helpfully.
 
 ${qbSnapshot}
 
 ${knowledge}
 
 ${memory}`
+              }
+            ]
           },
-          { role: 'user', content: question }
+          {
+            role: 'user',
+            content: [{ type: 'input_text', text: question }]
+          }
         ]
       })
     })
@@ -1090,13 +1138,24 @@ ${memory}`
     if (!response.ok) {
       throw new Error(data.error?.message || 'Chat failed')
     }
-    const answer = data.choices?.[0]?.message?.content?.trim() || 'I did not get a clear answer — try again.'
+    let answer = typeof data.output_text === 'string' ? data.output_text.trim() : ''
+    if (!answer) {
+      const chunks = []
+      for (const item of data.output || []) {
+        if (item?.type !== 'message') continue
+        for (const part of item.content || []) {
+          if (part?.text) chunks.push(part.text)
+        }
+      }
+      answer = chunks.join('\n').trim()
+    }
+    if (!answer) answer = 'I did not get a clear answer — try again.'
     // Auto-remember this exchange (fire-and-forget)
     rememberTurns(
       [{ role: 'user', text: question }, { role: 'assistant', text: answer }],
       'text'
     ).catch(() => {})
-    res.json({ ok: true, intent: 'chat', answer, chart: null })
+    res.json({ ok: true, intent: 'chat', answer, chart: null, webSearch: true })
   } catch (error) {
     res.status(500).json({
       ok: false,
