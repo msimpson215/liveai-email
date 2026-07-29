@@ -14,7 +14,8 @@
     "multer": "^2.2.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
-    "puppeteer-core": "^25.4.0"
+    "puppeteer-core": "^25.4.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "mammoth": "^1.12.0",

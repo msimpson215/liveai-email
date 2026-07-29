@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Print — Stress Test QR Sheet</title>
+<style>
+  @page{size:letter;margin:.5in}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    color:#0d1b3e;background:#fff;
+    display:flex;flex-direction:column;align-items:center;
+    text-align:center;padding:.5in;
+  }
+  h1{font-size:34pt;line-height:1.1;letter-spacing:-.02em;margin-bottom:.18in}
+  .sub{font-size:15pt;color:#3c4d75;max-width:6in;line-height:1.4}
+  .qr{margin:.3in 0 .18in}
+  .qr img{width:4in;height:4in;display:block}
+  .steps{
+    display:flex;gap:.35in;justify-content:center;
+    margin-bottom:.22in;font-size:12pt;color:#28395f;
+  }
+  .steps div{max-width:1.7in}
+  .steps b{display:block;font-size:20pt;color:#1e40af;margin-bottom:.04in}
+  .url{
+    font-size:13pt;font-weight:bold;color:#1e40af;
+    margin-bottom:.24in;word-break:break-all;
+  }
+  .note{
+    border-top:1.5pt solid #d6e0f5;padding-top:.16in;
+    font-size:10.5pt;line-height:1.45;color:#5b6b8c;max-width:6.2in;
+  }
+  .note b{color:#0d1b3e}
+  .print{
+    margin-top:.3in;padding:10px 18px;font-size:12pt;
+    background:#1e40af;color:#fff;border:0;border-radius:8px;cursor:pointer;
+  }
+  @media print{.print{display:none}body{padding:0}}
+</style>
+</head>
+<body>
+  <h1>Questions about your<br/>stress test?</h1>
+  <p class="sub">Point your phone camera at the code below. You can ask questions out loud and get answers while you wait.</p>
+
+  <div class="qr"><img src="stress-test.png" alt="QR code to the stress test question line"/></div>
+
+  <div class="steps">
+    <div><b>1</b>Open your phone camera</div>
+    <div><b>2</b>Point it at the code</div>
+    <div><b>3</b>Tap the circle and talk</div>
+  </div>
+
+  <p class="url">liveai-email.onrender.com/stress-test.html</p>
+
+  <p class="note">
+    <b>This is not medical advice and it is not a substitute for your care team.</b>
+    It explains how the test works in general terms only. It cannot see your chart, read your
+    results, or answer questions about your medications. Please bring those to your nurse,
+    technologist, or doctor. <b>If you feel unwell, tell a staff member right away.</b>
+  </p>
+
+  <button class="print" onclick="window.print()">Print this sheet</button>
+</body>
+</html>
