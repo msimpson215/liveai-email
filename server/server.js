@@ -26,6 +26,7 @@ const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
 /**
  * Personal Axon links: /joe, /tim, /ira all serve the one orb page with that
  * person's name baked in. One file, several URLs — no duplicated voice code.
+ * Each name also gets its own private memory bank (see joe-memory.js).
  */
 const AXON_PEOPLE = {
   joe: { name: 'Joe' },
@@ -37,7 +38,10 @@ const AXON_PEOPLE = {
     title: 'Hello Mia — your dad made this for you',
     greeting: 'Hello Mia, your dad asked me to send this to you. He built it, and he wanted you to check it out. Ask me anything you want.'
   },
-  rachel: { name: 'Rachel', line: 'Ask me anything you want', title: 'Hello Rachel — your own AI' }
+  rachel: { name: 'Rachel', line: 'Ask me anything you want', title: 'Hello Rachel — your own AI' },
+  chris: { name: 'Chris', line: 'Ask me anything you want', title: 'Hello Chris — your own AI' },
+  alicia: { name: 'Alicia', line: 'Ask me anything you want', title: 'Hello Alicia — your own AI' },
+  dana: { name: 'Dana', line: 'Ask me anything you want', title: 'Hello Dana — your own AI' }
 }
 
 for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
