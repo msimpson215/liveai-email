@@ -10,6 +10,7 @@ import * as quickbooks from './quickbooks.js'
 import * as joeKnowledge from './joe-knowledge.js'
 import * as joeMemory from './joe-memory.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
+import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -100,6 +101,87 @@ ${clinic.lines.map(l => `- ${l}`).join('\n')}
 If they ask a logistics question not on this list, tell them to call the office at the number above.
 `
 }
+
+/**
+ * QR → scan → talk. One template page serves every topic in ASK_TOPICS:
+ * /ask/stress-test, /ask/hvac-install, /ask/new-tenant, and anything added
+ * later. No new route or page per topic.
+ */
+app.get('/ask/:topic', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = topicKey(req.params.topic)
+  if (!key) return res.redirect('/ask')
+  const t = ASK_TOPICS[key]
+  const preset = {
+    slug: key,
+    title: t.title,
+    blurb: t.blurb,
+    asks: t.asks || [],
+    note: `This is an AI guide, not a person. For anything it can't answer — or anything specific to you — please contact ${t.sendTo}.`
+  }
+  try {
+    const file = path.join(__dirname, '..', 'public', 'ask.html')
+    const html = fs.readFileSync(file, 'utf8').replace(
+      '</head>',
+      `<script>window.ASK_TOPIC=${JSON.stringify(preset)}</script>\n</head>`
+    )
+    res.type('html').send(html)
+  } catch {
+    res.status(500).send('Could not load this guide.')
+  }
+})
+
+/** Index of every live topic, with its QR code — the structure at a glance. */
+app.get('/ask', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const rows = Object.entries(ASK_TOPICS).map(([slug, t]) => `
+    <article class="card">
+      <img src="/qr/ask-${slug}.png" alt="QR code for ${t.title}"/>
+      <div>
+        <h2>${t.title}</h2>
+        <p>${t.blurb}</p>
+        <a href="/ask/${slug}">Open /ask/${slug}</a>
+      </div>
+    </article>`).join('')
+  res.type('html').send(`<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QR Voice Topics</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0d1b3e;
+    background:linear-gradient(180deg,#f7faff,#e9f0fd);padding:2rem 1.15rem 3rem}
+  .wrap{width:min(100%,620px);margin:0 auto}
+  header{text-align:center;margin-bottom:1.6rem}
+  .eyebrow{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#5b7bc4;margin-bottom:.5rem}
+  h1{font-size:1.7rem;letter-spacing:-.02em}
+  header p{margin-top:.6rem;color:#3c4d75;line-height:1.5}
+  .card{background:#fff;border:1px solid rgba(30,64,175,.13);border-radius:16px;
+    padding:1rem;margin-bottom:.85rem;display:flex;gap:1rem;align-items:center}
+  .card img{width:96px;height:96px;flex:0 0 96px}
+  .card h2{font-size:1.05rem;margin-bottom:.2rem}
+  .card p{font-size:.88rem;color:#41537c;line-height:1.4;margin-bottom:.4rem}
+  .card a{font-size:.85rem;color:#1e40af;text-decoration:none;font-weight:600}
+  .how{margin-top:1.4rem;background:#0d1b3e;color:#dbe6ff;border-radius:16px;padding:1.1rem 1.2rem;
+    font-size:.87rem;line-height:1.6}
+  .how b{color:#fff}
+  .how code{background:rgba(255,255,255,.12);padding:.1rem .35rem;border-radius:5px;font-size:.85em}
+</style></head><body><div class="wrap">
+<header>
+  <div class="eyebrow">Structure — QR to voice AI</div>
+  <h1>Scan a code, talk to Axon AI about one subject</h1>
+  <p>Same machine every time. Only the subject changes. Three unrelated industries below, running on identical plumbing.</p>
+</header>
+${rows}
+<div class="how">
+  <b>Adding another industry:</b> one entry in <code>server/ask-topics.js</code> —
+  title, opening line, what it knows, what it declines — then <code>npm run qr</code>
+  to generate the code. No new page, no new route, no client changes.
+  It appears here automatically at <code>/ask/&lt;slug&gt;</code>.
+</div>
+</div></body></html>`)
+})
 
 /**
  * One page, one QR code per clinic: /stress-test/bjc loads the same patient
@@ -449,6 +531,13 @@ Keep answers short: 1–4 sentences unless asked for detail.
 If asked who you are: "I'm Joe's Professional Assistant, powered by Axon AI."`
   },
   /**
+   * Generic QR-topic brain. The whole script comes from ASK_TOPICS, so one
+   * profile serves every industry and adding a subject touches no code here.
+   */
+  ask: {
+    instructions: (context) => topicInstructions(context.topic || '')
+  },
+  /**
    * Patient-education brain for a nuclear stress test. Scoped HARD: it explains
    * what the test is and what to expect, and nothing else. It does not read
    * results, diagnose, or advise on medication — a nervous patient in a waiting
@@ -569,13 +658,13 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 // Sources served by talk.html, where the client keeps the mic muted during the
 // opening greeting so it cannot be interrupted, then re-enables it so the rest
 // of the conversation IS interruptible. Enable server-side interruption for them.
-const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon', 'stresstest'])
+const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon', 'stresstest', 'ask'])
 
 // Everyday assistants live in noisy rooms (shop radio, truck, jobsite). They wait
 // longer before deciding you finished talking, so background noise cannot make
 // them answer themselves.
 // A clinic waiting room is noisy too, and a nervous patient speaks slowly.
-const PATIENT_SOURCES = new Set(['qb', 'axon', 'stresstest'])
+const PATIENT_SOURCES = new Set(['qb', 'axon', 'stresstest', 'ask'])
 
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
@@ -596,6 +685,9 @@ function buildInstructions(source, context = {}) {
 }
 
 async function buildInstructionsAsync(source, context = {}) {
+  if (source === 'ask') {
+    return buildInstructions(source, context)
+  }
   if (source === 'stresstest') {
     const key = stressClinicKey(context.clinic)
     return buildInstructions(source, {
@@ -807,7 +899,7 @@ function hasApiKey() {
  * OpenAI account. Limit sessions per visitor and per day. In-memory is fine:
  * a restart resetting the counters is not a meaningful loss.
  */
-const PUBLIC_QR_SOURCES = new Set(['stresstest'])
+const PUBLIC_QR_SOURCES = new Set(['stresstest', 'ask'])
 const QR_LIMITS = {
   perVisitorPerHour: Number(process.env.QR_SESSIONS_PER_VISITOR_HOUR) || 8,
   perDay: Number(process.env.QR_SESSIONS_PER_DAY) || 300
@@ -887,9 +979,15 @@ app.get('/session', async (req, res) => {
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const tier = resolveTier(req.query.tier || req.query.mode)
     const timeOfDay = req.query.tod
+    const topic = topicKey(req.query.t || req.query.topic)
+    if (source === 'ask' && !topic) {
+      return res.status(400).json({ error: 'Unknown topic for this link.' })
+    }
+
     const instructions = await buildInstructionsAsync(source, {
       recipientName,
-      clinic: req.query.clinic
+      clinic: req.query.clinic,
+      topic
     })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',

@@ -1,5 +1,51 @@
 # Running idea list
 
+---
+
+## QR → scan → talk: the reusable structure
+
+The generalized version. Scan a code, a page opens, tap once, talk to Axon AI
+about one subject. Works for any industry — only the subject changes.
+
+| Piece | Path |
+|-------|------|
+| Topic registry | `server/ask-topics.js` |
+| One page for every topic | `public/ask.html` |
+| Live topic URL | `/ask/<slug>` |
+| Index of all topics + codes | `/ask` |
+| QR generator, all topics | `npm run qr` |
+| Voice profile | `ask` in `server/server.js` |
+
+**Adding an industry** is one entry in `ASK_TOPICS`:
+
+```
+'slug': {
+  title, blurb, opening,        // what the person sees and hears first
+  role,                         // who it is
+  covers: [...],                // what it knows and may discuss
+  refuse: [...],                // what it declines
+  escalate: '...',              // the emergency line, if any
+  sendTo: '...',                // where unanswered questions go
+  asks: [...]                   // example prompts on the page
+}
+```
+
+Then `npm run qr`. No new page, no new route, no client changes. It appears at
+`/ask/<slug>` and on the `/ask` index automatically.
+
+Three unrelated topics ship as proof the structure travels: a nuclear stress
+test, a residential HVAC install, and an apartment move-in. Same plumbing,
+same page, same voice pipeline.
+
+Every topic inherits, from the template rather than per-topic wording: no
+guessing or inventing details, stay on subject, never ask for personal
+information, never claim to be a person, and re-explain patiently because
+people scan these precisely because they forgot.
+
+Public QR sources are covered by the spend guard (see below).
+
+---
+
 Durable notes that must survive a deploy. The memory bank in
 `data/joe-memory/` is wiped whenever Render restarts, so anything worth
 keeping goes here instead.

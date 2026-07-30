@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#0a2466"/>
+<meta name="cache-control" content="no-store"/>
+<link rel="apple-touch-icon" href="/icons/axon-blue-180.png"/>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<title>Ask</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:#0d1b3e;
+  background:
+    radial-gradient(80% 50% at 50% 0%, #e8f0ff 0%, transparent 70%),
+    linear-gradient(180deg,#f7faff 0%,#eaf1fd 100%);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  width:min(100%,480px);min-height:100dvh;margin:0 auto;
+  padding:clamp(1.5rem,5vh,2.5rem) 1.4rem calc(1.5rem + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+h1{font-size:clamp(1.5rem,6vw,2rem);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-top:.5rem}
+.sub{margin-top:.7rem;font-size:1.02rem;line-height:1.5;color:#3c4d75;max-width:24rem}
+.orb-wrap{margin:auto 0;padding:2rem 0 1rem;display:flex;flex-direction:column;align-items:center}
+#orb{
+  width:min(58vw,220px);aspect-ratio:1;border:0;padding:0;cursor:pointer;border-radius:50%;
+  background:radial-gradient(circle at 36% 30%, #eaf3ff 0%, #93c5fd 26%, #3b82f6 58%, #1e40af 100%);
+  box-shadow:0 18px 50px rgba(30,64,175,.32),
+    inset 0 -14px 34px rgba(10,36,102,.35),
+    inset 0 12px 28px rgba(255,255,255,.45);
+  transition:transform .18s ease;animation:breathe 4.5s ease-in-out infinite;
+}
+#orb:active{transform:scale(.96)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+body[data-state="connecting"] #orb{animation:pulse .9s ease-in-out infinite}
+body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.06);filter:brightness(1.12)}}
+.hint{margin-top:1.4rem;font-size:1.06rem;font-weight:600;color:#1e40af;min-height:1.6em}
+.examples{margin-top:1.2rem;display:flex;flex-direction:column;gap:.5rem;width:100%}
+.examples span{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7385a8}
+.examples i{
+  font-style:normal;background:#fff;border:1px solid rgba(30,64,175,.16);
+  border-radius:12px;padding:.7rem .85rem;font-size:.93rem;color:#28395f;text-align:left;
+}
+.note{
+  margin-top:auto;padding-top:1rem;font-size:.8rem;line-height:1.5;color:#5b6b8c;
+  border-top:1px solid rgba(30,64,175,.14);max-width:26rem;
+}
+.powered{margin-top:.8rem;font-size:.72rem;color:#8996b3;letter-spacing:.02em}
+.powered b{color:#1e40af;font-weight:700}
+</style>
+</head>
+<body data-state="idle">
+  <div class="wrap">
+    <h1 id="title">Ask</h1>
+    <p class="sub" id="blurb">Tap the circle and just talk.</p>
+
+    <div class="orb-wrap">
+      <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
+      <p class="hint" id="hint">Tap to talk</p>
+    </div>
+
+    <div class="examples" id="examples" hidden>
+      <span>You could ask</span>
+    </div>
+
+    <p class="note" id="note"></p>
+    <p class="powered">Powered by <b>Axon AI</b></p>
+  </div>
+
+<script>
+const TOPIC = window.ASK_TOPIC || null;
+const SLUG = (TOPIC && TOPIC.slug) || new URLSearchParams(location.search).get('t') || '';
+
+const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+let pc=null,localStream=null,starting=false,audioEl=null;
+
+if(TOPIC){
+  document.title=TOPIC.title;
+  document.getElementById('title').textContent=TOPIC.title;
+  document.getElementById('blurb').textContent=TOPIC.blurb;
+  document.getElementById('note').textContent=TOPIC.note||'';
+  if(TOPIC.asks&&TOPIC.asks.length){
+    const box=document.getElementById('examples');
+    TOPIC.asks.forEach(function(a){
+      const i=document.createElement('i');
+      i.textContent='\u201C'+a+'\u201D';
+      box.appendChild(i);
+    });
+    box.hidden=false;
+  }
+}
+
+function setState(s,msg){
+  document.body.dataset.state=s||'idle';
+  if(msg!==undefined)hint.textContent=msg;
+}
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;audioEl.playsInline=true;
+    document.body.appendChild(audioEl);
+  }
+  return audioEl;
+}
+async function stopVoice(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setState('idle','Tap to talk');
+}
+async function connectVoice(){
+  const r=await fetch('/session?src=ask&t='+encodeURIComponent(SLUG),{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error){
+    const err=new Error(data.error||'session');
+    err.status=r.status;err.detail=data.error;throw err;
+  }
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){
+      audio.srcObject=e.streams[0];
+      audio.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
+  });
+  const micTrack=localStream.getTracks()[0];
+  // Closed through the opening line so the speaker cannot feed back into it
+  // and trigger a second, overlapping answer.
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  let greeted=false,micOpened=false;
+  function openMic(){
+    if(micOpened)return;
+    micOpened=true;
+    try{micTrack.enabled=true}catch(e){}
+  }
+  dc.addEventListener('open',()=>{
+    if(greeted)return;
+    greeted=true;
+    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.type==='response.created')setState('speaking','Speaking…');
+      if(msg.type==='response.done'){
+        openMic();
+        setState('listening','Listening — go ahead');
+      }
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok){
+    let detail='';
+    try{detail=await sdp.text()}catch(e){}
+    const outOfCredit=/insufficient_quota|exceeded your current quota|billing/i.test(detail);
+    const err=new Error(outOfCredit?'quota':(sdp.status===429?'busy':'sdp'));
+    err.status=sdp.status;throw err;
+  }
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setState('listening','Listening — go ahead');
+}
+async function toggleVoice(){
+  if(starting)return;
+  if(pc){await stopVoice();return}
+  starting=true;
+  setState('connecting','One moment…');
+  try{
+    await connectVoice();
+  }catch(e){
+    console.error(e);
+    starting=false;
+    await stopVoice();
+    const why=e&&e.message;
+    // A 429 from our own server carries a readable sentence; show it.
+    if(e&&e.status===429&&e.detail){setState('idle',e.detail);return}
+    setState('idle',
+      why==='quota'?'Temporarily unavailable. Please try again later.':
+      why==='busy'?'Busy right now. Try again in a minute.':
+      'That didn\u2019t connect. Tap to try again.');
+    return;
+  }
+  starting=false;
+}
+orb.addEventListener('click',toggleVoice);
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&(pc||starting))stopVoice();
+});
+window.addEventListener('pagehide',()=>{if(pc||starting)stopVoice()});
+</script>
+</body>
+</html>
