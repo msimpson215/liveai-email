@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#0a2466"/>
+<meta name="cache-control" content="no-store"/>
+<title>Patient Question Line — Concept</title>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:#0d1b3e;
+  background:linear-gradient(180deg,#f7faff 0%,#e9f0fd 100%);
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 calc(2rem + env(safe-area-inset-bottom));
+}
+.wrap{width:min(100%,560px);margin:0 auto;padding:0 1.15rem}
+
+header{
+  text-align:center;
+  padding:2.2rem 0 1.5rem;
+}
+.eyebrow{
+  font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  color:#5b7bc4;margin-bottom:.6rem;
+}
+h1{
+  font-size:clamp(1.5rem,6.2vw,2.05rem);
+  font-weight:800;letter-spacing:-.025em;line-height:1.15;
+}
+header p{
+  margin-top:.75rem;font-size:1.02rem;line-height:1.5;color:#3c4d75;
+}
+
+section{
+  background:#fff;
+  border:1px solid rgba(30,64,175,.13);
+  border-radius:18px;
+  padding:1.3rem 1.2rem;
+  margin-bottom:1rem;
+  box-shadow:0 3px 16px rgba(13,27,62,.05);
+}
+h2{
+  font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#5b7bc4;margin-bottom:.85rem;
+}
+
+/* the card, as it would be printed and handed over */
+.card{
+  border:1.5px dashed #b9c7e4;border-radius:14px;
+  background:#fff;padding:.95rem;
+  display:flex;gap:.9rem;align-items:center;
+}
+.card img{width:104px;height:104px;flex:0 0 104px;display:block}
+.card .c-copy{min-width:0}
+.card h3{font-size:.98rem;font-weight:700;line-height:1.2;margin-bottom:.25rem}
+.card p{font-size:.76rem;line-height:1.4;color:#41537c}
+.card .how{
+  margin-top:.35rem;font-size:.7rem;font-weight:700;color:#1e40af;
+}
+.caption{
+  margin-top:.7rem;font-size:.78rem;color:#6b7a9c;text-align:center;
+}
+
+ol.flow{list-style:none;counter-reset:s}
+ol.flow li{
+  counter-increment:s;position:relative;
+  padding-left:2.1rem;margin-bottom:.75rem;
+  font-size:.95rem;line-height:1.45;color:#28395f;
+}
+ol.flow li:last-child{margin-bottom:0}
+ol.flow li::before{
+  content:counter(s);
+  position:absolute;left:0;top:-.05rem;
+  width:1.5rem;height:1.5rem;border-radius:50%;
+  background:#1e40af;color:#fff;
+  font-size:.78rem;font-weight:700;
+  display:grid;place-items:center;
+}
+
+ul.answers{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+ul.answers li{
+  font-size:.93rem;line-height:1.4;color:#28395f;
+  background:#f4f8ff;border:1px solid rgba(30,64,175,.1);
+  border-radius:10px;padding:.6rem .7rem;
+}
+ul.answers b{color:#0d1b3e}
+
+.wont li{color:#7a2c2c;background:#fdf5f5;border-color:rgba(160,50,50,.16)}
+
+.try{
+  display:block;text-align:center;text-decoration:none;
+  background:linear-gradient(180deg,#3b82f6,#1e40af);
+  color:#fff;font-weight:700;font-size:1.06rem;
+  padding:1.05rem;border-radius:14px;
+  box-shadow:0 12px 28px rgba(30,64,175,.28);
+}
+.try span{display:block;font-weight:500;font-size:.8rem;opacity:.85;margin-top:.2rem}
+.links{
+  margin-top:.9rem;display:flex;flex-direction:column;gap:.45rem;
+  font-size:.86rem;text-align:center;
+}
+.links a{color:#1e40af;text-decoration:none;font-weight:600}
+.foot{
+  margin-top:1.2rem;font-size:.76rem;line-height:1.5;color:#6b7a9c;text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Concept — Patient Question Line</div>
+    <h1>“Here's a code. It explains the test, whenever you want.”</h1>
+    <p>The tech gives the same careful explanation she always gives. Then she hands over a card, so the patient still has it at nine that night when the questions actually show up.</p>
+  </header>
+
+  <section>
+    <h2>The card she hands them</h2>
+    <div class="card">
+      <img src="/qr/stress-test-bjc.png" alt="QR code on the patient card"/>
+      <div class="c-copy">
+        <h3>Questions about your stress test?</h3>
+        <p>Point your phone camera at the code, then just talk. Ask it anything about the test — here, or later at home.</p>
+        <div class="how">Camera → point → tap → talk</div>
+      </div>
+    </div>
+    <p class="caption">This code is live. Scan it with your phone right now.</p>
+  </section>
+
+  <section>
+    <h2>What the patient does</h2>
+    <ol class="flow">
+      <li>Points the phone camera at the card. No app, no download, no login.</li>
+      <li>A page opens. One big circle in the middle.</li>
+      <li>Taps it and talks like a phone call. It answers out loud.</li>
+      <li>Keeps the card. Asks again next week if they forgot.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What it explains</h2>
+    <ul class="answers">
+      <li><b>What is this actually looking for?</b> Blood flow to the heart at rest versus working hard — narrowing that only shows up under demand.</li>
+      <li><b>What are they doing to me?</b> The IV, the tracer, the camera, the stress portion, the second set of pictures.</li>
+      <li><b>What does the Lexiscan feel like?</b> Flushing, shortness of breath, headache, metallic taste — and that it passes in about fifteen minutes.</li>
+      <li><b>Why no caffeine?</b> It blocks the medication, which can ruin the images and force a repeat.</li>
+      <li><b>Why did nobody tell me anything?</b> The tech isn't the one who reads it. A quiet tech is not bad news.</li>
+      <li><b>When do I hear something?</b> Usually days to about a week, through the ordering doctor.</li>
+      <li><b>Where do I go, what do I bring?</b> Suite, floor, phone number, arrival time, insurance card, medications in bottles.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What it refuses to do</h2>
+    <ul class="answers wont">
+      <li><b>No medical advice</b>, opinions, or recommendations of any kind.</li>
+      <li><b>Never reads or interprets results.</b> No numbers, no scans, no “is that bad.”</li>
+      <li><b>Never touches medications</b> — including whether that coffee was a problem.</li>
+      <li><b>Never assesses personal risk</b> or says the test is safe “for you.”</li>
+      <li><b>Symptoms right now</b> → stops and says get a nurse. Nothing else.</li>
+      <li><b>No internet access</b> and <b>no memory.</b> It cannot wander off script or retain anything about anyone.</li>
+      <li><b>Asks for no personal information.</b> No name, no birthdate, no chart number.</li>
+    </ul>
+  </section>
+
+  <a class="try" href="/stress-test/bjc">
+    Try it now — tap and ask it something
+    <span>Works on this phone, no scanning needed</span>
+  </a>
+
+  <div class="links">
+    <a href="/qr/stress-test-cards.html">Print the take-home cards (8 per sheet)</a>
+    <a href="/qr/stress-test-poster.html">Print the waiting-room sheet</a>
+  </div>
+
+  <p class="foot">
+    Prototype for discussion. Before any real patient uses this, a clinician
+    should approve the wording and the clinic should confirm its own prep
+    instructions and privacy posture. The medical explanation is one universal
+    script; each location adds only its own address, hours, and phone number.
+  </p>
+
+</div>
+</body>
+</html>
