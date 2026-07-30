@@ -17,12 +17,29 @@ phone camera at it, taps a circle, and talks. It explains the test only.
 
 | Piece | Path |
 |-------|------|
-| Patient page | `/stress-test.html` |
-| QR code (print, raster) | `/qr/stress-test.png` |
-| QR code (print, vector) | `/qr/stress-test.svg` |
+| Patient page (generic) | `/stress-test.html` |
+| Patient page (per clinic) | `/stress-test/<clinic>` e.g. `/stress-test/bjc` |
+| QR code — generic | `/qr/stress-test.png` / `.svg` |
+| QR code — BJC Shiloh | `/qr/stress-test-bjc.png` / `.svg` |
+| Take-home cards, 8 per sheet | `/qr/stress-test-cards.html` |
 | Printable wall sheet | `/qr/stress-test-poster.html` |
 | Voice profile | `stresstest` in `server/server.js` |
+| Clinic logistics map | `STRESS_CLINICS` in `server/server.js` |
 | QR generator | `node scripts/make-qr.mjs <url> <name>` |
+
+### The two-layer split (important — this is what keeps it approvable)
+
+The medical explanation is ONE universal script. Per-clinic data is a separate
+logistics-only block layered on top: address, floor, phone, arrival time, what
+to bring, check-in, payment, mask policy.
+
+Adding a hospital means adding an entry to `STRESS_CLINICS` and generating a QR
+code. It never touches the clinical wording, so a clinician signs off on the
+medical script once and that approval holds as clinics are added.
+
+The universal script answers the four questions patients actually have:
+what the test is accomplishing, what is physically being done to them, how long
+it takes, and when/how results come back.
 
 **Hard guardrails built into the profile:**
 
@@ -34,6 +51,12 @@ phone camera at it, taps a circle, and talks. It explains the test only.
 - Off-topic → politely declines and points to staff
 - Not covered → "I don't want to guess on that, ask the technologist"
 - No live web search (unlike the open Axon brains) so it cannot wander
+
+**Patient privacy posture:** the page asks for nothing, stores nothing, and
+writes no memory. The voice profile is explicitly told never to ask for or
+repeat a name, birthdate, or chart number. No PHI from anyone's chart belongs
+in this repo — a MyChart PDF was reviewed for source material and only the
+generic clinic logistics were used.
 
 **Before real patients use it:**
 

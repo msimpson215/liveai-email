@@ -60,6 +60,67 @@ for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
   })
 }
 
+/**
+ * Per-clinic logistics for the stress test guide.
+ *
+ * Deliberately LOGISTICS ONLY — where to go, when to arrive, what to bring,
+ * who to call. The medical explanation lives in one universal script that is
+ * written and reviewed once, so adding a hospital here never re-opens the
+ * clinical wording for approval.
+ */
+const STRESS_CLINICS = {
+  bjc: {
+    name: 'BJC Medical Group Cardiology, Shiloh',
+    lines: [
+      'Address: 1404 Cross Street, Suite 2940, Shiloh, Illinois. Suite 2940 is on the second floor.',
+      'Phone: 618-607-3700. This is the number to call about scheduling, timing, prep, or results.',
+      'Arrive 15 minutes before the scheduled time.',
+      'Bring your insurance card, a photo ID, and your medications in their original bottles.',
+      'Check-in can be done ahead of time through the MyChart patient portal, up to seven days before. It shortens the time in the waiting room.',
+      'Copays are cashless — debit, credit, FSA card, or Apple Pay. No cash.',
+      'Masks are required only if you have respiratory symptoms such as a cough or runny nose. Otherwise optional.',
+      'Visitors are allowed.'
+    ]
+  }
+}
+
+function stressClinicKey(value) {
+  const key = String(value || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30)
+  return STRESS_CLINICS[key] ? key : ''
+}
+
+function buildClinicBlock(key) {
+  const clinic = STRESS_CLINICS[key]
+  if (!clinic) {
+    return `THIS CLINIC'S LOGISTICS: not loaded for this link. If asked where to go, when to arrive, what to bring, or who to call, say you don't have that clinic's details and they should check their appointment reminder or call the office.
+`
+  }
+  return `THIS CLINIC'S LOGISTICS — ${clinic.name}. You MAY answer these directly, and you may give directions and practical details from this list. This is scheduling and building information, NOT medical information, so the medical guardrails above still apply to everything else:
+${clinic.lines.map(l => `- ${l}`).join('\n')}
+If they ask a logistics question not on this list, tell them to call the office at the number above.
+`
+}
+
+/**
+ * One page, one QR code per clinic: /stress-test/bjc loads the same patient
+ * page with that clinic's logistics attached.
+ */
+app.get('/stress-test/:clinic', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = stressClinicKey(req.params.clinic)
+  if (!key) return res.redirect('/stress-test.html')
+  try {
+    const file = path.join(__dirname, '..', 'public', 'stress-test.html')
+    const html = fs.readFileSync(file, 'utf8').replace(
+      '</head>',
+      `<script>window.STRESS_CLINIC=${JSON.stringify(key)}</script>\n</head>`
+    )
+    res.type('html').send(html)
+  } catch {
+    res.status(500).send('Could not load the guide.')
+  }
+})
+
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
 
@@ -394,7 +455,7 @@ If asked who you are: "I'm Joe's Professional Assistant, powered by Axon AI."`
    * room forgets most of what staff told them, and this fills that gap only.
    */
   stresstest: {
-    instructions: () => `You are a calm, friendly AI guide that explains ONE thing: what a nuclear stress test is and what a patient can expect. You are provided by the clinic as a comfort and information aid.
+    instructions: (context) => `You are a calm, friendly AI guide that explains ONE thing: what a nuclear stress test is and what a patient can expect. You are provided by the clinic as a comfort and information aid.
 ${VOICE_RULES}
 
 OPENING — say this ONE TIME at the very start, then stop and wait:
@@ -414,25 +475,49 @@ MEDICAL GUARDRAILS — ABSOLUTE, NEVER BREAK THESE:
 - If asked anything outside this test (other conditions, other procedures, insurance, billing, general topics), say kindly that you only cover this one test, and suggest they ask the staff.
 - If a question is not covered below, say: "I don't want to guess on that — the technologist can answer it for you."
 
-WHAT THE TEST IS (general, standard patient-education information only):
-- A nuclear stress test uses a small amount of a radioactive tracer plus imaging to show how blood flows to the heart muscle, both at rest and when the heart is working harder.
-- It is usually done in two parts: resting images, then stress images. The two parts are compared.
-- The tracer is given through an IV. A special camera then takes pictures of the heart. The camera does not hurt and does not go inside you.
-- "Stress" can be done two ways depending on what the care team chooses: walking on a treadmill, or receiving a medicine that makes the heart respond as if exercising, for people who can't walk on a treadmill.
-- The whole visit commonly takes a few hours, much of it waiting between the two sets of pictures. The clinic can give the exact timing for their setup.
+WHAT THE TEST IS ACCOMPLISHING (this is the question people most want answered — lead with purpose, not mechanics):
+- The point is to compare how blood reaches the heart muscle at rest versus when the heart is working hard. Some narrowing only shows up under demand, the way a partly blocked pipe still works fine until you open the tap all the way.
+- So the test is looking at blood FLOW to the heart muscle, and whether any area gets noticeably less when the heart is pushed.
+- It is a picture of function, not a picture of plumbing. It is not the same as a cardiac catheterization or a CT, which look at the arteries directly. Doctors often use this first because it needs no incision.
+- Why "nuclear": a tracer that shows up on the camera is used so the heart muscle itself lights up. Areas getting good flow light up more than areas getting less.
+
+WHAT THEY ARE ACTUALLY DOING TO YOU, step by step:
+1. An IV goes in, usually in the arm or hand.
+2. A small amount of radioactive tracer goes in through the IV. The amount used for this kind of imaging is small and it leaves the body over the next day or so, mostly through urine.
+3. You lie under or inside a camera that takes pictures of your heart. The camera does not touch you, does not go inside you, and makes no radiation of its own — it is only reading the tracer. It is open, not a closed tunnel like an MRI.
+4. Your heart is then made to work harder — either walking on a treadmill, or with a medicine through the IV that makes the heart respond as if you were exercising, for people who cannot walk a treadmill.
+5. More tracer, then a second set of pictures.
+6. The two sets get compared side by side. A cardiologist reads them later — not during your visit.
+- Through all of it you are on a heart monitor with staff watching. Sticky ECG patches go on your chest, and a blood pressure cuff on your arm.
+
+HOW LONG IT TAKES:
+- Usually a few hours end to end, and most of that is waiting, not doing. There is a gap between the two sets of pictures because the tracer needs time to settle into the heart muscle.
+- The active parts are short. The pictures themselves are typically on the order of 15 to 30 minutes each, and the stress portion is only a few minutes.
+- Plan for the visit to take much longer than the test. Bring something to occupy the wait.
+- If they want exact timing, that is clinic-specific — point them to the clinic${context.clinicName ? ` (${context.clinicName})` : ''}.
+
+WHEN AND HOW RESULTS COME BACK:
+- Nobody reads it to you on the spot. The technologist running the test is not the person who interprets it, and it is not their place to comment — so if they seem quiet about it, that is normal and it does NOT mean bad news. Say that plainly if someone is worried about it.
+- A cardiologist reviews the images afterward and sends a report to the doctor who ordered the test.
+- Commonly the results are available within a few days to about a week, and are shared either at a follow-up visit, by phone, or through the patient portal.
+- Who calls and how fast is clinic-specific. If they ask for their own timeline, tell them to call the office that ordered it, and encourage them to — it is a completely reasonable thing to call about.
 
 WHAT PEOPLE COMMONLY EXPERIENCE (normalize, never promise):
 - The IV feels like a normal blood draw pinch.
 - With the medicine version, people often briefly feel warm, flushed, a little short of breath, a headache, or a fluttery feeling. This commonly passes in a few minutes, and the staff watch the whole time. Tell them anything you feel — that's what they're there for.
+- On the treadmill version, it gets genuinely brisk near the end. That is the point — they need the heart to work.
 - Lying still for the pictures is the part most people find tedious rather than difficult. You can usually talk to the technologist during it.
+- Afterward most people go about their day. Drinking water helps clear the tracer.
 - Being nervous before this test is extremely common. It's okay to ask the staff to explain any step again — they'd rather you ask.
 
+${context.clinicBlock || ''}
 HOW TO BE:
 - Warm, unhurried, plain language. No jargon unless they use it first.
 - Short answers, 1–4 sentences. This is a nervous person, not a lecture hall.
 - It is good to say "that's a really common question."
 - Never scare, never reassure beyond the facts above. If they seem frightened, acknowledge it and point them to the staff.
 - Never state or imply you are a clinician.
+- Never ask for or repeat anyone's name, birthdate, chart number, or any personal detail. If they volunteer it, do not use it or store it — just carry on with the explanation.
 
 If asked who you are: "I'm an AI guide the clinic set up to explain this test — I'm not a doctor or a nurse."`
   },
@@ -495,6 +580,14 @@ function buildInstructions(source, context = {}) {
 }
 
 async function buildInstructionsAsync(source, context = {}) {
+  if (source === 'stresstest') {
+    const key = stressClinicKey(context.clinic)
+    return buildInstructions(source, {
+      ...context,
+      clinicName: key ? STRESS_CLINICS[key].name : '',
+      clinicBlock: buildClinicBlock(key)
+    })
+  }
   if (source === 'axon') {
     let knowledge = ''
     let memory = ''
@@ -717,7 +810,10 @@ app.get('/session', async (req, res) => {
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const tier = resolveTier(req.query.tier || req.query.mode)
     const timeOfDay = req.query.tod
-    const instructions = await buildInstructionsAsync(source, { recipientName })
+    const instructions = await buildInstructionsAsync(source, {
+      recipientName,
+      clinic: req.query.clinic
+    })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
       headers: {

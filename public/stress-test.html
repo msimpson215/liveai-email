@@ -148,8 +148,14 @@ async function stopVoice(){
   starting=false;
   setState('idle','Tap to talk');
 }
+// A per-clinic URL (/stress-test/bjc) injects its key so the guide can answer
+// where-to-go questions for that location.
+const CLINIC=(typeof window.STRESS_CLINIC==='string'?window.STRESS_CLINIC:'')||
+  (new URLSearchParams(location.search).get('clinic')||'');
+
 async function connectVoice(){
-  const r=await fetch('/session?src=stresstest',{cache:'no-store'});
+  const url='/session?src=stresstest'+(CLINIC?'&clinic='+encodeURIComponent(CLINIC):'');
+  const r=await fetch(url,{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));

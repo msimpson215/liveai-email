@@ -51,27 +51,41 @@
 <body>
   <div class="toolbar">
     <button onclick="window.print()">Print sheet of 8 cards</button>
-    <span>Print, cut on the dashed lines, hand one to each patient.</span>
+    <span>
+      Print, cut on the dashed lines, hand one to each patient.<br/>
+      <label style="display:inline-block;margin-top:8px;font-size:10pt">
+        Clinic:
+        <select id="clinic" onchange="render()">
+          <option value="stress-test.png">Generic — no clinic details</option>
+          <option value="stress-test-bjc.png" selected>BJC Cardiology, Shiloh</option>
+        </select>
+      </label>
+    </span>
   </div>
 
   <div class="sheet" id="sheet"></div>
 
 <script>
-const CARD = `
-  <div class="qr"><img src="stress-test.png" alt="QR code"/></div>
+const sheet = document.getElementById('sheet');
+function render() {
+  const img = document.getElementById('clinic').value;
+  const card = `
+  <div class="qr"><img src="${img}" alt="QR code"/></div>
   <div class="copy">
     <h2>Questions about your stress test?</h2>
     <p>Point your phone camera at the code, then just talk. Ask it anything about the test — here, or later at home.</p>
     <div class="how">Camera &rarr; point &rarr; tap the circle &rarr; talk</div>
     <div class="dis">Not medical advice. It can't see your chart, read your results, or answer questions about your medications &mdash; please ask your care team. If you feel unwell, call the office or seek care.</div>
   </div>`;
-const sheet = document.getElementById('sheet');
-for (let i = 0; i < 8; i++) {
-  const d = document.createElement('div');
-  d.className = 'card';
-  d.innerHTML = CARD;
-  sheet.appendChild(d);
+  sheet.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const d = document.createElement('div');
+    d.className = 'card';
+    d.innerHTML = card;
+    sheet.appendChild(d);
+  }
 }
+render();
 </script>
 </body>
 </html>
