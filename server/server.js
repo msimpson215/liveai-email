@@ -799,6 +799,57 @@ function hasApiKey() {
   return Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.trim())
 }
 
+/**
+ * Spend guard for publicly-printed links.
+ *
+ * A QR code on a card is public forever and anyone can scan it, so voice
+ * minutes on these sources are uncapped by default and bill straight to our
+ * OpenAI account. Limit sessions per visitor and per day. In-memory is fine:
+ * a restart resetting the counters is not a meaningful loss.
+ */
+const PUBLIC_QR_SOURCES = new Set(['stresstest'])
+const QR_LIMITS = {
+  perVisitorPerHour: Number(process.env.QR_SESSIONS_PER_VISITOR_HOUR) || 8,
+  perDay: Number(process.env.QR_SESSIONS_PER_DAY) || 300
+}
+const qrVisitorHits = new Map()
+let qrDay = { key: '', count: 0 }
+
+function visitorKey(req) {
+  const fwd = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+  return fwd || req.ip || 'unknown'
+}
+
+/** @returns {null | 'visitor' | 'daily'} which limit was hit, if any */
+function checkQrBudget(source, req) {
+  if (!PUBLIC_QR_SOURCES.has(source)) return null
+  const now = Date.now()
+
+  const today = new Date().toISOString().slice(0, 10)
+  if (qrDay.key !== today) qrDay = { key: today, count: 0 }
+  if (qrDay.count >= QR_LIMITS.perDay) return 'daily'
+
+  const key = `${source}:${visitorKey(req)}`
+  const hourAgo = now - 60 * 60 * 1000
+  const hits = (qrVisitorHits.get(key) || []).filter(t => t > hourAgo)
+  if (hits.length >= QR_LIMITS.perVisitorPerHour) {
+    qrVisitorHits.set(key, hits)
+    return 'visitor'
+  }
+
+  hits.push(now)
+  qrVisitorHits.set(key, hits)
+  qrDay.count += 1
+
+  // Keep the map from growing without bound on a long-running process.
+  if (qrVisitorHits.size > 5000) {
+    for (const [k, v] of qrVisitorHits) {
+      if (!v.some(t => t > hourAgo)) qrVisitorHits.delete(k)
+    }
+  }
+  return null
+}
+
 app.get('/health', (_req, res) => {
   res.json({
     ok: hasApiKey(),
@@ -822,6 +873,16 @@ app.get('/session', async (req, res) => {
   try {
     const raw = String(req.query.src || 'web').toLowerCase()
     const source = VALID_SOURCES.has(raw) ? raw : 'web'
+
+    const overBudget = checkQrBudget(source, req)
+    if (overBudget) {
+      return res.status(429).json({
+        error: overBudget === 'daily'
+          ? 'This line has reached its limit for today. Please call the office with your questions.'
+          : 'You have used this several times in the last hour. Please try again a little later, or call the office.'
+      })
+    }
+
     const recipientName = sanitizeRecipientName(req.query.name)
     const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const tier = resolveTier(req.query.tier || req.query.mode)

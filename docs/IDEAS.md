@@ -82,6 +82,20 @@ repeat a name, birthdate, or chart number. No PHI from anyone's chart belongs
 in this repo — a MyChart PDF was reviewed for source material and only the
 generic clinic logistics were used.
 
+**Spend guard (important — a printed QR code is public forever):**
+
+Voice minutes bill our OpenAI account, and anyone who photographs the card can
+use it. `PUBLIC_QR_SOURCES` in `server/server.js` caps the `stresstest` source:
+
+| Limit | Default | Env var |
+|-------|---------|---------|
+| Sessions per visitor per hour | 8 | `QR_SESSIONS_PER_VISITOR_HOUR` |
+| Sessions per day, all visitors | 300 | `QR_SESSIONS_PER_DAY` |
+
+Over the limit returns a friendly 429 telling them to call the office. Personal
+Axon links are deliberately NOT capped. Counters are in memory and reset on
+restart, which is acceptable.
+
 **Before real patients use it:**
 
 1. A clinician at the clinic reads the script and signs off on the wording
