@@ -41,6 +41,30 @@ The universal script answers the four questions patients actually have:
 what the test is accomplishing, what is physically being done to them, how long
 it takes, and when/how results come back.
 
+### Drug covered: Lexiscan (regadenoson)
+
+The pharmacologic stress agent, for patients who can't do the treadmill. Facts
+in the script are sourced from the manufacturer's patient guide and prescribing
+information, not invented:
+
+- Widens the coronary arteries to raise blood flow as exercise would. Not a
+  stimulant, not adrenaline. Given as a fast IV push plus saline flush.
+- Common effects: shortness of breath, headache, flushing/feeling hot, chest
+  discomfort, dizziness, nausea, abdominal discomfort, metallic taste. Most
+  pass in ~15 min; headache ~30 min.
+- Staff can reverse it with aminophylline if it doesn't settle — included
+  because it genuinely calms a nervous patient.
+- Caffeine/methylxanthines block it, which can make images misleading and force
+  a repeat test. Label says avoid ≥12 h; many clinics ask 24 h.
+- The script explains the caffeine rule and the reason, then always defers to
+  the clinic's own sheet. It will not compute a personal cutoff or judge whether
+  what someone drank was a problem.
+- It normalizes needing the drug version instead of the treadmill — patients
+  are often quietly embarrassed by it, and it is not a verdict on them.
+
+Still missing: the clinic's own fasting window and exact caffeine window. Those
+are per-clinic and belong in `STRESS_CLINICS`, not the universal script.
+
 **Hard guardrails built into the profile:**
 
 - No medical advice, diagnosis, opinions, or recommendations
