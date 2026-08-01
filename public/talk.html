@@ -487,7 +487,12 @@ function isRealSpeech(transcript,ms){
   const s=normTurn(transcript);
   if(!s)return false;
   if(ms<320)return false;                      /* a slam, a bump, a fart */
-  if(JUNK_TURNS.has(s)&&ms<1200)return false;  /* transcriber guessing at noise */
+  /* How much of that turn our own ears heard as a voice. A long noise can still
+     come back with a word on it — a fart transcribes as "you" — so the deciding
+     vote is whether there was a voice there at all, not how long it went on. */
+  const heard=analyser?turnVoiceMs:999;
+  if(heard<150)return false;
+  if(JUNK_TURNS.has(s)&&heard<600)return false;
   return /[a-z0-9]/.test(s);
 }
 function clearTurnTimer(){if(turnTimer){clearTimeout(turnTimer);turnTimer=null;}}
@@ -520,7 +525,7 @@ function handleEvent(ev){
       /* Safety net: if the transcript never lands, don't go deaf — answer anyway
          when the sound ran long enough to have been a sentence. */
       turnTimer=setTimeout(function(){
-        if(turnPending&&lastTurnMs>=700)askForReply();else dropTurn();
+        if(turnPending&&turnVoiceMs>=150&&lastTurnMs>=700)askForReply();else dropTurn();
       },2500);
     }
   }
@@ -530,7 +535,7 @@ function handleEvent(ev){
     }
   }
   else if(t==='conversation.item.input_audio_transcription.failed'){
-    if(turnPending){if(lastTurnMs>=700)askForReply();else dropTurn();}
+    if(turnPending){if(turnVoiceMs>=150&&lastTurnMs>=700)askForReply();else dropTurn();}
   }
   if(t==='response.done'){
     responseActive=false;
