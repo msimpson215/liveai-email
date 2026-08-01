@@ -253,7 +253,7 @@ let dc=null,micTrack=null,noiseTimer=null,autoTexted=false;
 let aiSpeaking=false,analyserTrack=null;
 const recipientName=params.get('name')||'';
 const autostart=params.get('autostart')==='1';
-const sessionParams=new URLSearchParams({src:sessionSource});
+const sessionParams=new URLSearchParams({src:sessionSource,gate:'1'});
 if(recipientName)sessionParams.set('name',recipientName);
 const sessionUrl='/session?'+sessionParams.toString();
 let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=false;
@@ -296,6 +296,7 @@ async function stop(){
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
   ptt=false;pttAuto=false;listening=false;
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
+  responseActive=false;speechStartedAt=0;lastTurnMs=0;dropTurn();
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
 }
@@ -467,12 +468,63 @@ function pttTalk(){
   refreshMic();setPttHint();applyClasses();
 }
 if(pttToggle)pttToggle.addEventListener('click',function(e){e.stopPropagation();setPtt(!ptt,false);});
+
+/* ---- Turn gating: only answer a REAL person ----
+   The server no longer replies to every chunk of audio the mic commits. A cough,
+   a gust, or a bar crowd used to be committed as the caller's turn, and with no
+   words in it the model fell back to its opening line — that's the
+   "Hello, how can I help you today?" restart. Here we wait for the transcript,
+   check it against how long the sound actually lasted, and only then ask for a
+   reply. Noise gets dropped and Axon just keeps waiting, like it should. */
+const JUNK_TURNS=new Set(['','you','thank you','thanks','thank you very much','thanks for watching','bye','goodbye','silence','music','uh','um','uhh','hmm','mm','mhm','ah','oh','huh','so','the','a','i']);
+let responseActive=false,speechStartedAt=0,lastTurnMs=0,turnPending=false,turnTimer=null;
+function normTurn(s){
+  return String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function isRealSpeech(transcript,ms){
+  const s=normTurn(transcript);
+  if(!s)return false;
+  if(ms<320)return false;                      /* a slam, a bump, a fart */
+  if(JUNK_TURNS.has(s)&&ms<1200)return false;  /* transcriber guessing at noise */
+  return /[a-z0-9]/.test(s);
+}
+function clearTurnTimer(){if(turnTimer){clearTimeout(turnTimer);turnTimer=null;}}
+function dropTurn(){turnPending=false;clearTurnTimer();}
+function askForReply(){
+  clearTurnTimer();
+  turnPending=false;
+  if(responseActive||aiSpeaking)return;
+  if(!dc||dc.readyState!=='open')return;
+  try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
+}
+
 /* Read the AI's spoken words as text so it works even when you can't hear it,
    and track when it starts/stops talking. */
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
+  if(t==='response.created')responseActive=true;
+  if(t==='input_audio_buffer.speech_started'){speechStartedAt=Date.now();}
+  else if(t==='input_audio_buffer.speech_stopped'){
+    lastTurnMs=speechStartedAt?(Date.now()-speechStartedAt):0;
+    turnPending=true;
+    clearTurnTimer();
+    /* Safety net: if the transcript never lands, don't go deaf — answer anyway
+       when the sound ran long enough to have been a sentence. */
+    turnTimer=setTimeout(function(){
+      if(turnPending&&lastTurnMs>=700)askForReply();else dropTurn();
+    },2500);
+  }
+  else if(t==='conversation.item.input_audio_transcription.completed'){
+    if(turnPending){
+      if(isRealSpeech(msg.transcript,lastTurnMs))askForReply();else dropTurn();
+    }
+  }
+  else if(t==='conversation.item.input_audio_transcription.failed'){
+    if(turnPending){if(lastTurnMs>=700)askForReply();else dropTurn();}
+  }
   if(t==='response.done'){
+    responseActive=false;
     greetingDone=true;
     canInterrupt=true;   /* opening is over -> interruptions allowed from here on */
     protectLine=false;   /* release the protected noise-offer line if it was set */

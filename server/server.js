@@ -965,6 +965,9 @@ app.get('/session', async (req, res) => {
     }
 
     const recipientName = sanitizeRecipientName(req.query.name)
+    // Pages that do their own turn gating pass gate=1. Everything else keeps the
+    // server's automatic reply-on-commit behaviour so older orbs still respond.
+    const gated = req.query.gate === '1'
     const tier = resolveTier(req.query.tier || req.query.mode)
     const timeOfDay = req.query.tod
     const topic = topicKey(req.query.t || req.query.topic)
@@ -1005,11 +1008,18 @@ app.get('/session', async (req, res) => {
               // stack we do not get; this is the Realtime-API setting that stops the
               // demo-killer. Caller waits until Axon finishes, then talks (mic is also
               // muted client-side while Axon speaks — see talk.html / siteeye-ai.html).
+              //
+              // create_response=false ("gated" pages only): the model must NOT answer
+              // every committed noise. A cough or a door slam used to be committed as
+              // a turn, and with nothing intelligible in it the model fell back to
+              // "Hello, how can I help you today?" — the restart people complain about.
+              // Gated pages read the transcript first and ask for a reply themselves
+              // only when a person actually said words.
               turn_detection: {
                 type: 'semantic_vad',
                 eagerness: 'low',
                 interrupt_response: false,
-                create_response: true
+                create_response: !gated
               }
             },
             output: {
