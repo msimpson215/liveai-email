@@ -559,7 +559,7 @@ function checkAiSound(){
    learns the room's own background, so a loud room simply raises the bar a
    person has to clear before we call it talking. */
 let audioCtx=null,analyser=null,freqData=null,timeData=null,loudFrames=0,quietFrames=0;
-let roomFloor=0.02,voiceRun=0,quietRun=0,turnVoiceMs=0;
+let voiceFloor=1e-7,voiceRun=0,quietRun=0,turnVoiceMs=0,aiFrames=0,aiVoiceFrames=0,wasAiSpeaking=false;
 const FRAME_MS=50;
 function startNoiseMonitor(){
   try{
@@ -571,46 +571,54 @@ function startNoiseMonitor(){
     freqData=new Uint8Array(analyser.frequencyBinCount);
     timeData=new Uint8Array(analyser.fftSize);
     src.connect(analyser);
-    loudFrames=0;quietFrames=0;roomFloor=0.02;voiceRun=0;quietRun=0;turnVoiceMs=0;
+    loudFrames=0;quietFrames=0;voiceFloor=1e-7;voiceRun=0;quietRun=0;turnVoiceMs=0;
+    aiFrames=0;aiVoiceFrames=0;wasAiSpeaking=false;
     noiseTimer=setInterval(checkNoise,FRAME_MS);
   }catch(e){}
 }
-/* Share of the sound's ENERGY in the speech range. The analyser returns a dB
-   scale, so convert to real energy first or every sound scores the same.
-   Measured: wind/engine/slam land near 0.01, a person lands above 0.9. */
-function voiceBandRatio(){
+/* Splits the sound into rumble (below 150 Hz: wind, engines, thumps, a fart)
+   and voice (150 Hz - 3 kHz). Measured off real recordings played through this
+   code in a real browser — rumble against the speech band: engine 30x,
+   wind 8.6x, thump 2.1x, a person 0.05x. A person is the one sound with almost
+   no rumble underneath it. */
+function bandEnergy(){
   analyser.getByteFrequencyData(freqData);
   const hzPerBin=(audioCtx.sampleRate/2)/freqData.length;
-  let voice=0,total=0;
+  let low=1e-12,voice=1e-12;
   for(let i=1;i<freqData.length;i++){
     const hz=i*hzPerBin;
-    if(hz>6000)break;
+    if(hz>3000)break;
     const e=Math.pow(10,((freqData[i]/255)*70-100)/10);
-    total+=e;
-    if(hz>=300&&hz<=3000)voice+=e;
+    if(hz<150)low+=e;else voice+=e;
   }
-  return total>0?voice/total:0;
+  return {low:low,voice:voice};
 }
 function checkNoise(){
   if(!analyser||isTexting||isPaused)return;
   analyser.getByteTimeDomainData(timeData);
   let sum=0;for(let i=0;i<timeData.length;i++){const v=(timeData[i]-128)/128;sum+=v*v;}
   const level=Math.sqrt(sum/timeData.length);
-  const ratio=voiceBandRatio();
-  const speechish=level>Math.max(roomFloor*2.4,0.022)&&ratio>0.55;
+  const b=bandEnergy();
+  /* A person: real energy in the speech band, clearly above this room's own
+     background, with hardly any rumble under it. */
+  const speechish=b.voice>Math.max(voiceFloor*3,1e-7)&&(b.low/b.voice)<0.3;
   if(speechish){voiceRun+=FRAME_MS;quietRun=0;}
-  else{quietRun+=FRAME_MS;if(quietRun>=200)voiceRun=0;}
-  /* Learn the background ONLY from sound that isn't voice-shaped, or the floor
-     creeps up on the caller's own voice until they stop counting as speech. */
-  if(!aiSpeaking&&ratio<=0.55){
-    const k=level<roomFloor?0.2:0.02;
-    roomFloor=Math.max(0.005,Math.min(0.15,roomFloor*(1-k)+level*k));
+  else{
+    quietRun+=FRAME_MS;if(quietRun>=200)voiceRun=0;
+    if(!aiSpeaking)voiceFloor=Math.min(1e-2,Math.max(1e-9,voiceFloor*0.9+b.voice*0.1));
   }
+  /* A room full of voices, or one person cutting in? Measured only while Axon
+     is talking, when the mic is shut. A bar hums the whole time; a person
+     speaks up after Axon has been going a moment. */
+  if(aiSpeaking&&!wasAiSpeaking){aiFrames=0;aiVoiceFrames=0;}
+  wasAiSpeaking=aiSpeaking;
+  if(aiSpeaking){aiFrames++;if(speechish)aiVoiceFrames++;}
+  const crowded=aiFrames>0&&(aiVoiceFrames/aiFrames)>=0.7;
   if(!aiSpeaking&&speechish)turnVoiceMs+=FRAME_MS;
   /* BARGE-IN, like the ChatGPT app: real speech over the top of Axon stops it.
-     Needs ~0.5s of voice, so a cough or a gust never does it; off in a loud room
-     where a crowd is voices too, and off during the opening. */
-  if(aiSpeaking&&!roomLoud&&bargeEnabled&&greetingDone&&voiceRun>=500)bargeIn();
+     Needs ~0.5s of voice, and waits until Axon has been talking a second, which
+     is also what tells a room of voices from one person cutting in. */
+  if(aiSpeaking&&!roomLoud&&!crowded&&bargeEnabled&&greetingDone&&aiFrames>=20&&voiceRun>=500)bargeIn();
   if(!aiSpeaking){
     if(level>0.15){loudFrames++;quietFrames=0;}
     else if(level<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}

@@ -37,13 +37,15 @@ async function runPage(pageFile) {
         }
       },
       getByteFrequencyData(arr) {
+        // Shapes match what real recordings measure: a person has almost no
+        // energy below 150 Hz, wind and engines are almost all below it.
         const hzPerBin = 24000 / arr.length;
         const p = SIM.mic.profile;
         for (let i = 0; i < arr.length; i++) {
           const hz = i * hzPerBin;
-          if (p === 'voice') arr[i] = (hz >= 300 && hz <= 3000) ? 210 : 40;
-          else if (p === 'rumble') arr[i] = hz < 300 ? 210 : 30;   // wind, engine, thump
-          else arr[i] = 20;                                        // near silence
+          if (p === 'voice') arr[i] = (hz >= 150 && hz <= 3000) ? 215 : 30;
+          else if (p === 'rumble') arr[i] = hz < 150 ? 215 : 25;   // wind, engine, thump
+          else arr[i] = 15;                                        // near silence
         }
       },
     };
@@ -159,10 +161,11 @@ async function runPage(pageFile) {
   await sleep(150);
   check('conversation continues after barge-in', creates() - c5, 1);
 
-  // A barge-in that leads nowhere must switch itself off.
+  // A barge-in that leads nowhere must switch itself off. Axon has to have been
+  // talking into a quiet room first, otherwise the crowd guard blocks it anyway.
   msg({ type: 'response.created' });
   SIM.ai.level = 0.30;
-  await sleep(200);
+  await sleep(1500);
   const c6 = cancels();
   SIM.mic = { level: 0.14, profile: 'voice' };
   await sleep(800);
@@ -173,7 +176,7 @@ async function runPage(pageFile) {
 
   msg({ type: 'response.created' });
   SIM.ai.level = 0.30;
-  await sleep(150);
+  await sleep(1500);
   const c7 = cancels();
   SIM.mic = { level: 0.14, profile: 'voice' };
   await sleep(900);
