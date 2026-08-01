@@ -272,7 +272,8 @@ async function stop(){
   dc=null;micTrack=null;aiSpeaking=false;
   isTexting=false;isNoisy=false;autoTexted=false;isPaused=false;
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
-  responseActive=false;speechStartedAt=0;lastTurnMs=0;dropTurn();
+  responseActive=false;speechStartedAt=0;lastTurnMs=0;turnVoiceMs=0;bargeUntil=0;dropTurn();
+  bargeEnabled=true;badBarge=0;if(bargeWatch){clearTimeout(bargeWatch);bargeWatch=null;}
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
 }
@@ -402,6 +403,7 @@ function refreshMic(){
    lasted, and only then ask for a reply. */
 const JUNK_TURNS=new Set(['','you','thank you','thanks','thank you very much','thanks for watching','bye','goodbye','silence','music','uh','um','uhh','hmm','mm','mhm','ah','oh','huh','so','the','a','i']);
 let responseActive=false,speechStartedAt=0,lastTurnMs=0,turnPending=false,turnTimer=null;
+let bargeEnabled=true,badBarge=0,bargeWatch=null;
 function normTurn(s){
   return String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
 }
@@ -417,6 +419,8 @@ function dropTurn(){turnPending=false;clearTurnTimer();}
 function askForReply(){
   clearTurnTimer();
   turnPending=false;
+  /* The caller really did speak, so any barge-in that led here was a good call. */
+  if(bargeWatch){clearTimeout(bargeWatch);bargeWatch=null;}
   if(responseActive||aiSpeaking)return;
   if(!dc||dc.readyState!=='open')return;
   try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
@@ -427,14 +431,19 @@ function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
   if(t==='response.created')responseActive=true;
-  if(t==='input_audio_buffer.speech_started'){speechStartedAt=Date.now();}
+  if(t==='input_audio_buffer.speech_started'){speechStartedAt=Date.now();turnVoiceMs=0;}
   else if(t==='input_audio_buffer.speech_stopped'){
     lastTurnMs=speechStartedAt?(Date.now()-speechStartedAt):0;
     turnPending=true;
     clearTurnTimer();
-    turnTimer=setTimeout(function(){
-      if(turnPending&&lastTurnMs>=700)askForReply();else dropTurn();
-    },2500);
+    /* Our own ears already heard a person during that turn — answer right away
+       instead of waiting on a transcript. Waiting only happens when unclear. */
+    if(turnVoiceMs>=350){askForReply();}
+    else{
+      turnTimer=setTimeout(function(){
+        if(turnPending&&lastTurnMs>=700)askForReply();else dropTurn();
+      },2500);
+    }
   }
   else if(t==='conversation.item.input_audio_transcription.completed'){
     if(turnPending){
@@ -513,7 +522,7 @@ textInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDe
 /* ---- AI voice meter: mic is OFF whenever the AI is making sound ----
    This is the hard guarantee that nothing (a word, a yell, noise) can
    interrupt the AI. The mic only comes back ~0.7s after the AI goes quiet. */
-let aiAnalyser=null,aiData=null,aiMeterTimer=null,lastAiSound=0;
+let aiAnalyser=null,aiData=null,aiMeterTimer=null,lastAiSound=0,bargeUntil=0;
 function setupAiMeter(stream){
   try{
     if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();}
@@ -533,6 +542,9 @@ function checkAiSound(){
   let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
   const rms=Math.sqrt(sum/aiData.length);
   const now=Date.now();
+  /* Right after a barge-in the cancelled reply is still draining out of the
+     speaker. Ignore it, or it looks like Axon started again and shuts the mic. */
+  if(now<bargeUntil){if(aiSpeaking){aiSpeaking=false;refreshMic();}return;}
   if(rms>0.025){
     lastAiSound=now;
     if(!aiSpeaking){aiSpeaking=true;refreshMic();}
@@ -541,41 +553,94 @@ function checkAiSound(){
   }
 }
 
-/* ---- Noise watch: if it stays loud, auto-offer the text box once ---- */
-let audioCtx=null,analyser=null,noiseData=null,loudFrames=0,quietFrames=0;
+/* ---- Room listener: tells a VOICE apart from NOISE ----
+   Measures how loud the room is and how much of that sound sits in 300-3000 Hz,
+   where speech lives. Wind, engines and thumps are mostly below it. The floor
+   learns the room's own background, so a loud room simply raises the bar a
+   person has to clear before we call it talking. */
+let audioCtx=null,analyser=null,freqData=null,timeData=null,loudFrames=0,quietFrames=0;
+let roomFloor=0.02,voiceRun=0,quietRun=0,turnVoiceMs=0;
+const FRAME_MS=50;
 function startNoiseMonitor(){
   try{
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     if(audioCtx.state==='suspended'){audioCtx.resume().catch(function(){});}
     const meterStream=analyserTrack?new MediaStream([analyserTrack]):localStream;
     const src=audioCtx.createMediaStreamSource(meterStream);
-    analyser=audioCtx.createAnalyser();analyser.fftSize=512;
-    noiseData=new Uint8Array(analyser.frequencyBinCount);
+    analyser=audioCtx.createAnalyser();analyser.fftSize=1024;analyser.smoothingTimeConstant=0.3;
+    freqData=new Uint8Array(analyser.frequencyBinCount);
+    timeData=new Uint8Array(analyser.fftSize);
     src.connect(analyser);
-    loudFrames=0;
-    noiseTimer=setInterval(checkNoise,250);
+    loudFrames=0;quietFrames=0;roomFloor=0.02;voiceRun=0;quietRun=0;turnVoiceMs=0;
+    noiseTimer=setInterval(checkNoise,FRAME_MS);
   }catch(e){}
 }
-/* Continuously classify the room as loud (bar) or quiet (office). We only sample
-   when the AI is NOT talking, so we measure the real room, not the AI's own voice.
-   Hysteresis keeps it from flip-flopping on a passing truck or a single word:
-   ~2s of sustained loud enters bar mode, ~3.5s of sustained quiet leaves it. */
+/* Share of the sound's ENERGY in the speech range. The analyser returns a dB
+   scale, so convert to real energy first or every sound scores the same.
+   Measured: wind/engine/slam land near 0.01, a person lands above 0.9. */
+function voiceBandRatio(){
+  analyser.getByteFrequencyData(freqData);
+  const hzPerBin=(audioCtx.sampleRate/2)/freqData.length;
+  let voice=0,total=0;
+  for(let i=1;i<freqData.length;i++){
+    const hz=i*hzPerBin;
+    if(hz>6000)break;
+    const e=Math.pow(10,((freqData[i]/255)*70-100)/10);
+    total+=e;
+    if(hz>=300&&hz<=3000)voice+=e;
+  }
+  return total>0?voice/total:0;
+}
 function checkNoise(){
-  if(!analyser||isTexting)return;
+  if(!analyser||isTexting||isPaused)return;
+  analyser.getByteTimeDomainData(timeData);
+  let sum=0;for(let i=0;i<timeData.length;i++){const v=(timeData[i]-128)/128;sum+=v*v;}
+  const level=Math.sqrt(sum/timeData.length);
+  const ratio=voiceBandRatio();
+  const speechish=level>Math.max(roomFloor*2.4,0.022)&&ratio>0.55;
+  if(speechish){voiceRun+=FRAME_MS;quietRun=0;}
+  else{quietRun+=FRAME_MS;if(quietRun>=200)voiceRun=0;}
+  /* Learn the background ONLY from sound that isn't voice-shaped, or the floor
+     creeps up on the caller's own voice until they stop counting as speech. */
+  if(!aiSpeaking&&ratio<=0.55){
+    const k=level<roomFloor?0.2:0.02;
+    roomFloor=Math.max(0.005,Math.min(0.15,roomFloor*(1-k)+level*k));
+  }
+  if(!aiSpeaking&&speechish)turnVoiceMs+=FRAME_MS;
+  /* BARGE-IN, like the ChatGPT app: real speech over the top of Axon stops it.
+     Needs ~0.5s of voice, so a cough or a gust never does it; off in a loud room
+     where a crowd is voices too, and off during the opening. */
+  if(aiSpeaking&&!roomLoud&&bargeEnabled&&greetingDone&&voiceRun>=500)bargeIn();
   if(!aiSpeaking){
-    analyser.getByteTimeDomainData(noiseData);
-    let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
-    const rms=Math.sqrt(sum/noiseData.length);
-    if(rms>0.15){loudFrames++;quietFrames=0;}
-    else if(rms<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
+    if(level>0.15){loudFrames++;quietFrames=0;}
+    else if(level<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
     else{loudFrames=Math.max(0,loudFrames-1);}
   }
-  if(!roomLoud&&loudFrames>=8){          /* ~2s sustained loud -> bar mode */
-    roomLoud=true;refreshMic();
+  if(!roomLoud&&loudFrames>=40){         /* ~2s sustained loud -> bar mode */
+    roomLoud=true;loudFrames=0;refreshMic();
     if(greetingDone)enterNoiseMode();    /* once we know it's loud, offer text */
-  }else if(roomLoud&&quietFrames>=14){   /* ~3.5s sustained quiet -> office mode */
-    roomLoud=false;refreshMic();
+  }else if(roomLoud&&quietFrames>=70){   /* ~3.5s sustained quiet -> office mode */
+    roomLoud=false;quietFrames=0;refreshMic();
   }
+}
+/* The caller talked over Axon. Cut the reply short and hand them the floor.
+   Then watch: a genuine interruption is followed by the caller actually saying
+   something. If nothing follows, we misread the room (or the phone let Axon's
+   own voice back in), so we back off instead of chopping Axon up — one bad call
+   parks barge-in for 20s, a second parks it for the rest of the call. */
+function bargeIn(){
+  voiceRun=0;
+  if(!aiSpeaking)return;
+  try{if(dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
+  bargeUntil=Date.now()+1000;
+  aiSpeaking=false;responseActive=false;
+  refreshMic();
+  if(bargeWatch)clearTimeout(bargeWatch);
+  bargeWatch=setTimeout(function(){
+    bargeWatch=null;badBarge++;
+    bargeEnabled=false;
+    if(badBarge<2)setTimeout(function(){bargeEnabled=true;},20000);
+  },4000);
 }
 function stopNoiseMonitor(){
   if(noiseTimer){clearInterval(noiseTimer);noiseTimer=null;}
