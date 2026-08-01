@@ -86,7 +86,7 @@ function setupAiMeter(stream){
       let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
       const rms=Math.sqrt(sum/aiData.length),now=Date.now();
       if(rms>0.025){lastAiSound=now;if(!aiSpeaking){aiSpeaking=true;refreshMic();}}
-      else if(aiSpeaking&&(now-lastAiSound)>700){aiSpeaking=false;greetingDone=true;refreshMic();}
+      else if(aiSpeaking&&(now-lastAiSound)>700){aiSpeaking=false;refreshMic();}
     },100);
   }catch(e){}
 }
