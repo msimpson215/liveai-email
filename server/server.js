@@ -655,17 +655,6 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
 
 const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
-// Sources served by talk.html, where the client keeps the mic muted during the
-// opening greeting so it cannot be interrupted, then re-enables it so the rest
-// of the conversation IS interruptible. Enable server-side interruption for them.
-const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon', 'stresstest', 'ask'])
-
-// Everyday assistants live in noisy rooms (shop radio, truck, jobsite). They wait
-// longer before deciding you finished talking, so background noise cannot make
-// them answer themselves.
-// A clinic waiting room is noisy too, and a nervous patient speaks slowly.
-const PATIENT_SOURCES = new Set(['qb', 'axon', 'stresstest', 'ask'])
-
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
 const OPEN_WEB_SOURCES = new Set(['qb', 'axon'])
@@ -976,7 +965,9 @@ app.get('/session', async (req, res) => {
     }
 
     const recipientName = sanitizeRecipientName(req.query.name)
-    const interruptible = INTERRUPTIBLE_SOURCES.has(source)
+    // Pages that do their own turn gating pass gate=1. Everything else keeps the
+    // server's automatic reply-on-commit behaviour so older orbs still respond.
+    const gated = req.query.gate === '1'
     const tier = resolveTier(req.query.tier || req.query.mode)
     const timeOfDay = req.query.tod
     const topic = topicKey(req.query.t || req.query.topic)
@@ -1003,32 +994,32 @@ app.get('/session', async (req, res) => {
           ...(OPEN_WEB_SOURCES.has(source) ? { tools: [WEB_SEARCH_TOOL] } : {}),
           audio: {
             input: {
-              // Server-side noise reduction — the same class of processing the
-              // ChatGPT app leans on. near_field = phone/headset held close; it
-              // strips room noise (TV, music, a sound machine) before turn-detection.
-              noise_reduction: { type: 'near_field' },
+              // far_field = phone/laptop in a real room (bar, truck, jobsite).
+              // near_field is for a headset held to the mouth — too weak for demos
+              // where wind and crowd noise were cancelling Axon mid-sentence.
+              noise_reduction: { type: 'far_field' },
               // Set here, not by a client session.update. A partial session.update
               // from the browser drops audio.output.voice, which made the voice
               // change between sessions.
               transcription: { model: 'gpt-4o-mini-transcribe' },
-              turn_detection: interruptible ? {
-                // Semantic turn-detection — a model decides when the caller has
-                // actually finished, so a TV, music, or room chatter doesn't cut
-                // the AI off. Hands-free and interruptible, no tap needed.
-                // 'low' eagerness waits longer before answering: slightly slower,
-                // but it stops a radio or shop noise from making it talk to itself.
+              // HARD RULE for every brain: interrupt_response is ALWAYS false.
+              // A fart, wind gust, TV, or bar crowd must NEVER cancel Axon mid-sentence
+              // and make it "start over." ChatGPT's consumer app has a private audio
+              // stack we do not get; this is the Realtime-API setting that stops the
+              // demo-killer. Caller waits until Axon finishes, then talks (mic is also
+              // muted client-side while Axon speaks — see talk.html / siteeye-ai.html).
+              //
+              // create_response=false ("gated" pages only): the model must NOT answer
+              // every committed noise. A cough or a door slam used to be committed as
+              // a turn, and with nothing intelligible in it the model fell back to
+              // "Hello, how can I help you today?" — the restart people complain about.
+              // Gated pages read the transcript first and ask for a reply themselves
+              // only when a person actually said words.
+              turn_detection: {
                 type: 'semantic_vad',
-                eagerness: PATIENT_SOURCES.has(source) ? 'low' : 'medium',
-                interrupt_response: true,
-                create_response: true
-              } : {
-                // Demo intros stay uninterruptible so they always finish.
-                type: 'server_vad',
-                threshold: 0.95,
-                silence_duration_ms: 1200,
-                prefix_padding_ms: 300,
+                eagerness: 'low',
                 interrupt_response: false,
-                create_response: true
+                create_response: !gated
               }
             },
             output: {

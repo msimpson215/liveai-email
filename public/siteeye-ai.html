@@ -55,7 +55,7 @@ body.error #status::after{content:"Tap the orb to try again";}
 <script>
 /* Simple SiteEye voice orb — connects to the SiteEye 360 Live brain (src=siteeye). */
 const SRC='siteeye';
-const sessionUrl='/session?src='+encodeURIComponent(SRC);
+const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC);
 let pc=null,localStream=null,starting=false,audioEl=null;
 function setState(s){document.body.className=s;}
 function ensureAudio(){if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}return audioEl;}
@@ -63,7 +63,73 @@ function resumeAudio(){if(audioEl&&audioEl.paused){audioEl.play().catch(function
 async function stop(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  dc=null;responseActive=false;speechStartedAt=0;lastTurnMs=0;dropTurn();
   starting=false;setState('idle');
+}
+let micTrack=null,dc=null,aiSpeaking=false,audioCtx=null,aiAnalyser=null,aiData=null,aiMeterTimer=null,lastAiSound=0;
+/* Only answer a real person. The server no longer replies to every committed
+   chunk of audio, so wind can't be mistaken for a turn and trigger the opening
+   line again. We check the transcript against how long the sound lasted. */
+const JUNK_TURNS=new Set(['','you','thank you','thanks','thanks for watching','bye','goodbye','silence','music','uh','um','hmm','mm','ah','oh','huh','so','the','a','i']);
+let responseActive=false,speechStartedAt=0,lastTurnMs=0,turnPending=false,turnTimer=null;
+function isRealSpeech(transcript,ms){
+  const s=String(transcript||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
+  if(!s)return false;
+  if(ms<320)return false;
+  if(JUNK_TURNS.has(s)&&ms<1200)return false;
+  return /[a-z0-9]/.test(s);
+}
+function dropTurn(){turnPending=false;if(turnTimer){clearTimeout(turnTimer);turnTimer=null;}}
+function askForReply(){
+  const send=dc&&dc.readyState==='open';
+  dropTurn();
+  if(responseActive||aiSpeaking||!send)return;
+  try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
+}
+function handleEvent(ev){
+  let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
+  const t=msg.type||'';
+  if(t==='response.created')responseActive=true;
+  else if(t==='response.done')responseActive=false;
+  else if(t==='input_audio_buffer.speech_started')speechStartedAt=Date.now();
+  else if(t==='input_audio_buffer.speech_stopped'){
+    lastTurnMs=speechStartedAt?(Date.now()-speechStartedAt):0;
+    turnPending=true;
+    if(turnTimer)clearTimeout(turnTimer);
+    turnTimer=setTimeout(function(){
+      if(turnPending&&lastTurnMs>=700)askForReply();else dropTurn();
+    },2500);
+  }
+  else if(t==='conversation.item.input_audio_transcription.completed'){
+    if(turnPending){if(isRealSpeech(msg.transcript,lastTurnMs))askForReply();else dropTurn();}
+  }
+  else if(t==='conversation.item.input_audio_transcription.failed'){
+    if(turnPending){if(lastTurnMs>=700)askForReply();else dropTurn();}
+  }
+}
+function refreshMic(){
+  if(!micTrack)return;
+  /* Mute mic while SiteEye AI is talking so wind/bar noise cannot cancel it. */
+  micTrack.enabled=!aiSpeaking;
+}
+function setupAiMeter(stream){
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume().catch(function(){});
+    const src=audioCtx.createMediaStreamSource(stream);
+    aiAnalyser=audioCtx.createAnalyser();aiAnalyser.fftSize=512;
+    aiData=new Uint8Array(aiAnalyser.frequencyBinCount);
+    src.connect(aiAnalyser);lastAiSound=Date.now();
+    if(aiMeterTimer)clearInterval(aiMeterTimer);
+    aiMeterTimer=setInterval(function(){
+      if(!aiAnalyser)return;
+      aiAnalyser.getByteTimeDomainData(aiData);
+      let sum=0;for(let i=0;i<aiData.length;i++){const v=(aiData[i]-128)/128;sum+=v*v;}
+      const rms=Math.sqrt(sum/aiData.length),now=Date.now();
+      if(rms>0.025){lastAiSound=now;if(!aiSpeaking){aiSpeaking=true;refreshMic();}}
+      else if(aiSpeaking&&(now-lastAiSound)>700){aiSpeaking=false;refreshMic();}
+    },100);
+  }catch(e){}
 }
 async function connectVoice(){
   const r=await fetch(sessionUrl,{cache:'no-store'});
@@ -73,11 +139,17 @@ async function connectVoice(){
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
-  pc.ontrack=function(e){if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
+  pc.ontrack=function(e){
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+    setupAiMeter(e.streams[0]);
+  };
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  pc.addTrack(localStream.getAudioTracks()[0]);
-  const dc=pc.createDataChannel('oai-events');
+  micTrack=localStream.getAudioTracks()[0];
+  micTrack.enabled=false; /* mute during opening so wind cannot cut the intro */
+  pc.addTrack(micTrack);
+  dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+  dc.addEventListener('message',handleEvent);
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
