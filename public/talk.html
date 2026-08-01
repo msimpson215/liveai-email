@@ -431,12 +431,14 @@ function refreshMic(){
     micTrack.enabled=listening&&!isPaused&&!isTexting;
     return;
   }
-  /* Hands-free (ChatGPT-style): the mic is muted ONLY during the opening greeting
-     so it always finishes. After that the mic stays open the whole time, so the
-     caller can talk and interrupt naturally; semantic turn-detection + echo
-     cancellation handle noise and the AI's own voice. */
+  /* Hands-free: mute the mic while the AI is talking when
+     (a) greeting / protected line must finish, OR
+     (b) the room is LOUD (bar, wind, shop) — otherwise a gust of wind is
+         treated as the caller interrupting, the AI cuts off, and it "starts over."
+     In a quiet office the mic stays live so natural barge-in still works. */
   const lockGreeting=(!canInterrupt||protectLine)&&aiSpeaking;
-  micTrack.enabled=!(lockGreeting||isTexting||isPaused);
+  const lockLoud=roomLoud&&aiSpeaking;
+  micTrack.enabled=!(lockGreeting||lockLoud||isTexting||isPaused);
 }
 /* ---- Tap-to-talk (half-duplex) ---- */
 const pttToggle=document.getElementById('pttToggle');
@@ -607,12 +609,17 @@ function checkNoise(){
     analyser.getByteTimeDomainData(noiseData);
     let sum=0;for(let i=0;i<noiseData.length;i++){const v=(noiseData[i]-128)/128;sum+=v*v;}
     const rms=Math.sqrt(sum/noiseData.length);
-    if(rms>0.15){loudFrames++;quietFrames=0;}
-    else if(rms<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
-    else{loudFrames=Math.max(0,loudFrames-1);}
+    if(rms>0.12){loudFrames++;quietFrames=0;}
+    else if(rms<0.06){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
+    else{loudFrames=Math.max(0,loudFrames-1);quietFrames=Math.max(0,quietFrames-1);}
   }
-  /* Hands-free: we no longer auto-switch modes on noise. Semantic turn-detection
-     on the server handles noisy rooms, so it stays hands-free like ChatGPT. */
+  /* ~1.5s sustained loud = bar/wind mode; ~3s quiet = office again.
+     This only mutes the mic while Axon is talking — you still talk hands-free
+     when it's your turn. Stops wind from cancelling the AI mid-sentence. */
+  const wasLoud=roomLoud;
+  if(!roomLoud&&loudFrames>=6){roomLoud=true;loudFrames=0;}
+  else if(roomLoud&&quietFrames>=12){roomLoud=false;quietFrames=0;}
+  if(wasLoud!==roomLoud)refreshMic();
 }
 /* Loud room: switch to tap-to-talk (not text) and tell the caller once, warmly. */
 function enterPushToTalk(){

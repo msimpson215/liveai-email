@@ -660,11 +660,13 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 // of the conversation IS interruptible. Enable server-side interruption for them.
 const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon', 'stresstest', 'ask'])
 
-// Everyday assistants live in noisy rooms (shop radio, truck, jobsite). They wait
-// longer before deciding you finished talking, so background noise cannot make
-// them answer themselves.
-// A clinic waiting room is noisy too, and a nervous patient speaks slowly.
-const PATIENT_SOURCES = new Set(['qb', 'axon', 'stresstest', 'ask'])
+// Everyday assistants live in noisy rooms (shop radio, truck, jobsite, bar demos).
+// low eagerness = wait longer before deciding the caller finished, so wind / TV /
+// crowd noise cannot make the AI cut itself off and restart.
+const PATIENT_SOURCES = new Set([
+  'qb', 'axon', 'stresstest', 'ask',
+  'email', 'web', 'a1tony', 'a1outreach'
+])
 
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
@@ -1003,30 +1005,27 @@ app.get('/session', async (req, res) => {
           ...(OPEN_WEB_SOURCES.has(source) ? { tools: [WEB_SEARCH_TOOL] } : {}),
           audio: {
             input: {
-              // Server-side noise reduction — the same class of processing the
-              // ChatGPT app leans on. near_field = phone/headset held close; it
-              // strips room noise (TV, music, a sound machine) before turn-detection.
-              noise_reduction: { type: 'near_field' },
+              // far_field = phone/laptop in a real room (bar, truck, jobsite).
+              // near_field is for a headset held to the mouth — too weak for demos
+              // where wind and crowd noise were cancelling Axon mid-sentence.
+              noise_reduction: { type: 'far_field' },
               // Set here, not by a client session.update. A partial session.update
               // from the browser drops audio.output.voice, which made the voice
               // change between sessions.
               transcription: { model: 'gpt-4o-mini-transcribe' },
               turn_detection: interruptible ? {
-                // Semantic turn-detection — a model decides when the caller has
-                // actually finished, so a TV, music, or room chatter doesn't cut
-                // the AI off. Hands-free and interruptible, no tap needed.
-                // 'low' eagerness waits longer before answering: slightly slower,
-                // but it stops a radio or shop noise from making it talk to itself.
+                // ChatGPT-style semantic VAD — decides from WORDS, not volume.
+                // Wind / a slammed door no longer counts as "the caller spoke."
+                // low eagerness for real-world noisy sources (see PATIENT_SOURCES).
                 type: 'semantic_vad',
                 eagerness: PATIENT_SOURCES.has(source) ? 'low' : 'medium',
                 interrupt_response: true,
                 create_response: true
               } : {
-                // Demo intros stay uninterruptible so they always finish.
-                type: 'server_vad',
-                threshold: 0.95,
-                silence_duration_ms: 1200,
-                prefix_padding_ms: 300,
+                // Product demos: still semantic (not volume-based server_vad), but
+                // do NOT cancel the AI when noise spikes — intros must finish.
+                type: 'semantic_vad',
+                eagerness: 'low',
                 interrupt_response: false,
                 create_response: true
               }
