@@ -655,19 +655,6 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
 
 const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
-// Sources served by talk.html, where the client keeps the mic muted during the
-// opening greeting so it cannot be interrupted, then re-enables it so the rest
-// of the conversation IS interruptible. Enable server-side interruption for them.
-const INTERRUPTIBLE_SOURCES = new Set(['email', 'a1tony', 'a1outreach', 'web', 'qb', 'axon', 'stresstest', 'ask'])
-
-// Everyday assistants live in noisy rooms (shop radio, truck, jobsite, bar demos).
-// low eagerness = wait longer before deciding the caller finished, so wind / TV /
-// crowd noise cannot make the AI cut itself off and restart.
-const PATIENT_SOURCES = new Set([
-  'qb', 'axon', 'stresstest', 'ask',
-  'email', 'web', 'a1tony', 'a1outreach'
-])
-
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
 const OPEN_WEB_SOURCES = new Set(['qb', 'axon'])
@@ -978,7 +965,6 @@ app.get('/session', async (req, res) => {
     }
 
     const recipientName = sanitizeRecipientName(req.query.name)
-    const interruptible = INTERRUPTIBLE_SOURCES.has(source)
     const tier = resolveTier(req.query.tier || req.query.mode)
     const timeOfDay = req.query.tod
     const topic = topicKey(req.query.t || req.query.topic)
@@ -1013,17 +999,13 @@ app.get('/session', async (req, res) => {
               // from the browser drops audio.output.voice, which made the voice
               // change between sessions.
               transcription: { model: 'gpt-4o-mini-transcribe' },
-              turn_detection: interruptible ? {
-                // ChatGPT-style semantic VAD — decides from WORDS, not volume.
-                // Wind / a slammed door no longer counts as "the caller spoke."
-                // low eagerness for real-world noisy sources (see PATIENT_SOURCES).
-                type: 'semantic_vad',
-                eagerness: PATIENT_SOURCES.has(source) ? 'low' : 'medium',
-                interrupt_response: true,
-                create_response: true
-              } : {
-                // Product demos: still semantic (not volume-based server_vad), but
-                // do NOT cancel the AI when noise spikes — intros must finish.
+              // HARD RULE for every brain: interrupt_response is ALWAYS false.
+              // A fart, wind gust, TV, or bar crowd must NEVER cancel Axon mid-sentence
+              // and make it "start over." ChatGPT's consumer app has a private audio
+              // stack we do not get; this is the Realtime-API setting that stops the
+              // demo-killer. Caller waits until Axon finishes, then talks (mic is also
+              // muted client-side while Axon speaks — see talk.html / siteeye-ai.html).
+              turn_detection: {
                 type: 'semantic_vad',
                 eagerness: 'low',
                 interrupt_response: false,

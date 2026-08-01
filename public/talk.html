@@ -416,13 +416,7 @@ function appendAI(text){
   curAI.textContent+=text;
   answerEl.scrollTop=answerEl.scrollHeight;
 }
-/* ADAPTIVE interruption. The mic is muted while the AI is talking when:
-   - we're still in the opening greeting (canInterrupt false), so it always finishes; or
-   - we're delivering a protected line (the noise offer); or
-   - the ROOM IS LOUD (a bar) — so background noise can't cut the AI off and the
-     caller can actually hear the whole answer.
-   In a QUIET room (an office) the mic stays live while the AI talks, so the caller
-   CAN interrupt. It's always off in text mode or while paused. */
+/* Mic OFF whenever Axon is speaking (hands-free). Noise cannot cancel mid-reply. */
 function refreshMic(){
   if(!micTrack)return;
   if(ptt){
@@ -431,14 +425,12 @@ function refreshMic(){
     micTrack.enabled=listening&&!isPaused&&!isTexting;
     return;
   }
-  /* Hands-free: mute the mic while the AI is talking when
-     (a) greeting / protected line must finish, OR
-     (b) the room is LOUD (bar, wind, shop) — otherwise a gust of wind is
-         treated as the caller interrupting, the AI cuts off, and it "starts over."
-     In a quiet office the mic stays live so natural barge-in still works. */
-  const lockGreeting=(!canInterrupt||protectLine)&&aiSpeaking;
-  const lockLoud=roomLoud&&aiSpeaking;
-  micTrack.enabled=!(lockGreeting||lockLoud||isTexting||isPaused);
+  /* HARD RULE: mic is OFF whenever Axon is speaking. Wind / a fart / bar noise
+     cannot reach OpenAI, cannot cancel the reply, cannot make it "start over."
+     When Axon goes quiet (~0.7s), mic opens and you talk hands-free.
+     Tradeoff vs ChatGPT app: you cannot talk OVER Axon mid-sentence. Reliability
+     for demos beats barge-in. */
+  micTrack.enabled=!(aiSpeaking||isTexting||isPaused);
 }
 /* ---- Tap-to-talk (half-duplex) ---- */
 const pttToggle=document.getElementById('pttToggle');

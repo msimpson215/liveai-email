@@ -388,17 +388,10 @@ function appendAI(text){
   curAI.textContent+=text;
   answerEl.scrollTop=answerEl.scrollHeight;
 }
-/* ADAPTIVE interruption. The mic is muted while the AI is talking when:
-   - we're still in the opening greeting (canInterrupt false), so it always finishes; or
-   - we're delivering a protected line (the noise offer); or
-   - the ROOM IS LOUD (a bar) — so background noise can't cut the AI off and the
-     caller can actually hear the whole answer.
-   In a QUIET room (an office) the mic stays live while the AI talks, so the caller
-   CAN interrupt. It's always off in text mode or while paused. */
+/* HARD RULE: mic OFF whenever Axon is speaking. Wind / bar / fart cannot cancel. */
 function refreshMic(){
   if(!micTrack)return;
-  const lockWhileSpeaking=(!canInterrupt||protectLine||roomLoud)&&aiSpeaking;
-  micTrack.enabled=!(lockWhileSpeaking||isTexting||isPaused);
+  micTrack.enabled=!(aiSpeaking||isTexting||isPaused);
 }
 /* Read the AI's spoken words as text so it works even when you can't hear it,
    and track when it starts/stops talking. */
