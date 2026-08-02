@@ -255,6 +255,7 @@ body.listening .orb-hint,body.speaking .orb-hint{opacity:.45}
   <audio id="axonAudio" autoplay playsinline></audio>
 
 <script src="/js/axon-web-tools.js"></script>
+<script src="/axon-voice.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const orbHint=document.getElementById('orbHint');
@@ -296,7 +297,7 @@ paintGreeting();
 promptEl.textContent=IDLE_PROMPT;
 
 /* ---------- state ---------- */
-let pc=null,dc=null,localStream=null,starting=false;
+let pc=null,dc=null,localStream=null,starting=false,voice=null;
 
 function setState(state,message){
   document.body.classList.remove('connecting','listening','speaking');
@@ -329,6 +330,7 @@ function flushMemory(source){
 
 /* ---------- voice ---------- */
 async function stopVoice(){
+  if(voice){voice.detach();voice=null}
   flushMemory('orb');
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
@@ -346,7 +348,7 @@ async function connectVoice(){
   let tier='moderate';
   try{tier=localStorage.getItem('axon.tier')||'moderate'}catch(e){}
 
-  const r=await fetch('/session?src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
+  const r=await fetch('/session?gate=1&src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));
@@ -357,7 +359,9 @@ async function connectVoice(){
   if(!key)throw new Error('no token');
 
   pc=new RTCPeerConnection();
+  let remoteStream=null;
   pc.ontrack=e=>{
+    remoteStream=e.streams[0];
     if(audioEl.srcObject!==e.streams[0]){
       audioEl.srcObject=e.streams[0];
       audioEl.play().catch(()=>{});
@@ -370,16 +374,10 @@ async function connectVoice(){
   micTrack.enabled=false;
   pc.addTrack(micTrack);
   dc=pc.createDataChannel('oai-events');
-  let greeted=false,micOpened=false;
-  function openMic(){
-    if(micOpened)return;
-    micOpened=true;
-    try{micTrack.enabled=true}catch(e){}
-  }
+  let greeted=false;
   dc.addEventListener('open',()=>{
     // A personal link can carry its own opening line; otherwise use the server's.
     const line=String(PRESET.greeting||data.greeting||'').trim();
-    if(!line)openMic();
     if(line&&!greeted){
       greeted=true;
       try{
@@ -404,10 +402,9 @@ async function connectVoice(){
         const tools=window.AxonWebTools;
         if(tools&&tools.handleRealtimeWebTools){
           tools.handleRealtimeWebTools(msg,dc,{onStatus:function(s){setState('speaking',s)}}).then(function(handled){
-            if(!handled){openMic();setState('listening','Listening…')}
-          }).catch(function(){openMic();setState('listening','Listening…')});
+            if(!handled)setState('listening','Listening…');
+          }).catch(function(){setState('listening','Listening…')});
         }else{
-          openMic();
           setState('listening','Listening…');
         }
       }
@@ -431,6 +428,7 @@ async function connectVoice(){
     throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
   setState('listening','Listening…');
 }
 

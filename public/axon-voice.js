@@ -1,0 +1,270 @@
+/* Axon voice turn-taking — ONE implementation for every orb on the site.
+   Include it, then call AxonVoice.attach(...) once the call is up.
+
+   What it fixes, and why any of this exists:
+
+   Left alone, the Realtime API answers whatever the microphone commits. A gust,
+   a cough, a slammed door or a passing truck gets committed as the caller's
+   turn, and since there are no words in it the model falls back to its opening
+   line — that is the "Hello, how can I help you today?" restart. It will also
+   cancel a reply mid-sentence on the same noise.
+
+   So the page has to decide for itself when a person is talking. Every 50ms it
+   splits the sound into rumble (below 150Hz) and voice (150Hz-3kHz). Those
+   numbers were measured by playing real recordings through this exact code in a
+   real browser. Rumble measured against the speech band:
+
+       engine 30x    wind 8.6x    thump/fart 2.1x    a person 0.05x
+
+   A person is the one sound with almost no rumble underneath it.
+
+   The result behaves the way people expect from the ChatGPT app: talk over it
+   and it stops; cough, bump the table or stand in the wind and it does not. */
+(function (global) {
+  'use strict';
+
+  var FRAME_MS = 50;
+  var JUNK_TURNS = {};
+  ['', 'you', 'thank you', 'thanks', 'thank you very much', 'thanks for watching',
+    'bye', 'goodbye', 'silence', 'music', 'uh', 'um', 'uhh', 'hmm', 'mm', 'mhm',
+    'ah', 'oh', 'huh', 'so', 'the', 'a', 'i'].forEach(function (w) { JUNK_TURNS[w] = true; });
+
+  function normTurn(s) {
+    return String(s || '').toLowerCase().replace(/[^a-z0-9' ]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function attach(opts) {
+    var dc = opts.dc;
+    var micTrack = opts.micTrack;
+    var localStream = opts.localStream;
+    var remoteStream = opts.remoteStream;
+    var blocked = opts.blocked || function () { return false; };
+    var allowBargeIn = opts.allowBargeIn !== false;
+    var onAiSpeaking = opts.onAiSpeaking || function () {};
+    var greetingFirst = opts.greetingFirst !== false;
+
+    var audioCtx = null, roomAnalyser = null, aiAnalyser = null;
+    var freqData = null, timeData = null, aiData = null;
+    var analyserTrack = null, timer = null, aiTimer = null;
+
+    var aiSpeaking = greetingFirst;      // the opening is playing, mic stays shut
+    var greetingDone = !greetingFirst;
+    var lastAiSound = Date.now(), bargeUntil = 0;
+    var voiceFloor = 1e-7, voiceRun = 0, quietRun = 0, turnVoiceMs = 0;
+    var aiFrames = 0, aiVoiceFrames = 0, wasAiSpeaking = false;
+    var responseActive = false, turnPending = false, turnTimer = null;
+    var speechStartedAt = 0, lastTurnMs = 0;
+    var bargeEnabled = true, badBarge = 0, bargeWatch = null;
+    var detached = false;
+
+    function refreshMic() {
+      if (!micTrack) return;
+      try { micTrack.enabled = !(aiSpeaking || blocked()); } catch (e) {}
+    }
+
+    function send(obj) {
+      try { if (dc && dc.readyState === 'open') dc.send(JSON.stringify(obj)); } catch (e) {}
+    }
+
+    /* ---- turn gating: only ever answer a real person ---- */
+    function clearTurnTimer() { if (turnTimer) { clearTimeout(turnTimer); turnTimer = null; } }
+    function dropTurn() { turnPending = false; clearTurnTimer(); }
+
+    function askForReply() {
+      clearTurnTimer();
+      turnPending = false;
+      // A real turn followed, so any barge-in that led here was a good call.
+      if (bargeWatch) { clearTimeout(bargeWatch); bargeWatch = null; }
+      if (responseActive || aiSpeaking) return;
+      send({ type: 'response.create' });
+    }
+
+    function isRealSpeech(transcript, ms) {
+      var s = normTurn(transcript);
+      if (!s) return false;
+      if (ms < 320) return false;
+      /* A long noise can still come back with a word on it — a fart transcribes
+         as "you" — so the deciding vote is whether we heard a voice at all. */
+      var heard = roomAnalyser ? turnVoiceMs : 999;
+      if (heard < 150) return false;
+      if (JUNK_TURNS[s] && heard < 600) return false;
+      return /[a-z0-9]/.test(s);
+    }
+
+    function handleEvent(ev) {
+      var msg;
+      try { msg = JSON.parse(ev.data); } catch (e) { return; }
+      var t = msg.type || '';
+      if (t === 'response.created') responseActive = true;
+      else if (t === 'response.done') {
+        responseActive = false;
+        greetingDone = true;
+      } else if (t === 'input_audio_buffer.speech_started') {
+        speechStartedAt = Date.now();
+        turnVoiceMs = 0;
+      } else if (t === 'input_audio_buffer.speech_stopped') {
+        lastTurnMs = speechStartedAt ? (Date.now() - speechStartedAt) : 0;
+        turnPending = true;
+        clearTurnTimer();
+        /* We already heard a person during that turn — answer straight away
+           rather than waiting on a transcript. Waiting is only for the
+           borderline cases. */
+        if (turnVoiceMs >= 350) askForReply();
+        else {
+          turnTimer = setTimeout(function () {
+            if (turnPending && turnVoiceMs >= 150 && lastTurnMs >= 700) askForReply();
+            else dropTurn();
+          }, 2500);
+        }
+      } else if (t === 'conversation.item.input_audio_transcription.completed') {
+        if (turnPending) {
+          if (isRealSpeech(msg.transcript, lastTurnMs)) askForReply(); else dropTurn();
+        }
+      } else if (t === 'conversation.item.input_audio_transcription.failed') {
+        if (turnPending) {
+          if (turnVoiceMs >= 150 && lastTurnMs >= 700) askForReply(); else dropTurn();
+        }
+      }
+    }
+
+    /* ---- is a person talking right now? ---- */
+    function bandEnergy() {
+      roomAnalyser.getByteFrequencyData(freqData);
+      var hzPerBin = (audioCtx.sampleRate / 2) / freqData.length;
+      var low = 1e-12, voice = 1e-12;
+      for (var i = 1; i < freqData.length; i++) {
+        var hz = i * hzPerBin;
+        if (hz > 3000) break;
+        // The analyser reports dB; convert back to real energy or near-silent
+        // bins count as much as loud ones and every sound scores the same.
+        var e = Math.pow(10, ((freqData[i] / 255) * 70 - 100) / 10);
+        if (hz < 150) low += e; else voice += e;
+      }
+      return { low: low, voice: voice };
+    }
+
+    function bargeIn() {
+      voiceRun = 0;
+      if (!aiSpeaking) return;
+      send({ type: 'response.cancel' });
+      bargeUntil = Date.now() + 1000;
+      aiSpeaking = false;
+      responseActive = false;
+      refreshMic();
+      onAiSpeaking(false);
+      /* Watch what follows. A real interruption is followed by the caller
+         actually saying something. If nothing does, we misread the room, so back
+         off instead of chopping the reply up: one bad call parks barge-in for
+         20 seconds, a second parks it for the rest of the call. */
+      if (bargeWatch) clearTimeout(bargeWatch);
+      bargeWatch = setTimeout(function () {
+        bargeWatch = null;
+        badBarge++;
+        bargeEnabled = false;
+        if (badBarge < 2) setTimeout(function () { bargeEnabled = true; }, 20000);
+      }, 4000);
+    }
+
+    function checkRoom() {
+      if (!roomAnalyser || detached) return;
+      var b = bandEnergy();
+      // A person: real energy in the speech band, clearly above this room's own
+      // background, with hardly any rumble under it.
+      var speechish = b.voice > Math.max(voiceFloor * 3, 1e-7) && (b.low / b.voice) < 0.3;
+      if (speechish) { voiceRun += FRAME_MS; quietRun = 0; }
+      else {
+        quietRun += FRAME_MS;
+        if (quietRun >= 200) voiceRun = 0;
+        // Learn the background only from frames that are not a person, or the
+        // floor creeps up on the caller's own voice until they stop counting.
+        if (!aiSpeaking) voiceFloor = Math.min(1e-2, Math.max(1e-9, voiceFloor * 0.9 + b.voice * 0.1));
+      }
+      if (!aiSpeaking && speechish) turnVoiceMs += FRAME_MS;
+
+      /* A room full of voices, or one person cutting in? Measured only while the
+         AI is talking and the mic is shut. A bar hums with voices the whole
+         time; a person speaks up after the AI has been going a moment. */
+      if (aiSpeaking && !wasAiSpeaking) { aiFrames = 0; aiVoiceFrames = 0; }
+      wasAiSpeaking = aiSpeaking;
+      if (aiSpeaking) { aiFrames++; if (speechish) aiVoiceFrames++; }
+      var crowded = aiFrames > 0 && (aiVoiceFrames / aiFrames) >= 0.7;
+
+      if (allowBargeIn && aiSpeaking && !crowded && bargeEnabled && greetingDone &&
+          !blocked() && aiFrames >= 20 && voiceRun >= 500) bargeIn();
+    }
+
+    /* ---- is the AI making sound right now? ---- */
+    function checkAi() {
+      if (!aiAnalyser || detached) return;
+      aiAnalyser.getByteTimeDomainData(aiData);
+      var sum = 0;
+      for (var i = 0; i < aiData.length; i++) { var v = (aiData[i] - 128) / 128; sum += v * v; }
+      var rms = Math.sqrt(sum / aiData.length);
+      var now = Date.now();
+      // Just after a barge-in the cancelled reply is still draining out of the
+      // speaker. Ignore it, or it looks like the AI started talking again and
+      // slams the mic shut on the caller mid-sentence.
+      if (now < bargeUntil) {
+        if (aiSpeaking) { aiSpeaking = false; refreshMic(); onAiSpeaking(false); }
+        return;
+      }
+      if (rms > 0.025) {
+        lastAiSound = now;
+        if (!aiSpeaking) { aiSpeaking = true; refreshMic(); onAiSpeaking(true); }
+      } else if (aiSpeaking && (now - lastAiSound) > 700) {
+        aiSpeaking = false; refreshMic(); onAiSpeaking(false);
+      }
+    }
+
+    try {
+      audioCtx = new (global.AudioContext || global.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(function () {});
+      /* An always-live copy of the mic feeds the detector, so the real mic can
+         be shut while the AI talks and we can still hear the room. Clone first,
+         while it is still live. */
+      try { analyserTrack = micTrack.clone(); analyserTrack.enabled = true; } catch (e) { analyserTrack = null; }
+      var roomStream = analyserTrack ? new global.MediaStream([analyserTrack]) : localStream;
+      var roomSrc = audioCtx.createMediaStreamSource(roomStream);
+      roomAnalyser = audioCtx.createAnalyser();
+      roomAnalyser.fftSize = 1024;
+      roomAnalyser.smoothingTimeConstant = 0.3;
+      freqData = new Uint8Array(roomAnalyser.frequencyBinCount);
+      timeData = new Uint8Array(roomAnalyser.fftSize);
+      roomSrc.connect(roomAnalyser);
+      timer = setInterval(checkRoom, FRAME_MS);
+
+      if (remoteStream) {
+        var aiSrc = audioCtx.createMediaStreamSource(remoteStream);
+        aiAnalyser = audioCtx.createAnalyser();
+        aiAnalyser.fftSize = 512;
+        aiData = new Uint8Array(aiAnalyser.frequencyBinCount);
+        aiSrc.connect(aiAnalyser);
+        aiTimer = setInterval(checkAi, 100);
+      }
+    } catch (e) {
+      // No audio analysis available: fall back to letting the AI always finish.
+      roomAnalyser = null;
+    }
+
+    if (dc) dc.addEventListener('message', handleEvent);
+    refreshMic();
+
+    return {
+      refreshMic: refreshMic,
+      isAiSpeaking: function () { return aiSpeaking; },
+      detach: function () {
+        detached = true;
+        if (timer) clearInterval(timer);
+        if (aiTimer) clearInterval(aiTimer);
+        if (turnTimer) clearTimeout(turnTimer);
+        if (bargeWatch) clearTimeout(bargeWatch);
+        if (analyserTrack) { try { analyserTrack.stop(); } catch (e) {} }
+        if (audioCtx) { try { audioCtx.close(); } catch (e) {} }
+        timer = aiTimer = turnTimer = bargeWatch = null;
+        roomAnalyser = aiAnalyser = null;
+      }
+    };
+  }
+
+  global.AxonVoice = { attach: attach };
+})(window);

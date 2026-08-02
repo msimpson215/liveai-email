@@ -126,10 +126,11 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
     </p>
   </div>
 
+<script src="/axon-voice.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const hint=document.getElementById('hint');
-let pc=null,localStream=null,starting=false,audioEl=null;
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
 
 function setState(s,msg){
   document.body.dataset.state=s||'idle';
@@ -144,6 +145,7 @@ function ensureAudio(){
   return audioEl;
 }
 async function stopVoice(){
+  if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   starting=false;
@@ -155,7 +157,7 @@ const CLINIC=(typeof window.STRESS_CLINIC==='string'?window.STRESS_CLINIC:'')||
   (new URLSearchParams(location.search).get('clinic')||'');
 
 async function connectVoice(){
-  const url='/session?src=stresstest'+(CLINIC?'&clinic='+encodeURIComponent(CLINIC):'');
+  const url='/session?gate=1&src=stresstest'+(CLINIC?'&clinic='+encodeURIComponent(CLINIC):'');
   const r=await fetch(url,{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
@@ -167,7 +169,9 @@ async function connectVoice(){
 
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
+  let remoteStream=null;
   pc.ontrack=e=>{
+    remoteStream=e.streams[0];
     if(audio.srcObject!==e.streams[0]){
       audio.srcObject=e.streams[0];
       audio.play().catch(()=>{});
@@ -183,12 +187,7 @@ async function connectVoice(){
   pc.addTrack(micTrack);
 
   const dc=pc.createDataChannel('oai-events');
-  let greeted=false,micOpened=false;
-  function openMic(){
-    if(micOpened)return;
-    micOpened=true;
-    try{micTrack.enabled=true}catch(e){}
-  }
+  let greeted=false;
   dc.addEventListener('open',()=>{
     if(greeted)return;
     greeted=true;
@@ -198,10 +197,7 @@ async function connectVoice(){
     try{
       const msg=JSON.parse(ev.data);
       if(msg.type==='response.created')setState('speaking','Speaking…');
-      if(msg.type==='response.done'){
-        openMic();
-        setState('listening','Listening — go ahead');
-      }
+      if(msg.type==='response.done')setState('listening','Listening — go ahead');
     }catch(e){}
   });
 
@@ -219,6 +215,7 @@ async function connectVoice(){
     err.status=sdp.status;throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
   setState('listening','Listening — go ahead');
 }
 async function toggleVoice(){

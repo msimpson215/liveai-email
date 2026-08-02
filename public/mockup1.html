@@ -338,6 +338,7 @@ body.split .dock{
   </div>
 
 <script src="/js/axon-web-tools.js"></script>
+<script src="/axon-voice.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const qInput=document.getElementById('q');
@@ -365,7 +366,7 @@ const canvas=document.getElementById('boardChart');
 const ctx=canvas.getContext('2d');
 
 const QB_KEY='joeAssistant.mockup1.qbMock';
-let pc=null,localStream=null,dc=null,starting=false,audioEl=null;
+let pc=null,localStream=null,dc=null,starting=false,audioEl=null,voice=null;
 let mode='idle',lastChart=null,lastReport=null,boardMode=null,qbOn=false,splitOn=false;
 
 function syncBodyClass(){
@@ -629,6 +630,7 @@ function flushMemory(source){
 }
 
 async function stopVoice(){
+  if(voice){voice.detach();voice=null}
   flushMemory('voice');
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
@@ -643,7 +645,7 @@ function axonTimeOfDay(){
 }
 
 async function connectVoice(){
-  const r=await fetch('/session?src=qb&tier='+encodeURIComponent(AXON_TIER)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
+  const r=await fetch('/session?gate=1&src=qb&tier='+encodeURIComponent(AXON_TIER)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));
@@ -654,7 +656,8 @@ async function connectVoice(){
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
-  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
+  let remoteStream=null;
+  pc.ontrack=e=>{remoteStream=e.streams[0];if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{})}};
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   const micTrack=localStream.getTracks()[0];
   // Silent until the opening line finishes, so nothing the mic hears - the
@@ -663,12 +666,9 @@ async function connectVoice(){
   micTrack.enabled=false;
   pc.addTrack(micTrack);
   dc=pc.createDataChannel('oai-events');
-  let greeted=false,micOpened=false;
-  function openMic(){
-    if(micOpened)return;
-    micOpened=true;
-    try{micTrack.enabled=true}catch(e){}
-  }
+  let greeted=false;
+  /* The mic is owned by axon-voice.js now; this just lets it re-evaluate. */
+  function openMic(){if(voice)voice.refreshMic();}
   dc.addEventListener('open',()=>{
     const line=String((data&&data.greeting)||'Hello Joe, how are you today? What can I do for you?').trim();
     if(!line)openMic();
@@ -716,6 +716,7 @@ async function connectVoice(){
     throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
   setMode('listening');
 }
 

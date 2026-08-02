@@ -47,9 +47,10 @@ body.error .orb{
 </head>
 <body>
 <div class="orb" id="orb" role="button" tabindex="0"></div>
+<script src="/axon-voice.js"></script>
 <script>
-let pc=null,localStream=null,starting=false;
-const sessionUrl=new URLSearchParams(location.search).get('src')==='email'?'/session?src=email':'/session';
+let pc=null,localStream=null,starting=false,voice=null;
+const sessionUrl=new URLSearchParams(location.search).get('src')==='email'?'/session?gate=1&src=email':'/session?gate=1';
 const orb=document.getElementById('orb');
 
 const _p=new URLSearchParams(location.search);
@@ -62,6 +63,7 @@ if(_p.get('popup')==='1' && !inOverlay){
 }
 
 async function stop(){
+  if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   document.body.classList.remove('active','connecting','error');
@@ -82,10 +84,13 @@ async function connectVoice(){
   pc=new RTCPeerConnection();
   const audio=document.createElement('audio');
   audio.autoplay=true;
-  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
+  let remoteStream=null;
+  pc.ontrack=e=>{remoteStream=e.streams[0];if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  pc.addTrack(localStream.getTracks()[0]);
-  pc.createDataChannel('oai-events');
+  const micTrack=localStream.getTracks()[0];
+  pc.addTrack(micTrack);
+  const dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
   const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
@@ -94,6 +99,7 @@ async function connectVoice(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
   document.body.classList.add('active');
   document.body.classList.remove('connecting','error');
 }

@@ -67,6 +67,7 @@ body.no-bg::before{
   <button id="startButton" type="button">Press to start AI voice</button>
   <div id="status" aria-live="polite"></div>
 </div>
+<script src="/axon-voice.js"></script>
 <script>
 const params=new URLSearchParams(location.search);
 const SRC=(params.get('src')||'siteeye').toLowerCase();
@@ -95,8 +96,10 @@ const bg=document.getElementById('bg');
 bg.addEventListener('error',function(){document.body.classList.add('no-bg');});
 bg.src=BG;
 
-let pc=null,localStream=null,starting=false,audioEl=null;
-const sessionUrl='/session?src='+encodeURIComponent(SRC);
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
+/* gate=1: the server must not answer every noise the mic commits — axon-voice.js
+   decides when a person actually spoke. */
+const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC);
 function setState(s){document.body.className=s+(document.body.classList.contains('no-bg')?' no-bg':'');}
 
 function ensureAudio(){
@@ -108,6 +111,7 @@ function resumeAudio(){
   return false;
 }
 async function stop(){
+  if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   starting=false;setState('idle');
@@ -121,9 +125,15 @@ async function connectVoice(){
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
-  pc.ontrack=e=>{if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}};
+  let remoteStream=null;
+  pc.ontrack=e=>{
+    remoteStream=e.streams[0];
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+  };
   localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-  pc.addTrack(localStream.getTracks()[0]);
+  const micTrack=localStream.getTracks()[0];
+  micTrack.enabled=false;   /* opening cannot be interrupted */
+  pc.addTrack(micTrack);
   const dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
   const offer=await pc.createOffer();
@@ -134,6 +144,7 @@ async function connectVoice(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
   setState('active');
 }
 async function start(){

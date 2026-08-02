@@ -44,12 +44,14 @@ body.active .orb{
 </head>
 <body>
 <div class="orb" id="orb" role="button" tabindex="0"></div>
+<script src="/axon-voice.js"></script>
 <script>
-let pc=null,localStream=null,starting=false;
-const sessionUrl='/session?src=email';
+let pc=null,localStream=null,starting=false,voice=null;
+const sessionUrl='/session?gate=1&src=email';
 const orb=document.getElementById('orb');
 
 async function stop(){
+  if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   document.body.classList.remove('active');
@@ -66,9 +68,13 @@ async function toggle(){
     pc=new RTCPeerConnection();
     const audio=document.createElement('audio');
     audio.autoplay=true;
-    pc.ontrack=e=>{if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
+    let remoteStream=null;
+    pc.ontrack=e=>{remoteStream=e.streams[0];if(audio.srcObject!==e.streams[0])audio.srcObject=e.streams[0]};
     localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-    pc.addTrack(localStream.getTracks()[0]);
+    const micTrack=localStream.getTracks()[0];
+    pc.addTrack(micTrack);
+    const dc=pc.createDataChannel('oai-events');
+    dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
     const offer=await pc.createOffer();
     await pc.setLocalDescription(offer);
     const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
@@ -78,6 +84,7 @@ async function toggle(){
     });
     if(!sdp.ok)throw new Error('sdp');
     await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+    voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
     document.body.classList.add('active');
   }catch(e){
     console.error(e);

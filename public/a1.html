@@ -628,9 +628,12 @@ function checkNoise(){
     else if(level<0.08){quietFrames++;loudFrames=Math.max(0,loudFrames-1);}
     else{loudFrames=Math.max(0,loudFrames-1);}
   }
+  /* Loud rooms only change what we allow (no barge-in). Axon does NOT announce
+     the noise — a gust used to make it volunteer "I'm having trouble hearing
+     you", which is just another way of talking when nobody asked it to. The
+     "Type instead" button is still there if the caller wants it. */
   if(!roomLoud&&loudFrames>=40){         /* ~2s sustained loud -> bar mode */
     roomLoud=true;loudFrames=0;refreshMic();
-    if(greetingDone)enterNoiseMode();    /* once we know it's loud, offer text */
   }else if(roomLoud&&quietFrames>=70){   /* ~3.5s sustained quiet -> office mode */
     roomLoud=false;quietFrames=0;refreshMic();
   }
