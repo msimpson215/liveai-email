@@ -24,3 +24,25 @@ for snr in 12 6 0; do
    "[0]atrim=0:$D,asetpts=N/SR/TB,volume=${SG}dB[s];[1]volume=${WG}dB[w];[s][w]amix=inputs=2:duration=first:normalize=0" -ac 1 "wind_snr${snr}.wav"
 done
 echo "audio ready in $OUT"
+
+# Music, and music with someone talking over it. Music lives in the same
+# frequencies as speech, so it is the hardest thing to tell a voice apart from.
+D=12
+ffmpeg -y -loglevel error \
+ -f lavfi -i "sine=frequency=98:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=196:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=294:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=392:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=587:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=784:duration=$D:sample_rate=48000" \
+ -f lavfi -i "sine=frequency=1175:duration=$D:sample_rate=48000" \
+ -f lavfi -i "anoisesrc=color=white:amplitude=0.5:duration=$D:sample_rate=48000" \
+ -filter_complex "[0]volume=0.9[b];[1]volume=0.7[b2];[2]volume=0.6,tremolo=f=2:d=0.7[c1];[3]volume=0.55,tremolo=f=2:d=0.7[c2];[4]volume=0.5,tremolo=f=4:d=0.8[m1];[5]volume=0.4,tremolo=f=4:d=0.8[m2];[6]volume=0.25,tremolo=f=8:d=0.9[m3];[7]highpass=f=6000,volume=0.35,tremolo=f=4:d=0.95[hat];[b][b2][c1][c2][m1][m2][m3][hat]amix=inputs=8:normalize=0,volume=1.6" -ac 1 music.wav
+MV=$(meas music.wav)
+ffmpeg -y -loglevel error -i music.wav -af "volume=$(python3 -c "print(-20-($MV))")dB" -ac 1 music_norm.wav
+for snr in 10 3; do
+  MG=$(python3 -c "print(-20-$snr-($MV))")
+  ffmpeg -y -loglevel error -i speech.wav -i music.wav -filter_complex \
+   "[0]atrim=0:$D,asetpts=N/SR/TB,volume=${SG}dB[s];[1]volume=${MG}dB[m];[s][m]amix=inputs=2:duration=first:normalize=0" -ac 1 "music_speech${snr}.wav"
+done
+echo "music clips ready"
