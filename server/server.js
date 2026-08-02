@@ -1016,9 +1016,19 @@ app.get('/session', async (req, res) => {
               // "Hello, how can I help you today?" — the restart people complain about.
               // Gated pages read the transcript first and ask for a reply themselves
               // only when a person actually said words.
+              // Measured against the real service with real audio:
+              //   eagerness low    quiet room: whole sentences.  LOUD ROOM: 17.6s
+              //                    to decide the caller finished — the orb just
+              //                    sits there saying "listening". Unusable.
+              //   eagerness high   loud room: 2.8s. But in a quiet room it chops
+              //                    people off mid-sentence ("The smooth planks.").
+              //   eagerness medium clean sentences in a quiet room, and far
+              //                    quicker than low when it is noisy.
+              // So: medium by default, and the page raises it to high on its own
+              // if a turn gets stuck, which is what a loud room actually causes.
               turn_detection: {
                 type: 'semantic_vad',
-                eagerness: 'low',
+                eagerness: 'medium',
                 interrupt_response: false,
                 create_response: !gated
               }

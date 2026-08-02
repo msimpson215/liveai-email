@@ -42,6 +42,7 @@
     var allowBargeIn = opts.allowBargeIn !== false;
     var onAiSpeaking = opts.onAiSpeaking || function () {};
     var greetingFirst = opts.greetingFirst !== false;
+    var voice = opts.voice || 'coral';
 
     var audioCtx = null, roomAnalyser = null, aiAnalyser = null;
     var freqData = null, timeData = null, aiData = null;
@@ -55,6 +56,7 @@
     var responseActive = false, turnPending = false, turnTimer = null;
     var speechStartedAt = 0, lastTurnMs = 0;
     var bargeEnabled = true, badBarge = 0, bargeWatch = null;
+    var stuckTimer = null, hurried = false;
     var detached = false;
 
     function refreshMic() {
@@ -64,6 +66,25 @@
 
     function send(obj) {
       try { if (dc && dc.readyState === 'open') dc.send(JSON.stringify(obj)); } catch (e) {}
+    }
+
+    /* Ask the service to make its mind up faster about when a turn has ended.
+       The whole audio block is resent, including the output voice: a partial
+       session.update drops settings it does not mention, and losing the voice
+       mid-call makes Axon change who it sounds like. */
+    function hurryUp() {
+      stuckTimer = null;
+      if (hurried) return;
+      hurried = true;
+      send({ type: 'session.update', session: { type: 'realtime', audio: {
+        input: {
+          noise_reduction: { type: 'far_field' },
+          transcription: { model: 'gpt-4o-mini-transcribe' },
+          turn_detection: { type: 'semantic_vad', eagerness: 'high',
+            interrupt_response: false, create_response: false }
+        },
+        output: { voice: voice }
+      } } });
     }
 
     /* ---- turn gating: only ever answer a real person ---- */
@@ -112,7 +133,14 @@
         speechStartedAt = Date.now();
         turnVoiceMs = 0;
         dropTurn();                       // a new turn supersedes the old one
+        /* In a loud room the service can take 15+ seconds to decide the caller
+           has finished, because it is waiting for a gap that never comes. That
+           is what leaves the orb sitting there saying "listening" while someone
+           repeats themselves. If a turn runs long, tell it to be quicker. */
+        if (stuckTimer) clearTimeout(stuckTimer);
+        stuckTimer = setTimeout(hurryUp, 3000);
       } else if (t === 'input_audio_buffer.speech_stopped') {
+        if (stuckTimer) { clearTimeout(stuckTimer); stuckTimer = null; }
         lastTurnMs = speechStartedAt ? (Date.now() - speechStartedAt) : 0;
         turnPending = true;
         clearTurnTimer();
@@ -267,6 +295,7 @@
       isAiSpeaking: function () { return aiSpeaking; },
       detach: function () {
         detached = true;
+        if (stuckTimer) clearTimeout(stuckTimer);
         if (timer) clearInterval(timer);
         if (aiTimer) clearInterval(aiTimer);
         if (turnTimer) clearTimeout(turnTimer);

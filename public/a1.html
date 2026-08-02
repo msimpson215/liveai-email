@@ -274,6 +274,7 @@ async function stop(){
   roomLoud=false;protectLine=false;loudFrames=0;quietFrames=0;noiseAskUntil=0;
   responseActive=false;speechStartedAt=0;lastTurnMs=0;turnVoiceMs=0;bargeUntil=0;dropTurn();
   bargeEnabled=true;badBarge=0;if(bargeWatch){clearTimeout(bargeWatch);bargeWatch=null;}
+  hurried=false;if(stuckTimer){clearTimeout(stuckTimer);stuckTimer=null;}
   starting=false;setState('idle');
   if(stopBtn)stopBtn.textContent='Pause';
 }
@@ -300,6 +301,7 @@ async function connectVoice(){
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(data.voice)sessionVoice=data.voice;
   if(!key)throw new Error('no token');
   pc=new RTCPeerConnection();
   const audio=ensureAudio();
@@ -424,6 +426,25 @@ function isRealSpeech(transcript,ms){
   if(s.split(' ').length>=2)return true;         /* two real words is a person */
   return heard>=150;                             /* one word needs backing up */
 }
+/* Ask the service to decide faster when a turn has ended. In a loud room it can
+   take 15+ seconds to find a gap that never comes, which is what leaves the orb
+   sitting there saying "listening" while somebody repeats themselves. The whole
+   audio block is resent, including the voice: a partial session.update drops
+   what it does not mention, and losing the voice mid-call changes who Axon
+   sounds like. */
+let stuckTimer=null,hurried=false,sessionVoice='coral';
+function hurryUp(){
+  stuckTimer=null;
+  if(hurried)return;
+  hurried=true;
+  try{
+    if(dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'session.update',session:{type:'realtime',audio:{
+      input:{noise_reduction:{type:'far_field'},transcription:{model:'gpt-4o-mini-transcribe'},
+        turn_detection:{type:'semantic_vad',eagerness:'high',interrupt_response:false,create_response:false}},
+      output:{voice:sessionVoice}
+    }}}));
+  }catch(e){}
+}
 function clearTurnTimer(){if(turnTimer){clearTimeout(turnTimer);turnTimer=null;}}
 function dropTurn(){turnPending=false;clearTurnTimer();}
 function askForReply(){
@@ -441,8 +462,13 @@ function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
   if(t==='response.created')responseActive=true;
-  if(t==='input_audio_buffer.speech_started'){speechStartedAt=Date.now();turnVoiceMs=0;dropTurn();}
+  if(t==='input_audio_buffer.speech_started'){
+    speechStartedAt=Date.now();turnVoiceMs=0;dropTurn();
+    if(stuckTimer)clearTimeout(stuckTimer);
+    stuckTimer=setTimeout(hurryUp,3000);
+  }
   else if(t==='input_audio_buffer.speech_stopped'){
+    if(stuckTimer){clearTimeout(stuckTimer);stuckTimer=null;}
     lastTurnMs=speechStartedAt?(Date.now()-speechStartedAt):0;
     turnPending=true;
     clearTurnTimer();

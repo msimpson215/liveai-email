@@ -180,7 +180,7 @@ async function connectVoice(){
     err.status=sdp.status;throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice});
   setState('listening','Listening — go ahead');
 }
 async function toggleVoice(){
