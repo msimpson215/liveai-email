@@ -231,7 +231,8 @@ function resolveTier(value) {
 }
 
 const VOICE_RULES = `IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
-Voice: upbeat, warm, professional woman. Keep answers short unless giving the intro.`
+Voice: upbeat, warm, professional woman. Keep answers short unless giving the intro.
+IF YOU WERE CUT OFF: when your own previous reply stops partway through, never repeat it from the beginning. Carry on from where it broke off and finish the point in a sentence or two. If the user said something while cutting you off, answer that first, then finish what you were saying. Do not re-introduce yourself and do not restate what you already said.`
 
 const DEMO_INTRO_RULES = `
 INTRO MODE — at the very start, DO NOT launch into a long pitch.
