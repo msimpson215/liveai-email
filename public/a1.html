@@ -681,7 +681,9 @@ function checkNoise(){
 function bargeIn(){
   voiceRun=0;
   if(!aiSpeaking)return;
-  try{if(dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
+  /* Only cancel something actually being generated — the speaker can still be
+     draining audio after a reply finished, and cancelling then just errors. */
+  try{if(responseActive&&dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
   bargeUntil=Date.now()+1000;
   aiSpeaking=false;responseActive=false;
   refreshMic();

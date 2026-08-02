@@ -187,7 +187,10 @@
     function bargeIn() {
       voiceRun = 0;
       if (!aiSpeaking) return;
-      send({ type: 'response.cancel' });
+      // Only cancel something that is actually being generated. The speaker can
+      // still be draining audio after a reply finished, and cancelling then
+      // just makes the service complain.
+      if (responseActive) send({ type: 'response.cancel' });
       bargeUntil = Date.now() + 1000;
       aiSpeaking = false;
       responseActive = false;
