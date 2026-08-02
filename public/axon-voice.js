@@ -79,16 +79,25 @@
       send({ type: 'response.create' });
     }
 
+    /* Did a person say something?
+
+       Our own detector is good but it is NOT allowed the final word. In a loud
+       room — music playing, speaker cranked — it can miss a person completely,
+       and if it could veto the transcript it would lock the caller out: the orb
+       sits there saying "listening" while they repeat themselves. That is worse
+       than the bug it was meant to fix. So real transcribed words always win,
+       and our own ears only break the tie on the borderline cases. */
     function isRealSpeech(transcript, ms) {
       var s = normTurn(transcript);
       if (!s) return false;
       if (ms < 320) return false;
-      /* A long noise can still come back with a word on it — a fart transcribes
-         as "you" — so the deciding vote is whether we heard a voice at all. */
       var heard = roomAnalyser ? turnVoiceMs : 999;
-      if (heard < 150) return false;
-      if (JUNK_TURNS[s] && heard < 600) return false;
-      return /[a-z0-9]/.test(s);
+      // What the transcriber guesses at noise. A fart comes back as "you".
+      if (JUNK_TURNS[s]) return heard >= 600;
+      // Two or more real words is a person, whatever our detector thought.
+      if (s.split(' ').length >= 2) return true;
+      // One word could be "yes", or could be a thump. Needs corroboration.
+      return heard >= 150;
     }
 
     function handleEvent(ev) {
@@ -102,6 +111,7 @@
       } else if (t === 'input_audio_buffer.speech_started') {
         speechStartedAt = Date.now();
         turnVoiceMs = 0;
+        dropTurn();                       // a new turn supersedes the old one
       } else if (t === 'input_audio_buffer.speech_stopped') {
         lastTurnMs = speechStartedAt ? (Date.now() - speechStartedAt) : 0;
         turnPending = true;
@@ -111,9 +121,12 @@
            borderline cases. */
         if (turnVoiceMs >= 350) askForReply();
         else {
+          /* Nothing conclusive heard. Wait for the transcript. If it is slow we
+             answer anyway on our own evidence, but we do NOT give up on the
+             turn — a late transcript must still be able to get a reply, or a
+             slow network becomes another way to lock the caller out. */
           turnTimer = setTimeout(function () {
             if (turnPending && turnVoiceMs >= 150 && lastTurnMs >= 700) askForReply();
-            else dropTurn();
           }, 2500);
         }
       } else if (t === 'conversation.item.input_audio_transcription.completed') {

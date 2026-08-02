@@ -46,3 +46,11 @@ for snr in 10 3; do
    "[0]atrim=0:$D,asetpts=N/SR/TB,volume=${SG}dB[s];[1]volume=${MG}dB[m];[s][m]amix=inputs=2:duration=first:normalize=0" -ac 1 "music_speech${snr}.wav"
 done
 echo "music clips ready"
+
+# Music LOUDER than the person — speaker cranked in the same room.
+for snr in -3 -9; do
+  MG=$(python3 -c "print(-20-($snr)-($MV))")
+  ffmpeg -y -loglevel error -i speech.wav -i music.wav -filter_complex \
+   "[0]atrim=0:$D,asetpts=N/SR/TB,volume=${SG}dB[s];[1]volume=${MG}dB[m];[s][m]amix=inputs=2:duration=first:normalize=0" -ac 1 "music_over${snr#-}.wav"
+done
+echo "loud-room clips ready"
