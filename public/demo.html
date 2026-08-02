@@ -99,7 +99,9 @@ bg.src=BG;
 let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
 /* gate=1: the server must not answer every noise the mic commits — axon-voice.js
    decides when a person actually spoke. */
-const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC);
+/* ?tier=light|moderate|advanced picks the brain for this link. */
+const TIER=(params.get('tier')||'').toLowerCase();
+const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC)+(TIER?'&tier='+encodeURIComponent(TIER):'');
 function setState(s){document.body.className=s+(document.body.classList.contains('no-bg')?' no-bg':'');}
 
 function ensureAudio(){

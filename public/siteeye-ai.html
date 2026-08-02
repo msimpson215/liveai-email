@@ -56,7 +56,8 @@ body.error #status::after{content:"Tap the orb to try again";}
 <script>
 /* Simple SiteEye voice orb — connects to the SiteEye 360 Live brain (src=siteeye). */
 const SRC='siteeye';
-const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC);
+const SEA_TIER=(new URLSearchParams(location.search).get('tier')||'').toLowerCase();
+const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC)+(SEA_TIER?'&tier='+encodeURIComponent(SEA_TIER):'');
 let pc=null,localStream=null,starting=false,audioEl=null;
 function setState(s){document.body.className=s;}
 function ensureAudio(){if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}return audioEl;}

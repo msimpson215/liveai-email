@@ -239,6 +239,11 @@ let aiSpeaking=false,analyserTrack=null;
 const recipientName=params.get('name')||'';
 const autostart=params.get('autostart')==='1';
 const sessionParams=new URLSearchParams({src:sessionSource,gate:'1'});
+/* ?tier=light|moderate|advanced on the page URL picks the brain for this link,
+   so one client can run cheap and another can run wide open. Default is the
+   full realtime model. */
+const linkTier=(params.get('tier')||'').toLowerCase();
+if(linkTier)sessionParams.set('tier',linkTier);
 if(recipientName)sessionParams.set('name',recipientName);
 const sessionUrl='/session?'+sessionParams.toString();
 let connState='idle',isTexting=false,isNoisy=false,isPaused=false,greetingDone=false;
