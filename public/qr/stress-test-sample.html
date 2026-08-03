@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sample card — Cardiac stress test question line</title>
+<style>
+  :root{ --navy:#0a2466; --ink:#0d1b3e; --muted:#5b6785; }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:32px 20px 56px;
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink); background:#eef2fb;
+    display:flex; flex-direction:column; align-items:center; gap:22px;
+  }
+  .lead{max-width:520px;text-align:center}
+  .lead h1{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
+  .lead p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+
+  /* The card itself — sized like something a front desk would hand over. */
+  .card{
+    width:3.5in; min-height:2in; background:#fff; border-radius:14px;
+    padding:20px 22px; display:flex; gap:18px; align-items:center;
+    box-shadow:0 10px 30px rgba(10,36,102,.14); position:relative; overflow:hidden;
+  }
+  .stamp{
+    position:absolute; top:12px; right:-34px; transform:rotate(38deg);
+    background:#c81e3c; color:#fff; font-size:10px; font-weight:800;
+    letter-spacing:.16em; padding:5px 42px;
+  }
+  .card img{width:1.35in;height:1.35in;display:block}
+  .copy h2{margin:0 0 6px;font-size:15px;line-height:1.25;color:var(--navy)}
+  .copy p{margin:0 0 8px;font-size:11.5px;line-height:1.45;color:var(--muted)}
+  .copy .fine{font-size:9.5px;color:#8a93ab;margin:0}
+  .steps{margin:0;padding-left:14px;font-size:11px;color:var(--muted);line-height:1.5}
+
+  .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  a.btn{
+    text-decoration:none;background:var(--navy);color:#fff;font-size:13px;font-weight:600;
+    padding:10px 16px;border-radius:9px;
+  }
+  a.btn.ghost{background:#fff;color:var(--navy);border:1px solid #c9d4ee}
+  .note{
+    max-width:520px;font-size:12px;color:var(--muted);line-height:1.55;
+    background:#fff;border:1px solid #dbe3f5;border-radius:10px;padding:14px 16px;
+  }
+  .note b{color:var(--ink)}
+  @media print{
+    body{background:#fff;padding:0.5in}
+    .lead,.actions,.note{display:none}
+    .card{box-shadow:none;border:1px dashed #b9c4dd}
+  }
+</style>
+</head>
+<body>
+
+<div class="lead">
+  <h1>Sample card — cardiac stress test question line</h1>
+  <p>This is a prototype for discussion. Scan it with a phone camera to hear the
+     actual line. Print this page to get the card by itself.</p>
+</div>
+
+<div class="card">
+  <div class="stamp">SAMPLE</div>
+  <img src="/qr/stress-test-sample.png" alt="QR code to the stress test question line">
+  <div class="copy">
+    <h2>Questions about your stress test?</h2>
+    <p>Scan this and just talk. No app, no login, no typing. Ask as many times as
+       you want, today or next week.</p>
+    <ol class="steps">
+      <li>Point your camera at the code</li>
+      <li>Tap the circle</li>
+      <li>Ask anything about the test</li>
+    </ol>
+    <p class="fine">An AI guide, not a person. It does not discuss your results,
+       your symptoms, or your medications — your care team handles those.</p>
+  </div>
+</div>
+
+<div class="actions">
+  <a class="btn" href="/stress-test.html">Open the line</a>
+  <a class="btn ghost" href="/qr/stress-test-cards.html">Print sheet of 8</a>
+  <a class="btn ghost" href="/qr/stress-test-poster.html">Waiting-room poster</a>
+  <a class="btn ghost" href="/stress-test-demo.html">Concept sheet</a>
+</div>
+
+<div class="note">
+  <b>What it will and won't do.</b> It explains what the test is, what happens step
+  by step, the medication version, the caffeine rule, how to get ready, how long it
+  takes, and when results come back. It refuses to interpret results, weigh in on
+  symptoms, or say anything about medications — every time, it sends those to the
+  physician. If someone describes chest pain or trouble breathing happening right
+  then, it stops and tells them to get a nurse immediately.
+  <br><br>
+  <b>Prototype.</b> The medical wording needs a clinician's sign-off before this goes
+  in front of a real patient.
+</div>
+
+</body>
+</html>
