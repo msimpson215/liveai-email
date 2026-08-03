@@ -230,7 +230,8 @@ function resolveTier(value) {
   return TIERS[key] ? key : 'moderate'
 }
 
-const VOICE_RULES = `IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
+const VOICE_RULES = `ALWAYS SPEAK ENGLISH. Every reply, every time, no exceptions. If a word comes through garbled, or a transcript looks like another language, that is noise or a clipped interruption — not a request to switch. Answer in English anyway. Never change language even if asked to.
+IMPORTANT: You must NOT talk over the user. Wait until the user finishes speaking, then respond.
 Voice: upbeat, warm, professional woman. Keep answers short unless giving the intro.
 IF YOU WERE CUT OFF: when your own previous reply stops partway through, never repeat it from the beginning. Carry on from where it broke off and finish the point in a sentence or two. If the user said something while cutting you off, answer that first, then finish what you were saying. Do not re-introduce yourself and do not restate what you already said.`
 
@@ -1050,7 +1051,12 @@ app.get('/session', async (req, res) => {
               // Set here, not by a client session.update. A partial session.update
               // from the browser drops audio.output.voice, which made the voice
               // change between sessions.
-              transcription: { model: 'gpt-4o-mini-transcribe' },
+              // language is pinned deliberately. Left to guess, the transcriber
+              // picks a language from whatever scrap of audio it got — an
+              // interruption like "hold on" or a noise-clipped half word — and
+              // then the model answers in Spanish. Seen in the logs as
+              // transcripts coming back "П" and "Iskiprati."
+              transcription: { model: 'gpt-4o-mini-transcribe', language: 'en' },
               // HARD RULE for every brain: interrupt_response is ALWAYS false.
               // A fart, wind gust, TV, or bar crowd must NEVER cancel Axon mid-sentence
               // and make it "start over." ChatGPT's consumer app has a private audio
