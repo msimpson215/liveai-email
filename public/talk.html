@@ -327,6 +327,69 @@ function resumeSession(){
   setPttHint();
   if(stopBtn)stopBtn.textContent='Pause';
 }
+
+/* ---- Keeping the conversation alive across a dropped call ----
+   A WebRTC call drops for a hundred boring reasons: wifi to cellular, a tunnel,
+   a laptop sleeping. The session on OpenAI's side dies with it and takes the
+   whole conversation. Nothing here used to notice, so the orb sat looking alive
+   while nothing worked, and the only way out was reloading the page.
+   We hold the last few turns on this page and hand them to the new session. */
+const HISTORY=[];
+function remember(role,text){
+  const t=String(text||'').trim();
+  if(!t)return;
+  HISTORY.push({role:role,text:t.slice(0,600)});
+  if(HISTORY.length>14)HISTORY.splice(0,HISTORY.length-14);
+}
+function seedHistory(){
+  if(!HISTORY.length||!dc||dc.readyState!=='open')return;
+  for(const h of HISTORY){
+    try{dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:h.role,
+      content:[{type:h.role==='assistant'?'output_text':'input_text',text:h.text}]}}));}catch(e){}
+  }
+  try{dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',
+    content:[{type:'input_text',text:'(The line dropped and reconnected. Do not greet me again and do not start over. Carry on from where we were, briefly.)'}]}}));}catch(e){}
+}
+let reconnecting=false,reconnectTries=0,connLost=false;
+function watchConnection(){
+  if(!pc||typeof pc.addEventListener!=='function')return;
+  connLost=false;
+  let grace=null;
+  const lost=function(){
+    if(connLost)return;
+    connLost=true;
+    handleLost();
+  };
+  pc.addEventListener('iceconnectionstatechange',function(){
+    const s=pc?pc.iceConnectionState:'closed';
+    if(s==='failed'||s==='closed')lost();
+    else if(s==='disconnected'){
+      if(!grace)grace=setTimeout(function(){
+        grace=null;
+        if(pc&&pc.iceConnectionState!=='connected'&&pc.iceConnectionState!=='completed')lost();
+      },4000);
+    }else if(grace){clearTimeout(grace);grace=null;}
+  });
+  pc.addEventListener('connectionstatechange',function(){
+    if(pc&&(pc.connectionState==='failed'||pc.connectionState==='closed'))lost();
+  });
+}
+async function handleLost(){
+  if(reconnecting||isPaused)return;
+  reconnecting=true;
+  setState('connecting');
+  stopNoiseMonitor();
+  try{if(pc)pc.close()}catch(e){}
+  pc=null;dc=null;micTrack=null;aiSpeaking=false;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async function(){
+    try{await connectVoice();reconnectTries=0;}
+    catch(e){if(reconnectTries<5){reconnecting=false;handleLost();return;}}
+    reconnecting=false;
+  },wait);
+}
+
 async function connectVoice(){
   const r=await fetch(sessionUrl,{cache:'no-store'});
   const data=await r.json();
@@ -373,6 +436,8 @@ async function connectVoice(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  watchConnection();
+  seedHistory();
   setState('active');
 }
 async function start(){
@@ -584,6 +649,7 @@ function handleEvent(ev){
     refreshMic();
     setPttHint();        /* greeting over -> show the "Listening…" cue */
   }
+  if(t.indexOf('audio_transcript.done')>=0&&typeof msg.transcript==='string'){remember('assistant',msg.transcript);}
   if(t.indexOf('audio_transcript.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('text.delta')>=0&&typeof msg.delta==='string'){appendAI(msg.delta);}
   else if(t.indexOf('audio_transcript.done')>=0){curAI=null;}

@@ -35,7 +35,10 @@ function stubs() {
     return rf(u, o);
   };
   window.RTCPeerConnection = class {
-    constructor() { this.ontrack = null; }
+    constructor() { this.ontrack = null; this._l = {}; }
+        addEventListener(t, fn) { (this._l[t] = this._l[t] || []).push(fn); }
+        get iceConnectionState() { return 'connected'; }
+        get connectionState() { return 'connected'; }
     createDataChannel() {
       const ls = {};
       window.__dc = { readyState: 'open', send(m) { window.__sent.push(JSON.parse(m)); },

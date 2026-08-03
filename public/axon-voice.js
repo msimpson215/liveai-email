@@ -24,6 +24,22 @@
   'use strict';
 
   var FRAME_MS = 50;
+
+  /* What has been said so far, kept on the page rather than inside the session.
+     A WebRTC call can drop for a hundred boring reasons — a phone switching from
+     wifi to cellular, a tunnel, a laptop sleeping. The session on OpenAI's side
+     dies with it and takes the whole conversation with it. Holding the last few
+     turns here means a reconnect can hand them back, so it carries on instead of
+     greeting you again like it has never met you. */
+  var HISTORY = [];
+  var HISTORY_MAX = 14;
+
+  function remember(role, text) {
+    var t = String(text || '').trim();
+    if (!t) return;
+    HISTORY.push({ role: role, text: t.slice(0, 600) });
+    if (HISTORY.length > HISTORY_MAX) HISTORY.splice(0, HISTORY.length - HISTORY_MAX);
+  }
   var JUNK_TURNS = {};
   ['', 'you', 'thank you', 'thanks', 'thank you very much', 'thanks for watching',
     'bye', 'goodbye', 'silence', 'music', 'uh', 'um', 'uhh', 'hmm', 'mm', 'mhm',
@@ -43,6 +59,8 @@
     var onAiSpeaking = opts.onAiSpeaking || function () {};
     var greetingFirst = opts.greetingFirst !== false;
     var voice = opts.voice || 'coral';
+    var pc = opts.pc || null;
+    var onLost = opts.onLost || function () {};
 
     var audioCtx = null, roomAnalyser = null, aiAnalyser = null;
     var freqData = null, timeData = null, aiData = null;
@@ -125,6 +143,9 @@
       var msg;
       try { msg = JSON.parse(ev.data); } catch (e) { return; }
       var t = msg.type || '';
+      if (t === 'response.audio_transcript.done' || t === 'response.output_audio_transcript.done') {
+        remember('assistant', msg.transcript);
+      }
       if (t === 'response.created') responseActive = true;
       else if (t === 'response.done') {
         responseActive = false;
@@ -159,7 +180,10 @@
         }
       } else if (t === 'conversation.item.input_audio_transcription.completed') {
         if (turnPending) {
-          if (isRealSpeech(msg.transcript, lastTurnMs)) askForReply(); else dropTurn();
+          if (isRealSpeech(msg.transcript, lastTurnMs)) {
+            remember('user', msg.transcript);
+            askForReply();
+          } else dropTurn();
         }
       } else if (t === 'conversation.item.input_audio_transcription.failed') {
         if (turnPending) {
@@ -291,6 +315,57 @@
     }
 
     if (dc) dc.addEventListener('message', handleEvent);
+
+    /* Hand the previous turns back to a fresh session so it can carry on.
+       Without this, a dropped call means it greets you from the top as though
+       nothing was ever said. */
+    function seedHistory() {
+      if (!HISTORY.length) return;
+      for (var i = 0; i < HISTORY.length; i++) {
+        var h = HISTORY[i];
+        send({ type: 'conversation.item.create', item: { type: 'message', role: h.role,
+          content: [{ type: h.role === 'assistant' ? 'output_text' : 'input_text', text: h.text }] } });
+      }
+      send({ type: 'conversation.item.create', item: { type: 'message', role: 'user',
+        content: [{ type: 'input_text', text:
+          '(The line dropped and reconnected. Do not greet me again and do not start over. ' +
+          'Carry on from where we were, briefly.)' }] } });
+    }
+    if (HISTORY.length) {
+      if (dc && dc.readyState === 'open') seedHistory();
+      else if (dc) dc.addEventListener('open', seedHistory);
+      greetingDone = true;          // no opening on a resumed call
+    }
+
+    /* Notice when the call has actually died. Nothing was watching this before,
+       so a dropped connection left the orb sitting there looking alive while
+       nothing worked, and the only way out was reloading the page. */
+    if (pc && typeof pc.addEventListener === 'function') {
+      var lost = false;
+      var graceTimer = null;
+      function declareLost() {
+        if (lost || detached) return;
+        lost = true;
+        try { onLost(); } catch (e) {}
+      }
+      function checkConn() {
+        var s = pc.iceConnectionState;
+        if (s === 'failed' || s === 'closed') declareLost();
+        else if (s === 'disconnected') {
+          // A brief blip often heals itself. Give it a moment before tearing down.
+          if (!graceTimer) graceTimer = setTimeout(function () {
+            graceTimer = null;
+            if (pc.iceConnectionState !== 'connected' && pc.iceConnectionState !== 'completed') declareLost();
+          }, 4000);
+        } else if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      }
+      pc.addEventListener('iceconnectionstatechange', checkConn);
+      pc.addEventListener('connectionstatechange', function () {
+        if (pc.connectionState === 'failed' || pc.connectionState === 'closed') declareLost();
+      });
+      if (dc) dc.addEventListener('close', declareLost);
+    }
+
     refreshMic();
 
     return {
@@ -311,5 +386,11 @@
     };
   }
 
-  global.AxonVoice = { attach: attach };
+  global.AxonVoice = {
+    attach: attach,
+    /* True when there is a conversation to carry over, so a page knows to skip
+       the opening line on a reconnect. */
+    hasHistory: function () { return HISTORY.length > 0; },
+    clearHistory: function () { HISTORY.length = 0; }
+  };
 })(window);

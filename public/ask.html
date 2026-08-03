@@ -122,6 +122,28 @@ async function stopVoice(){
   starting=false;
   setState('idle','Tap to talk');
 }
+
+/* The call dropped. Nothing used to happen here, so the orb sat there looking
+   alive while nothing worked and the only fix was reloading the page. Rebuild
+   the connection quietly and keep going; axon-voice.js hands the previous turns
+   to the new session so it carries on instead of greeting again. */
+let reconnecting=false,reconnectTries=0;
+async function handleLost(){
+  if(reconnecting)return;
+  reconnecting=true;
+  const startFn=(typeof connectVoice==='function')?connectVoice:null;
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc){pc.close()}}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async function(){
+    try{ if(startFn)await startFn(); reconnectTries=0; }
+    catch(e){ if(reconnectTries<5)handleLost(); }
+    finally{ reconnecting=false; }
+  },wait);
+}
+
 async function connectVoice(){
   const r=await fetch('/session?gate=1&src=ask&t='+encodeURIComponent(SLUG),{cache:'no-store'});
   const data=await r.json();
@@ -154,7 +176,7 @@ async function connectVoice(){
   const dc=pc.createDataChannel('oai-events');
   let greeted=false;
   dc.addEventListener('open',()=>{
-    if(greeted)return;
+    if(greeted||AxonVoice.hasHistory())return;
     greeted=true;
     try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
   });
@@ -180,7 +202,7 @@ async function connectVoice(){
     err.status=sdp.status;throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
   setState('listening','Listening — go ahead');
 }
 async function toggleVoice(){

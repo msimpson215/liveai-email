@@ -68,7 +68,10 @@ async function runPage(pageFile) {
       };
       w.MediaStream = class { constructor(t) { this._t = t || []; } getAudioTracks() { return this._t; } };
       w.RTCPeerConnection = class {
-        constructor() { this.ontrack = null; }
+        constructor() { this.ontrack = null; this._l = {}; }
+        addEventListener(t, fn) { (this._l[t] = this._l[t] || []).push(fn); }
+        get iceConnectionState() { return 'connected'; }
+        get connectionState() { return 'connected'; }
         createDataChannel() {
           const ls = {};
           w.__dc = {

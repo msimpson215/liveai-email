@@ -18,7 +18,10 @@ function stubs(){
     return rf(u,o);
   };
   window.RTCPeerConnection=class{
-    constructor(){this.ontrack=null}
+    constructor(){this.ontrack=null;this._l={}}
+  addEventListener(t,fn){(this._l[t]=this._l[t]||[]).push(fn)}
+  get iceConnectionState(){return 'connected'}
+  get connectionState(){return 'connected'}
     createDataChannel(){const ls={};window.__dc={readyState:'open',send(m){window.__sent.push(JSON.parse(m))},addEventListener(t,f){(ls[t]=ls[t]||[]).push(f)},_fire(t,d){(ls[t]||[]).forEach(f=>f(d))}};return window.__dc}
     addTrack(){} async createOffer(){return{type:'offer',sdp:'x'}} async setLocalDescription(){}
     async setRemoteDescription(){const c=new AudioContext(),d=c.createMediaStreamDestination(),o=c.createOscillator(),g=c.createGain();g.gain.value=0;o.frequency.value=300;o.connect(g);g.connect(d);o.start();window.__aiGain=g;if(this.ontrack)this.ontrack({streams:[d.stream]})}

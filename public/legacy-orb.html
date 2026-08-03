@@ -74,7 +74,7 @@ async function toggle(){
     const micTrack=localStream.getTracks()[0];
     pc.addTrack(micTrack);
     const dc=pc.createDataChannel('oai-events');
-    dc.addEventListener('open',function(){try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+    dc.addEventListener('open',function(){if(AxonVoice.hasHistory())return;try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
     const offer=await pc.createOffer();
     await pc.setLocalDescription(offer);
     const model=data.model||'gpt-4o-realtime-preview-2024-12-17';
@@ -84,7 +84,7 @@ async function toggle(){
     });
     if(!sdp.ok)throw new Error('sdp');
     await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-    voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice});
+    voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
     document.body.classList.add('active');
   }catch(e){
     console.error(e);
