@@ -821,8 +821,8 @@ function resumeAfterFalseInterruption(tries){
     return;
   }
   const line=roomTalkative
-    ? 'You were cut off by background noise, not by the caller. Apologise in one short sentence - say you thought you heard something - then carry straight on from the exact word you stopped at. Do not start the answer again, do not summarise what you already said, and do not greet them. If this keeps happening you may add one gentle sentence suggesting somewhere quieter or turning the volume down.'
-    : 'You were cut off by a noise, not by the caller. Apologise in one short sentence, then carry straight on from the exact word you stopped at. Do not start the answer again and do not repeat what you already said.';
+    ? 'You were cut off by background noise, not by the caller. Begin with one short apology, close to these words: "Sorry — I thought I heard you there." Then carry straight on from the exact word you stopped at, mid-sentence if that is where it was. Do not start the answer again, do not summarise what you already said, and do not greet them. If it has happened more than once you may add one gentle sentence, such as suggesting somewhere quieter or turning the volume down a little.'
+    : 'You were cut off by a noise, not by the caller. Begin with one short apology, close to these words: "Sorry — I thought I heard you there." Then carry straight on from the exact word you stopped at. Do not start the answer again and do not repeat what you already said.';
   try{dc.send(JSON.stringify({type:'response.create',response:{instructions:line}}));}catch(e){}
 }
 function bargeIn(){
