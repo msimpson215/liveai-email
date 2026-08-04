@@ -1,17 +1,17 @@
 /* A television talking in the same room, with nobody speaking to the orb.
-   Hands-free CANNOT pass this, and that is not a bug in the rule - measured off
-   real recordings through the real audio path, a TV and a person land in the
-   same place on every measure a single microphone can make:
+
+   A microphone cannot solve this. Measured off real recordings through the real
+   audio path, a TV and a person land in the same place on every measure one mic
+   can make - and the TV is usually the louder of the two:
 
                      voice band p50   rumble ratio   loudness
        TV / crowd     3.08e-4          0.008          0.0545
        a person       4.94e-4          0.041          0.0465
 
-   The TV was the louder of the two. There is no threshold between them. The
-   only reliable answer is to keep the microphone shut until the person wants to
-   speak, which is what tap-to-talk does.
-
-   So this file documents the limit rather than asserting a pass.
+   The words are what give it away. "And then he told her he'd be back tomorrow"
+   is a television; "how much for a parking lot" is a customer. So when the room
+   has been producing speech for a few seconds, a turn gets checked against
+   /api/addressed before it earns a reply.
 
    Run:  node scripts/voice-tests/tv-in-the-room.test.mjs [baseUrl]           */
 import { chromium } from 'playwright';
@@ -40,7 +40,7 @@ async function turn(clip,transcript){
   await p.waitForFunction('window.__dc && window.__aiGain',null,{timeout:15000});
   await p.waitForTimeout(1500);
   await p.evaluate(()=>{window.__dc._fire('message',{data:JSON.stringify({type:'response.created'})});window.__dc._fire('message',{data:JSON.stringify({type:'response.done'})});window.__sent.length=0;});
-  await p.waitForTimeout(4000);            // let the room's own level settle
+  await p.waitForTimeout(8000);            // let the room's own level settle
   await p.evaluate(()=>window.__dc._fire('message',{data:JSON.stringify({type:'input_audio_buffer.speech_started'})}));
   await p.waitForTimeout(2200);
   await p.evaluate(t=>{window.__dc._fire('message',{data:JSON.stringify({type:'input_audio_buffer.speech_stopped'})});
@@ -66,5 +66,4 @@ for(const [label,clip,tr,want] of CASES){
 }
 console.log('\n'+(bad?bad+' FAILED':'all good'));
 if(server)await new Promise(r=>server.close(r));
-process.exit(0);   // documents a known limit; does not gate
-
+process.exit(bad?1:0);
