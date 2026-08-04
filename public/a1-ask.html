@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Your Test"/>
+<meta name="theme-color" content="#0a2466"/>
+<meta name="cache-control" content="no-store"/>
+<meta name="description" content="Questions about your nuclear stress test? Tap and ask."/>
+<link rel="apple-touch-icon" href="/icons/axon-blue-180.png"/>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<title>A1 Professional Asphalt and Concrete — Ask our AI Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:#0d1b3e;
+  background:
+    radial-gradient(80% 50% at 50% 0%, #e8f0ff 0%, transparent 70%),
+    linear-gradient(180deg,#f7faff 0%,#eaf1fd 100%);
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{
+  width:min(100%,480px);
+  min-height:100dvh;
+  margin:0 auto;
+  padding:clamp(1.5rem,5vh,2.5rem) 1.4rem calc(1.5rem + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+h1{
+  font-size:clamp(1.5rem,6vw,2rem);
+  font-weight:700;letter-spacing:-.02em;line-height:1.2;
+  margin-top:.5rem;
+}
+.sub{
+  margin-top:.7rem;
+  font-size:1.02rem;line-height:1.5;color:#3c4d75;
+  max-width:24rem;
+}
+.orb-wrap{
+  margin:auto 0;
+  padding:2rem 0 1rem;
+  display:flex;flex-direction:column;align-items:center;
+}
+#orb{
+  width:min(58vw,220px);aspect-ratio:1;
+  border:0;padding:0;cursor:pointer;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 36% 30%, #eaf3ff 0%, #93c5fd 26%, #3b82f6 58%, #1e40af 100%);
+  box-shadow:
+    0 18px 50px rgba(30,64,175,.32),
+    inset 0 -14px 34px rgba(10,36,102,.35),
+    inset 0 12px 28px rgba(255,255,255,.45);
+  transition:transform .18s ease;
+  animation:breathe 4.5s ease-in-out infinite;
+}
+#orb:active{transform:scale(.96)}
+@keyframes breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.035)}
+}
+body[data-state="connecting"] #orb{animation:pulse .9s ease-in-out infinite}
+body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{transform:scale(1);filter:brightness(1)}
+  50%{transform:scale(1.06);filter:brightness(1.12)}
+}
+/* Same type as the line above it - just set apart by a gap. */
+.gap{display:block;margin-top:.55em}
+.company{
+  font-size:15px;line-height:1.5;color:#5b6785;margin:0 0 18px;
+  letter-spacing:.02em;
+}
+.callus{color:#0a2466;text-decoration:none;border-bottom:1px solid #c9d4ee;white-space:nowrap}
+.lead-line{
+  font-size:15px;line-height:1.55;color:#5b6785;margin:18px auto 0;max-width:360px;
+}
+.hint,.mode-note,.guard{
+  font-size:15px;line-height:1.55;color:#5b6785;margin:14px auto 0;max-width:360px;
+}
+.mode-btn{
+  margin:16px auto 0;display:block;background:none;border:1px solid #c9d4ee;color:#5b6785;
+  font:inherit;font-size:15px;padding:9px 15px;border-radius:8px;cursor:pointer;
+}
+.mode-btn:hover{background:#f2f6ff}
+.mode-btn.on{background:#0a2466;border-color:#0a2466;color:#fff}
+.mode-note{margin:8px 0 0;font-size:12px;color:#5b6785;min-height:16px}
+.hint{
+  margin-top:1.4rem;
+  font-size:1.06rem;font-weight:600;color:#1e40af;
+  min-height:1.6em;
+}
+.note{
+  margin-top:auto;
+  font-size:.82rem;line-height:1.5;color:#5b6b8c;
+  border-top:1px solid rgba(30,64,175,.14);
+  padding-top:1rem;
+  max-width:26rem;
+}
+.note b{color:#0d1b3e}
+.examples{
+  margin-top:1.2rem;
+  display:flex;flex-direction:column;gap:.5rem;width:100%;
+}
+.examples span{
+  font-size:.72rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:#7385a8;
+}
+.examples i{
+  font-style:normal;
+  background:#fff;border:1px solid rgba(30,64,175,.16);
+  border-radius:12px;padding:.7rem .85rem;
+  font-size:.93rem;color:#28395f;text-align:left;
+}
+</style>
+</head>
+<body data-state="idle">
+  <div class="wrap">
+    <p class="company">A1 Professional Asphalt and Concrete</p>
+    <h1>Have questions about our services?
+      <span class="gap">Talk to our AI Assistant about anything we do.</span></h1>
+
+    <div class="orb-wrap">
+      <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
+      <p class="hint" id="hint">Tap to talk</p>
+      <button type="button" id="modeBtn" class="mode-btn">Noisy room? Switch to tap-to-talk</button>
+      <p class="mode-note" id="modeNote"></p>
+      <p class="guard">Or call one of our team members directly at
+        <a class="callus" href="tel:+16189293301">(618) 929-3301</a></p>
+    </div>
+
+
+  </div>
+
+<script src="/axon-voice.js"></script>
+<script>
+const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
+
+function setState(s,msg){
+  document.body.dataset.state=s||'idle';
+  if(msg!==undefined)hint.textContent=msg;
+}
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;audioEl.playsInline=true;
+    document.body.appendChild(audioEl);
+  }
+  return audioEl;
+}
+async function stopVoice(){
+  if(voice){voice.detach();voice=null}
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setState('idle','Tap to talk');
+}
+// A per-clinic URL (/stress-test/bjc) injects its key so the guide can answer
+// where-to-go questions for that location.
+
+
+
+/* The call dropped. Nothing used to happen here, so the orb sat there looking
+   alive while nothing worked and the only fix was reloading the page. Rebuild
+   the connection quietly and keep going; axon-voice.js hands the previous turns
+   to the new session so it carries on instead of greeting again. */
+let reconnecting=false,reconnectTries=0;
+async function handleLost(){
+  if(reconnecting)return;
+  reconnecting=true;
+  const startFn=(typeof connectVoice==='function')?connectVoice:null;
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc){pc.close()}}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async function(){
+    try{ if(startFn)await startFn(); reconnectTries=0; }
+    catch(e){ if(reconnectTries<5)handleLost(); }
+    finally{ reconnecting=false; }
+  },wait);
+}
+
+/* ---- Tap-to-talk ----
+   In a room with a television or a radio on, hands-free cannot be made to work:
+   a TV's voice and a person's voice measure the same through one microphone, so
+   the only way to not hear the TV is to keep the microphone shut until the
+   person actually wants to speak. Holding the orb does that. */
+let tapToTalk=false;
+const modeBtn=document.getElementById('modeBtn');
+const modeNote=document.getElementById('modeNote');
+function setTapToTalk(on,why){
+  tapToTalk=!!on;
+  if(voice)voice.setPtt(tapToTalk);
+  modeBtn.classList.toggle('on',tapToTalk);
+  modeBtn.textContent=tapToTalk?'Back to hands-free':'Noisy room? Switch to tap-to-talk';
+  modeNote.textContent=tapToTalk
+    ? 'Hold the circle while you talk, let go when you\'re done.'
+    : (why||'');
+  setState(tapToTalk?'listening':'listening',tapToTalk?'Hold the circle and talk':'Tap to talk');
+}
+function offerTapToTalk(){
+  if(tapToTalk)return;
+  modeNote.textContent='Sounds like there\'s a TV or people talking near you. Tap-to-talk works better in here.';
+}
+modeBtn.addEventListener('click',function(e){e.stopPropagation();setTapToTalk(!tapToTalk);});
+/* Holding the orb = my turn. Works for mouse, touch and keyboard. */
+function holdOn(e){ if(!tapToTalk||!voice)return; e.preventDefault(); voice.hold(true); setState('listening','Listening\u2026 let go when done'); }
+function holdOff(){ if(!tapToTalk||!voice)return; voice.hold(false); setState('listening','Hold the circle and talk'); }
+
+async function connectVoice(){
+  const url='/session?gate=1&src=email';
+  const r=await fetch(url,{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error){
+    const err=new Error(r.status===429?'busy':(data.error||'session'));
+    err.status=r.status;throw err;
+  }
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  let remoteStream=null;
+  pc.ontrack=e=>{
+    remoteStream=e.streams[0];
+    if(audio.srcObject!==e.streams[0]){
+      audio.srcObject=e.streams[0];
+      audio.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
+  });
+  const micTrack=localStream.getTracks()[0];
+  // Mic stays closed through the opening line so the speaker can't feed back
+  // into it and trigger a second, overlapping answer.
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  let greeted=false;
+  dc.addEventListener('open',()=>{
+    if(greeted||AxonVoice.hasHistory())return;
+    greeted=true;
+    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.type==='response.created')setState('speaking','Speaking…');
+      if(msg.type==='response.done')setState('listening','Listening — go ahead');
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok){
+    let detail='';
+    try{detail=await sdp.text()}catch(e){}
+    const outOfCredit=/insufficient_quota|exceeded your current quota|billing/i.test(detail);
+    const err=new Error(outOfCredit?'quota':(sdp.status===429?'busy':'sdp'));
+    err.status=sdp.status;throw err;
+  }
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost,onNoisyRoom:offerTapToTalk});
+  if(tapToTalk)voice.setPtt(true);
+  setState('listening','Listening — go ahead');
+}
+async function toggleVoice(){
+  if(starting)return;
+  if(pc){await stopVoice();return}
+  starting=true;
+  setState('connecting','One moment…');
+  try{
+    await connectVoice();
+  }catch(e){
+    console.error(e);
+    starting=false;
+    await stopVoice();
+    const why=e&&e.message;
+    setState('idle',
+      why==='quota'?'Temporarily unavailable — please ask a staff member.':
+      why==='busy'?'Busy right now. Try again in a minute.':
+      'That didn\u2019t connect. Tap to try again.');
+    return;
+  }
+  starting=false;
+}
+orb.addEventListener('pointerdown',holdOn);
+orb.addEventListener('pointerup',holdOff);
+orb.addEventListener('pointercancel',holdOff);
+orb.addEventListener('pointerleave',holdOff);
+orb.addEventListener('click',function(){if(tapToTalk&&pc)return;toggleVoice();});
+document.addEventListener('visibilitychange',()=>{
+  /* Backgrounding no longer ends the call - axon-voice.js just closes the mic. */
+});
+window.addEventListener('pagehide',()=>{if(pc||starting)stopVoice()});
+</script>
+</body>
+</html>
