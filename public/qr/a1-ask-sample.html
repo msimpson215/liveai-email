@@ -4,55 +4,110 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Scan to ask A1 Professional Asphalt anything</title>
+<title>A1 Professional Asphalt and Concrete — scan to ask us anything</title>
 <style>
-  :root{ --navy:#0a2466; --ink:#0d1b3e; --muted:#5b6785; }
+  :root{
+    --black:#0e0e0e; --charcoal:#2b2b2b; --yellow:#f5c518;
+    --ink:#f2f2f2; --muted:#c7c7c7;
+  }
   *{box-sizing:border-box}
+  html,body{margin:0}
   body{
-    margin:0; padding:52px 24px 64px; background:#fff; color:var(--ink);
-    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    display:flex; flex-direction:column; align-items:center; text-align:center;
+    background:var(--charcoal); color:var(--ink);
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; justify-content:center;
   }
-  /* Sized for people reading it without their glasses on. */
-  h1{ font-size:27px; line-height:1.35; letter-spacing:-.015em; font-weight:600; margin:0 0 34px; }
-  .qr{ width:270px; height:270px; display:block; }
-  .line{ font-size:16px; line-height:1.6; color:var(--muted); margin:26px auto 0; max-width:400px; }
-  .company{ font-size:15px; color:var(--muted); letter-spacing:.02em; margin:0 0 18px; }
-  .callus{ color:var(--navy); text-decoration:none; border-bottom:1px solid #cfd9ef; white-space:nowrap; }
-  a.try{
-    text-decoration:none; background:var(--navy); color:#fff;
-    font-size:17px; font-weight:600; padding:15px 26px; border-radius:10px;
+  .sheet{
+    width:100%; max-width:576px; min-height:100vh; display:flex; flex-direction:column;
+    background:var(--charcoal);
   }
-  .sample{
-    margin-top:30px; font-size:10px; font-weight:800; letter-spacing:.18em;
-    color:#c81e3c; border:1px solid #f0c6cf; border-radius:5px; padding:5px 12px;
+
+  header{ background:var(--black); padding:24px 28px; }
+  .brandRow{ display:flex; align-items:center; gap:18px; }
+  .logo{
+    width:66px; height:66px; flex:0 0 66px; border-radius:8px; background:var(--yellow);
+    color:var(--black); font-weight:800; font-size:28px; letter-spacing:-.02em;
+    display:flex; align-items:center; justify-content:center;
   }
-  .prints{ margin-top:30px; font-size:14px; color:var(--muted); line-height:1.9; }
-  .prints a{ color:var(--navy); text-decoration:none; border-bottom:1px solid #cfd9ef; }
+  header h1{ color:#fff; font-size:24px; line-height:1.2; margin:0; letter-spacing:-.01em; }
+  .rule{ height:7px; background:var(--yellow); }
+
+  main{ padding:34px 28px 38px; text-align:center; flex:1 0 auto; }
+  h2{
+    color:var(--yellow); font-size:33px; line-height:1.1; margin:0 0 10px;
+    text-transform:uppercase; letter-spacing:.01em;
+  }
+  .sub{ font-size:19px; line-height:1.4; color:var(--ink); margin:0 0 28px; }
+
+  /* The code needs its own white block - cameras cannot read it off yellow or
+     off a dark background. */
+  .panel{ background:#fff; border-radius:18px; padding:26px; margin:0 auto 28px; max-width:452px; }
+  .panel img{ width:100%; max-width:344px; height:auto; display:block; margin:0 auto; }
+
+  .what{ font-size:18px; line-height:1.5; color:var(--muted); margin:0 auto 30px; max-width:430px; }
+
+  a.call{
+    display:block; text-decoration:none; background:var(--yellow); color:var(--black);
+    border-radius:12px; padding:16px 20px; max-width:452px; margin:0 auto;
+  }
+  a.call .label{ display:block; font-size:15px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+  a.call .num{ display:block; font-size:28px; font-weight:800; margin-top:4px; letter-spacing:-.01em; }
+
+  .try{
+    display:inline-block; margin:26px 0 0; text-decoration:none;
+    background:#fff; color:var(--black); font-size:17px; font-weight:600;
+    padding:14px 24px; border-radius:10px;
+  }
+
+  /* Hazard stripe, the way it is painted on a work truck. */
+  .hazard{
+    height:34px; margin-top:auto;
+    background:repeating-linear-gradient(135deg,
+      var(--yellow) 0 26px, var(--black) 26px 52px);
+  }
+
+  @media (max-width:420px){
+    header h1{font-size:21px}
+    h2{font-size:27px}
+    a.call .num{font-size:24px}
+  }
   @media print{
-    body{padding:0.7in}
-    a.try,.prints,.sample{display:none}
+    body,.sheet{background:#fff;color:#000}
+    .try{display:none}
   }
 </style>
 </head>
 <body>
+<div class="sheet">
 
-<p class="company">A1 Professional Asphalt and Concrete</p>
-<h1>Scan the QR code<br>to ask us anything<br>about our services</h1>
+  <header>
+    <div class="brandRow">
+      <div class="logo" aria-hidden="true">A1</div>
+      <h1>A1 Professional Asphalt and Concrete</h1>
+    </div>
+  </header>
+  <div class="rule"></div>
 
-<img class="qr" src="/qr/a1-ask.png" alt="QR code — scan to ask A1 Professional Asphalt about our services">
+  <main>
+    <h2>Scan the QR code</h2>
+    <p class="sub">to ask us anything about our services</p>
 
-<a class="try" href="/a1-ask.html">Try it now</a>
+    <div class="panel">
+      <img src="/qr/a1-ask.png" alt="QR code — scan to ask A1 Professional Asphalt about our services">
+    </div>
 
-<p class="line">Talk to our AI Assistant about anything we do — paving,
-sealcoating, striping, concrete. Or call our team at
-<a class="callus" href="tel:+16189293301">(618) 929-3301</a>.</p>
+    <p class="what">Talk to our AI Assistant about anything we do — paving,
+      sealcoating, striping, concrete.</p>
 
-<div class="sample">SAMPLE</div>
+    <a class="call" href="tel:+16189293301">
+      <span class="label">Or call our team</span>
+      <span class="num">(618) 929-3301</span>
+    </a>
 
-<p class="prints">
-  Put this code on a business card, a yard sign, an invoice, or a truck door.
-</p>
+    <a class="try" href="/a1-ask.html">Try it now</a>
+  </main>
 
+  <div class="hazard"></div>
+</div>
 </body>
 </html>

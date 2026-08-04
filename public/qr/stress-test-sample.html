@@ -4,53 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Scan to learn about your nuclear stress test</title>
+<title>Nuclear Stress Test — scan to ask questions</title>
 <style>
-  :root{ --navy:#0a2466; --ink:#0d1b3e; --muted:#5b6785; }
+  :root{
+    --navy:#12283c; --navy-deep:#0d1f2f; --teal:#1f8a8f;
+    --paper:#eaf2f5; --ink:#1b3346; --muted:#5a7183;
+  }
   *{box-sizing:border-box}
+  html,body{margin:0}
   body{
-    margin:0; padding:52px 24px 64px; background:#fff; color:var(--ink);
-    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    display:flex; flex-direction:column; align-items:center; text-align:center;
+    background:var(--paper); color:var(--ink);
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; justify-content:center;
   }
-  /* Sized for people reading it without their glasses on. */
-  h1{ font-size:27px; line-height:1.35; letter-spacing:-.015em; font-weight:600; margin:0 0 34px; }
-  .qr{ width:270px; height:270px; display:block; }
-  .line{ font-size:16px; line-height:1.6; color:var(--muted); margin:26px auto 0; max-width:400px; }
-  a.try{
-    text-decoration:none; background:var(--navy); color:#fff;
-    font-size:17px; font-weight:600; padding:15px 26px; border-radius:10px;
+  .sheet{ width:100%; max-width:576px; background:var(--paper); display:flex; flex-direction:column; min-height:100vh; }
+
+  header{ background:var(--navy); padding:26px 30px 24px; }
+  .brandRow{ display:flex; align-items:center; gap:18px; }
+  .mark{
+    width:66px; height:66px; border-radius:50%; background:var(--teal);
+    flex:0 0 66px; display:flex; align-items:center; justify-content:center;
   }
-  .sample{
-    margin-top:30px; font-size:10px; font-weight:800; letter-spacing:.18em;
-    color:#c81e3c; border:1px solid #f0c6cf; border-radius:5px; padding:5px 12px;
+  header h1{ color:#fff; font-size:34px; line-height:1.1; margin:0; letter-spacing:-.02em; }
+  header p{ color:#c3d4de; font-size:16px; line-height:1.45; margin:12px 0 0; }
+  .rule{ height:9px; background:var(--teal); }
+
+  main{ padding:34px 30px 40px; text-align:center; flex:1 0 auto; }
+  h2{ font-size:31px; line-height:1.15; letter-spacing:.005em; margin:0 0 10px; color:var(--navy); text-transform:uppercase; }
+  .how{ font-size:17px; color:var(--muted); margin:0 0 28px; }
+
+  .panel{
+    background:#fff; border:1px solid #d3e2ea; border-radius:16px;
+    padding:26px; margin:0 auto 30px; max-width:456px;
   }
-  .prints{ margin-top:30px; font-size:14px; color:var(--muted); line-height:1.9; }
-  .prints a{ color:var(--navy); text-decoration:none; border-bottom:1px solid #cfd9ef; }
+  .panel img{ width:100%; max-width:344px; height:auto; display:block; margin:0 auto; }
+
+  .ask{ font-size:18px; line-height:1.5; color:var(--ink); margin:0 auto 30px; max-width:430px; }
+
+  .fine{
+    background:#dbe8ef; border-radius:12px; padding:18px 22px;
+    font-size:15px; line-height:1.5; color:var(--muted); margin:0 auto; max-width:456px;
+  }
+  .try{
+    display:inline-block; margin:28px 0 0; text-decoration:none;
+    background:var(--navy); color:#fff; font-size:17px; font-weight:600;
+    padding:15px 26px; border-radius:10px;
+  }
+  .footRule{ height:16px; background:var(--teal); margin-top:auto; }
+
+  @media (max-width:420px){
+    header h1{font-size:28px}
+    h2{font-size:26px}
+  }
   @media print{
-    body{padding:0.7in}
-    a.try,.prints,.sample{display:none}
+    body,.sheet{background:#fff}
+    .try{display:none}
   }
 </style>
 </head>
 <body>
+<div class="sheet">
 
-<h1>Scan the QR code<br>to learn about your<br>Nuclear Stress Test</h1>
+  <header>
+    <div class="brandRow">
+      <div class="mark" aria-hidden="true">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#fff" stroke-width="2.6"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 18h6l3.5-9 4.5 18 4-9h10"/>
+        </svg>
+      </div>
+      <h1>Nuclear Stress Test</h1>
+    </div>
+    <p>A simple guide to what happens before, during, and after your test</p>
+  </header>
+  <div class="rule"></div>
 
-<img class="qr" src="/qr/stress-test-sample.png" alt="QR code — scan to ask questions about your nuclear stress test">
+  <main>
+    <h2>Scan to ask questions</h2>
+    <p class="how">Use your phone camera. No app or login.</p>
 
-<a class="try" href="/stress-test.html">Try it now</a>
+    <div class="panel">
+      <img src="/qr/stress-test-sample.png" alt="QR code — scan to ask questions about your nuclear stress test">
+    </div>
 
-<p class="line">Our AI Assistant cannot give medical advice. Consult with your
-cardiologist or primary care provider.</p>
+    <p class="ask">Ask about getting ready for it, caffeine, the tracer, the
+      camera, the treadmill or the medication version, and when your results
+      will come back.</p>
 
-<div class="sample">SAMPLE</div>
+    <p class="fine">General information only, from an AI assistant rather than a
+      person. It cannot discuss your results, your symptoms or your medications —
+      follow the instructions from your cardiology team.</p>
 
-<p class="prints">
-  Print <a href="/qr/stress-test-cards.html">take-home cards for the front desk</a><br>
-  Print a <a href="/qr/stress-test-poster.html">poster for the waiting room</a><br>
-  <a href="/stress-test-demo.html">How it works, for the clinic</a>
-</p>
+    <a class="try" href="/stress-test.html">Try it now</a>
+  </main>
 
+  <div class="footRule"></div>
+</div>
 </body>
 </html>
