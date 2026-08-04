@@ -330,9 +330,18 @@
 
     /* Nobody actually spoke — the room did. Say so, briefly and politely, and
        carry on from the exact point it stopped. */
-    function resumeAfterFalseInterruption() {
-      if (detached || responseActive || aiSpeaking || turnPending) return;
+    function resumeAfterFalseInterruption(tries) {
+      tries = tries || 0;
+      if (detached || tries > 8) return;
       if (!dc || dc.readyState !== 'open') return;
+      /* The speaker may still be draining the cancelled reply, and the caller
+         may yet turn out to have really spoken. Wait our turn rather than
+         giving up, which is what left a half sentence hanging. */
+      if (responseActive || aiSpeaking || turnPending) {
+        if (resumeTimer) clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(function () { resumeAfterFalseInterruption(tries + 1); }, 700);
+        return;
+      }
       var line = roomTalkative
         ? 'You were cut off by background noise, not by the caller. Apologise in one short sentence — say you thought you heard something — then carry straight on from the exact word you stopped at. Do not start the answer again, do not summarise what you already said, and do not greet them. If this keeps happening you may add one gentle sentence suggesting somewhere quieter or turning the volume down.'
         : 'You were cut off by a noise, not by the caller. Apologise in one short sentence, then carry straight on from the exact word you stopped at. Do not start the answer again and do not repeat what you already said.';
@@ -516,6 +525,7 @@
       detach: function () {
         detached = true;
         if (stuckTimer) clearTimeout(stuckTimer);
+        if (resumeTimer) clearTimeout(resumeTimer);
         if (timer) clearInterval(timer);
         if (aiTimer) clearInterval(aiTimer);
         if (turnTimer) clearTimeout(turnTimer);
