@@ -72,6 +72,11 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
   0%,100%{transform:scale(1);filter:brightness(1)}
   50%{transform:scale(1.06);filter:brightness(1.12)}
 }
+/* Same type as the line above it - just set apart by a gap. */
+.gap{display:block;margin-top:.55em}
+.lead-line{
+  font-size:15px;line-height:1.55;color:#5b6785;margin:18px auto 0;max-width:360px;
+}
 .hint,.mode-note,.guard{
   font-size:15px;line-height:1.55;color:#5b6785;margin:14px auto 0;max-width:360px;
 }
@@ -113,7 +118,9 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
 </head>
 <body data-state="idle">
   <div class="wrap">
-    <h1>Do you have questions or want to know more?<br>Nuclear Stress Test</h1>
+    <h1>Do you have questions or want to know more about your
+      <span class="gap">Nuclear Stress Test</span></h1>
+    <p class="lead-line">Our AI Assistant can help you understand.</p>
 
     <div class="orb-wrap">
       <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
