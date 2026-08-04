@@ -4,48 +4,51 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Nuclear Stress Test — scan and ask</title>
+<title>Scan to learn about your nuclear stress test</title>
 <style>
-  :root{ --navy:#0a2466; --ink:#0d1b3e; --muted:#6b7794; }
+  :root{ --navy:#0a2466; --ink:#0d1b3e; --muted:#5b6785; }
   *{box-sizing:border-box}
   body{
-    margin:0; padding:56px 24px 64px; background:#fff; color:var(--ink);
+    margin:0; padding:52px 24px 64px; background:#fff; color:var(--ink);
     font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     display:flex; flex-direction:column; align-items:center; text-align:center;
   }
-  h1{ font-size:30px; letter-spacing:-.02em; margin:0 0 6px; }
-  .also{ font-size:14px; color:var(--muted); margin:0 0 40px; }
-  .qr{ width:260px; height:260px; display:block; }
-  .ask{ font-size:19px; font-weight:600; margin:34px 0 6px; }
-  .what{ font-size:15px; color:var(--muted); margin:0 0 34px; max-width:340px; line-height:1.5; }
+  /* Sized for people reading it without their glasses on. */
+  h1{ font-size:30px; line-height:1.3; letter-spacing:-.015em; margin:0 0 34px; max-width:460px; }
+  .qr{ width:270px; height:270px; display:block; }
+  h2{ font-size:25px; line-height:1.35; margin:36px 0 30px; max-width:430px; letter-spacing:-.01em; }
   a.try{
     text-decoration:none; background:var(--navy); color:#fff;
-    font-size:15px; font-weight:600; padding:13px 22px; border-radius:9px;
+    font-size:17px; font-weight:600; padding:15px 26px; border-radius:10px;
   }
-  .fine{ font-size:12px; color:#8a93ab; margin:40px 0 0; max-width:330px; line-height:1.6; }
+  .fine{ font-size:14px; color:var(--muted); margin:42px 0 0; max-width:400px; line-height:1.6; }
+  .also{ font-size:13px; color:#8a93ab; margin:14px 0 0; }
   .sample{
-    margin-top:26px; font-size:10px; font-weight:800; letter-spacing:.18em;
+    margin-top:30px; font-size:10px; font-weight:800; letter-spacing:.18em;
     color:#c81e3c; border:1px solid #f0c6cf; border-radius:5px; padding:5px 12px;
   }
-  .prints{ margin-top:28px; font-size:12.5px; color:var(--muted); }
+  .prints{ margin-top:30px; font-size:14px; color:var(--muted); line-height:1.9; }
   .prints a{ color:var(--navy); text-decoration:none; border-bottom:1px solid #cfd9ef; }
   @media print{
-    body{padding:0.75in}
+    body{padding:0.7in}
     a.try,.prints,.sample{display:none}
   }
 </style>
 </head>
 <body>
 
-<h1>Nuclear Stress Test</h1>
-<p class="also">Also called a stress test, or a myocardial perfusion study.</p>
+<h1>Scan the QR code to learn all about your nuclear stress test.</h1>
 
 <img class="qr" src="/qr/stress-test-sample.png" alt="QR code — scan to ask questions about your nuclear stress test">
 
-<p class="ask">Scan and ask your questions out loud.</p>
-<p class="what">It explains what the test is, what happens, and how to get ready — as many times as you want.</p>
+<h2>Let our AI assistant help explain the test to you.</h2>
 
 <a class="try" href="/stress-test.html">Try it now</a>
+
+<p class="fine">Scan it with your phone camera, tap the circle, and ask your
+questions out loud — as many times as you want, today or weeks from now.</p>
+
+<p class="also">Your doctor may call it a myocardial perfusion study.</p>
 
 <p class="fine">An AI assistant, not a person. It does not discuss your results,
 your symptoms or your medications — those go to your care team.</p>
@@ -53,8 +56,9 @@ your symptoms or your medications — those go to your care team.</p>
 <div class="sample">SAMPLE</div>
 
 <p class="prints">
-  Print <a href="/qr/stress-test-cards.html">take-home cards</a>
-  or a <a href="/qr/stress-test-poster.html">wall poster</a>
+  Print <a href="/qr/stress-test-cards.html">take-home cards for the front desk</a><br>
+  Print a <a href="/qr/stress-test-poster.html">poster for the waiting room</a><br>
+  <a href="/stress-test-demo.html">How it works, for the clinic</a>
 </p>
 
 </body>
