@@ -72,13 +72,12 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
   0%,100%{transform:scale(1);filter:brightness(1)}
   50%{transform:scale(1.06);filter:brightness(1.12)}
 }
-.sub.small{font-size:15px;color:#5b6785;margin-top:-4px}
-.guard{
-  margin:18px auto 0;max-width:340px;font-size:13px;line-height:1.55;color:#6b7794;
+.hint,.mode-note,.guard{
+  font-size:15px;line-height:1.55;color:#5b6785;margin:14px auto 0;max-width:360px;
 }
 .mode-btn{
-  margin:14px auto 0;display:block;background:none;border:1px solid #c9d4ee;color:#1e40af;
-  font:inherit;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;
+  margin:16px auto 0;display:block;background:none;border:1px solid #c9d4ee;color:#5b6785;
+  font:inherit;font-size:15px;padding:9px 15px;border-radius:8px;cursor:pointer;
 }
 .mode-btn:hover{background:#f2f6ff}
 .mode-btn.on{background:#0a2466;border-color:#0a2466;color:#fff}
@@ -114,16 +113,14 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
 </head>
 <body data-state="idle">
   <div class="wrap">
-    <h1>Questions about<br>Nuclear Stress Test</h1>
-    <p class="sub">Tap the circle and just talk.</p>
-    <p class="sub small">Let our AI assistant help you understand this procedure.</p>
-    <p class="guard">It can't give medical advice. Ask your cardiologist or your primary care provider about anything to do with you.</p>
+    <h1>Do you have questions or want to know more?<br>Nuclear Stress Test</h1>
 
     <div class="orb-wrap">
       <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
       <p class="hint" id="hint">Tap to talk</p>
       <button type="button" id="modeBtn" class="mode-btn">Noisy room? Switch to tap-to-talk</button>
       <p class="mode-note" id="modeNote"></p>
+      <p class="guard">Our AI Assistant cannot give medical advice. Consult with your cardiologist or primary care provider.</p>
     </div>
 
 
