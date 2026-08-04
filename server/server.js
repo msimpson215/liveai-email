@@ -1044,10 +1044,12 @@ app.get('/session', async (req, res) => {
           ...(OPEN_WEB_SOURCES.has(source) ? { tools: [WEB_SEARCH_TOOL] } : {}),
           audio: {
             input: {
-              // far_field = phone/laptop in a real room (bar, truck, jobsite).
-              // near_field is for a headset held to the mouth — too weak for demos
-              // where wind and crowd noise were cancelling Axon mid-sentence.
-              noise_reduction: { type: 'far_field' },
+              // near_field, measured against the real service with a crowd
+              // recording playing: it halved what the room got transcribed
+              // (2 turns/5 words down to 1 turn/3 words) while hearing the
+              // caller BETTER (20 words up to 28). It is built to favour
+              // whoever is closest to the mic, which is the caller.
+              noise_reduction: { type: 'near_field' },
               // Set here, not by a client session.update. A partial session.update
               // from the browser drops audio.output.voice, which made the voice
               // change between sessions.
