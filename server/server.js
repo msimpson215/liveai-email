@@ -1422,6 +1422,66 @@ app.delete('/api/brain/docs/:id', (req, res) => {
   res.json({ ok: true })
 })
 
+/**
+ * Was that said TO the assistant, or is it just the room talking?
+ *
+ * A microphone cannot answer this. Measured off real recordings, a television
+ * and a person land in the same place on voice-band energy, spectral tilt and
+ * loudness — the TV is often the louder of the two. Two human voices arriving
+ * at one mic are the same signal, so no acoustic threshold exists.
+ *
+ * But the WORDS give it away instantly. "And then he told her he'd be back
+ * tomorrow" is a television. "How much for a parking lot?" is a customer. This
+ * is the same judgement a person makes without thinking about it.
+ *
+ * Fails OPEN on purpose: any doubt, any error, any timeout and the answer is
+ * yes. Being talked over by a TV is annoying; being ignored when you are
+ * actually speaking is the thing that made this unusable.
+ */
+app.post('/api/addressed', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const text = String(req.body?.text || '').trim().slice(0, 400)
+  if (!text) return res.json({ addressed: true, reason: 'empty' })
+  if (!hasApiKey()) return res.json({ addressed: true, reason: 'no key' })
+  try {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 2500)
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_ADDRESSEE_MODEL || 'gpt-4o-mini',
+        temperature: 0,
+        max_tokens: 3,
+        messages: [
+          {
+            role: 'system',
+            content: `A microphone in a room picked up speech. Decide if it was spoken TO a voice assistant, or if it is background — a television, a radio, a podcast, or two other people talking to each other.
+
+Answer with one word: YES or NO.
+
+YES when it addresses an assistant: a question, a request, an answer to something the assistant asked, a greeting, an interruption like "hold on" or "wait", a short acknowledgement like "okay" or "yeah", or thanks.
+NO when it is clearly overheard: narration, dialogue between other people, advertising, news reading, sports commentary, song lyrics.
+
+When it could plausibly be either, answer YES.`
+          },
+          { role: 'user', content: text }
+        ]
+      })
+    })
+    clearTimeout(timer)
+    const data = await response.json()
+    const verdict = String(data.choices?.[0]?.message?.content || '').trim().toUpperCase()
+    return res.json({ addressed: !verdict.startsWith('NO'), verdict })
+  } catch (error) {
+    return res.json({ addressed: true, reason: 'unavailable' })
+  }
+})
+
 app.post('/api/brain/ask', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
