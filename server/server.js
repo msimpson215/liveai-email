@@ -261,7 +261,18 @@ const A1_WEB_GREETING =
 "Hello, welcome to A1 Professional Asphalt and Sealing. I am an AI team member here to answer all your questions. What can I do for you?"
 After you have said this greeting once, you must NEVER say it again. If the user says "hello", "hi", or similar afterward, do NOT greet again — answer their question directly.`
 
+/**
+ * Openings written for one particular person, keyed by the name in the link.
+ * These are for friends Marty sends a link to, not for customers — anyone not
+ * listed here gets the ordinary A1 greeting below.
+ */
+const PERSONAL_OPENINGS = {
+  megan: `Hello Megan. I'm here to answer any questions you might have — I'm a full service AI. But first, Marty wanted me to remind you that he is a damn good looking old man. Thank God I'm an AI, so I can't see him, because I suspect he was probably full of it. Now, what can I do for you?`
+}
+
 const A1_EMAIL_SPOKEN = name => {
+  const personal = PERSONAL_OPENINGS[String(name || '').trim().toLowerCase()]
+  if (personal) return personal
   const hello = name ? `Hello ${name}.` : 'Hello.'
   return `${hello} I'm the AI team member for A1 Professional Asphalt and Sealing — just talk to me like a person and ask me anything about our asphalt, sealcoating, concrete, or parking lot work. Anytime you'd rather reach a real person, tap the human team button below.`
 }
