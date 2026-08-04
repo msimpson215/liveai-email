@@ -1317,6 +1317,95 @@ app.post('/api/brain/memory/remember', async (req, res) => {
  * Import a ChatGPT data export (conversations.json) into the memory bank so a
  * new assistant starts out already knowing the user's history.
  */
+/**
+ * A drop box for artwork.
+ *
+ * Design files live on Marty's computer and there is no way to hand them over
+ * through a chat window, so this takes the file straight into public/art/ where
+ * a page can reference it. Render's disk is wiped on the next deploy, so these
+ * are pulled into the repo as soon as they arrive — this is a handoff, not
+ * storage.
+ */
+const ART_DIR = path.join(__dirname, '..', 'public', 'art')
+
+app.get('/upload', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.type('html').send(`<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drop artwork here</title>
+<style>
+body{margin:0;padding:44px 22px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:#eef2fb;color:#0d1b3e;display:flex;justify-content:center}
+.box{width:100%;max-width:520px}
+h1{font-size:22px;margin:0 0 8px}
+p{color:#5b6785;line-height:1.55;margin:0 0 22px}
+input[type=file]{display:block;width:100%;padding:22px;background:#fff;border:2px dashed #c9d4ee;
+  border-radius:12px;font:inherit;margin-bottom:16px}
+button{background:#0a2466;color:#fff;border:0;border-radius:9px;font:inherit;font-size:16px;
+  font-weight:600;padding:14px 22px;cursor:pointer}
+#out{margin-top:22px;font-size:14px;line-height:1.7;color:#0d1b3e;word-break:break-all}
+#out b{color:#1a7f3c}
+</style>
+<div class="box">
+<h1>Drop the artwork here</h1>
+<p>Pick the PNG or JPEG files. You can select several at once. They upload straight
+to the site and I'll take them from there.</p>
+<form id="f">
+  <input type="file" name="art" accept="image/*" multiple required>
+  <button type="submit">Upload</button>
+</form>
+<div id="out"></div>
+</div>
+<script>
+const f=document.getElementById('f'),out=document.getElementById('out');
+f.addEventListener('submit',async e=>{
+  e.preventDefault();
+  out.textContent='Uploading…';
+  const files=f.querySelector('input[type=file]').files;
+  const lines=[];
+  for(const file of files){
+    const fd=new FormData(); fd.append('art',file);
+    try{
+      const r=await fetch('/api/upload-art',{method:'POST',body:fd});
+      const d=await r.json();
+      lines.push(d.ok? '<b>&#10003;</b> '+d.name+'  &rarr;  '+d.url : '&#10007; '+file.name+' — '+(d.error||'failed'));
+    }catch(err){ lines.push('&#10007; '+file.name+' — upload failed'); }
+    out.innerHTML=lines.join('<br>');
+  }
+  out.innerHTML=lines.join('<br>')+'<br><br>Done. Tell me the file names and I will wire them up.';
+});
+</script>`)
+})
+
+app.post('/api/upload-art', upload.single('art'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    if (!req.file) return res.status(400).json({ ok: false, error: 'No file' })
+    const safe = String(req.file.originalname || 'art')
+      .replace(/[^a-zA-Z0-9._-]/g, '-')
+      .replace(/-+/g, '-')
+      .slice(-60)
+    if (!/\.(png|jpe?g|webp|svg)$/i.test(safe)) {
+      return res.status(400).json({ ok: false, error: 'Images only' })
+    }
+    fs.mkdirSync(ART_DIR, { recursive: true })
+    fs.writeFileSync(path.join(ART_DIR, safe), req.file.buffer)
+    return res.json({ ok: true, name: safe, url: '/art/' + safe })
+  } catch (error) {
+    return res.status(500).json({ ok: false, error: 'Could not save that one' })
+  }
+})
+
+app.get('/api/upload-art/list', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    const files = fs.existsSync(ART_DIR) ? fs.readdirSync(ART_DIR) : []
+    res.json({ ok: true, files })
+  } catch (error) {
+    res.json({ ok: true, files: [] })
+  }
+})
+
 app.post('/api/brain/memory/import', upload.single('file'), async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
