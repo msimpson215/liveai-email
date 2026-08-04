@@ -25,9 +25,7 @@ await QRCode.toFile(out, url, {
   errorCorrectionLevel: 'H',
   margin: 2,
   width: 1200,
-  // A friendlier blue than near-black. Still far more contrast than a
-  // scanner needs, and verified by decoding the result.
-  color: { dark: '#1e40afff', light: '#ffffffff' }
+  color: { dark: '#000000ff', light: '#ffffffff' }
 })
 console.log('wrote', out, '→', url)
 
@@ -36,8 +34,6 @@ await QRCode.toFile(svgOut, url, {
   type: 'svg',
   errorCorrectionLevel: 'H',
   margin: 2,
-  // A friendlier blue than near-black. Still far more contrast than a
-  // scanner needs, and verified by decoding the result.
-  color: { dark: '#1e40afff', light: '#ffffffff' }
+  color: { dark: '#000000ff', light: '#ffffffff' }
 })
 console.log('wrote', svgOut, '(vector, for print)')
