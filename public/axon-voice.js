@@ -61,6 +61,7 @@
     var voice = opts.voice || 'coral';
     var pc = opts.pc || null;
     var onLost = opts.onLost || function () {};
+    var onNoisyRoom = opts.onNoisyRoom || function () {};
 
     var audioCtx = null, roomAnalyser = null, aiAnalyser = null;
     var freqData = null, timeData = null, aiData = null;
@@ -75,11 +76,22 @@
     var speechStartedAt = 0, lastTurnMs = 0;
     var bargeEnabled = true, badBarge = 0, bargeWatch = null;
     var stuckTimer = null, hurried = false;
+    /* Tap-to-talk. The mic is shut unless the caller is holding the floor.
+       This is the only thing that reliably works in a room with a television
+       or a radio going: a TV's voice and a person's voice measure the same
+       through one microphone, so the only way to not hear the TV is to have
+       the microphone closed. */
+    var pttMode = false, holding = false;
+    var roomVoiceFrames = 0, roomFrames = 0, noisyTold = false;
     var detached = false;
 
     function refreshMic() {
       if (!micTrack) return;
-      try { micTrack.enabled = !(aiSpeaking || blocked()); } catch (e) {}
+      try {
+        micTrack.enabled = pttMode
+          ? (holding && !blocked())
+          : !(aiSpeaking || blocked());
+      } catch (e) {}
     }
 
     function send(obj) {
@@ -130,6 +142,9 @@
       var s = normTurn(transcript);
       if (!s) return false;
       if (ms < 320) return false;
+      // Held the button and spoke: that is intent. Nothing to second-guess,
+      // and no way for a loud room to lock them out.
+      if (pttMode) return /[a-z0-9]/.test(s);
       var heard = roomAnalyser ? turnVoiceMs : 999;
       // What the transcriber guesses at noise. A fart comes back as "you".
       if (JUNK_TURNS[s]) return heard >= 600;
@@ -259,6 +274,21 @@
 
       if (allowBargeIn && aiSpeaking && !crowded && bargeEnabled && greetingDone &&
           !blocked() && aiFrames >= 20 && voiceRun >= 500) bargeIn();
+
+      /* Is this room talking by itself? Measured while the AI is quiet and the
+         caller has not been given the floor. A room that reads as voices most of
+         the time is a television or a crowd, and hands-free cannot win there. */
+      if (!pttMode && !aiSpeaking && !blocked()) {
+        roomFrames++;
+        if (speechish) roomVoiceFrames++;
+        if (roomFrames >= 160) {                       // ~8 seconds of evidence
+          if (!noisyTold && roomVoiceFrames / roomFrames > 0.55) {
+            noisyTold = true;
+            try { onNoisyRoom(); } catch (e) {}
+          }
+          roomFrames = 0; roomVoiceFrames = 0;
+        }
+      }
     }
 
     /* ---- is the AI making sound right now? ---- */
@@ -371,6 +401,25 @@
     return {
       refreshMic: refreshMic,
       isAiSpeaking: function () { return aiSpeaking; },
+      isPtt: function () { return pttMode; },
+      setPtt: function (on) {
+        pttMode = !!on;
+        holding = false;
+        refreshMic();
+      },
+      /* Called when the caller takes or gives up the floor in tap-to-talk. */
+      hold: function (on) {
+        if (!pttMode) return;
+        holding = !!on;
+        if (holding) {
+          // Their turn now — stop the reply if one is running.
+          if (responseActive) send({ type: 'response.cancel' });
+          bargeUntil = Date.now() + 800;
+          aiSpeaking = false;
+          onAiSpeaking(false);
+        }
+        refreshMic();
+      },
       detach: function () {
         detached = true;
         if (stuckTimer) clearTimeout(stuckTimer);

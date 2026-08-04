@@ -72,6 +72,13 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
   0%,100%{transform:scale(1);filter:brightness(1)}
   50%{transform:scale(1.06);filter:brightness(1.12)}
 }
+.mode-btn{
+  margin:14px auto 0;display:block;background:none;border:1px solid #c9d4ee;color:#1e40af;
+  font:inherit;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;
+}
+.mode-btn:hover{background:#f2f6ff}
+.mode-btn.on{background:#0a2466;border-color:#0a2466;color:#fff}
+.mode-note{margin:8px 0 0;font-size:12px;color:#5b6785;min-height:16px}
 .hint{
   margin-top:1.4rem;
   font-size:1.06rem;font-weight:600;color:#1e40af;
@@ -109,6 +116,8 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
     <div class="orb-wrap">
       <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
       <p class="hint" id="hint">Tap to talk</p>
+      <button type="button" id="modeBtn" class="mode-btn">Noisy room? Switch to tap-to-talk</button>
+      <p class="mode-note" id="modeNote"></p>
     </div>
 
     <div class="examples">
@@ -178,6 +187,33 @@ async function handleLost(){
   },wait);
 }
 
+/* ---- Tap-to-talk ----
+   In a room with a television or a radio on, hands-free cannot be made to work:
+   a TV's voice and a person's voice measure the same through one microphone, so
+   the only way to not hear the TV is to keep the microphone shut until the
+   person actually wants to speak. Holding the orb does that. */
+let tapToTalk=false;
+const modeBtn=document.getElementById('modeBtn');
+const modeNote=document.getElementById('modeNote');
+function setTapToTalk(on,why){
+  tapToTalk=!!on;
+  if(voice)voice.setPtt(tapToTalk);
+  modeBtn.classList.toggle('on',tapToTalk);
+  modeBtn.textContent=tapToTalk?'Back to hands-free':'Noisy room? Switch to tap-to-talk';
+  modeNote.textContent=tapToTalk
+    ? 'Hold the circle while you talk, let go when you\'re done.'
+    : (why||'');
+  setState(tapToTalk?'listening':'listening',tapToTalk?'Hold the circle and talk':'Tap to talk');
+}
+function offerTapToTalk(){
+  if(tapToTalk)return;
+  modeNote.textContent='Sounds like there\'s a TV or people talking near you. Tap-to-talk works better in here.';
+}
+modeBtn.addEventListener('click',function(e){e.stopPropagation();setTapToTalk(!tapToTalk);});
+/* Holding the orb = my turn. Works for mouse, touch and keyboard. */
+function holdOn(e){ if(!tapToTalk||!voice)return; e.preventDefault(); voice.hold(true); setState('listening','Listening\u2026 let go when done'); }
+function holdOff(){ if(!tapToTalk||!voice)return; voice.hold(false); setState('listening','Hold the circle and talk'); }
+
 async function connectVoice(){
   const url='/session?gate=1&src=stresstest'+(CLINIC?'&clinic='+encodeURIComponent(CLINIC):'');
   const r=await fetch(url,{cache:'no-store'});
@@ -237,7 +273,8 @@ async function connectVoice(){
     err.status=sdp.status;throw err;
   }
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost,onNoisyRoom:offerTapToTalk});
+  if(tapToTalk)voice.setPtt(true);
   setState('listening','Listening — go ahead');
 }
 async function toggleVoice(){
@@ -260,7 +297,11 @@ async function toggleVoice(){
   }
   starting=false;
 }
-orb.addEventListener('click',toggleVoice);
+orb.addEventListener('pointerdown',holdOn);
+orb.addEventListener('pointerup',holdOff);
+orb.addEventListener('pointercancel',holdOff);
+orb.addEventListener('pointerleave',holdOff);
+orb.addEventListener('click',function(){if(tapToTalk&&pc)return;toggleVoice();});
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden&&(pc||starting))stopVoice();
 });
