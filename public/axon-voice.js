@@ -83,6 +83,11 @@
        the microphone closed. */
     var pttMode = false, holding = false;
     var roomVoiceFrames = 0, roomFrames = 0, noisyTold = false;
+    /* True when the room itself keeps producing speech — a television, a radio,
+       people talking nearby. Only then is it worth asking whether a turn was
+       actually addressed to us, because that check costs a moment and a quiet
+       room should never pay it. */
+    var roomTalkative = false;
     var detached = false;
 
     function refreshMic() {
@@ -138,6 +143,43 @@
        sits there saying "listening" while they repeat themselves. That is worse
        than the bug it was meant to fix. So real transcribed words always win,
        and our own ears only break the tie on the borderline cases. */
+    /* Ask the server whether those words were addressed to an assistant or just
+       overheard from the room. Fails OPEN — any error, any timeout, and we
+       answer. Being talked over by a TV is annoying; being ignored while you are
+       actually speaking is what makes the thing unusable. */
+    function checkAddressed(transcript) {
+      var text = String(transcript || '');
+      var settled = false;
+      var give = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        remember('user', text);
+        askForReply();
+      }, 1800);
+      try {
+        global.fetch('/api/addressed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text })
+        }).then(function (r) { return r.json(); }).then(function (d) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(give);
+          if (d && d.addressed === false) { dropTurn(); return; }
+          remember('user', text);
+          askForReply();
+        }).catch(function () {
+          if (settled) return;
+          settled = true;
+          clearTimeout(give);
+          remember('user', text);
+          askForReply();
+        });
+      } catch (e) {
+        if (!settled) { settled = true; clearTimeout(give); remember('user', text); askForReply(); }
+      }
+    }
+
     function isRealSpeech(transcript, ms) {
       var s = normTurn(transcript);
       if (!s) return false;
@@ -183,7 +225,10 @@
         /* We already heard a person during that turn — answer straight away
            rather than waiting on a transcript. Waiting is only for the
            borderline cases. */
-        if (turnVoiceMs >= 350) askForReply();
+        /* Our own ears cannot tell a television from a person, so in a room
+           that is already talking we do not trust them — we wait for the words
+           and check whether they were meant for us. */
+        if (turnVoiceMs >= 350 && !roomTalkative) askForReply();
         else {
           /* Nothing conclusive heard. Wait for the transcript. If it is slow we
              answer anyway on our own evidence, but we do NOT give up on the
@@ -195,10 +240,14 @@
         }
       } else if (t === 'conversation.item.input_audio_transcription.completed') {
         if (turnPending) {
-          if (isRealSpeech(msg.transcript, lastTurnMs)) {
+          if (!isRealSpeech(msg.transcript, lastTurnMs)) dropTurn();
+          else if (pttMode || !roomTalkative) {
             remember('user', msg.transcript);
             askForReply();
-          } else dropTurn();
+          } else {
+            // Room is talking to itself. Was that meant for us?
+            checkAddressed(msg.transcript);
+          }
         }
       } else if (t === 'conversation.item.input_audio_transcription.failed') {
         if (turnPending) {
@@ -281,8 +330,10 @@
       if (!pttMode && !aiSpeaking && !blocked()) {
         roomFrames++;
         if (speechish) roomVoiceFrames++;
-        if (roomFrames >= 160) {                       // ~8 seconds of evidence
-          if (!noisyTold && roomVoiceFrames / roomFrames > 0.55) {
+        if (roomFrames >= 100) {                       // ~5 seconds of evidence
+          var share = roomVoiceFrames / roomFrames;
+          roomTalkative = share > 0.35;
+          if (!noisyTold && share > 0.55) {
             noisyTold = true;
             try { onNoisyRoom(); } catch (e) {}
           }

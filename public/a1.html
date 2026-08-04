@@ -475,6 +475,10 @@ function refreshMic(){
    lasted, and only then ask for a reply. */
 const JUNK_TURNS=new Set(['','you','thank you','thanks','thank you very much','thanks for watching','bye','goodbye','silence','music','uh','um','uhh','hmm','mm','mhm','ah','oh','huh','so','the','a','i']);
 let responseActive=false,speechStartedAt=0,lastTurnMs=0,turnPending=false,turnTimer=null;
+/* True when the room itself keeps producing speech - a TV, a radio, people
+   nearby. Only then do we ask whether a turn was actually meant for us, because
+   that check costs a moment and a quiet room should never pay it. */
+let roomTalkative=false,roomVoiceFrames=0,roomFrames=0;
 let bargeEnabled=true,badBarge=0,bargeWatch=null;
 function normTurn(s){
   return String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
@@ -517,6 +521,26 @@ function hurryUp(){
 }
 function clearTurnTimer(){if(turnTimer){clearTimeout(turnTimer);turnTimer=null;}}
 function dropTurn(){turnPending=false;clearTurnTimer();}
+/* Ask the server whether those words were meant for an assistant or just
+   overheard. Fails OPEN - any error or delay and we answer, because being
+   ignored while you are talking is far worse than answering a television. */
+function checkAddressed(text){
+  const t=String(text||'');
+  let settled=false;
+  const give=setTimeout(function(){
+    if(settled)return;settled=true;remember('user',t);askForReply();
+  },1800);
+  fetch('/api/addressed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})})
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(settled)return;settled=true;clearTimeout(give);
+      if(d&&d.addressed===false){dropTurn();return;}
+      remember('user',t);askForReply();
+    })
+    .catch(function(){
+      if(settled)return;settled=true;clearTimeout(give);remember('user',t);askForReply();
+    });
+}
 function askForReply(){
   clearTurnTimer();
   turnPending=false;
@@ -544,7 +568,9 @@ function handleEvent(ev){
     clearTurnTimer();
     /* Our own ears already heard a person during that turn — answer right away
        instead of waiting on a transcript. Waiting only happens when unclear. */
-    if(turnVoiceMs>=350){askForReply();}
+    /* Our own ears cannot tell a television from a person, so in a room that is
+       already talking we wait for the words and check who they were for. */
+    if(turnVoiceMs>=350&&!roomTalkative){askForReply();}
     else{
       /* Wait for the transcript. If it is slow, answer on our own evidence,
          but do NOT abandon the turn — a late transcript must still be able to
@@ -724,6 +750,11 @@ function checkNoise(){
   wasAiSpeaking=aiSpeaking;
   if(aiSpeaking){aiFrames++;if(speechish)aiVoiceFrames++;}
   const crowded=aiFrames>0&&(aiVoiceFrames/aiFrames)>=0.7;
+  if(!aiSpeaking&&!isTexting&&!isPaused){
+    roomFrames++;
+    if(speechish)roomVoiceFrames++;
+    if(roomFrames>=100){roomTalkative=(roomVoiceFrames/roomFrames)>0.35;roomFrames=0;roomVoiceFrames=0;}
+  }
   if(!aiSpeaking&&speechish)turnVoiceMs+=FRAME_MS;
   /* BARGE-IN, like the ChatGPT app: real speech over the top of Axon stops it.
      Needs ~0.5s of voice, and waits until Axon has been talking a second, which
