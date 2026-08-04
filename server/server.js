@@ -926,6 +926,9 @@ function resolveTimeOfDay(value) {
 
 function buildSpokenGreeting(source, context = {}) {
   if (source === 'email') return A1_EMAIL_SPOKEN(context.recipientName || '')
+  // A line written for one particular person wins over the generic opener.
+  const personal = PERSONAL_OPENINGS[String(context.recipientName || '').trim().toLowerCase()]
+  if (personal) return personal
   const opener = resolveTimeOfDay(context.timeOfDay)
   if (source === 'qb') {
     return `${opener} Joe, how are you today? What can I do for you?`
