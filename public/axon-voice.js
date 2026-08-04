@@ -81,6 +81,12 @@
        or a radio going: a TV's voice and a person's voice measure the same
        through one microphone, so the only way to not hear the TV is to have
        the microphone closed. */
+    /* What the caller has actually HEARD of the current reply. Without telling
+       the service this, it still believes the whole reply was delivered, so the
+       next turn re-delivers it from the top — the "it starts over from the
+       beginning" that ruins the illusion of a person. conversation.item.truncate
+       is the API's mechanism for exactly this and it was never being used. */
+    var liveItemId = null, itemAudioStart = 0, resumeTimer = null;
     var pttMode = false, holding = false;
     var roomVoiceFrames = 0, roomFrames = 0, noisyTold = false;
     /* True when the room itself keeps producing speech — a television, a radio,
@@ -200,6 +206,14 @@
       var msg;
       try { msg = JSON.parse(ev.data); } catch (e) { return; }
       var t = msg.type || '';
+      if (t === 'response.output_item.added' && msg.item && msg.item.id) {
+        liveItemId = msg.item.id;
+        itemAudioStart = 0;
+      }
+      if ((t === 'response.audio.delta' || t === 'response.output_audio.delta') && !itemAudioStart) {
+        itemAudioStart = Date.now();
+        if (msg.item_id) liveItemId = msg.item_id;
+      }
       if (t === 'response.audio_transcript.done' || t === 'response.output_audio_transcript.done') {
         remember('assistant', msg.transcript);
       }
@@ -207,6 +221,8 @@
       else if (t === 'response.done') {
         responseActive = false;
         greetingDone = true;
+        liveItemId = null;
+        itemAudioStart = 0;
       } else if (t === 'input_audio_buffer.speech_started') {
         speechStartedAt = Date.now();
         turnVoiceMs = 0;
@@ -272,9 +288,20 @@
       return { low: low, voice: voice };
     }
 
+    /* Tell the service how much of the reply was actually heard, so its record
+       matches the caller's memory. Everything after this point is forgotten by
+       both sides, which is what lets it carry on instead of starting again. */
+    function truncateHere() {
+      if (!liveItemId || !itemAudioStart) return;
+      var heardMs = Math.max(0, Date.now() - itemAudioStart);
+      send({ type: 'conversation.item.truncate', item_id: liveItemId,
+        content_index: 0, audio_end_ms: heardMs });
+    }
+
     function bargeIn() {
       voiceRun = 0;
       if (!aiSpeaking) return;
+      truncateHere();
       // Only cancel something that is actually being generated. The speaker can
       // still be draining audio after a reply finished, and cancelling then
       // just makes the service complain.
@@ -285,16 +312,27 @@
       refreshMic();
       onAiSpeaking(false);
       /* Watch what follows. A real interruption is followed by the caller
-         actually saying something. If nothing does, we misread the room, so back
-         off instead of chopping the reply up: one bad call parks barge-in for
-         20 seconds, a second parks it for the rest of the call. */
+         actually saying something. If nothing does, we cut it off over nothing —
+         so rather than leaving a half sentence hanging, it apologises and picks
+         up where it stopped. That is what a person would do. */
       if (bargeWatch) clearTimeout(bargeWatch);
       bargeWatch = setTimeout(function () {
         bargeWatch = null;
         badBarge++;
-        bargeEnabled = false;
-        if (badBarge < 2) setTimeout(function () { bargeEnabled = true; }, 20000);
-      }, 4000);
+        if (badBarge >= 2) bargeEnabled = false;   // clearly misreading this room
+        resumeAfterFalseInterruption();
+      }, 2600);
+    }
+
+    /* Nobody actually spoke — the room did. Say so, briefly and politely, and
+       carry on from the exact point it stopped. */
+    function resumeAfterFalseInterruption() {
+      if (detached || responseActive || aiSpeaking || turnPending) return;
+      if (!dc || dc.readyState !== 'open') return;
+      var line = roomTalkative
+        ? 'You were cut off by background noise, not by the caller. Apologise in one short sentence — say you thought you heard something — then carry straight on from the exact word you stopped at. Do not start the answer again, do not summarise what you already said, and do not greet them. If this keeps happening you may add one gentle sentence suggesting somewhere quieter or turning the volume down.'
+        : 'You were cut off by a noise, not by the caller. Apologise in one short sentence, then carry straight on from the exact word you stopped at. Do not start the answer again and do not repeat what you already said.';
+      send({ type: 'response.create', response: { instructions: line } });
     }
 
     function checkRoom() {

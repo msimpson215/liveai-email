@@ -556,6 +556,12 @@ let responseActive=false,speechStartedAt=0,lastTurnMs=0,turnPending=false,turnTi
    that check costs a moment and a quiet room should never pay it. */
 let roomTalkative=false,roomVoiceFrames=0,roomFrames=0;
 let bargeEnabled=true,badBarge=0,bargeWatch=null;
+/* What the caller has actually HEARD of the current reply. Without telling the
+   service this, it still thinks the whole reply landed, so the next turn
+   re-delivers it from the top - the "starts over from the beginning" that ruins
+   the illusion. conversation.item.truncate exists for exactly this and was
+   never being used. */
+let liveItemId=null,itemAudioStart=0;
 function normTurn(s){
   return String(s||'').toLowerCase().replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();
 }
@@ -632,6 +638,11 @@ function askForReply(){
 function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
+  if(t==='response.output_item.added'&&msg.item&&msg.item.id){liveItemId=msg.item.id;itemAudioStart=0;}
+  if((t==='response.audio.delta'||t==='response.output_audio.delta')&&!itemAudioStart){
+    itemAudioStart=Date.now();
+    if(msg.item_id)liveItemId=msg.item_id;
+  }
   if(t==='response.created')responseActive=true;
   if(t==='input_audio_buffer.speech_started'){
     speechStartedAt=Date.now();turnVoiceMs=0;dropTurn();
@@ -670,7 +681,7 @@ function handleEvent(ev){
     if(turnPending){if(turnVoiceMs>=150&&lastTurnMs>=700)askForReply();else dropTurn();}
   }
   if(t==='response.done'){
-    responseActive=false;
+    responseActive=false;liveItemId=null;itemAudioStart=0;
     greetingDone=true;
     canInterrupt=true;   /* opening is over -> interruptions allowed from here on */
     protectLine=false;   /* release the protected noise-offer line if it was set */
@@ -888,9 +899,28 @@ function checkNoise(){
    letting Axon's own voice back in. Rather than keep chopping Axon up, we back
    off: one bad call parks barge-in for 20 seconds, a second one parks it for the
    rest of the call and we go back to letting Axon always finish. */
+/* Tell the service how much of the reply was actually heard, so its record
+   matches the caller's memory. Everything past that point is forgotten by both
+   sides, which is what lets it carry on instead of starting again. */
+function truncateHere(){
+  if(!liveItemId||!itemAudioStart||!dc||dc.readyState!=='open')return;
+  const heardMs=Math.max(0,Date.now()-itemAudioStart);
+  try{dc.send(JSON.stringify({type:'conversation.item.truncate',item_id:liveItemId,content_index:0,audio_end_ms:heardMs}));}catch(e){}
+}
+/* Nobody actually spoke - the room did. Say so, briefly, and carry on from the
+   exact point it stopped. That is what a person would do. */
+function resumeAfterFalseInterruption(){
+  if(responseActive||aiSpeaking||turnPending)return;
+  if(!dc||dc.readyState!=='open')return;
+  const line=roomTalkative
+    ? 'You were cut off by background noise, not by the caller. Apologise in one short sentence - say you thought you heard something - then carry straight on from the exact word you stopped at. Do not start the answer again, do not summarise what you already said, and do not greet them. If this keeps happening you may add one gentle sentence suggesting somewhere quieter or turning the volume down.'
+    : 'You were cut off by a noise, not by the caller. Apologise in one short sentence, then carry straight on from the exact word you stopped at. Do not start the answer again and do not repeat what you already said.';
+  try{dc.send(JSON.stringify({type:'response.create',response:{instructions:line}}));}catch(e){}
+}
 function bargeIn(){
   voiceRun=0;
   if(!aiSpeaking)return;
+  truncateHere();
   /* Only cancel something actually being generated — the speaker can still be
      draining audio after a reply finished, and cancelling then just errors. */
   try{if(responseActive&&dc&&dc.readyState==='open')dc.send(JSON.stringify({type:'response.cancel'}));}catch(e){}
@@ -900,9 +930,9 @@ function bargeIn(){
   if(bargeWatch)clearTimeout(bargeWatch);
   bargeWatch=setTimeout(function(){
     bargeWatch=null;badBarge++;
-    bargeEnabled=false;
-    if(badBarge<2)setTimeout(function(){bargeEnabled=true;},20000);
-  },4000);
+    if(badBarge>=2)bargeEnabled=false;      /* clearly misreading this room */
+    resumeAfterFalseInterruption();
+  },2600);
 }
 /* Loud room: switch to tap-to-talk (not text) and tell the caller once, warmly. */
 function enterPushToTalk(){
