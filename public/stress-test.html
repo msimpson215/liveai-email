@@ -72,6 +72,14 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
   0%,100%{transform:scale(1);filter:brightness(1)}
   50%{transform:scale(1.06);filter:brightness(1.12)}
 }
+.test-name{
+  margin:2px 0 22px;font-size:30px;line-height:1.15;font-weight:800;
+  letter-spacing:.01em;text-transform:uppercase;color:#0a2466;
+}
+.sub.small{font-size:15px;color:#5b6785;margin-top:-4px}
+.guard{
+  margin:18px auto 0;max-width:340px;font-size:13px;line-height:1.55;color:#6b7794;
+}
 .mode-btn{
   margin:14px auto 0;display:block;background:none;border:1px solid #c9d4ee;color:#1e40af;
   font:inherit;font-size:13px;padding:8px 14px;border-radius:8px;cursor:pointer;
@@ -110,8 +118,11 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
 </head>
 <body data-state="idle">
   <div class="wrap">
-    <h1>Questions about your stress test?</h1>
-    <p class="sub">Tap the circle and just talk. Before, after, or weeks from now — it explains the test as many times as you want. No appointment, no typing.</p>
+    <h1>Questions about</h1>
+    <p class="test-name">Nuclear Stress Test</p>
+    <p class="sub">Tap the circle and just talk.</p>
+    <p class="sub small">Let our AI assistant help you understand this procedure.</p>
+    <p class="guard">It can't give medical advice. Ask your cardiologist or your primary care provider about anything to do with you.</p>
 
     <div class="orb-wrap">
       <button type="button" id="orb" aria-label="Tap to ask a question out loud"></button>
@@ -120,19 +131,7 @@ body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
       <p class="mode-note" id="modeNote"></p>
     </div>
 
-    <div class="examples">
-      <span>You could ask</span>
-      <i>“What is this test actually looking for?”</i>
-      <i>“What does the Lexiscan feel like?”</i>
-      <i>“Why no caffeine before it?”</i>
-      <i>“When will I hear my results?”</i>
-    </div>
 
-    <p class="note">
-      <b>This is not medical advice.</b> It can't see your chart, read your results, or tell you
-      anything about your medications. For those, please ask your nurse, technologist, or doctor.
-      If you feel unwell right now, tell a staff member or press the call button.
-    </p>
   </div>
 
 <script src="/axon-voice.js"></script>
