@@ -4,100 +4,95 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Nuclear Stress Test — scan to ask questions</title>
+<title>Nuclear Stress Test — scan to get answers</title>
 <style>
-  :root{
-    --navy:#12283c; --navy-deep:#0d1f2f; --teal:#1f8a8f;
-    --paper:#eaf2f5; --ink:#1b3346; --muted:#5a7183;
-  }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{
-    background:var(--paper); color:var(--ink);
+  body{ background:#f4f7fc; color:#0d2a56;
     font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    display:flex; justify-content:center;
-  }
-  .sheet{ width:100%; max-width:576px; background:var(--paper); display:flex; flex-direction:column; min-height:100vh; }
+    display:flex; justify-content:center; }
+  .sheet{ width:100%; max-width:600px; min-height:100vh; background:#fff; display:flex; flex-direction:column; }
 
-  header{ background:var(--navy); padding:26px 30px 24px; }
-  .brandRow{ display:flex; align-items:center; gap:18px; }
-  .mark{
-    width:66px; height:66px; border-radius:50%; background:var(--teal);
-    flex:0 0 66px; display:flex; align-items:center; justify-content:center;
-  }
-  header h1{ color:#fff; font-size:34px; line-height:1.1; margin:0; letter-spacing:-.02em; }
-  header p{ color:#c3d4de; font-size:16px; line-height:1.45; margin:12px 0 0; }
-  .rule{ height:9px; background:var(--teal); }
+  .top{ background:linear-gradient(180deg,#0a3164 0%,#062247 100%); color:#fff; text-align:center;
+    padding:26px 24px 30px; border-bottom-left-radius:46% 26px; border-bottom-right-radius:46% 26px; }
+  .flame{ display:block; margin:0 auto 4px; width:24px; height:28px }
+  .mem{ font-size:36px; font-weight:700; line-height:1; letter-spacing:.01em; font-family:Georgia,"Times New Roman",serif }
+  .bjc{ display:inline-block; margin-top:8px; background:#1257a5; color:#fff; font-size:14px;
+    font-weight:700; letter-spacing:.08em; padding:3px 9px; border-radius:3px }
+  .ecgTop{ display:block; margin:12px auto 0; width:230px; height:18px }
+  .title{ margin:18px 0 6px; font-size:27px; font-weight:800; text-transform:uppercase; letter-spacing:.01em }
+  .scan{ margin:0; color:var(--gold); font-size:17px; font-weight:800; text-transform:uppercase; line-height:1.35 }
 
-  main{ padding:34px 30px 40px; text-align:center; flex:1 0 auto; }
-  h2{ font-size:31px; line-height:1.15; letter-spacing:.005em; margin:0 0 10px; color:var(--navy); text-transform:uppercase; }
-  .how{ font-size:17px; color:var(--muted); margin:0 0 28px; }
+  main{ padding:30px 26px 34px; text-align:center; flex:1 0 auto }
+  .panel{ background:#fff; border-radius:18px; padding:22px; margin:0 auto 26px; max-width:420px;
+    box-shadow:0 10px 32px rgba(13,42,86,.16) }
+  .panel img{ width:100%; max-width:330px; height:auto; display:block; margin:0 auto }
 
-  .panel{
-    background:#fff; border:1px solid #d3e2ea; border-radius:16px;
-    padding:26px; margin:0 auto 30px; max-width:456px;
-  }
-  .panel img{ width:100%; max-width:344px; height:auto; display:block; margin:0 auto; }
+  .about{ display:flex; align-items:flex-start; gap:16px; text-align:left; margin:0 auto 24px;
+    max-width:470px; font-size:17px; line-height:1.5; color:#28405f }
+  .about .ic{ flex:0 0 46px; width:46px; height:46px; border-radius:50%; background:#0d2a56;
+    display:flex; align-items:center; justify-content:center }
+  .divider{ height:1px; background:#e0c98a; max-width:470px; margin:0 auto 22px }
 
-  .ask{ font-size:18px; line-height:1.5; color:var(--ink); margin:0 auto 30px; max-width:430px; }
+  .callrow{ display:flex; align-items:center; gap:16px; justify-content:center; max-width:470px; margin:0 auto; text-align:left }
+  .callrow .ic{ flex:0 0 46px; width:46px; height:46px; border-radius:50%; background:#0d2a56;
+    display:flex; align-items:center; justify-content:center }
+  .callrow a{ text-decoration:none; color:#0d2a56 }
+  .callrow .lbl{ display:block; font-size:17px; font-weight:600 }
+  .callrow .num{ display:block; font-size:31px; font-weight:800; letter-spacing:-.01em; line-height:1.15 }
 
-  .fine{
-    background:#dbe8ef; border-radius:12px; padding:18px 22px;
-    font-size:15px; line-height:1.5; color:var(--muted); margin:0 auto; max-width:456px;
-  }
-  .try{
-    display:inline-block; margin:28px 0 0; text-decoration:none;
-    background:var(--navy); color:#fff; font-size:17px; font-weight:600;
-    padding:15px 26px; border-radius:10px;
-  }
-  .footRule{ height:16px; background:var(--teal); margin-top:auto; }
-
-  @media (max-width:420px){
-    header h1{font-size:28px}
-    h2{font-size:26px}
-  }
-  @media print{
-    body,.sheet{background:#fff}
-    .try{display:none}
-  }
+  .try{ display:inline-block; margin:28px 0 0; text-decoration:none; background:#0d2a56; color:#fff;
+    font-size:16px; font-weight:600; padding:14px 24px; border-radius:10px }
+  @media (max-width:400px){ .mem{font-size:28px} .title{font-size:22px} .callrow .num{font-size:26px} }
+  @media print{ .try{display:none} body,.sheet{background:#fff} }
 </style>
 </head>
 <body>
 <div class="sheet">
 
-  <header>
-    <div class="brandRow">
-      <div class="mark" aria-hidden="true">
-        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#fff" stroke-width="2.6"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 18h6l3.5-9 4.5 18 4-9h10"/>
-        </svg>
-      </div>
-      <h1>Nuclear Stress Test</h1>
-    </div>
-    <p>A simple guide to what happens before, during, and after your test</p>
-  </header>
-  <div class="rule"></div>
+  <div class="top">
+    <svg class="flame" viewBox="0 0 26 30" fill="#c9a227"><path d="M13 0c3 6-1 8 1 12 1.6 3.2 5-1 5 5 0 5-3.6 8-6 8s-6-2.4-6-7c0-6 5-11 6-18z"/></svg>
+    <div class="mem">MEMORIAL</div>
+    <div class="bjc">BJC</div>
+    <svg class="ecgTop" viewBox="0 0 230 18" fill="none" stroke="#7fb0e8" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M0 9h86l5-7 5 14 6-10 4 3h124"/>
+    </svg>
+    <div class="title">Nuclear Stress Test</div>
+    <p class="scan">Scan the QR code to get answers<br>about your test</p>
+  </div>
 
   <main>
-    <h2>Scan to ask questions</h2>
-    <p class="how">Use your phone camera. No app or login.</p>
-
     <div class="panel">
       <img src="/qr/stress-test-sample.png" alt="QR code — scan to ask questions about your nuclear stress test">
     </div>
 
-    <p class="ask">Ask about getting ready for it, caffeine, the tracer, the
-      camera, the treadmill or the medication version, and when your results
-      will come back.</p>
+    <p class="about">
+      <span class="ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="1.6">
+          <circle cx="12" cy="12" r="2.2" fill="#fff" stroke="none"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4.4" transform="rotate(120 12 12)"/>
+        </svg>
+      </span>
+      Talk to our AI Assistant about your nuclear stress test &mdash; why it&rsquo;s
+      done, what to expect, how to prepare, and when results come back.
+    </p>
 
-    <p class="fine">General information only. Consult your physician for
-      results or interpretations.</p>
+    <div class="divider"></div>
+
+    <p class="callrow">
+      <span class="ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M6.6 10.8c1.2 2.4 3.2 4.4 5.6 5.6l1.9-1.9c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V19c0 .6-.4 1-1 1C10.6 20 4 13.4 4 5c0-.6.4-1 1-1h3.1c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .7-.2 1l-1.9 1.3z"/></svg>
+      </span>
+      <a href="tel:+16182575480">
+        <span class="lbl">Or call Central Scheduling at</span>
+        <span class="num">(618) 257-5480</span>
+      </a>
+    </p>
 
     <a class="try" href="/stress-test.html">Try it now</a>
   </main>
-
-  <div class="footRule"></div>
 </div>
 </body>
 </html>
