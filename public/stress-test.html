@@ -56,6 +56,8 @@
   body[data-state="speaking"] #orb{ box-shadow:0 0 0 14px rgba(150,197,255,.16), 0 0 76px rgba(140,195,255,.85), inset 0 0 40px rgba(160,205,255,.3) }
   @keyframes pulse{ 50%{ box-shadow:0 0 0 18px rgba(150,197,255,.16), 0 0 68px rgba(140,195,255,.8) } }
 
+  /* The circle already says it. Only show this line for live states. */
+  body[data-state="idle"] .hint{visibility:hidden}
   .hint{ margin:16px 0 0; font-size:15px; color:var(--soft) }
   .mode-btn{
     margin:20px auto 0; display:block; width:100%; max-width:420px; cursor:pointer;
