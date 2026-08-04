@@ -96,12 +96,24 @@
     var roomTalkative = false;
     var detached = false;
 
+    /* Backgrounding the page used to tear the whole call down, so glancing at a
+       notification meant reloading to get going again. Now it just closes the
+       mic and the call stays up. */
+    var backgrounded = false;
+    function onVisibility() {
+      backgrounded = (global.document && global.document.hidden) || false;
+      refreshMic();
+    }
+    if (global.document && global.document.addEventListener) {
+      global.document.addEventListener('visibilitychange', onVisibility);
+    }
+
     function refreshMic() {
       if (!micTrack) return;
       try {
-        micTrack.enabled = pttMode
+        micTrack.enabled = backgrounded ? false : (pttMode
           ? (holding && !blocked())
-          : !(aiSpeaking || blocked());
+          : !(aiSpeaking || blocked()));
       } catch (e) {}
     }
 
@@ -524,6 +536,7 @@
       },
       detach: function () {
         detached = true;
+        try { global.document.removeEventListener('visibilitychange', onVisibility); } catch (e) {}
         if (stuckTimer) clearTimeout(stuckTimer);
         if (resumeTimer) clearTimeout(resumeTimer);
         if (timer) clearInterval(timer);

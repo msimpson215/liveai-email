@@ -134,7 +134,7 @@ const orb=document.getElementById('orb');
 orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
 orb.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleVoice();}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
-document.addEventListener('visibilitychange',function(){if(document.hidden&&(pc||starting))stop();});
+document.addEventListener('visibilitychange',function(){/* Backgrounding no longer ends the call - axon-voice.js just closes the mic. */});
 window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
 setState('idle');

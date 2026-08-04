@@ -303,7 +303,7 @@ orb.addEventListener('pointercancel',holdOff);
 orb.addEventListener('pointerleave',holdOff);
 orb.addEventListener('click',function(){if(tapToTalk&&pc)return;toggleVoice();});
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden&&(pc||starting))stopVoice();
+  /* Backgrounding no longer ends the call - axon-voice.js just closes the mic. */
 });
 window.addEventListener('pagehide',()=>{if(pc||starting)stopVoice()});
 </script>

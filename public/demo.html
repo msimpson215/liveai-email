@@ -200,7 +200,7 @@ orb.addEventListener('keydown',function(e){
 startButton.addEventListener('click',toggleVoice);
 document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden&&(pc||starting))stop();
+  /* Backgrounding no longer ends the call - axon-voice.js just closes the mic. */
 });
 window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});

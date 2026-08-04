@@ -470,8 +470,12 @@ stopBtn.addEventListener('click',function(e){
   if(isPaused)resumeSession();else pauseSession();
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pc)pauseSession();});
+/* Backgrounding used to end the call outright, so a glance at a notification
+   meant starting over. Pause instead, and pick it up on return. */
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden&&(pc||starting))stop();
+  if(!pc&&!starting)return;
+  if(document.hidden){ if(!isPaused)pauseSession(); }
+  else if(isPaused){ resumeSession(); }
 });
 window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
