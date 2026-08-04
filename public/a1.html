@@ -582,7 +582,9 @@ function handleEvent(ev){
   }
   else if(t==='conversation.item.input_audio_transcription.completed'){
     if(turnPending){
-      if(isRealSpeech(msg.transcript,lastTurnMs))askForReply();else dropTurn();
+      if(!isRealSpeech(msg.transcript,lastTurnMs))dropTurn();
+      else if(ptt||!roomTalkative){remember('user',msg.transcript);askForReply();}
+      else checkAddressed(msg.transcript);   /* the room is talking - was that for us? */
     }
   }
   else if(t==='conversation.item.input_audio_transcription.failed'){
