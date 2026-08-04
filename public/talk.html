@@ -639,9 +639,13 @@ function handleEvent(ev){
   let msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
   const t=msg.type||'';
   if(t==='response.output_item.added'&&msg.item&&msg.item.id){liveItemId=msg.item.id;itemAudioStart=0;}
-  if((t==='response.audio.delta'||t==='response.output_audio.delta')&&!itemAudioStart){
-    itemAudioStart=Date.now();
+  /* Audio travels on the media track, not through here, so there is no audio
+     delta to time from. These are what the service actually sends when a reply
+     starts coming out of the speaker. */
+  if(t==='output_audio_buffer.started'&&!itemAudioStart)itemAudioStart=Date.now();
+  if(t==='response.output_audio_transcript.delta'){
     if(msg.item_id)liveItemId=msg.item_id;
+    if(!itemAudioStart)itemAudioStart=Date.now();
   }
   if(t==='response.created')responseActive=true;
   if(t==='input_audio_buffer.speech_started'){

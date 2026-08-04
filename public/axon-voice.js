@@ -210,9 +210,13 @@
         liveItemId = msg.item.id;
         itemAudioStart = 0;
       }
-      if ((t === 'response.audio.delta' || t === 'response.output_audio.delta') && !itemAudioStart) {
-        itemAudioStart = Date.now();
+      /* Audio itself travels on the media track, not through here, so there is
+         no audio delta to time from. These two are what the service actually
+         sends when a reply starts coming out of the speaker. */
+      if (t === 'output_audio_buffer.started' && !itemAudioStart) itemAudioStart = Date.now();
+      if (t === 'response.output_audio_transcript.delta') {
         if (msg.item_id) liveItemId = msg.item_id;
+        if (!itemAudioStart) itemAudioStart = Date.now();
       }
       if (t === 'response.audio_transcript.done' || t === 'response.output_audio_transcript.done') {
         remember('assistant', msg.transcript);
