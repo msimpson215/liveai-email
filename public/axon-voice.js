@@ -332,7 +332,7 @@
        carry on from the exact point it stopped. */
     function resumeAfterFalseInterruption(tries) {
       tries = tries || 0;
-      if (detached || tries > 8) return;
+      if (detached || tries > 25) return;   // ~18s; audio can take a while to drain
       if (!dc || dc.readyState !== 'open') return;
       /* The speaker may still be draining the cancelled reply, and the caller
          may yet turn out to have really spoken. Wait our turn rather than
