@@ -53,9 +53,10 @@
     transition:transform .15s ease, filter .25s ease;
     filter:drop-shadow(0 0 34px rgba(90,175,245,.55));
   }
+  /* Clipped to a circle so no square edge of the render ever shows. */
   #orb .sphere{
-    position:absolute; inset:-9%; width:118%; height:118%;
-    object-fit:contain; pointer-events:none; user-select:none;
+    position:absolute; inset:-6%; width:112%; height:112%;
+    object-fit:contain; border-radius:50%; pointer-events:none; user-select:none;
   }
   #orb > *:not(.sphere){ position:relative; z-index:1 }
   #orb:active{ transform:scale(.985) }
