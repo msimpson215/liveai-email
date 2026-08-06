@@ -44,7 +44,7 @@
   /* The sphere is a real render, not a gradient. The label sits on top of it. */
   #orb{
     appearance:none; border:0; cursor:pointer; padding:0; position:relative;
-    width:302px; height:302px; border-radius:50%; background:transparent;
+    width:314px; height:314px; border-radius:50%; background:transparent;
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;
     transition:transform .15s ease, filter .25s ease;
     filter:drop-shadow(0 0 34px rgba(90,175,245,.55));
@@ -53,7 +53,6 @@
   #orb .sphere{
     position:absolute; inset:-6%; width:112%; height:112%;
     object-fit:contain; border-radius:50%; pointer-events:none; user-select:none;
-    filter:brightness(1.1) saturate(1.06);
   }
   #orb > *:not(.sphere){ position:relative; z-index:1 }
   #orb:active{ transform:scale(.985) }
@@ -102,12 +101,12 @@
       <text x="0" y="47" font-family="Plus Jakarta Sans,Helvetica,Arial,sans-serif"
             font-size="52" font-weight="800" letter-spacing="1.5" fill="#0f74c8">SCORE</text>
       <g fill="#0f74c8">
-        <path d="M236 40h58l18-11h-58z"/>
-        <path d="M252 28h58l18-11h-58z"/>
-        <path d="M268 16h58l14-9h-58z"/>
+        <path d="M228 44h56l20-12h-56z"/>
+        <path d="M242 31h56l20-12h-56z"/>
+        <path d="M256 18h56l18-11h-56z"/>
       </g>
-      <path d="M8 58h300l14-6H14z" fill="#0f74c8"/>
-      <text x="326" y="52" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#0f74c8">&#174;</text>
+      <path d="M4 60h306l20-9H16z" fill="#0f74c8"/>
+      <text x="330" y="50" font-family="Helvetica,Arial,sans-serif" font-size="12" fill="#0f74c8">&#174;</text>
     </svg>
     <p class="tagline">For the life of your business</p>
   </div>
