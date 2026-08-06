@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Have questions about SCORE? Scan to talk with SCORE AI</title>
+<style>
+  :root{ --navy:#12295e; --score:#0b63c5; --ink:#12295e; --muted:#5d6b85; }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:#f7fbff; color:var(--ink);
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; justify-content:center;
+  }
+  .sheet{
+    width:100%; max-width:576px; min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; text-align:center; padding:34px 26px 26px;
+    background:
+      radial-gradient(90% 40% at 100% 22%, #e6f0ff 0%, rgba(247,251,255,0) 60%),
+      radial-gradient(90% 40% at 0% 68%, #e6f0ff 0%, rgba(247,251,255,0) 60%),
+      #f9fcff;
+  }
+
+  .brand{ margin:0 0 4px }
+  .wordmark{ display:flex; align-items:center; justify-content:center; gap:11px }
+  .wordmark .word{ font-size:39px; font-weight:800; letter-spacing:.03em; color:var(--score); line-height:1 }
+  .wordmark svg{ width:62px; height:32px; display:block }
+  .tagline{ margin:8px 0 0; color:var(--score); font-size:12px; font-weight:700;
+    letter-spacing:.16em; text-transform:uppercase }
+
+  h1{ margin:32px 0 10px; font-size:36px; line-height:1.15; letter-spacing:-.02em; color:var(--navy) }
+  .lead{ margin:0 0 26px; font-size:19px; color:var(--muted) }
+  .lead b{ color:var(--score); font-weight:800 }
+
+  /* The code needs a clean light panel with room around it, or cameras struggle. */
+  .panel{ background:#fff; border:1px solid #dbe8f8; border-radius:18px; padding:22px;
+    max-width:400px; width:100%; box-shadow:0 10px 30px rgba(18,41,94,.08) }
+  .panel img{ width:100%; max-width:316px; height:auto; display:block; margin:0 auto }
+
+  .scanrow{ display:flex; align-items:center; justify-content:center; gap:13px; margin:26px 0 0 }
+  .scanrow .ic{ flex:0 0 42px; width:42px; height:42px; border-radius:50%; background:var(--score);
+    display:flex; align-items:center; justify-content:center }
+  .scanrow span{ font-size:21px; font-weight:800; color:var(--navy) }
+
+  .divider{ height:1px; background:#dbe8f8; width:100%; max-width:420px; margin:24px auto 20px }
+  .ask{ margin:0; font-size:16.5px; line-height:1.55; color:var(--muted); max-width:430px }
+
+  .try{ display:inline-block; margin:26px 0 0; text-decoration:none; background:var(--score); color:#fff;
+    font-size:16px; font-weight:600; padding:14px 24px; border-radius:10px }
+
+  .powered{ margin:auto 0 0; padding-top:30px; display:flex; align-items:center; justify-content:center;
+    gap:8px; color:#9fb0cc; font-size:13.5px }
+  .powered svg{ width:16px; height:16px }
+
+  @media (max-width:400px){
+    h1{font-size:29px} .wordmark .word{font-size:33px} .scanrow span{font-size:18px}
+  }
+  @media print{ .try{display:none} body,.sheet{background:#fff} }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="brand">
+    <div class="wordmark">
+      <span class="word">SCORE</span>
+      <svg viewBox="0 0 66 34" fill="#0b63c5" aria-hidden="true">
+        <path d="M2 26h34l10-6H12z"/>
+        <path d="M14 17h34l10-6H24z"/>
+        <path d="M26 8h34l6-4H36z"/>
+      </svg>
+    </div>
+    <p class="tagline">For the life of your business</p>
+  </div>
+
+  <h1>Have questions<br>about SCORE?</h1>
+  <p class="lead">Feel free to try our new <b>SCORE AI</b>.</p>
+
+  <div class="panel">
+    <img src="/qr/score-ask.png" alt="QR code — scan to talk with SCORE AI">
+  </div>
+
+  <p class="scanrow">
+    <span class="ic" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M4 4h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4V5a1 1 0 0 1 1-1z"/></svg>
+    </span>
+    <span>Scan to talk with SCORE AI</span>
+  </p>
+
+  <div class="divider"></div>
+  <p class="ask">Ask about mentoring, business plans,<br>funding, workshops, and your local SCORE chapter.</p>
+
+  <a class="try" href="/score-ask.html">Try it now</a>
+
+  <p class="powered">
+    <svg viewBox="0 0 16 16" fill="#9fb0cc" aria-hidden="true"><path d="M8 0l1.6 4.7L14.3 6l-4.7 1.6L8 12.3 6.4 7.6 1.7 6l4.7-1.3z"/></svg>
+    Powered by AXON AI&trade;
+  </p>
+</div>
+</body>
+</html>
