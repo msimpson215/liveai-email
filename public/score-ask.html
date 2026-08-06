@@ -45,34 +45,54 @@
 
   /* The button, as designed: a glass blue sphere with the mark, the mic and
      the words inside it. */
+  /* The sphere as designed: deep blue glass, a bright specular bloom at the top
+     left, a cyan rim where the light wraps round, and a wide soft halo. */
   #orb{
-    appearance:none; border:0; cursor:pointer; padding:0;
-    width:270px; height:270px; border-radius:50%;
+    appearance:none; border:0; cursor:pointer; padding:0; position:relative;
+    width:300px; height:300px; border-radius:50%;
     background:
-      radial-gradient(circle at 50% 22%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 34%),
-      radial-gradient(circle at 50% 46%, #2f8ee8 0%, #0e63c8 46%, #0a4f9f 74%, #093f80 100%);
+      radial-gradient(circle at 34% 20%, rgba(255,255,255,.85) 0%, rgba(255,255,255,.20) 12%, rgba(255,255,255,0) 30%),
+      radial-gradient(circle at 22% 46%, rgba(120,220,255,.55) 0%, rgba(120,220,255,0) 42%),
+      radial-gradient(circle at 62% 78%, rgba(10,60,130,.85) 0%, rgba(10,60,130,0) 55%),
+      radial-gradient(circle at 48% 40%, #2a92ea 0%, #0f6bd0 42%, #0a52a8 70%, #073d80 100%);
     box-shadow:
-      0 0 0 12px rgba(120,180,255,.14),
-      0 0 66px rgba(70,150,240,.55),
-      inset 0 -18px 40px rgba(4,32,70,.55),
-      inset 0 14px 34px rgba(255,255,255,.30);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+      0 0 0 16px rgba(150,205,255,.16),
+      0 0 40px rgba(120,200,255,.55),
+      0 0 110px 26px rgba(90,170,245,.45),
+      inset 0 -26px 54px rgba(3,26,62,.62),
+      inset 0 18px 44px rgba(255,255,255,.34),
+      inset 14px 0 40px rgba(130,225,255,.28);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
     transition:box-shadow .25s ease, transform .15s ease;
   }
+  /* A faint sheen across the glass. */
+  #orb::before{
+    content:""; position:absolute; inset:0; border-radius:50%; pointer-events:none;
+    background:
+      radial-gradient(60% 34% at 32% 16%, rgba(255,255,255,.42) 0%, rgba(255,255,255,0) 70%),
+      radial-gradient(48% 22% at 70% 88%, rgba(140,220,255,.22) 0%, rgba(140,220,255,0) 70%);
+  }
+  #orb > *{ position:relative; z-index:1 }
   #orb:active{ transform:scale(.985) }
-  #orb .mark{ display:flex; flex-direction:column; align-items:center; gap:3px }
-  #orb .mark .w{ color:#fff; font-size:29px; font-weight:800; letter-spacing:.05em; line-height:1 }
-  #orb .mark svg.bars{ width:52px; height:26px }
-  #orb svg.mic{ width:74px; height:60px }
-  #orb .cap{ color:#fff; font-size:23px; font-weight:700; letter-spacing:.01em }
+  #orb .mark{ display:flex; flex-direction:column; align-items:center; gap:2px }
+  #orb .mark .w{
+    color:#fff; font-size:33px; font-weight:800; font-style:italic;
+    letter-spacing:.03em; line-height:1; text-shadow:0 2px 10px rgba(0,40,90,.45);
+  }
+  #orb .mark svg.bars{ width:58px; height:26px }
+  #orb svg.mic{ width:92px; height:72px; filter:drop-shadow(0 2px 8px rgba(0,40,90,.4)) }
+  #orb .cap{ color:#fff; font-size:25px; font-weight:700; text-shadow:0 2px 10px rgba(0,40,90,.45) }
 
   body[data-state="connecting"] #orb{ animation:breathe 1.15s ease-in-out infinite }
   body[data-state="speaking"] #orb{
-    box-shadow:0 0 0 17px rgba(120,180,255,.20), 0 0 92px rgba(70,150,240,.85),
-      inset 0 -18px 40px rgba(4,32,70,.5), inset 0 14px 34px rgba(255,255,255,.34);
+    box-shadow:0 0 0 20px rgba(150,205,255,.20), 0 0 56px rgba(120,200,255,.7),
+      0 0 140px 34px rgba(90,170,245,.6),
+      inset 0 -26px 54px rgba(3,26,62,.58), inset 0 18px 44px rgba(255,255,255,.38),
+      inset 14px 0 40px rgba(130,225,255,.32);
   }
-  @keyframes breathe{ 50%{ box-shadow:0 0 0 20px rgba(120,180,255,.2), 0 0 84px rgba(70,150,240,.8),
-    inset 0 -18px 40px rgba(4,32,70,.5), inset 0 14px 34px rgba(255,255,255,.32) } }
+  @keyframes breathe{ 50%{ box-shadow:0 0 0 22px rgba(150,205,255,.2), 0 0 50px rgba(120,200,255,.65),
+    0 0 130px 30px rgba(90,170,245,.55), inset 0 -26px 54px rgba(3,26,62,.6),
+    inset 0 18px 44px rgba(255,255,255,.36), inset 14px 0 40px rgba(130,225,255,.3) } }
 
   body[data-state="idle"] .hint{visibility:hidden}
   .hint{ margin:16px 0 0; font-size:15px; color:var(--muted) }
@@ -93,8 +113,8 @@
 
   @media (max-width:400px){
     h1{font-size:31px} .wordmark .word{font-size:35px} .wordmark svg{width:56px;height:29px}
-    #orb{width:232px;height:232px} #orb svg.mic{width:64px;height:52px}
-    #orb .mark .w{font-size:25px} #orb .cap{font-size:20px}
+    #orb{width:252px;height:252px} #orb svg.mic{width:78px;height:62px}
+    #orb .mark .w{font-size:28px} #orb .cap{font-size:21px}
   }
 </style>
 </head>
@@ -126,7 +146,7 @@
           <path d="M26 8h34l6-4H36z"/>
         </svg>
       </span>
-      <svg class="mic" viewBox="0 0 74 60" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round">
+      <svg class="mic" viewBox="0 0 74 60" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round">
         <rect x="31" y="10" width="12" height="24" rx="6" fill="#fff" stroke="none"/>
         <path d="M25 28a12 12 0 0 0 24 0"/><path d="M37 40v8"/>
         <path d="M18 20c-2.4 3-2.4 12 0 15M56 20c2.4 3 2.4 12 0 15"/>
