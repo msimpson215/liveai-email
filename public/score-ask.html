@@ -45,54 +45,32 @@
 
   /* The button, as designed: a glass blue sphere with the mark, the mic and
      the words inside it. */
-  /* The sphere as designed: deep blue glass, a bright specular bloom at the top
-     left, a cyan rim where the light wraps round, and a wide soft halo. */
+  /* The sphere is a real render, not a gradient. The label sits on top of it. */
   #orb{
     appearance:none; border:0; cursor:pointer; padding:0; position:relative;
-    width:300px; height:300px; border-radius:50%;
-    background:
-      radial-gradient(circle at 34% 20%, rgba(255,255,255,.85) 0%, rgba(255,255,255,.20) 12%, rgba(255,255,255,0) 30%),
-      radial-gradient(circle at 22% 46%, rgba(120,220,255,.55) 0%, rgba(120,220,255,0) 42%),
-      radial-gradient(circle at 62% 78%, rgba(10,60,130,.85) 0%, rgba(10,60,130,0) 55%),
-      radial-gradient(circle at 48% 40%, #2a92ea 0%, #0f6bd0 42%, #0a52a8 70%, #073d80 100%);
-    box-shadow:
-      0 0 0 16px rgba(150,205,255,.16),
-      0 0 40px rgba(120,200,255,.55),
-      0 0 110px 26px rgba(90,170,245,.45),
-      inset 0 -26px 54px rgba(3,26,62,.62),
-      inset 0 18px 44px rgba(255,255,255,.34),
-      inset 14px 0 40px rgba(130,225,255,.28);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
-    transition:box-shadow .25s ease, transform .15s ease;
+    width:302px; height:302px; border-radius:50%; background:transparent;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;
+    transition:transform .15s ease, filter .25s ease;
+    filter:drop-shadow(0 0 34px rgba(90,175,245,.55));
   }
-  /* A faint sheen across the glass. */
-  #orb::before{
-    content:""; position:absolute; inset:0; border-radius:50%; pointer-events:none;
-    background:
-      radial-gradient(60% 34% at 32% 16%, rgba(255,255,255,.42) 0%, rgba(255,255,255,0) 70%),
-      radial-gradient(48% 22% at 70% 88%, rgba(140,220,255,.22) 0%, rgba(140,220,255,0) 70%);
+  #orb .sphere{
+    position:absolute; inset:-9%; width:118%; height:118%;
+    object-fit:contain; pointer-events:none; user-select:none;
   }
-  #orb > *{ position:relative; z-index:1 }
+  #orb > *:not(.sphere){ position:relative; z-index:1 }
   #orb:active{ transform:scale(.985) }
   #orb .mark{ display:flex; flex-direction:column; align-items:center; gap:2px }
   #orb .mark .w{
     color:#fff; font-size:33px; font-weight:800; font-style:italic;
-    letter-spacing:.03em; line-height:1; text-shadow:0 2px 10px rgba(0,40,90,.45);
+    letter-spacing:.03em; line-height:1; text-shadow:0 2px 12px rgba(0,38,88,.5);
   }
-  #orb .mark svg.bars{ width:58px; height:26px }
-  #orb svg.mic{ width:92px; height:72px; filter:drop-shadow(0 2px 8px rgba(0,40,90,.4)) }
-  #orb .cap{ color:#fff; font-size:25px; font-weight:700; text-shadow:0 2px 10px rgba(0,40,90,.45) }
+  #orb .mark svg.bars{ width:58px; height:26px; filter:drop-shadow(0 2px 6px rgba(0,38,88,.45)) }
+  #orb svg.mic{ width:92px; height:72px; filter:drop-shadow(0 2px 9px rgba(0,38,88,.45)) }
+  #orb .cap{ color:#fff; font-size:25px; font-weight:700; text-shadow:0 2px 12px rgba(0,38,88,.5) }
 
   body[data-state="connecting"] #orb{ animation:breathe 1.15s ease-in-out infinite }
-  body[data-state="speaking"] #orb{
-    box-shadow:0 0 0 20px rgba(150,205,255,.20), 0 0 56px rgba(120,200,255,.7),
-      0 0 140px 34px rgba(90,170,245,.6),
-      inset 0 -26px 54px rgba(3,26,62,.58), inset 0 18px 44px rgba(255,255,255,.38),
-      inset 14px 0 40px rgba(130,225,255,.32);
-  }
-  @keyframes breathe{ 50%{ box-shadow:0 0 0 22px rgba(150,205,255,.2), 0 0 50px rgba(120,200,255,.65),
-    0 0 130px 30px rgba(90,170,245,.55), inset 0 -26px 54px rgba(3,26,62,.6),
-    inset 0 18px 44px rgba(255,255,255,.36), inset 14px 0 40px rgba(130,225,255,.3) } }
+  body[data-state="speaking"] #orb{ filter:drop-shadow(0 0 56px rgba(90,175,245,.9)) }
+  @keyframes breathe{ 50%{ filter:drop-shadow(0 0 52px rgba(90,175,245,.85)) } }
 
   body[data-state="idle"] .hint{visibility:hidden}
   .hint{ margin:16px 0 0; font-size:15px; color:var(--muted) }
@@ -113,7 +91,7 @@
 
   @media (max-width:400px){
     h1{font-size:31px} .wordmark .word{font-size:35px} .wordmark svg{width:56px;height:29px}
-    #orb{width:252px;height:252px} #orb svg.mic{width:78px;height:62px}
+    #orb{width:262px;height:262px} #orb svg.mic{width:78px;height:62px}
     #orb .mark .w{font-size:28px} #orb .cap{font-size:21px}
   }
 </style>
@@ -138,6 +116,7 @@
 
   <div class="orb-wrap">
     <button type="button" id="orb" aria-label="Tap to talk to SCORE AI">
+      <img class="sphere" src="/art/score-orb.png" alt="">
       <span class="mark">
         <span class="w">SCORE</span>
         <svg class="bars" viewBox="0 0 66 34" fill="#fff" aria-hidden="true">
