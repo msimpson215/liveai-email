@@ -28,11 +28,7 @@
 
   /* SCORE wordmark and the three rising bars. */
   .brand{ margin:0 0 6px }
-  .wordmark{ display:flex; align-items:center; justify-content:center; gap:12px }
-  .wordmark .word{
-    font-size:42px; font-weight:800; letter-spacing:.03em; color:var(--score); line-height:1;
-  }
-  .wordmark svg{ width:66px; height:34px; display:block }
+  .scoreLogo{ display:block; width:264px; height:auto; margin:0 auto }
   .tagline{
     margin:8px 0 0; color:var(--score); font-size:12.5px; font-weight:700;
     letter-spacing:.17em; text-transform:uppercase;
@@ -57,6 +53,7 @@
   #orb .sphere{
     position:absolute; inset:-6%; width:112%; height:112%;
     object-fit:contain; border-radius:50%; pointer-events:none; user-select:none;
+    filter:brightness(1.1) saturate(1.06);
   }
   #orb > *:not(.sphere){ position:relative; z-index:1 }
   #orb:active{ transform:scale(.985) }
@@ -101,14 +98,17 @@
 <div class="sheet">
 
   <div class="brand">
-    <div class="wordmark">
-      <span class="word">SCORE</span>
-      <svg viewBox="0 0 66 34" fill="#0b63c5" aria-hidden="true">
-        <path d="M2 26h34l10-6H12z"/>
-        <path d="M14 17h34l10-6H24z"/>
-        <path d="M26 8h34l6-4H36z"/>
-      </svg>
-    </div>
+    <svg class="scoreLogo" viewBox="0 0 340 78" aria-label="SCORE">
+      <text x="0" y="47" font-family="Plus Jakarta Sans,Helvetica,Arial,sans-serif"
+            font-size="52" font-weight="800" letter-spacing="1.5" fill="#0f74c8">SCORE</text>
+      <g fill="#0f74c8">
+        <path d="M236 40h58l18-11h-58z"/>
+        <path d="M252 28h58l18-11h-58z"/>
+        <path d="M268 16h58l14-9h-58z"/>
+      </g>
+      <path d="M8 58h300l14-6H14z" fill="#0f74c8"/>
+      <text x="326" y="52" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#0f74c8">&#174;</text>
+    </svg>
     <p class="tagline">For the life of your business</p>
   </div>
 
