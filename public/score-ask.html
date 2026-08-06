@@ -28,10 +28,10 @@
 
   /* SCORE wordmark and the three rising bars. */
   .brand{ margin:0 0 6px }
-  .scoreLogo{ display:block; width:270px; height:auto; margin:0 auto }
+  .scoreLogo{ display:block; width:242px; height:auto; margin:0 auto }
   .tagline{
-    margin:9px 0 0; color:var(--score); font-size:12.5px; font-weight:700;
-    letter-spacing:.155em; text-transform:uppercase;
+    margin:9px 0 0; color:#1f7ac4; font-size:11.5px; font-weight:700;
+    letter-spacing:.15em; text-transform:uppercase;
   }
 
   h1{ margin:34px 0 12px; font-size:38px; line-height:1.12; letter-spacing:-.02em; color:var(--navy) }
@@ -97,18 +97,18 @@
 <div class="sheet">
 
   <div class="brand">
-    <svg class="scoreLogo" viewBox="0 0 352 80" aria-label="SCORE">
-      <text x="0" y="52" font-family="Plus Jakarta Sans,Helvetica,Arial,sans-serif"
-            font-size="55" font-weight="800" letter-spacing="1" fill="#0f74c8">SCORE</text>
-      <!-- three slanted strokes rising to the right, thin gaps between them -->
-      <g fill="#0f74c8">
-        <path d="M210 54 l50 0 l30 -11 l-50 0 z"/>
-        <path d="M224 41 l50 0 l30 -11 l-50 0 z"/>
-        <path d="M238 28 l50 0 l30 -11 l-50 0 z"/>
+    <svg class="scoreLogo" viewBox="0 0 300 84" aria-label="SCORE">
+      <!-- wordmark is navy on the real site, not the brighter blue -->
+      <text x="0" y="54" font-family="Plus Jakarta Sans,Helvetica,Arial,sans-serif"
+            font-size="54" font-weight="800" letter-spacing=".5" fill="#173a6d">SCORE</text>
+      <!-- the wing rises off the top right of the wordmark, in the lighter blue -->
+      <g fill="#1f7ac4">
+        <path d="M196 34 l44 0 l26 -10 l-44 0 z"/>
+        <path d="M208 22 l44 0 l26 -10 l-44 0 z"/>
+        <path d="M220 10 l44 0 l24 -9 l-44 0 z"/>
       </g>
-      <!-- the stroke beneath the whole lockup -->
-      <path d="M4 68 l318 0 l16 -7 l-318 0 z" fill="#0f74c8"/>
-      <text x="330" y="57" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#0f74c8">&#174;</text>
+      <path d="M2 66 l268 0 l14 -6 l-268 0 z" fill="#1f7ac4"/>
+      <text x="278" y="60" font-family="Helvetica,Arial,sans-serif" font-size="10" fill="#1f7ac4">&#174;</text>
     </svg>
     <p class="tagline">For the life of your business</p>
   </div>
