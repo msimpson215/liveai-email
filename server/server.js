@@ -183,6 +183,12 @@ ${rows}
 </div></body></html>`)
 })
 
+/** Clean URLs for pages that go on printed material. */
+app.get('/dna', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.sendFile(path.join(__dirname, '..', 'public', 'dna.html'))
+})
+
 /**
  * One page, one QR code per clinic: /stress-test/bjc loads the same patient
  * page with that clinic's logistics attached.
