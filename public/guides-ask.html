@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4f8ff">
+<meta name="robots" content="noindex">
+<title>Talk to the Business Guides AI</title>
+<style>
+  :root{
+    --navy:#12295e; --blue:#0b63c5;
+    --ink:#12295e; --muted:#5d6b85; --paper:#f7fbff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper); color:var(--ink); min-height:100vh;
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; justify-content:center;
+  }
+  .sheet{
+    width:100%; max-width:576px; min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; text-align:center; padding:36px 26px 26px;
+    background:
+      radial-gradient(120% 55% at 50% 42%, #eaf3ff 0%, rgba(247,251,255,0) 62%),
+      linear-gradient(180deg,#fbfdff 0%,#f2f8ff 100%);
+  }
+
+  /* Plain type for the site name; artwork can replace this later. */
+  .brand{ margin:0 0 6px }
+  .siteName{
+    margin:0; font-size:19px; font-weight:800; letter-spacing:-.01em; color:var(--navy);
+  }
+  .siteName b{ color:var(--blue) }
+  .tagline{
+    margin:9px 0 0; color:#1f7ac4; font-size:11.5px; font-weight:700;
+    letter-spacing:.15em; text-transform:uppercase;
+  }
+
+  h1{ margin:34px 0 12px; font-size:38px; line-height:1.12; letter-spacing:-.02em; color:var(--navy) }
+  .lead{ margin:0; font-size:19px; line-height:1.5; color:var(--muted) }
+
+  .orb-wrap{ display:flex; flex-direction:column; align-items:center; margin-top:34px }
+
+  /* The button: the glass blue sphere with the mic and the words on top of it. */
+  /* The sphere is a real render, not a gradient. The label sits on top of it. */
+  #orb{
+    appearance:none; border:0; cursor:pointer; padding:0; position:relative;
+    width:314px; height:314px; border-radius:50%; background:transparent;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;
+    transition:transform .15s ease, filter .25s ease;
+    filter:drop-shadow(0 0 30px rgba(90,175,245,.6)) drop-shadow(0 0 68px rgba(120,195,250,.45));
+  }
+  /* Clipped to a circle so no square edge of the render ever shows. */
+  #orb .sphere{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; border-radius:50%; pointer-events:none; user-select:none;
+  }
+  #orb > *:not(.sphere){ position:relative; z-index:1 }
+  #orb:active{ transform:scale(.985) }
+  #orb svg.mic{ width:92px; height:72px; filter:drop-shadow(0 2px 9px rgba(0,38,88,.45)) }
+  #orb .cap{ color:#fff; font-size:25px; font-weight:700; text-shadow:0 2px 12px rgba(0,38,88,.5) }
+
+  body[data-state="connecting"] #orb{ animation:breathe 1.15s ease-in-out infinite }
+  body[data-state="speaking"] #orb{ filter:drop-shadow(0 0 44px rgba(90,175,245,.95)) drop-shadow(0 0 96px rgba(120,195,250,.7)) }
+  @keyframes breathe{ 50%{ filter:drop-shadow(0 0 40px rgba(90,175,245,.9)) drop-shadow(0 0 88px rgba(120,195,250,.62)) } }
+
+  body[data-state="idle"] .hint{visibility:hidden}
+  .hint{ margin:16px 0 0; font-size:15px; color:var(--muted) }
+  .mode-btn{
+    margin:20px auto 0; display:block; width:100%; max-width:400px; cursor:pointer;
+    background:#fff; border:1px solid #c9dcf5; border-radius:30px;
+    color:var(--navy); font:inherit; font-size:15px; padding:13px 18px;
+  }
+  .mode-btn.on{ background:var(--blue); border-color:var(--blue); color:#fff; font-weight:700 }
+  .mode-note{ margin:11px auto 0; font-size:14px; color:var(--muted); max-width:400px; line-height:1.5 }
+
+  .ask{ margin:32px auto 0; font-size:17px; line-height:1.55; color:var(--muted); max-width:420px }
+  .powered{
+    margin:auto 0 0; padding-top:34px; display:flex; align-items:center; justify-content:center; gap:8px;
+    color:#9fb0cc; font-size:13.5px; letter-spacing:.02em;
+  }
+  .powered svg{ width:16px; height:16px }
+
+  @media (max-width:400px){
+    h1{font-size:31px} .siteName{font-size:17px}
+    #orb{width:262px;height:262px} #orb svg.mic{width:78px;height:62px}
+    #orb .cap{font-size:21px}
+  }
+</style>
+</head>
+<body data-state="idle">
+<div class="sheet">
+
+  <div class="brand">
+    <p class="siteName">StartABusiness<b>.Center</b></p>
+    <p class="tagline">Quick Start Business Guides</p>
+  </div>
+
+  <h1>Talk to the Guides</h1>
+  <p class="lead">Ask about any of the seven guides,<br>or tell me what you're working on.</p>
+
+  <div class="orb-wrap">
+    <button type="button" id="orb" aria-label="Tap to talk to the Business Guides AI">
+      <img class="sphere" src="/art/axon-orb-blue.png" alt="">
+      <svg class="mic" viewBox="0 0 74 60" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round">
+        <rect x="31" y="10" width="12" height="24" rx="6" fill="#fff" stroke="none"/>
+        <path d="M25 28a12 12 0 0 0 24 0"/><path d="M37 40v8"/>
+        <path d="M18 20c-2.4 3-2.4 12 0 15M56 20c2.4 3 2.4 12 0 15"/>
+        <path d="M8 15c-3.4 4.6-3.4 19 0 24M66 15c3.4 4.6 3.4 19 0 24" opacity=".65"/>
+      </svg>
+      <span class="cap">Tap to Talk</span>
+    </button>
+    <p class="hint" id="hint">Tap to talk</p>
+    <button type="button" id="modeBtn" class="mode-btn">Noisy room? Switch to tap-to-talk &nbsp;&rsaquo;</button>
+    <p class="mode-note" id="modeNote"></p>
+  </div>
+
+  <p class="ask">Testing an idea, pricing an offer, setting up the business,
+  building a website, finding your first customers, or growing after launch.</p>
+
+  <p class="powered">
+    <svg viewBox="0 0 16 16" fill="#9fb0cc" aria-hidden="true"><path d="M8 0l1.6 4.7L14.3 6l-4.7 1.6L8 12.3 6.4 7.6 1.7 6l4.7-1.3z"/></svg>
+    Powered by AXON AI&trade;
+  </p>
+</div>
+
+<script src="/axon-voice.js"></script>
+<script>
+/* Tim Donahue's Quick Start Business Guides. gate=1 so the server never answers a
+   room on its own - axon-voice.js decides when a person actually spoke. */
+const sessionUrl='/session?gate=1&src=guides';
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
+function setState(s,hintText){
+  document.body.dataset.state=s;
+  if(hintText!==undefined)document.getElementById('hint').textContent=hintText;
+}
+function ensureAudio(){
+  if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;document.body.appendChild(audioEl);}
+  return audioEl;
+}
+function resumeAudio(){ if(audioEl&&audioEl.paused){audioEl.play().catch(function(){});return true;} return false; }
+async function stopVoice(){
+  if(voice){voice.detach();voice=null}
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  starting=false;
+  setState('idle','Tap to talk');
+}
+
+/* The call dropped. Rebuild it quietly and carry on - axon-voice.js hands the
+   previous turns to the new session so it does not greet again. */
+let reconnecting=false,reconnectTries=0;
+async function handleLost(){
+  if(reconnecting)return;
+  reconnecting=true;
+  setState('connecting','Reconnecting…');
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc)pc.close()}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async function(){
+    try{await connectVoice();reconnectTries=0;}
+    catch(e){if(reconnectTries<5){reconnecting=false;handleLost();return;}}
+    reconnecting=false;
+  },wait);
+}
+
+/* In a room with a TV or a radio on, hands-free cannot win: a TV's voice and a
+   person's voice measure the same through one mic. Holding the orb keeps the mic
+   shut until someone actually wants to speak. */
+let tapToTalk=false;
+const modeBtn=document.getElementById('modeBtn');
+const modeNote=document.getElementById('modeNote');
+function setTapToTalk(on,why){
+  tapToTalk=!!on;
+  if(voice)voice.setPtt(tapToTalk);
+  modeBtn.classList.toggle('on',tapToTalk);
+  modeBtn.textContent=tapToTalk?'Back to hands-free':'Noisy room? Switch to tap-to-talk \u00A0\u203A';
+  modeNote.textContent=tapToTalk?'Hold the circle while you talk, let go when you\u2019re done.':(why||'');
+  setState(document.body.dataset.state||'idle',tapToTalk?'Hold the circle and talk':'Tap to talk');
+}
+function offerTapToTalk(){
+  if(tapToTalk)return;
+  modeNote.textContent='Sounds like there\u2019s a TV or people talking near you. Tap-to-talk works better in here.';
+}
+modeBtn.addEventListener('click',function(e){e.stopPropagation();setTapToTalk(!tapToTalk);});
+function holdOn(e){ if(!tapToTalk||!voice)return; e.preventDefault(); voice.hold(true); setState('listening','Listening\u2026 let go when done'); }
+function holdOff(){ if(!tapToTalk||!voice)return; voice.hold(false); setState('listening','Hold the circle and talk'); }
+
+async function connectVoice(){
+  const r=await fetch(sessionUrl,{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error){const err=new Error(data.error||'session');err.status=r.status;throw err;}
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  let remoteStream=null;
+  pc.ontrack=function(e){
+    remoteStream=e.streams[0];
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  const micTrack=localStream.getAudioTracks()[0];
+  micTrack.enabled=false;              /* opening cannot be interrupted */
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){
+    if(AxonVoice.hasHistory())return;  /* resuming a dropped call - no greeting */
+    try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
+  });
+  dc.addEventListener('message',function(ev){
+    try{
+      const m=JSON.parse(ev.data);
+      if(m.type==='response.created')setState('speaking','');
+      if(m.type==='response.done')setState('listening',tapToTalk?'Hold the circle and talk':'Listening\u2026 go ahead');
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,
+    voice:data.voice,pc:pc,onLost:handleLost,onNoisyRoom:offerTapToTalk});
+  if(tapToTalk)voice.setPtt(true);
+  setState('listening','Listening\u2026 go ahead');
+}
+
+async function toggleVoice(){
+  if(tapToTalk&&pc)return;             /* the orb is a hold control in that mode */
+  if(starting)return;
+  if(pc){ if(!resumeAudio())await stopVoice(); return; }
+  starting=true;
+  setState('connecting','One moment\u2026');
+  try{ await connectVoice(); }
+  catch(e){ console.error(e); await stopVoice(); setState('idle','Tap to talk'); }
+  starting=false;
+}
+
+const orb=document.getElementById('orb');
+orb.addEventListener('pointerdown',holdOn);
+orb.addEventListener('pointerup',holdOff);
+orb.addEventListener('pointercancel',holdOff);
+orb.addEventListener('pointerleave',holdOff);
+orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')stopVoice();});
+/* Backgrounding no longer ends the call - axon-voice.js just closes the mic. */
+window.addEventListener('pagehide',function(){if(pc||starting)stopVoice();});
+</script>
+</body>
+</html>
