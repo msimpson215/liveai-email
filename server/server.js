@@ -10,6 +10,9 @@ import * as quickbooks from './quickbooks.js'
 import * as joeKnowledge from './joe-knowledge.js'
 import * as joeMemory from './joe-memory.js'
 import * as founderFile from './founder-file.js'
+import * as businessProfile from './business-profile.js'
+import * as sabcConsult from './sabc-consult.js'
+import { CONCEPTS as SABC_CONCEPTS } from './sabc-questions.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 dotenv.config()
@@ -218,6 +221,12 @@ app.get('/mentor', (_req, res) => {
 app.get('/guides', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/guides-ask.html')
+})
+
+/** What the StartABusiness.Center QR code opens. */
+app.get('/start', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/sabc.html')
 })
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
@@ -575,6 +584,56 @@ WHAT YOU DO NOT DO:
 
 ABOUT TIM AND THE SITE, if asked: Tim Donahue is the founder of StartABusiness.Center, a resource hub for new entrepreneurs. He has started ten businesses, online and brick-and-mortar, sold half of them, and has guided over a thousand founders through the early stages. The site has hundreds of practical articles alongside the guides, and he offers one-on-one coaching. His email is tim at startabusiness.center. His approach, in his words: practical, actionable, no fluff and no motivational speeches.
 If asked what you are: "I'm an AI assistant for Tim's business guides. I'm not Tim, and I'm not a substitute for talking to a real advisor — but I know these guides inside out."`
+  },
+  /**
+   * StartABusiness.Center — Tim Donahue's methodology as a conversation.
+   *
+   * The seven guides are the structure and they stay invisible. The person
+   * talks; this listens, teaches when they are lost, follows them off topic and
+   * comes back, and works through what Tim's framework still needs. What has
+   * already been answered arrives in the prompt, so nothing gets asked twice.
+   */
+  sabc: {
+    instructions: ({ briefing = '', concepts = '', docs = '' } = {}) => `You are the AI business consultant for StartABusiness.Center. You work the way Tim Donahue works with founders: one real conversation, no forms, no lectures.
+${VOICE_RULES}
+
+OPENING — only if there is nothing in your briefing about them. Say it once, then stop and wait:
+"Hi. I'm the AI business consultant here. Tell me about the business you're starting or running, and we'll work through it together."
+If your briefing already has their business in it, do NOT open like a stranger. Greet them like a consultant who remembers: name the thing they were last working on and ask how it went.
+
+HOW THIS WORKS — the part that matters most:
+- This is a conversation, not a questionnaire. Never read questions one after another. Never say you have a list. Never mention guides, questions, ids, steps, phases, or a process. The person should just feel talked to.
+- Ask ONE thing at a time, in your own words, and then be quiet and let them talk. Long answers are good. Never stack two questions in one breath.
+- Listen to the whole answer. One answer usually covers several things at once — the idea, the customer, the price, why they think there's demand. Take all of it. NEVER ask about something they already told you, in this conversation or a previous one.
+- Reflect before you probe: a short sentence showing you understood, then the next thing. "So you're already selling to a few restaurants, and the bottleneck is delivery." Then one question.
+- Follow the person. If they change the subject, go with them. If they raise a worry, deal with the worry properly first — that IS the work, not an interruption.
+- Then come back, out loud, so it feels deliberate: "Okay. We can come back to the funding side. You were telling me who your first customers are —" and pick the thread up exactly where it dropped.
+- Keep replies short: two to five sentences of talking, then a question. When you explain something, longer is fine, but get back to them quickly.
+
+WHEN THEY DON'T KNOW:
+- "I don't know" is a fine answer and never a failure. Never quiz, never correct, never let them feel behind.
+- If they don't know a term, explain it in plain words in two or three sentences, give one concrete example in THEIR business, then help them answer it. Then move on.
+- If they can't answer because they haven't done the work yet, say what would tell them and what it would take, and mark it as something to find out.
+- If they say skip it, come back to it later, they're not sure, or they need to think — accept it immediately, say you'll leave it, and move on. Don't push twice.
+
+MONEY AND NUMBERS:
+- Do the arithmetic out loud with them and keep it simple. Price minus what it costs to deliver is the margin. Fixed monthly costs divided by that margin is how many sales a month they need. If their numbers don't work, say so plainly and show which lever moves it — price, cost, or volume.
+- Tim's rules of thumb, offered as rules of thumb: most founders price too low; small businesses tend to run twenty to forty percent margins; never quit a day job on projected profits, only on demonstrated ones; validate before building; the first five customers come from direct outreach, not ads; document anything you have done more than about five times; being tired is not a reason to hire.
+- You are not their accountant, bookkeeper, tax preparer or attorney and never imply otherwise. You'll read their numbers and give a straight read. Anything that gets filed, signed, or owed to a government goes to a CPA or an attorney, and you say that once, plainly, without hedging everything else.
+
+WHAT YOU NEVER DO:
+- Never invent a fact, a figure, a competitor, a statistic or a customer. If you don't know, ask.
+- Never promise anyone will get funded, ranked, approved, or succeed.
+- Never ask for or repeat card numbers, bank details, social security numbers or passwords. If they start reading one out, stop them.
+- Never mention Tim's guides as homework to go and read. You already carry what's in them.
+
+${concepts}
+
+${briefing}
+
+${docs}
+
+CLOSING A SESSION: if they say they're done, tell them briefly what you'll have waiting: their business review is on the page whenever they want it, and next time you'll pick up where you left off.`
   },
   siteeye: {
     instructions: () => `You are an AI team member for SiteEye 360 Live — also known internally as WorkSite I 360 — a portable live-video system for temporary job sites.
@@ -980,6 +1039,20 @@ async function buildInstructionsAsync(source, context = {}) {
     // surface in Tim's session.
     try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
     return buildInstructions(source, { ...context, knowledge, memory })
+  }
+  // The consultant walks in briefed: what this founder already told us, where
+  // the last conversation stopped, and what Tim's methodology still needs.
+  if (source === 'sabc') {
+    const key = founderFile.keyFor(context.code)
+    let briefing = ''
+    let docs = ''
+    if (key) {
+      try { briefing = businessProfile.promptBlock(key) } catch { /* ignore */ }
+      try { docs = founderFile.docsSnippet(key) } catch { /* ignore */ }
+    }
+    const concepts = 'PLAIN-LANGUAGE EXPLANATIONS, for when they have not met a term. Use these words, not a textbook:\n' +
+      Object.entries(SABC_CONCEPTS).map(([term, text]) => `- ${term}: ${text}`).join('\n')
+    return buildInstructions(source, { ...context, briefing, docs, concepts })
   }
   // A founder's code carries their own uploaded paperwork and their past
   // sessions into a brand new call, without an account behind it.
@@ -1672,7 +1745,17 @@ app.post('/api/founder/doc', upload.single('file'), async (req, res) => {
   try {
     const text = await extractUploadedText(req.file)
     const saved = founderFile.saveDoc(key, req.file.originalname, text)
-    res.json({ ok: true, name: saved.name, chars: saved.chars, docs: founderFile.listDocs(key).length })
+
+    // Reading it is the point, not storing it: the figures go into the business
+    // profile, and anything that disagrees with what they said before is kept
+    // to raise with them.
+    let noticed = []
+    try {
+      const filed = await sabcConsult.trackDocument(key, saved.name, text)
+      if (filed) noticed = (filed.state.contradictions || []).slice(0, 2).map(c => c.note)
+    } catch { /* the document is still on file either way */ }
+
+    res.json({ ok: true, name: saved.name, chars: saved.chars, docs: founderFile.listDocs(key).length, noticed })
   } catch (error) {
     const message = /\.txt, \.md, \.pdf, or \.docx/.test(error.message || '')
       ? 'I can read PDF, Word, CSV and text files. For a spreadsheet, export it as CSV or PDF first.'
@@ -1822,6 +1905,86 @@ app.get('/api/founder/summary/:id.pdf', async (req, res) => {
     doc.end()
   } catch (error) {
     if (!res.headersSent) res.status(500).type('text').send('Could not build that PDF.')
+  }
+})
+
+/* ---------- StartABusiness.Center: the business profile behind the talk ---------- */
+
+/**
+ * Called when a session ends. Reads what was said, decides which of Tim's
+ * questions it answered, and files the substance — so the next conversation
+ * starts where this one stopped instead of at the beginning.
+ */
+app.post('/api/sabc/track', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  try {
+    const result = await sabcConsult.trackConversation(key, req.body?.turns)
+    res.json({ ok: true, filed: Boolean(result), ...businessProfile.stats(key) })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: 'Could not file that session.' })
+  }
+})
+
+app.get('/api/sabc/profile', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  if (req.query.download === '1') {
+    res.setHeader('Content-Disposition', `attachment; filename="business-profile-${new Date().toISOString().slice(0, 10)}.json"`)
+    return res.json(businessProfile.exportProfile(key))
+  }
+  res.json({
+    ok: true,
+    ...businessProfile.stats(key),
+    docs: founderFile.listDocs(key).length,
+    reviews: founderFile.listSummaries(key).length
+  })
+})
+
+/** A profile downloaded months or years ago, brought back on any device. */
+app.post('/api/sabc/profile/import', upload.single('file'), (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  try {
+    const raw = req.file ? req.file.buffer.toString('utf8') : JSON.stringify(req.body?.profile || null)
+    const stats = businessProfile.importProfile(key, JSON.parse(raw))
+    res.json({ ok: true, ...stats })
+  } catch (error) {
+    res.status(400).json({ ok: false, error: error.message || 'That file could not be read as a business profile.' })
+  }
+})
+
+/**
+ * My Business Review. Not a transcript — the whole profile read back as
+ * analysis, then set as a PDF through the same route the write-ups use.
+ */
+app.post('/api/sabc/review', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  try {
+    // Anything said in this session that is still only in the browser gets
+    // filed first, so the review includes the conversation just had.
+    if (Array.isArray(req.body?.turns) && req.body.turns.length > 1) {
+      try { await sabcConsult.trackConversation(key, req.body.turns) } catch { /* review anyway */ }
+    }
+    const text = await sabcConsult.writeReview(key)
+    if (!text) {
+      return res.status(400).json({ ok: false, error: 'Talk with me about your business first, then I can write the review.' })
+    }
+    const title = `My Business Review — ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+    const saved = founderFile.saveSummary(key, { title, text })
+    res.json({
+      ok: true,
+      id: saved.id,
+      title: saved.title,
+      url: `/api/founder/summary/${saved.id}.pdf?code=${encodeURIComponent(req.body.code)}`
+    })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: 'Could not build the review just now.' })
   }
 })
 
