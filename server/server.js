@@ -9,6 +9,7 @@ import multer from 'multer'
 import * as quickbooks from './quickbooks.js'
 import * as joeKnowledge from './joe-knowledge.js'
 import * as joeMemory from './joe-memory.js'
+import * as founderFile from './founder-file.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 dotenv.config()
@@ -428,7 +429,7 @@ If asked who you are: "I'm SCORE AI — an AI guide to SCORE, not a mentor. The 
    * than handing out legal, tax or financial advice of its own.
    */
   guides: {
-    instructions: () => `You are the AI assistant for StartABusiness.Center — the free Quick Start Business Guides written by Tim Donahue for new founders. You explain the guides and help people apply them to their own business.
+    instructions: ({ memory = '', docs = '' } = {}) => `You are the AI assistant for StartABusiness.Center — the free Quick Start Business Guides written by Tim Donahue for new founders. You explain the guides and help people apply them to their own business.
 ${VOICE_RULES}
 
 OPENING — say this ONE TIME at the very start, then stop and wait:
@@ -551,6 +552,18 @@ THE SEVEN GUIDES, in order:
 
 WALKING SOMEONE THROUGH A GUIDE:
 If someone wants help rather than an explanation, offer to walk them through the assessment out loud. Ask the guide's questions one at a time, in the guide's order, and wait for each answer. Reflect back what you heard in a sentence. At the end give them a straight read — strong, mixed, or not yet — and ONE thing to do next. Keep the whole thing conversational; never read a list of questions at them.
+
+${memory || 'LONG-TERM MEMORY: this person has no saved history yet.'}
+
+${docs || 'THEIR DOCUMENTS: none uploaded.'}
+
+WORKING FROM WHAT THEY REMEMBER AND WHAT THEY UPLOADED:
+- If there is history above, use it the way someone would who talked to them last month. Pick up where you left off. Do not recite the list back at them unless they ask what you remember.
+- If they have uploaded documents, work from the real figures in them. Quote them accurately, and never invent a number that isn't there. If a number they're asking about isn't in what you have, say so and ask them to upload it.
+- Reading their paperwork is fair game and useful: what the numbers say, where the margin actually is, which line is eating the profit, whether the break-even math in the guides holds up against their own figures, what looks inconsistent or worth a second look. Be direct and give them a real read, not a hedge.
+- Where the line is: you are not their accountant, bookkeeper, tax preparer or lawyer, and you never present yourself as one. You explain what you see and what the guides say about it. Anything that gets filed, signed, or owed to a government goes to a CPA or an attorney, and you say that plainly rather than burying it.
+- Do not diagnose a legal or tax problem from a document. Point out what looks off and who should look at it.
+- Tell them what's possible if it's useful: they can upload a spreadsheet, statement, plan or notes with the button on the page, and they can download a written summary of a conversation to keep. Mention it once, when it's relevant — don't advertise.
 
 WHAT YOU DO NOT DO:
 - No legal, tax, accounting or investment advice. The guides themselves say to call City Hall about permits, talk to a CPA about taxes and an S-corp election, and use a lawyer for partnership agreements. Say that.
@@ -968,6 +981,18 @@ async function buildInstructionsAsync(source, context = {}) {
     try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
     return buildInstructions(source, { ...context, knowledge, memory })
   }
+  // A founder's code carries their own uploaded paperwork and their past
+  // sessions into a brand new call, without an account behind it.
+  if (source === 'guides') {
+    const key = founderFile.keyFor(context.code)
+    let memory = ''
+    let docs = ''
+    if (key) {
+      try { memory = joeMemory.memorySnippet(key) } catch { /* ignore */ }
+      try { docs = founderFile.docsSnippet(key) } catch { /* ignore */ }
+    }
+    return buildInstructions(source, { ...context, memory, docs })
+  }
   if (source === 'qb') {
     let qbSnapshot = ''
     let knowledge = ''
@@ -1255,7 +1280,8 @@ app.get('/session', async (req, res) => {
     const instructions = await buildInstructionsAsync(source, {
       recipientName,
       clinic: req.query.clinic,
-      topic
+      topic,
+      code: req.query.code
     })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
@@ -1458,9 +1484,14 @@ async function extractUploadedText(file) {
     return result.value || ''
   }
   if (lower.endsWith('.pdf') || mime === 'application/pdf') {
-    const pdfParse = (await import('pdf-parse')).default
-    const result = await pdfParse(file.buffer)
-    return result.text || ''
+    const { PDFParse } = await import('pdf-parse')
+    const parser = new PDFParse({ data: file.buffer })
+    try {
+      const result = await parser.getText()
+      return result?.text || ''
+    } finally {
+      try { await parser.destroy() } catch { /* ignore */ }
+    }
   }
   throw new Error('Use a .txt, .md, .pdf, or .docx file.')
 }
@@ -1611,6 +1642,200 @@ app.post('/api/upload-art', upload.single('art'), async (req, res) => {
   } catch (error) {
     return res.status(500).json({ ok: false, error: 'Could not save that one' })
   }
+})
+
+/* ---------- A founder's own file: documents, memory, and a printout ---------- */
+
+/**
+ * The code is the only identity here, so every route resolves it the same way
+ * and refuses to guess. No code means no file — never a shared one.
+ */
+function founderKeyFrom(req) {
+  return founderFile.keyFor(req.body?.code || req.query.code)
+}
+
+app.get('/api/founder/status', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  let memory = { count: 0, latestAt: null }
+  try { memory = joeMemory.status(key) } catch { /* ignore */ }
+  res.json({ ok: true, ...founderFile.status(key), memory: { count: memory.count, latestAt: memory.latestAt } })
+})
+
+/** Their spreadsheet, statement, plan or notes — read once, kept as text. */
+app.post('/api/founder/doc', upload.single('file'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  if (!req.file) return res.status(400).json({ ok: false, error: 'Choose a file first.' })
+  try {
+    const text = await extractUploadedText(req.file)
+    const saved = founderFile.saveDoc(key, req.file.originalname, text)
+    res.json({ ok: true, name: saved.name, chars: saved.chars, docs: founderFile.listDocs(key).length })
+  } catch (error) {
+    const message = /\.txt, \.md, \.pdf, or \.docx/.test(error.message || '')
+      ? 'I can read PDF, Word, CSV and text files. For a spreadsheet, export it as CSV or PDF first.'
+      : (error.message || 'Could not read that file.')
+    res.status(400).json({ ok: false, error: message })
+  }
+})
+
+app.post('/api/founder/doc/delete', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  res.json({ ok: founderFile.deleteDoc(key, req.body?.id), docs: founderFile.listDocs(key).length })
+})
+
+/** Called when a call ends, so next month's session already knows them. */
+app.post('/api/founder/remember', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  try {
+    const entry = await rememberTurns(req.body?.turns, 'guides', key)
+    res.json({ ok: true, saved: Boolean(entry) })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: 'Could not save that session.' })
+  }
+})
+
+/**
+ * The printout. A conversation is gone the moment it ends, and people want
+ * something to look at afterwards — so this writes the session up as a plain
+ * page of headings and bullets, which the PDF route then sets.
+ */
+async function writeSessionSummary(turns) {
+  const cleaned = (Array.isArray(turns) ? turns : [])
+    .map(t => ({
+      role: t?.role === 'assistant' ? 'assistant' : 'user',
+      text: String(t?.text || t?.content || '').trim().slice(0, 2000)
+    }))
+    .filter(t => t.text.length > 2)
+  if (!cleaned.length) return null
+
+  const transcript = cleaned
+    .map(t => `${t.role === 'assistant' ? 'Assistant' : 'Founder'}: ${t.text}`)
+    .join('\n')
+    .slice(0, 12_000)
+
+  if (!hasApiKey()) return null
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+      temperature: 0.3,
+      messages: [
+        {
+          role: 'system',
+          content: `Write up this conversation as a take-away summary for the founder who had it. They will read it a week from now with none of it fresh.
+
+Use exactly these headings, each on its own line starting with "## ", and put short "- " bullets under them. No other formatting, no markdown bold, no preamble.
+
+## Where you are
+## What we went over
+## What the guides say about it
+## Your next steps
+## Guides to read
+
+Rules:
+- Write to them as "you". Specific and concrete, in their own terms — name their business, their numbers, their sticking point.
+- Under "Your next steps", give 2 to 4 things, each one an action they could start this week, most important first.
+- Under "Guides to read", name the guides by title only, and only ones that came up.
+- Only what the conversation actually covered. Invent nothing, add no advice that wasn't discussed, and if a section has nothing real in it, write one bullet saying so.
+- No legal, tax or accounting instructions. If those came up, the bullet says to take it to a CPA or attorney.
+- Under 400 words total.`
+        },
+        { role: 'user', content: transcript }
+      ]
+    })
+  })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data?.error?.message || 'summary failed')
+  return data.choices?.[0]?.message?.content?.trim() || null
+}
+
+app.post('/api/founder/summary', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  try {
+    const text = await writeSessionSummary(req.body?.turns)
+    if (!text) {
+      return res.status(400).json({ ok: false, error: 'Talk for a minute first, then I can write it up.' })
+    }
+    const title = `Session summary — ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+    const saved = founderFile.saveSummary(key, { title, text })
+    res.json({ ok: true, id: saved.id, title: saved.title, url: `/api/founder/summary/${saved.id}.pdf?code=${encodeURIComponent(req.body.code)}` })
+  } catch (error) {
+    res.status(500).json({ ok: false, error: 'Could not write that up just now.' })
+  }
+})
+
+app.get('/api/founder/summary/:id.pdf', async (req, res) => {
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).type('text').send('Need a code.')
+  const entry = founderFile.getSummary(key, req.params.id)
+  if (!entry) return res.status(404).type('text').send('That summary is not on file.')
+  try {
+    const { default: PDFDocument } = await import('pdfkit')
+    const doc = new PDFDocument({ size: 'LETTER', margins: { top: 64, bottom: 64, left: 64, right: 64 } })
+    res.set('Cache-Control', 'no-store')
+    res.type('application/pdf')
+    res.setHeader('Content-Disposition', `attachment; filename="business-guides-summary-${entry.at.slice(0, 10)}.pdf"`)
+    doc.pipe(res)
+
+    doc.fillColor('#0b63c5').font('Helvetica-Bold').fontSize(11).text('STARTABUSINESS.CENTER', { characterSpacing: 1.2 })
+    doc.moveDown(0.6)
+    doc.fillColor('#12295e').fontSize(21).text('Your session summary')
+    doc.moveDown(0.25)
+    doc.fillColor('#5d6b85').font('Helvetica').fontSize(10)
+      .text(new Date(entry.at).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short' }))
+    doc.moveDown(1.1)
+
+    for (const raw of String(entry.text).split('\n')) {
+      const line = raw.trim()
+      if (!line) continue
+      if (line.startsWith('## ')) {
+        doc.moveDown(0.7)
+        doc.fillColor('#12295e').font('Helvetica-Bold').fontSize(13).text(line.slice(3))
+        doc.moveDown(0.25)
+      } else if (line.startsWith('- ')) {
+        doc.fillColor('#22304d').font('Helvetica').fontSize(11)
+          .text(line.slice(2), { indent: 12, bulletIndent: 0, lineGap: 2.5 })
+        doc.moveDown(0.18)
+      } else {
+        doc.fillColor('#22304d').font('Helvetica').fontSize(11).text(line, { lineGap: 2.5 })
+        doc.moveDown(0.2)
+      }
+    }
+
+    doc.moveDown(1.4)
+    doc.fillColor('#8494b0').font('Helvetica').fontSize(9)
+      .text('Written up by the AI assistant for Tim Donahue\u2019s Quick Start Business Guides at startabusiness.center. It reflects one conversation and the guides, and it is not legal, tax or accounting advice \u2014 take anything that gets filed or signed to a CPA or an attorney.', { lineGap: 1.5 })
+
+    doc.end()
+  } catch (error) {
+    if (!res.headersSent) res.status(500).type('text').send('Could not build that PDF.')
+  }
+})
+
+/** Their own erase button. Everything under the code goes. */
+app.post('/api/founder/forget', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const key = founderKeyFrom(req)
+  if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
+  const removed = founderFile.forget(key)
+  try {
+    const bank = path.join(joeMemory.ROOT, `${key}.json`)
+    if (fs.existsSync(bank)) fs.unlinkSync(bank)
+  } catch { /* ignore */ }
+  res.json({ ok: true, removed })
 })
 
 app.get('/api/upload-art/list', (req, res) => {

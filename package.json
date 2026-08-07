@@ -6,6 +6,7 @@
     "start": "node server/server.js",
     "qr": "node scripts/make-topic-qrs.mjs",
     "test:cards": "node scripts/card-hotspots.test.mjs",
+    "test:founder": "node scripts/founder-file.test.mjs",
     "unzip-brains": "node scripts/unzip-brains.js",
     "extract-docx": "node scripts/extract-docx-brains.js",
     "ingest-brains": "node scripts/ingest-brains.js"
@@ -13,14 +14,17 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
+    "mammoth": "^1.12.0",
     "multer": "^2.2.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
+    "pdf-parse": "^2.4.5",
+    "pdfkit": "^0.19.1",
     "puppeteer-core": "^25.4.0",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
-    "mammoth": "^1.12.0",
-    "pdf-parse": "^2.4.5"
+    "jsqr": "^1.2.0",
+    "pngjs": "^7.0.0"
   }
 }

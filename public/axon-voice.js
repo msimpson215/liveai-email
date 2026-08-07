@@ -556,6 +556,8 @@
     /* True when there is a conversation to carry over, so a page knows to skip
        the opening line on a reconnect. */
     hasHistory: function () { return HISTORY.length > 0; },
+    /* A copy of the turns so far, for pages that save or write up a session. */
+    history: function () { return HISTORY.map(function (h) { return { role: h.role, text: h.text }; }); },
     clearHistory: function () { HISTORY.length = 0; }
   };
 })(window);
