@@ -2,5 +2,7 @@ data/joe-knowledge/*
 !data/joe-knowledge/.gitkeep
 data/joe-memory/*
 !data/joe-memory/.gitkeep
+data/founder-files/*
+!data/founder-files/.gitkeep
 node_modules/
 npm-debug.log*
