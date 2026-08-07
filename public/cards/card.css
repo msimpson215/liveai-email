@@ -40,6 +40,8 @@ body {
   background: #fff;
   border-radius: 2%;
 }
+/* A button already drawn in the artwork; the hotspot only carries the link. */
+.printed { border-radius: 14px; }
 .qr img {
   display: block;
   width: 100%;

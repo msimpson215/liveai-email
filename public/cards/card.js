@@ -41,6 +41,24 @@
     return a
   }
 
+  /* ---- buttons printed in the artwork ---- */
+
+  // data-links='[{"rect":[5.2,79.1,44.6,5.3],"href":"/start?do=upload","label":"Upload documents"}]'
+  try {
+    for (const spot of JSON.parse(stage.dataset.links || '[]')) {
+      const [l, t, w, h] = spot.rect
+      const a = document.createElement('a')
+      a.className = 'hot printed'
+      a.href = spot.href
+      a.setAttribute('aria-label', spot.label || 'Open')
+      a.style.left = l + '%'
+      a.style.top = t + '%'
+      a.style.width = w + '%'
+      a.style.height = h + '%'
+      stage.appendChild(a)
+    }
+  } catch (err) { /* a malformed list must not take the card down */ }
+
   /* ---- the orb ---- */
 
   const orbBox = nums(stage.dataset.orb)
