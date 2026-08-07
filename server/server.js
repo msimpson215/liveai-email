@@ -203,6 +203,16 @@ app.get('/stress-test/:clinic', (req, res) => {
   }
 })
 
+/**
+ * Short, permanent address for the printed and emailed cards. A QR code on
+ * paper can never be edited, so it points here and this line decides where
+ * "here" lands.
+ */
+app.get('/mentor', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/score-ask.html')
+})
+
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
 
@@ -1436,7 +1446,11 @@ app.post('/api/upload-art', upload.single('art'), async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
     if (!req.file) return res.status(400).json({ ok: false, error: 'No file' })
-    const safe = String(req.file.originalname || 'art')
+    // A page can ask for a fixed filename ("as") so the artwork lands on the
+    // path that page already points at, whatever the file is called on the
+    // designer's computer.
+    const requested = String(req.body?.as || '')
+    const safe = (/^[a-z0-9][a-z0-9._-]{0,50}$/i.test(requested) ? requested : String(req.file.originalname || 'art'))
       .replace(/[^a-zA-Z0-9._-]/g, '-')
       .replace(/-+/g, '-')
       .slice(-60)
