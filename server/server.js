@@ -237,6 +237,16 @@ app.get('/start', (_req, res) => {
   res.redirect(302, '/sabc.html')
 })
 
+/** The business card, as a page: the orb on the front, the code on the back. */
+app.get('/card', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cards/sabc-card.html')
+})
+app.get('/card/back', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cards/sabc-card-back.html')
+})
+
 /** The same consultant with no artwork around it, for hearing it work. */
 app.get('/talk-to-the-consultant', (_req, res) => {
   res.set('Cache-Control', 'no-store')

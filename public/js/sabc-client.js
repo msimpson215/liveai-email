@@ -36,8 +36,10 @@ if(HOTSPOTS){
   place(uploadHot,HOTSPOTS.upload);
   place(reviewHot,HOTSPOTS.review);
   place(summaryHot,HOTSPOTS.summary);
-  /* A control with nothing drawn under it must not be clickable. */
-  if(summaryHot&&!HOTSPOTS.summary)summaryHot.style.display='none';
+  /* A control with nothing drawn under it must not be clickable. Artwork that
+     carries only the orb hides the rest. */
+  [[orbHot,'orb'],[uploadHot,'upload'],[reviewHot,'review'],[summaryHot,'summary']]
+    .forEach(function(pair){ if(pair[0]&&!HOTSPOTS[pair[1]])pair[0].style.display='none'; });
   if(/[?&]tune=1/.test(location.search)){
     [orbHot,uploadHot,reviewHot,summaryHot].forEach(function(el){
       if(!el||el.style.display==='none')return;
@@ -244,7 +246,7 @@ window.addEventListener('pagehide',fileSession);
 document.addEventListener('visibilitychange',function(){if(document.hidden)fileSession()});
 
 /* ---- upload documents ---- */
-uploadHot.addEventListener('click',function(){docInput.click()});
+if(uploadHot)uploadHot.addEventListener('click',function(){docInput.click()});
 docInput.addEventListener('change',async function(){
   const file=docInput.files[0];
   if(!file)return;
@@ -301,7 +303,7 @@ if(summaryHot)summaryHot.addEventListener('click',async function(){
 });
 
 /* ---- my business review ---- */
-reviewHot.addEventListener('click',async function(){
+if(reviewHot)reviewHot.addEventListener('click',async function(){
   say('Writing your business review\u2026 this takes a few seconds.');
   reviewHot.disabled=true;
   try{

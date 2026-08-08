@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex">
+<title>Timothy J. Donahue — StartABusiness.Center</title>
+<link rel="stylesheet" href="/css/sabc-card.css">
+<style>
+  /* A business card is landscape; the artwork sets its own width. */
+  .stage{ max-width:1024px }
+  body{ background:#f2f2f2 }
+</style>
+</head>
+<body data-state="idle">
+
+<!-- The card is used exactly as delivered. The orb is the only live part. -->
+<div class="stage" id="stage">
+  <p class="missing" id="missing">The business card artwork has not reached the server yet, and nothing has been
+    drawn in its place. <a href="/upload">Send the PNG here</a> and this becomes the card.
+    <span class="plain">The consultant is already running:
+    <a href="/talk-to-the-consultant">plain test page</a>.</span></p>
+  <img class="art" id="art" src="/art/sabc-card-front.png"
+       alt="Timothy J. Donahue, StartABusiness.Center — tap the orb to talk with the AI business consultant">
+  <button type="button" class="hot" id="orbHot" aria-label="Tap the orb to talk about your business">Tap the orb</button>
+</div>
+
+<div class="tray">
+  <p class="status" id="status">Tap the orb and tell me about your business.</p>
+  <p class="row" id="row"></p>
+</div>
+
+<input type="file" id="docInput" class="file"
+       accept=".pdf,.doc,.docx,.txt,.md,.csv,application/pdf,text/plain,text/csv,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+<input type="file" id="profileInput" class="file" accept=".json,application/json">
+
+<script src="/axon-voice.js"></script>
+<script>
+/* Measured from the card artwork. Only the orb: this side has no buttons. */
+window.SABC_HOTSPOTS = {
+  orb: { left:68.1, top:18.8, width:27.8 }
+};
+</script>
+<script src="/js/sabc-client.js"></script>
+</body>
+</html>
