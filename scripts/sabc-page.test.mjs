@@ -126,7 +126,7 @@ async function run() {
 
   /* Nothing may be painted on, over or around the artwork — the orb especially. */
   const paint = await page.locator('#stage').evaluate(el =>
-    [...el.children].filter(child => child.tagName !== 'IMG').map(child => {
+    [...el.children].filter(child => child.tagName !== 'IMG' && getComputedStyle(child).display !== 'none').map(child => {
       const s = getComputedStyle(child)
       return {
         tag: child.id || child.tagName,
@@ -143,6 +143,8 @@ async function run() {
     (p.outline !== 'none' && p.outline !== '') || p.border !== '0px')
   check('nothing is drawn on the artwork', painted.length === 0, JSON.stringify(painted))
   check('the only thing over the image is invisible hotspots', paint.length === 3, JSON.stringify(paint.map(p => p.tag)))
+  check('the fallback notice stays hidden when the artwork is there',
+    await page.locator('#missing').isHidden())
 
   /* The artwork must be shown as delivered, at its own proportions. */
   const shown = await page.locator('#art').evaluate(el => ({ w: el.clientWidth, h: el.clientHeight, nw: el.naturalWidth, nh: el.naturalHeight }))
@@ -167,8 +169,18 @@ async function run() {
   /* Missing artwork says so rather than showing a blank page. */
   fs.renameSync(path.join(art, 'sabc-orb.png'), path.join(art, 'held.png'))
   await page.goto(`${base}/sabc.html`)
-  await page.waitForSelector('.missing', { timeout: 5000 }).catch(() => {})
-  check('missing artwork explains itself', await page.locator('.missing').count() === 1)
+  await page.waitForSelector('body.noart', { timeout: 5000 }).catch(() => {})
+  check('missing artwork explains itself', await page.locator('#missing').isVisible())
+  check('and the page still works without it',
+    await page.locator('#orbHot').isVisible() &&
+    await page.locator('#uploadHot').isVisible() &&
+    await page.locator('#reviewHot').isVisible())
+  check('the plain controls are readable', await page.locator('#orbHot').evaluate(el => {
+    const s = getComputedStyle(el)
+    return parseFloat(s.fontSize) > 12 && s.color !== 'rgba(0, 0, 0, 0)'
+  }))
+  check('it points at the right drop page',
+    (await page.locator('#missing a').getAttribute('href')) === '/cards/sabc-artwork.html')
 
   await browser.close()
   server.close()

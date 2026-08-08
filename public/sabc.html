@@ -47,13 +47,33 @@
     color:#93a0b5; font:inherit; font-size:13px; text-decoration:underline;
   }
   .file{ display:none }
-  .missing{ padding:30px 24px; font-size:15px; line-height:1.6; color:var(--muted) }
-  .missing a{ color:var(--orange) }
+
+  /*
+   * Until the artwork is on the server this page still has to work. The same
+   * three controls become plain buttons — no substitute artwork, no stand-in
+   * orb, nothing invented. The moment the PNG lands, the artwork takes over
+   * and this is never seen again.
+   */
+  .missing{ display:none; padding:34px 24px 6px; font-size:15.5px; line-height:1.6; color:var(--muted); text-align:center }
+  .missing a{ color:var(--orange); font-weight:700 }
+  body.noart .missing{ display:block }
+  body.noart #art{ display:none }
+  body.noart .stage{ line-height:1.5 }
+  body.noart .hot{
+    position:static; width:100%; max-width:330px; height:auto; aspect-ratio:auto;
+    margin:12px auto 0; padding:16px 18px; border-radius:14px;
+    background:#fff; border:1px solid #e2dbd1; color:var(--ink);
+    font:inherit; font-size:16.5px; font-weight:700;
+  }
+  body.noart #orbHot{ background:#12203a; border-color:#12203a; color:#fff; font-size:18px; margin-top:20px }
+  body.noart .btnHot{ font-size:15.5px; font-weight:600 }
 </style>
 </head>
 <body data-state="idle">
 
 <div class="stage" id="stage">
+  <p class="missing" id="missing">The finished artwork is not on this server yet, so this is the plain version &mdash;
+    everything on it works. <a href="/cards/sabc-artwork.html">Put the artwork in here</a> and this page becomes the card.</p>
   <img class="art" id="art" src="/art/sabc-orb.png"
        alt="Start your business — talk with our AI business consultant">
   <button type="button" class="hot" id="orbHot" aria-label="Tap the orb to talk about your business">Tap the orb</button>
@@ -108,8 +128,7 @@ if(/[?&]tune=1/.test(location.search)){
 }
 
 function artMissing(){
-  stage.innerHTML='<p class="missing">The artwork <code>/art/sabc-orb.png</code> is not on the server yet. '+
-    '<a href="/cards/artwork.html">Drop the PNG in here</a> and reload.</p>';
+  document.body.classList.add('noart');
 }
 art.addEventListener('error',artMissing);
 /* The image can finish loading - or fail - before this script runs. */
