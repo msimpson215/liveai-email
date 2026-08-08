@@ -1799,6 +1799,50 @@ app.post('/api/brain/memory/remember', async (req, res) => {
  */
 const ART_DIR = path.join(__dirname, '..', 'public', 'art')
 
+/**
+ * Lock a just-dropped artwork file into the GitHub repo so the next Render
+ * deploy cannot wipe it. Needs ART_GITHUB_TOKEN or GITHUB_TOKEN with contents
+ * write on the repo. Without a token this is a no-op and the handoff agent
+ * still has to pull the file before the next deploy.
+ */
+async function commitArtToGithub(name, buffer) {
+  const token = process.env.ART_GITHUB_TOKEN || process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+  if (!token) return { ok: false, error: 'no token' }
+  const repo = process.env.ART_GITHUB_REPO || process.env.GITHUB_REPOSITORY || 'msimpson215/liveai-email'
+  const branch = process.env.ART_GITHUB_BRANCH || 'main'
+  const pathInRepo = `public/art/${name}`
+  const api = `https://api.github.com/repos/${repo}/contents/${pathInRepo}`
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'liveai-email-art-handoff'
+  }
+  let sha
+  try {
+    const existing = await fetch(`${api}?ref=${encodeURIComponent(branch)}`, { headers })
+    if (existing.ok) {
+      const body = await existing.json()
+      sha = body.sha
+    }
+  } catch { /* create new */ }
+  const put = await fetch(api, {
+    method: 'PUT',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: `Add artwork ${name}`,
+      content: Buffer.from(buffer).toString('base64'),
+      branch,
+      ...(sha ? { sha } : {})
+    })
+  })
+  if (!put.ok) {
+    const text = await put.text()
+    return { ok: false, error: `github ${put.status}: ${text.slice(0, 200)}` }
+  }
+  const saved = await put.json()
+  return { ok: true, branch, path: pathInRepo, sha: saved.content?.sha || sha || null }
+}
+
 app.get('/upload', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.sendFile(path.join(__dirname, '..', 'public', 'upload.html'))
@@ -1865,8 +1909,29 @@ app.post('/api/upload-art', upload.single('art'), async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Images only' })
     }
     fs.mkdirSync(ART_DIR, { recursive: true })
+    const bytes = req.file.buffer.length
     fs.writeFileSync(path.join(ART_DIR, safe), req.file.buffer)
-    return res.json({ ok: true, name: safe, url: '/art/' + safe })
+    // Sidecar so the handoff agent can tell a real drop from a stub / wipe.
+    try {
+      fs.writeFileSync(
+        path.join(ART_DIR, `${safe}.meta.json`),
+        JSON.stringify({ name: safe, bytes, at: new Date().toISOString() }),
+        'utf8'
+      )
+    } catch { /* ignore */ }
+    // Optional: lock into GitHub so the next deploy cannot wipe the drop.
+    let locked = null
+    try { locked = await commitArtToGithub(safe, req.file.buffer) } catch (err) {
+      locked = { ok: false, error: err.message || 'could not lock into git' }
+    }
+    return res.json({
+      ok: true,
+      name: safe,
+      url: '/art/' + safe,
+      bytes,
+      locked: !!(locked && locked.ok),
+      lock: locked
+    })
   } catch (error) {
     // The link failures say something useful about what to do instead; pass
     // them through rather than replacing them with "could not save that one".
@@ -2251,9 +2316,19 @@ app.get('/api/upload-art/list', (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
     const files = fs.existsSync(ART_DIR) ? fs.readdirSync(ART_DIR) : []
-    res.json({ ok: true, files })
+    const detailed = files
+      .filter((name) => !name.endsWith('.meta.json'))
+      .map((name) => {
+        try {
+          const st = fs.statSync(path.join(ART_DIR, name))
+          return { name, bytes: st.size, mtime: st.mtime.toISOString() }
+        } catch {
+          return { name, bytes: 0, mtime: null }
+        }
+      })
+    res.json({ ok: true, files: detailed.map((f) => f.name), art: detailed })
   } catch (error) {
-    res.json({ ok: true, files: [] })
+    res.json({ ok: true, files: [], art: [] })
   }
 })
 

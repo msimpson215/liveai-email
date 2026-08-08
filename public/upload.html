@@ -23,6 +23,7 @@
   .lead{color:#5b6785;line-height:1.6;margin:0 0 26px}
   h2.group{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#8b96b3;margin:30px 0 12px}
   .slot{background:#fff;border-radius:13px;padding:18px;margin:0 0 14px;box-shadow:0 1px 3px rgba(13,27,62,.09)}
+  .slot.need{outline:2px solid #0a2466}
   .slot h3{font-size:16.5px;margin:0 0 3px}
   .slot .what{margin:0 0 13px;font-size:13.5px;color:#7180a0;line-height:1.5}
   .drop{border:2px dashed #c9d4ee;border-radius:11px;padding:20px 16px;text-align:center;
@@ -37,6 +38,8 @@
   .file{display:none}
   .foot{margin:26px 0 0;font-size:13.5px;color:#7180a0;line-height:1.8}
   .foot a{color:#0a2466}
+  .note{background:#fff8e8;border:1px solid #f0e0b0;border-radius:11px;padding:12px 14px;
+    font-size:13.5px;line-height:1.55;color:#5a4a20;margin:0 0 18px}
 </style>
 </head>
 <body>
@@ -45,7 +48,31 @@
   <p class="lead">Pick a file, drag it in, or click a box and paste. Nothing about the artwork is changed &mdash;
   the pages put the working parts on top of it.</p>
 
-  <h2 class="group">StartABusiness.Center</h2>
+  <p class="note">After you drop a file you must see <b>your</b> picture in the little preview and a green
+  line with the file size (hundreds of KB, not a few bytes). If that preview is your card, it landed.
+  Leave this tab open and tell the agent &ldquo;dropped&rdquo;.</p>
+
+  <h2 class="group">Business card (the one we need now)</h2>
+
+  <div class="slot need" data-as="sabc-card-front.png" data-card="/card">
+    <h3>1. Front &mdash; Tim + blue orb</h3>
+    <p class="what">The landscape card with the glowing blue orb. The orb becomes live.</p>
+    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
+    <input type="file" class="file" accept="image/*">
+    <p class="state"></p>
+    <img class="shot" alt="">
+  </div>
+
+  <div class="slot need" data-as="sabc-card-back.png" data-card="/card/back">
+    <h3>2. Back &mdash; Scan Here + QR</h3>
+    <p class="what">The landscape card that says &ldquo;Scan Here&rdquo;. Gets a working code with blue finder centers.</p>
+    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
+    <input type="file" class="file" accept="image/*">
+    <p class="state"></p>
+    <img class="shot" alt="">
+  </div>
+
+  <h2 class="group">Older portrait cards</h2>
 
   <div class="slot" data-as="sabc-orb.png" data-card="/start">
     <h3>Orb card</h3>
@@ -59,24 +86,6 @@
   <div class="slot" data-as="sabc-qr.png" data-card="/cards/sabc-qr.html">
     <h3>QR card</h3>
     <p class="what">The one that says &ldquo;Scan to Begin&rdquo;.</p>
-    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
-    <input type="file" class="file" accept="image/*">
-    <p class="state"></p>
-    <img class="shot" alt="">
-  </div>
-
-  <div class="slot" data-as="sabc-card-front.png" data-card="/card">
-    <h3>Business card &mdash; front</h3>
-    <p class="what">The one with the orb and Tim&rsquo;s details. The orb becomes live.</p>
-    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
-    <input type="file" class="file" accept="image/*">
-    <p class="state"></p>
-    <img class="shot" alt="">
-  </div>
-
-  <div class="slot" data-as="sabc-card-back.png" data-card="/card/back">
-    <h3>Business card &mdash; back</h3>
-    <p class="what">The one that says &ldquo;Scan Here&rdquo;. Gets a working code in the same blue.</p>
     <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
     <input type="file" class="file" accept="image/*">
     <p class="state"></p>
@@ -107,12 +116,18 @@
   </div>
 
   <p class="foot">Already in?
+  <a href="/card">Business card front</a> &middot;
+  <a href="/card/back">Business card back</a> &middot;
   <a href="/start">Orb card</a> &middot;
-  <a href="/cards/sabc-qr.html">QR card</a> &middot;
   <a href="/talk-to-the-consultant">Hear the consultant</a></p>
 </div>
 
 <script>
+function kb(n){
+  if(!n&&n!==0)return '';
+  if(n<1024)return n+' bytes';
+  return (n/1024).toFixed(n>200000?0:1)+' KB';
+}
 document.querySelectorAll('.slot').forEach(function(slot){
   const as=slot.dataset.as||'';
   const isManual=slot.dataset.manual==='1';
@@ -138,7 +153,15 @@ document.querySelectorAll('.slot').forEach(function(slot){
       const d=await r.json();
       if(!d.ok)throw new Error(d.error||'upload failed');
       if(shot){ shot.src=d.url+'?t='+Date.now(); shot.style.display='block'; }
-      show('&#10003; Saved as <b>'+d.name+'</b>'+(card?' &mdash; <a href="'+card+'">open the card</a>':''),'done');
+      const size=kb(d.bytes);
+      const tiny=d.bytes && d.bytes < 10000;
+      if(tiny){
+        show('\u2717 Saved, but only '+size+' — that is not the Canva card. Drop the real PNG.','bad');
+        return;
+      }
+      const lock=d.locked?' Locked into git.':' On the server — tell the agent &ldquo;dropped&rdquo; now.';
+      show('&#10003; Saved <b>'+d.name+'</b> ('+size+').'+lock+
+        (card?' <a href="'+card+'">open the card</a>':''),'done');
     }catch(err){ show('\u2717 '+(err.message||'upload failed'),'bad'); }
   }
 
