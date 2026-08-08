@@ -19,6 +19,8 @@
 const CONCEPTS = {
   'value proposition': 'The reason someone picks you instead of the alternative, in one sentence: who it is for, what changes for them, and why you. Not a slogan — a reason.',
   'target customer': 'One specific kind of person or business, described tightly enough that you could name three real ones. "Everyone" is not a target market.',
+  'target market': 'The particular group you are selling to, and how many of them there are within reach of you. Narrower is easier to reach and easier to sell to.',
+  'customer acquisition': 'How a stranger becomes a customer — where they first hear of you, what makes them enquire, and what closes it. Every business needs a route that works whether you feel like hustling or not.',
   'competitive advantage': 'The one or two things you are meaningfully better at for that specific customer. "Better quality" does not count unless the customer can see it.',
   'market validation': 'Evidence from other people\'s actions — money, a deposit, an email address, coming back — that they want this. Opinions and compliments are not evidence.',
   'gross margin': 'What is left out of each sale after the direct cost of delivering it, as a percentage. Sell for a hundred, spend sixty making it, that is a forty percent gross margin.',
@@ -73,6 +75,8 @@ const QUESTIONS = [
   { id: 'G1-Q24', guide: 1, phase: 'idea', field: 'risks', ask: 'What is the thing most likely to go wrong here — the one that keeps you up?' },
   { id: 'G1-Q25', guide: 1, phase: 'idea', field: 'lifeFit', ask: 'If this works exactly as planned, do you want the life it creates? What does a normal week look like then?' },
   { id: 'G1-Q26', guide: 1, phase: 'idea', field: 'goDecision', ask: 'Knowing all that, where do you honestly land — go, adjust something first, or park it for now?' },
+  { id: 'G1-Q27', guide: 1, phase: 'idea', field: 'founderBackground', ask: 'What have you done before this — work, trade, other businesses? What of it carries over?' },
+  { id: 'G1-Q28', guide: 1, phase: 'idea', field: 'location', ask: 'Where does this operate — a shop, a territory, from home, online, or some mix?' },
 
   /* ---------- Guide 2: Test Your Business Idea Before You Build ---------- */
   { id: 'G2-Q01', guide: 2, phase: 'validate', field: 'validationPlan', ask: 'Before you build anything, how are you planning to find out whether people will actually pay?' },
@@ -86,6 +90,7 @@ const QUESTIONS = [
   { id: 'G2-Q09', guide: 2, phase: 'validate', field: 'firstCustomers', ask: 'Where are your first five customers coming from, by name if possible?' },
   { id: 'G2-Q10', guide: 2, phase: 'validate', field: 'assumptions', ask: 'What are you assuming is true that you have not actually checked?' },
   { id: 'G2-Q11', guide: 2, phase: 'validate', field: 'businessPlan', ask: 'Have you written anything down yet — even three pages — or is it all in your head?' },
+  { id: 'G2-Q12', guide: 2, phase: 'validate', field: 'goDecision', ask: 'Given what the testing has told you so far, are you going ahead, changing something, or holding off?' },
 
   /* ---------- Guide 3: Smart Business Set Up For New Founders ---------- */
   { id: 'G3-Q01', guide: 3, phase: 'setup', field: 'businessStructure', ask: 'Have you set the business up formally yet, or are you still operating as yourself?', needs: 'business structure' },
@@ -104,6 +109,10 @@ const QUESTIONS = [
   { id: 'G3-Q14', guide: 3, phase: 'setup', field: 'partners', ask: 'Is that in writing, with what happens if one of you wants out?' },
   { id: 'G3-Q15', guide: 3, phase: 'setup', field: 'projections', ask: 'Have you put twelve months of numbers on paper — revenue, costs, what is left?' },
   { id: 'G3-Q16', guide: 3, phase: 'setup', field: 'advisors', ask: 'Do you have an accountant or a lawyer you can call when something comes up?' },
+  { id: 'G3-Q17', guide: 3, phase: 'setup', field: 'operations', ask: 'Walk me through how the work actually gets done, from an order coming in to the customer being happy.' },
+  { id: 'G3-Q18', guide: 3, phase: 'setup', field: 'suppliers', ask: 'Who do you depend on to deliver — suppliers, subcontractors, a platform? What happens if one of them falls over?' },
+  { id: 'G3-Q19', guide: 3, phase: 'setup', field: 'staffing', ask: 'Is it just you doing the work, or do you need people? Employees or contractors?' },
+  { id: 'G3-Q20', guide: 3, phase: 'setup', field: 'financialAssumptions', ask: 'The numbers in your plan — where did the sales figures come from? What are they assuming?' },
 
   /* ---------- Guide 4: Create An Offer That People Will Pay You For ---------- */
   { id: 'G4-Q01', guide: 4, phase: 'offer', field: 'transformation', ask: 'What changes for the customer after they buy from you? Where are they before, and where are they after?' },
@@ -118,6 +127,7 @@ const QUESTIONS = [
   { id: 'G4-Q10', guide: 4, phase: 'offer', field: 'objections', ask: 'What is the objection you hear most, and what do you say back?' },
   { id: 'G4-Q11', guide: 4, phase: 'offer', field: 'proof', ask: 'What proof can you show a stranger — results, testimonials, a case you can point to?' },
   { id: 'G4-Q12', guide: 4, phase: 'offer', field: 'offer', ask: 'How many times have you sold this exact offer so far?' },
+  { id: 'G4-Q13', guide: 4, phase: 'offer', field: 'entryOffer', ask: 'Is there a smaller first step you could sell to someone not ready for the whole thing yet?' },
 
   /* ---------- Guide 5: Build a Website That Gets Customers ---------- */
   { id: 'G5-Q01', guide: 5, phase: 'web', field: 'website', ask: 'Do you have a website yet, and what is it actually meant to do — build trust, get leads, or take orders?' },
@@ -127,6 +137,7 @@ const QUESTIONS = [
   { id: 'G5-Q05', guide: 5, phase: 'web', field: 'website', ask: 'Have you tried the whole thing on a phone, including buying something?' },
   { id: 'G5-Q06', guide: 5, phase: 'web', field: 'website', ask: 'How are you taking payment, and have you run a real transaction through it?' },
   { id: 'G5-Q07', guide: 5, phase: 'web', field: 'websitePlan', ask: 'Before hiring anyone, have you written the headline and the few things you want it to say?' },
+  { id: 'G5-Q08', guide: 5, phase: 'web', field: 'localPresence', ask: 'If someone searches for what you do near where you are, do they find you at all?' },
 
   /* ---------- Guide 6: How To Find Your First Customers ---------- */
   { id: 'G6-Q01', guide: 6, phase: 'customers', field: 'marketingMessage', ask: 'How do you describe what you do when a stranger asks — the problem, the fix, the result?' },
@@ -140,6 +151,7 @@ const QUESTIONS = [
   { id: 'G6-Q09', guide: 6, phase: 'customers', field: 'acquisitionCost', ask: 'Do you know what it costs you to win one customer?', needs: 'customer acquisition cost' },
   { id: 'G6-Q10', guide: 6, phase: 'customers', field: 'conversion', ask: 'Of the people who enquire, how many buy?' },
   { id: 'G6-Q11', guide: 6, phase: 'customers', field: 'partnerships', ask: 'Is there anyone serving the same customers with something different, who you could work with?' },
+  { id: 'G6-Q12', guide: 6, phase: 'customers', field: 'marketingMessage', ask: 'When you tell a stranger what you do, do they get it? Have you tried it on anyone outside the business?' },
 
   /* ---------- Guide 7: Grow and Scale Your Business After Launch ---------- */
   { id: 'G7-Q01', guide: 7, phase: 'growth', field: 'currentRevenue', ask: 'What is the business bringing in now, and is that trending up, flat, or down?' },
@@ -159,22 +171,25 @@ const QUESTIONS = [
   { id: 'G7-Q15', guide: 7, phase: 'growth', field: 'distractions', ask: 'What opportunities are pulling at you right now that you have not said no to?' },
   { id: 'G7-Q16', guide: 7, phase: 'growth', field: 'vision', ask: 'Three years out, what do you want this to be — a business you run yourself, one with a team, or one you sell?' },
   { id: 'G7-Q17', guide: 7, phase: 'growth', field: 'milestones', ask: 'What has to be true twelve months from now for you to call this a good year?' },
-  { id: 'G7-Q18', guide: 7, phase: 'growth', field: 'goals', ask: 'And what is the very next thing you are going to do about all this?' }
+  { id: 'G7-Q18', guide: 7, phase: 'growth', field: 'goals', ask: 'And what is the very next thing you are going to do about all this?' },
+  { id: 'G7-Q19', guide: 7, phase: 'growth', field: 'systems', ask: 'If you handed one of those jobs to somebody tomorrow, could they do it from what is written down?' },
+  { id: 'G7-Q20', guide: 7, phase: 'growth', field: 'staffing', ask: 'Who is doing the work a year from now — still you, or a team? How many?' }
 ]
 
 const BY_ID = new Map(QUESTIONS.map(q => [q.id, q]))
 
 /** Profile sections, in the order a review reads best. */
 const PROFILE_FIELDS = [
-  'businessConcept', 'stage', 'founderSkills', 'timeAvailable', 'dayJob', 'lifeFit',
+  'businessConcept', 'stage', 'location', 'founderBackground', 'founderSkills', 'timeAvailable', 'dayJob', 'lifeFit',
   'customerProblem', 'targetCustomer', 'customerInsights', 'painLevel', 'customerChannels',
-  'marketSize', 'competition', 'valueProposition', 'transformation', 'offer', 'delivery', 'proof',
+  'marketSize', 'competition', 'valueProposition', 'transformation', 'offer', 'entryOffer', 'delivery', 'proof',
   'pricing', 'priceTesting', 'objections', 'revenueModel', 'unitEconomics',
   'demandEvidence', 'customerConversations', 'validationPlan', 'offerTest', 'preSales', 'mvp', 'firstCustomers',
-  'startupCosts', 'monthlyCosts', 'income', 'personalRunway', 'funding', 'projections',
+  'startupCosts', 'monthlyCosts', 'income', 'personalRunway', 'funding', 'projections', 'financialAssumptions',
   'businessStructure', 'businessName', 'ein', 'licenses', 'salesTax', 'insurance',
   'intellectualProperty', 'bookkeeping', 'taxSetAside', 'partners', 'advisors',
-  'website', 'websitePlan',
+  'operations', 'suppliers', 'staffing',
+  'website', 'websitePlan', 'localPresence',
   'marketingMessage', 'marketingChannels', 'marketingTime', 'outreach', 'referrals',
   'emailList', 'paidAds', 'acquisitionCost', 'conversion', 'partnerships',
   'currentRevenue', 'profitability', 'revenueMix', 'cashPosition', 'receivables', 'retention', 'metrics',

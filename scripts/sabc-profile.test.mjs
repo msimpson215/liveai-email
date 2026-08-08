@@ -37,6 +37,18 @@ try {
     questionIndex().split('\n').length === QUESTIONS.length && questionIndex().includes('G1-Q01 [businessConcept]'))
   check('all seven guide titles are known', Object.keys(GUIDE_TITLES).length === 7)
 
+  /* Every profile category the brief names has somewhere to live and something
+     that asks about it. */
+  const REQUIRED = ['businessConcept', 'founderBackground', 'founderSkills', 'offer', 'customerProblem',
+    'targetCustomer', 'marketSize', 'competition', 'valueProposition', 'pricing', 'revenueModel',
+    'startupCosts', 'funding', 'marketingChannels', 'outreach', 'operations', 'staffing', 'suppliers',
+    'financialAssumptions', 'risks', 'goals', 'milestones', 'assumptions']
+  const homeless = REQUIRED.filter(f => !FIELD_SET.has(f))
+  check('every profile category in the brief exists', homeless.length === 0, homeless.join(','))
+  const unasked = REQUIRED.filter(f => !QUESTIONS.some(q => q.field === f))
+  check('and something in the conversation asks about it', unasked.length === 0, unasked.join(','))
+  check('every guide has real depth', [1, 2, 3, 4, 5, 6, 7].every(g => QUESTIONS.filter(q => q.guide === g).length >= 8))
+
   /* ---- a first conversation, filed the way a tracking pass files it ---- */
   const first = profile.applyUpdate(KEY, {
     profile: {
@@ -108,6 +120,16 @@ try {
   /* ---- an answer never regresses ---- */
   profile.applyUpdate(KEY, { questions: { 'G1-Q01': { state: 'skipped' } } })
   check('an answered question cannot be un-answered', profile.load(KEY).questions['G1-Q01'].state === 'answered')
+
+  /* ---- a pass mid-conversation files the substance, not a second summary ---- */
+  const before = profile.load(KEY).sessions.length
+  profile.applyUpdate(KEY, {
+    profile: { location: 'Operates out of a licensed home kitchen in Denver.' },
+    questions: { 'G1-Q28': { state: 'answered', note: 'home kitchen, Denver' } }
+  })
+  const after = profile.load(KEY)
+  check('a mid-conversation pass still files answers', after.questions['G1-Q28'].state === 'answered')
+  check('and does not add another entry to the history', after.sessions.length === before, `${before} -> ${after.sessions.length}`)
 
   /* ---- what the review writer reads ---- */
   const text = profile.profileText(KEY)
