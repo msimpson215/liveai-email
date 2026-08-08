@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101418">
+<meta name="robots" content="noindex">
+<title>__MANUAL_TITLE__ — talk me through it</title>
+<style>
+  /*
+   * Built for someone holding a part in one hand. Everything is large, the
+   * button is the whole width, and the screen stays awake while it talks.
+   */
+  html,body{margin:0;background:#101418;color:#f2f5f8}
+  body{min-height:100vh;display:flex;justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .box{width:100%;max-width:520px;padding:34px 22px 60px;display:flex;flex-direction:column}
+  .tag{margin:0 0 8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7c8aa0}
+  h1{margin:0 0 26px;font-size:27px;line-height:1.25;font-weight:700}
+  button{
+    width:100%;padding:26px 20px;border:0;border-radius:16px;cursor:pointer;
+    background:#2f7bf6;color:#fff;font:inherit;font-size:21px;font-weight:700;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button.on{background:#173a6d}
+  button:active{transform:scale(.995)}
+  .status{margin:22px 0 0;font-size:18px;line-height:1.55;color:#c3ccda;min-height:52px}
+  .status.bad{color:#ff9a90}
+  .hint{margin:auto 0 0;padding-top:34px;font-size:13.5px;line-height:1.7;color:#66748a}
+  .hint b{color:#93a1b5}
+</style>
+</head>
+<body>
+<div class="box">
+  <p class="tag">Instructions</p>
+  <h1>__MANUAL_TITLE__</h1>
+
+  <button type="button" id="talk">Talk me through it</button>
+  <p class="status" id="status">Tap, then say where you are — or ask for the first step.</p>
+
+  <p class="hint">Say <b>next</b> when a step is done, <b>say that again</b> to hear it twice,
+  or ask <b>which part is that</b>. It only knows what is in these instructions.</p>
+</div>
+
+<script src="/axon-voice.js"></script>
+<script>
+const SLUG='__MANUAL_SLUG__';
+const talk=document.getElementById('talk');
+const statusEl=document.getElementById('status');
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null,wake=null;
+
+function say(t,bad){ statusEl.className='status'+(bad?' bad':''); statusEl.textContent=t; }
+function ensureAudio(){
+  if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;document.body.appendChild(audioEl);}
+  return audioEl;
+}
+
+/* Hands are busy; the screen going dark mid-step is no help. */
+async function keepAwake(on){
+  try{
+    if(on&&'wakeLock' in navigator&&!wake)wake=await navigator.wakeLock.request('screen');
+    if(!on&&wake){ await wake.release(); wake=null; }
+  }catch(e){}
+}
+
+async function stop(){
+  if(voice){voice.detach();voice=null}
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  starting=false;
+  talk.classList.remove('on');
+  talk.textContent='Talk me through it';
+  keepAwake(false);
+  say('Paused. Tap again when you are ready for the next step.');
+}
+
+let reconnecting=false,tries=0;
+async function lost(){
+  if(reconnecting)return;
+  reconnecting=true;
+  say('Reconnecting\u2026');
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc)pc.close()}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  setTimeout(async function(){
+    try{ await connect(); tries=0; }
+    catch(e){ if(tries++<5){reconnecting=false;lost();return;} }
+    reconnecting=false;
+  },Math.min(8000,600*Math.pow(2,tries)));
+}
+
+async function connect(){
+  const r=await fetch('/session?gate=1&src=manual&m='+encodeURIComponent(SLUG),{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  let remoteStream=null;
+  pc.ontrack=function(e){
+    remoteStream=e.streams[0];
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  const micTrack=localStream.getAudioTracks()[0];
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){
+    if(AxonVoice.hasHistory())return;
+    try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}
+  });
+  dc.addEventListener('message',function(ev){
+    try{
+      const m=JSON.parse(ev.data);
+      if(m.type==='response.done')say('Listening \u2014 say next when that one is done.');
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,
+    voice:data.voice,pc:pc,onLost:lost});
+  talk.classList.add('on');
+  talk.textContent='Stop';
+  keepAwake(true);
+  say('Listening \u2014 tell me where you are.');
+}
+
+talk.addEventListener('click',async function(){
+  if(starting)return;
+  if(pc){ await stop(); return; }
+  starting=true;
+  say('One moment\u2026');
+  try{ await connect(); }
+  catch(e){ await stop(); say('I could not start. Check the microphone permission and try again.',true); }
+  starting=false;
+});
+window.addEventListener('pagehide',function(){ if(pc||starting)stop(); });
+</script>
+</body>
+</html>

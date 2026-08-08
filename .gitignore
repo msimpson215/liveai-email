@@ -4,5 +4,7 @@ data/joe-memory/*
 !data/joe-memory/.gitkeep
 data/founder-files/*
 !data/founder-files/.gitkeep
+data/manuals/*
+!data/manuals/.gitkeep
 node_modules/
 npm-debug.log*

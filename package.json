@@ -12,7 +12,8 @@
     "ingest-brains": "node scripts/ingest-brains.js",
     "test:sabc": "node scripts/sabc-profile.test.mjs",
     "test:sabc-page": "node scripts/sabc-page.test.mjs",
-    "measure": "node scripts/measure-card.mjs"
+    "measure": "node scripts/measure-card.mjs",
+    "test:manuals": "node scripts/manuals.test.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

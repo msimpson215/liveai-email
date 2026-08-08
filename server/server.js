@@ -12,6 +12,7 @@ import * as joeMemory from './joe-memory.js'
 import * as founderFile from './founder-file.js'
 import * as businessProfile from './business-profile.js'
 import * as sabcConsult from './sabc-consult.js'
+import * as manuals from './manuals.js'
 import { CONCEPTS as SABC_CONCEPTS } from './sabc-questions.js'
 import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
@@ -657,6 +658,40 @@ If asked what you are: "I'm the AI business consultant on Tim Donahue's site. I'
 
 CLOSING A SESSION: if they say they're done, tell them briefly what you'll have waiting: their business review is on the page whenever they want it, and next time you'll pick up where you left off.`
   },
+  /**
+   * Any set of instructions, read aloud by someone who has already read all of
+   * it. Built for a person mid-job with both hands busy: one step at a time,
+   * nothing volunteered, and never a step that is not in the document.
+   */
+  manual: {
+    instructions: ({ manualTitle = 'these instructions', manual = '' } = {}) => `You are helping someone put something together or use it properly. You have read the whole of ${manualTitle} and they have not — their hands are busy and the phone is on the floor.
+${VOICE_RULES}
+
+OPENING — say this ONE TIME, then stop and wait:
+"I've got the instructions for ${manualTitle} in front of me. Tell me where you are, or say 'start from the beginning' and I'll take you through it."
+Never repeat the opening.
+
+HOW TO TALK SOMEONE THROUGH IT:
+- ONE step at a time. Say the step, then stop. Do not read ahead, do not stack two steps, do not summarize the rest.
+- Wait for them. When they say next, done, okay, or got it, give the next step. When they go quiet, stay quiet.
+- Say it the way you would to someone whose hands are full: which part, which way round, which side of the bed, which screw goes where. Name parts exactly as the instructions name them, including any letter or number labels, and say what a part looks like if the instructions describe it.
+- If they ask you to repeat, repeat it exactly. If they ask which piece, describe it. If they say something does not match, stop and work out where they actually are before going on.
+- Count with them when it helps: "that's four of the six bolts, two to go."
+- If they are stuck between steps, ask what they can see rather than guessing.
+
+SAFETY:
+- Any warning in the instructions that applies to the step they are on, you say BEFORE the step, in plain words, once. Do not read the legal block aloud unless asked.
+- If they are about to do something the instructions warn against, say so immediately and plainly.
+- If what they describe does not match the instructions at all — a missing part, a part that will not fit, damage — tell them to stop and contact the manufacturer or supplier, and give any phone number or address the instructions carry.
+
+WHAT YOU DO NOT DO:
+- NEVER invent a step, a part, a measurement, a torque, a weight limit, or a tool. If it is not in the instructions, say plainly that the instructions do not cover it, and suggest they call the maker.
+- Do not guess at a different model. If they seem to have a different product, say so.
+- No opinions about whether the product is any good. You are here to get it built and used safely.
+- Keep every reply short. A step is one or two sentences.
+
+${manual}`
+  },
   siteeye: {
     instructions: () => `You are an AI team member for SiteEye 360 Live — also known internally as WorkSite I 360 — a portable live-video system for temporary job sites.
 ${VOICE_RULES}
@@ -1091,6 +1126,16 @@ async function buildInstructionsAsync(source, context = {}) {
     try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
     return buildInstructions(source, { ...context, knowledge, memory })
   }
+  // Whichever set of instructions the code on the box points at.
+  if (source === 'manual') {
+    const entry = manuals.get(context.manual)
+    if (!entry) return buildInstructions('web', context)
+    return buildInstructions(source, {
+      ...context,
+      manualTitle: entry.title,
+      manual: manuals.promptBlock(entry.slug)
+    })
+  }
   // The consultant walks in briefed: what this founder already told us, where
   // the last conversation stopped, and what Tim's methodology still needs.
   if (source === 'sabc') {
@@ -1405,7 +1450,8 @@ app.get('/session', async (req, res) => {
       recipientName,
       clinic: req.query.clinic,
       topic,
-      code: req.query.code
+      code: req.query.code,
+      manual: req.query.m
     })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',
@@ -1959,6 +2005,76 @@ app.get('/api/founder/summary/:id.pdf', async (req, res) => {
     doc.end()
   } catch (error) {
     if (!res.headersSent) res.status(500).type('text').send('Could not build that PDF.')
+  }
+})
+
+/* ---------- Instructions you can talk to ---------- */
+
+/**
+ * Hand over a manual, get back a page and a code for the box. The QR is drawn
+ * on request rather than written to disk, so it cannot go missing.
+ */
+app.post('/api/manual', upload.single('file'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    if (!req.file) return res.status(400).json({ ok: false, error: 'Choose the instructions file first.' })
+    const text = await extractUploadedText(req.file)
+    const title = String(req.body?.title || '').trim() ||
+      String(req.file.originalname || 'Instructions').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ')
+    const entry = manuals.save(title, text, req.body?.slug)
+    res.json({
+      ok: true,
+      slug: entry.slug,
+      title: entry.title,
+      chars: entry.text.length,
+      talk: `/manual/${entry.slug}`,
+      qr: `/qr/manual/${entry.slug}.png`
+    })
+  } catch (error) {
+    const message = /\.txt, \.md, \.pdf, or \.docx/.test(error.message || '')
+      ? 'I can read PDF, Word and text files. If it is a photo of a page, I cannot read it.'
+      : (error.message || 'Could not read that file.')
+    res.status(400).json({ ok: false, error: message })
+  }
+})
+
+app.get('/api/manual', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.json({ ok: true, manuals: manuals.list() })
+})
+
+/** The page the code opens: the manual's name, and a button to start talking. */
+app.get('/manual/:slug', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const entry = manuals.get(req.params.slug)
+  if (!entry) return res.status(404).redirect('/upload')
+  try {
+    const file = path.join(__dirname, '..', 'public', 'manual.html')
+    const html = fs.readFileSync(file, 'utf8')
+      .replace(/__MANUAL_SLUG__/g, entry.slug)
+      .replace(/__MANUAL_TITLE__/g, entry.title.replace(/[<>&]/g, ''))
+    res.type('html').send(html)
+  } catch {
+    res.status(500).send('Could not open those instructions.')
+  }
+})
+
+/** The code for the box, drawn on demand. */
+app.get('/qr/manual/:slug.png', async (req, res) => {
+  const entry = manuals.get(req.params.slug)
+  if (!entry) return res.status(404).send('No such instructions.')
+  try {
+    const QRCode = (await import('qrcode')).default
+    const url = `${req.protocol}://${req.get('host')}/manual/${entry.slug}`
+    const png = await QRCode.toBuffer(url, {
+      errorCorrectionLevel: 'H',
+      margin: 2,
+      width: 1000,
+      color: { dark: '#000000ff', light: '#ffffffff' }
+    })
+    res.type('png').set('Cache-Control', 'no-store').send(png)
+  } catch {
+    res.status(500).send('Could not draw that code.')
   }
 })
 
