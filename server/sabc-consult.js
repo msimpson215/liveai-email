@@ -67,8 +67,14 @@ Rules that matter:
 - Include a field only if there is something real to record. Omit everything else. Do not invent, infer beyond what was said, or fill gaps.
 - contradictions: only when a figure or plan genuinely changed. Say both sides and the date if you have it.`
 
-/** Fold one voice session into the profile. */
-async function trackConversation(key, turns, { source = 'conversation' } = {}) {
+/**
+ * Fold a voice session into the profile.
+ *
+ * `interim` is for a conversation still in progress: everything is filed except
+ * the session summary, so a long talk survives a browser being killed without
+ * leaving a trail of half-summaries in the history.
+ */
+async function trackConversation(key, turns, { source = 'conversation', interim = false } = {}) {
   const cleaned = (Array.isArray(turns) ? turns : [])
     .map(t => ({
       role: t?.role === 'assistant' ? 'assistant' : 'user',
@@ -96,6 +102,7 @@ async function trackConversation(key, turns, { source = 'conversation' } = {}) {
   } catch {
     return null
   }
+  if (interim) delete update.sessionSummary
   return profileStore.applyUpdate(key, update, { source, turns: cleaned.length })
 }
 

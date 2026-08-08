@@ -215,6 +215,22 @@ function fileSession(){
   }catch(e){}
 }
 
+/* A twenty minute conversation should not depend on the browser closing
+   politely. While the call is live, file what has been said so far every couple
+   of minutes - without a session summary, so the history stays one entry. */
+let interimAt=0;
+setInterval(function(){
+  if(!pc||filed||!hasTalked())return;
+  const count=turns().length;
+  if(count<=interimAt+4)return;          /* nothing much new to file */
+  interimAt=count;
+  try{
+    fetch('/api/sabc/track',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code:CODE,turns:turns(),interim:true})}).then(refresh).catch(function(){});
+  }catch(e){}
+},120000);
+
 async function stopVoice(){
   fileSession();
   if(voice){voice.detach();voice=null}
@@ -290,7 +306,7 @@ async function connect(){
 async function toggle(){
   if(starting)return;
   if(pc){ if(!resumeAudio())await stopVoice(); return; }
-  starting=true; filed=false;
+  starting=true; filed=false; interimAt=0;
   setState('connecting'); say('One moment\u2026');
   try{ await connect(); }
   catch(e){

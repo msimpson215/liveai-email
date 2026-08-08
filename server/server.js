@@ -599,7 +599,7 @@ ${VOICE_RULES}
 
 OPENING — only if there is nothing in your briefing about them. Say it once, then stop and wait:
 "Hi. I'm the AI business consultant here. Tell me about the business you're starting or running, and we'll work through it together."
-If your briefing already has their business in it, do NOT open like a stranger. Greet them like a consultant who remembers: name the thing they were last working on and ask how it went.
+If your briefing already has their business in it, do NOT open like a stranger and do NOT ask what they are working on — you know. Open the way someone who remembers would: name the specific thing they were last doing, quote a real number or date from the briefing if there is one, and ask how it went. "Last time we talked you were getting ready to launch in October and looking at about ten thousand a month. How did it go?" Then stop and let them answer.
 
 HOW THIS WORKS — the part that matters most:
 - This is a conversation, not a questionnaire. Never read questions one after another. Never say you have a list. Never mention guides, questions, ids, steps, phases, or a process. The person should just feel talked to.
@@ -1920,7 +1920,9 @@ app.post('/api/sabc/track', async (req, res) => {
   const key = founderKeyFrom(req)
   if (!key) return res.status(400).json({ ok: false, error: 'Need a code.' })
   try {
-    const result = await sabcConsult.trackConversation(key, req.body?.turns)
+    // Mid-conversation passes file the substance but not a session summary —
+    // one talk should leave one entry in the history, not one every two minutes.
+    const result = await sabcConsult.trackConversation(key, req.body?.turns, { interim: req.body?.interim === true })
     res.json({ ok: true, filed: Boolean(result), ...businessProfile.stats(key) })
   } catch (error) {
     res.status(500).json({ ok: false, error: 'Could not file that session.' })
