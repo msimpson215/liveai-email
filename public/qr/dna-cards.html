@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Print — DNA Answers Cards</title>
+<style>
+  @page{size:letter;margin:.4in}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Helvetica Neue",Arial,sans-serif;color:#0d1b3e;background:#fff;padding:.4in}
+  .sheet{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);width:7.7in;height:10.2in}
+  .card{border:1px dashed #b9c7e4;padding:.16in .18in;display:flex;align-items:center;gap:.14in}
+  .card .qr{flex:0 0 1.15in}
+  .card .qr img{width:1.15in;height:1.15in;display:block}
+  .card .copy{flex:1;min-width:0}
+  .brand{
+    font-size:6.6pt;font-weight:bold;letter-spacing:.09em;text-transform:uppercase;
+    color:#3b6fd4;margin-bottom:.03in;
+  }
+  .card h2{font-size:11pt;line-height:1.15;letter-spacing:-.01em;margin-bottom:.04in}
+  .card p{font-size:7.3pt;line-height:1.35;color:#41537c}
+  .how{font-size:7.1pt;color:#1e40af;font-weight:bold;margin:.045in 0}
+  .dis{
+    font-size:6pt;line-height:1.3;color:#6b7a9c;
+    border-top:.5pt solid #d6e0f5;padding-top:.035in;
+  }
+  .toolbar{margin-bottom:.25in;text-align:center}
+  .toolbar button{padding:9px 16px;font-size:11pt;background:#1e40af;color:#fff;border:0;border-radius:8px;cursor:pointer}
+  .toolbar span{display:block;font-size:9.5pt;color:#5b6b8c;margin-top:6px}
+  @media print{.toolbar{display:none}body{padding:0}}
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button onclick="window.print()">Print sheet of 8 cards</button>
+    <span>Print, cut on the dashed lines, hand out or leave on a counter.</span>
+  </div>
+  <div class="sheet" id="sheet"></div>
+<script>
+const CARD = `
+  <div class="qr"><img src="dna.png" alt="QR code"/></div>
+  <div class="copy">
+    <div class="brand">DNA Answers</div>
+    <h2>Questions about a paternity test?</h2>
+    <p>Point your phone camera at the code and just talk. Ask what it costs, how it works, or which test you need. Any hour, no judgment.</p>
+    <div class="how">Camera &rarr; point &rarr; tap &rarr; talk</div>
+    <div class="dis">An AI guide, not a person. It won't predict or interpret results and doesn't give legal or medical advice. A human confirms pricing and schedules collection.</div>
+  </div>`;
+const sheet = document.getElementById('sheet');
+for (let i = 0; i < 8; i++) {
+  const d = document.createElement('div');
+  d.className = 'card';
+  d.innerHTML = CARD;
+  sheet.appendChild(d);
+}
+</script>
+</body>
+</html>
