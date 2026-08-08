@@ -171,16 +171,19 @@ async function run() {
   await page.goto(`${base}/sabc.html`)
   await page.waitForSelector('body.noart', { timeout: 5000 }).catch(() => {})
   check('missing artwork explains itself', await page.locator('#missing').isVisible())
-  check('and the page still works without it',
-    await page.locator('#orbHot').isVisible() &&
-    await page.locator('#uploadHot').isVisible() &&
-    await page.locator('#reviewHot').isVisible())
-  check('the plain controls are readable', await page.locator('#orbHot').evaluate(el => {
-    const s = getComputedStyle(el)
-    return parseFloat(s.fontSize) > 12 && s.color !== 'rgba(0, 0, 0, 0)'
-  }))
+  // Nothing stands in for the artwork: no controls, no stand-in orb, no layout
+  // that could be mistaken for a design.
+  check('nothing stands in for the artwork',
+    !(await page.locator('#orbHot').isVisible()) &&
+    !(await page.locator('#uploadHot').isVisible()) &&
+    !(await page.locator('#reviewHot').isVisible()) &&
+    !(await page.locator('#art').isVisible()))
+  check('it says plainly that nothing was substituted',
+    /Nothing has been designed, drawn or substituted/.test(await page.locator('#missing').innerText()))
+  check('it offers the plain test page instead',
+    (await page.locator('#missing a').nth(1).getAttribute('href')) === '/talk-to-the-consultant')
   check('it points at the right drop page',
-    (await page.locator('#missing a').getAttribute('href')) === '/cards/sabc-artwork.html')
+    (await page.locator('#missing a').first().getAttribute('href')) === '/cards/sabc-artwork.html')
 
   await browser.close()
   server.close()

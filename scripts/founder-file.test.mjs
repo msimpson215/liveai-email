@@ -13,6 +13,7 @@ import path from 'path'
 import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import * as founderFile from '../server/founder-file.js'
+import { directImageUrl, refuseInternal } from '../server/image-links.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..')
@@ -135,6 +136,24 @@ async function run() {
   check('erase reports success', wiped.ok && wiped.removed)
   const after = await (await fetch(`${base}/api/founder/status?code=${MINE}`)).json()
   check('nothing is left afterwards', (after.docs || []).length === 0 && (after.summaries || []).length === 0)
+
+  /* --- a share link points at a viewer page; it has to be turned into the file --- */
+  const rewrites = [
+    ['https://drive.google.com/file/d/1AbC_dEf/view?usp=sharing', 'drive.google.com/uc?export=download&id=1AbC_dEf'],
+    ['https://drive.google.com/open?id=XYZ123', 'id=XYZ123'],
+    ['https://www.dropbox.com/s/abc/orb.png?dl=0', 'dl=1'],
+    ['https://github.com/user/repo/blob/main/orb.png', 'raw.githubusercontent.com/user/repo/main/orb.png'],
+    ['https://example.com/plain/orb.png', 'https://example.com/plain/orb.png']
+  ]
+  const wrong = rewrites.filter(([from, expect]) => !String(directImageUrl(new URL(from))).includes(expect))
+  check('share links become the actual file', wrong.length === 0, wrong.map(w => w[0]).join(' '))
+
+  const internal = ['http://localhost/x.png', 'http://127.0.0.1:22/x.png', 'http://192.168.1.5/x.png',
+    'http://169.254.169.254/latest/meta-data', 'http://10.0.0.9/x.png', 'ftp://example.com/x.png']
+  const allowed = internal.filter(u => {
+    try { refuseInternal(new URL(u)); return true } catch { return false }
+  })
+  check('links pointing inward are refused', allowed.length === 0, allowed.join(' '))
 
   /* --- artwork arriving by link, since a browser cannot always hand over a file --- */
   const LIVE_IMAGE = 'https://liveai-email.onrender.com/qr/mbm-ask.png'

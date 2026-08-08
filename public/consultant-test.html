@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Consultant — engine test page</title>
+<style>
+  /*
+   * This is a test harness, not a product page. It is deliberately plain: no
+   * artwork, no orb, no branding, nothing that could be mistaken for a design.
+   * It exists so the consultant can be heard and judged before the finished
+   * artwork is on the server. The real page is /start.
+   */
+  html,body{margin:0;background:#f4f4f5;color:#18181b}
+  body{padding:26px 18px 60px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    display:flex;justify-content:center}
+  .box{width:100%;max-width:560px}
+  .tag{font-size:12px;letter-spacing:.12em;color:#71717a;margin:0 0 6px}
+  h1{font-size:17px;font-weight:600;margin:0 0 10px;line-height:1.5}
+  .note{font-size:13.5px;line-height:1.7;color:#52525b;margin:0 0 22px}
+  .note b{color:#18181b}
+  .hot{
+    display:block;width:100%;margin:0 0 10px;padding:16px;cursor:pointer;
+    background:#fff;border:1px solid #d4d4d8;border-radius:6px;
+    font:inherit;font-size:15px;color:#18181b;text-align:left;
+  }
+  #orbHot{background:#18181b;color:#fff;border-color:#18181b;font-size:16px}
+  .hot:disabled{opacity:.5;cursor:default}
+  .status{font-size:14px;line-height:1.7;color:#3f3f46;margin:18px 0 0;min-height:24px;
+    background:#fff;border:1px solid #e4e4e7;border-radius:6px;padding:14px}
+  .status.bad{color:#b91c1c}
+  .status a{color:#1d4ed8}
+  .row{font-size:12px;line-height:1.9;color:#71717a;margin:16px 0 0}
+  .row code{color:#18181b}
+  .row button{background:none;border:0;padding:0;cursor:pointer;color:#71717a;
+    font:inherit;font-size:12px;text-decoration:underline}
+  .file{display:none}
+</style>
+</head>
+<body data-state="idle">
+<div class="box">
+  <p class="tag">ENGINE TEST PAGE</p>
+  <h1>AI business consultant — StartABusiness.Center</h1>
+  <p class="note">No design here on purpose. This page exists to hear the consultant working before the
+  finished artwork is on the server. The real page is <b>/start</b>, which shows Tim's artwork and nothing else.</p>
+
+  <button type="button" class="hot" id="orbHot">Start talking</button>
+  <button type="button" class="hot" id="uploadHot">Upload a document (P&amp;L, plan, spreadsheet as CSV)</button>
+  <button type="button" class="hot" id="reviewHot">My business review (PDF)</button>
+
+  <p class="status" id="status">Press start, then talk about a business — starting up or already running.</p>
+  <p class="row" id="row"></p>
+</div>
+
+<input type="file" id="docInput" class="file"
+       accept=".pdf,.doc,.docx,.txt,.md,.csv,application/pdf,text/plain,text/csv,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+<input type="file" id="profileInput" class="file" accept=".json,application/json">
+
+<script src="/axon-voice.js"></script>
+<script src="/js/sabc-client.js"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import * as founderFile from './founder-file.js'
 import * as businessProfile from './business-profile.js'
 import * as sabcConsult from './sabc-consult.js'
 import { CONCEPTS as SABC_CONCEPTS } from './sabc-questions.js'
+import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 dotenv.config()
@@ -233,6 +234,12 @@ app.get('/guides', (_req, res) => {
 app.get('/start', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/sabc.html')
+})
+
+/** The same consultant with no artwork around it, for hearing it work. */
+app.get('/talk-to-the-consultant', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/consultant-test.html')
 })
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
@@ -1736,24 +1743,21 @@ f.addEventListener('submit',async e=>{
  * is kept narrow: http(s) only, no private or loopback addresses, must come
  * back as an image, and capped at the same size as an upload.
  */
+/**
+ * Fetch artwork the browser could only give us as a link.
+ *
+ * Kept narrow on purpose: share links are rewritten to the real file address,
+ * internal addresses are refused, the answer must be an image, and it is capped
+ * at the same size as an upload.
+ */
 async function fetchRemoteImage(rawUrl) {
   let url
   try {
-    url = new URL(String(rawUrl))
+    url = directImageUrl(new URL(String(rawUrl)))
   } catch {
     throw new Error('That is not a link I can read.')
   }
-  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Only http and https links.')
-  const host = url.hostname.toLowerCase()
-  const blocked =
-    host === 'localhost' ||
-    host.endsWith('.localhost') ||
-    host === '::1' ||
-    /^(0|10|127)\./.test(host) ||
-    /^169\.254\./.test(host) ||
-    /^192\.168\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(host)
-  if (blocked) throw new Error('That link points inside the server.')
+  refuseInternal(url)
 
   const response = await fetch(url.href, { redirect: 'follow', size: 8 * 1024 * 1024, timeout: 20000 })
   if (!response.ok) throw new Error(`That link came back ${response.status}. If it needs a login, save the image and pick the file instead.`)
