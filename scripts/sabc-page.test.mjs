@@ -205,8 +205,8 @@ async function run() {
     /Nothing has been designed, drawn or substituted/.test(await page.locator('#missing').innerText()))
   check('it offers the plain test page instead',
     (await page.locator('#missing a').nth(1).getAttribute('href')) === '/talk-to-the-consultant')
-  check('it points at the right drop page',
-    (await page.locator('#missing a').first().getAttribute('href')) === '/cards/sabc-artwork.html')
+  check('it points at the one upload address', 
+    (await page.locator('#missing a').first().getAttribute('href')) === '/upload')
 
   await browser.close()
   server.close()

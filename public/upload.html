@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Drop artwork here</title>
+<style>
+  /*
+   * The one address for artwork, and the only one. It has always been /upload;
+   * everything else now redirects here.
+   *
+   * The named slots exist so a file keeps the name its page is looking for,
+   * whatever it is called on the computer it came from. The box at the bottom
+   * is the original behaviour: any file, its own name.
+   */
+  html,body{margin:0}
+  body{background:#eef2fb;color:#0d1b3e;padding:40px 20px 70px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex;justify-content:center}
+  .box{width:100%;max-width:520px}
+  h1{font-size:22px;margin:0 0 8px}
+  .lead{color:#5b6785;line-height:1.6;margin:0 0 26px}
+  h2.group{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#8b96b3;margin:30px 0 12px}
+  .slot{background:#fff;border-radius:13px;padding:18px;margin:0 0 14px;box-shadow:0 1px 3px rgba(13,27,62,.09)}
+  .slot h3{font-size:16.5px;margin:0 0 3px}
+  .slot .what{margin:0 0 13px;font-size:13.5px;color:#7180a0;line-height:1.5}
+  .drop{border:2px dashed #c9d4ee;border-radius:11px;padding:20px 16px;text-align:center;
+    font-size:14.5px;color:#5b6785;line-height:1.6;cursor:pointer;background:#fbfcff}
+  .drop.over{border-color:#0a2466;background:#f2f5ff}
+  .drop b{color:#0d1b3e}
+  .state{margin:11px 0 0;font-size:14px;line-height:1.5;min-height:19px}
+  .state.done{color:#1a7f3c;font-weight:600}
+  .state.bad{color:#b3261e}
+  .state a{color:#0a2466;font-weight:700}
+  .shot{display:none;margin:11px auto 0;max-width:170px;width:100%;border:1px solid #e3e9f6;border-radius:8px}
+  .file{display:none}
+  .foot{margin:26px 0 0;font-size:13.5px;color:#7180a0;line-height:1.8}
+  .foot a{color:#0a2466}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>Drop artwork here</h1>
+  <p class="lead">Pick a file, drag it in, or click a box and paste. Nothing about the artwork is changed &mdash;
+  the pages put the working parts on top of it.</p>
+
+  <h2 class="group">StartABusiness.Center</h2>
+
+  <div class="slot" data-as="sabc-orb.png" data-card="/start">
+    <h3>Orb card</h3>
+    <p class="what">The one that says &ldquo;Tap the Orb&rdquo;. This is the page people use.</p>
+    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
+    <input type="file" class="file" accept="image/*">
+    <p class="state"></p>
+    <img class="shot" alt="">
+  </div>
+
+  <div class="slot" data-as="sabc-qr.png" data-card="/cards/sabc-qr.html">
+    <h3>QR card</h3>
+    <p class="what">The one that says &ldquo;Scan to Begin&rdquo;.</p>
+    <div class="drop" tabindex="0">Choose a file, <b>drag it here</b>, or click and press Ctrl&nbsp;V / &#8984;V</div>
+    <input type="file" class="file" accept="image/*">
+    <p class="state"></p>
+    <img class="shot" alt="">
+  </div>
+
+  <h2 class="group">Anything else</h2>
+
+  <div class="slot" data-any="1">
+    <h3>Any other artwork</h3>
+    <p class="what">Keeps its own filename. Several at once is fine.</p>
+    <div class="drop" tabindex="0">Choose files, <b>drag them here</b>, or click and paste</div>
+    <input type="file" class="file" accept="image/*" multiple>
+    <p class="state"></p>
+  </div>
+
+  <p class="foot">Already in?
+  <a href="/start">Orb card</a> &middot;
+  <a href="/cards/sabc-qr.html">QR card</a> &middot;
+  <a href="/talk-to-the-consultant">Hear the consultant</a></p>
+</div>
+
+<script>
+document.querySelectorAll('.slot').forEach(function(slot){
+  const as=slot.dataset.as||'';
+  const card=slot.dataset.card||'';
+  const many=slot.dataset.any==='1';
+  const drop=slot.querySelector('.drop');
+  const file=slot.querySelector('.file');
+  const state=slot.querySelector('.state');
+  const shot=slot.querySelector('.shot');
+
+  function show(html,kind){ state.className='state'+(kind?' '+kind:''); state.innerHTML=html; }
+
+  async function send(f){
+    if(!f)return;
+    if(!/^image\//.test(f.type||'')){ show('\u2717 '+f.name+' is not an image file.','bad'); return; }
+    show('Uploading '+(many?f.name:'')+'\u2026');
+    const body=new FormData();
+    if(as)body.append('as',as);          /* must be appended before the file */
+    body.append('art',f,as||f.name);
+    try{
+      const r=await fetch('/api/upload-art',{method:'POST',body:body});
+      const d=await r.json();
+      if(!d.ok)throw new Error(d.error||'upload failed');
+      if(shot){ shot.src=d.url+'?t='+Date.now(); shot.style.display='block'; }
+      show('&#10003; Saved as <b>'+d.name+'</b>'+(card?' &mdash; <a href="'+card+'">open the card</a>':''),'done');
+    }catch(err){ show('\u2717 '+(err.message||'upload failed'),'bad'); }
+  }
+
+  async function sendAll(list){
+    for(const f of list) await send(f);
+  }
+
+  drop.addEventListener('click',function(){ file.click(); });
+  file.addEventListener('change',function(){ sendAll(file.files); file.value=''; });
+
+  ['dragenter','dragover'].forEach(function(t){
+    drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.add('over'); });
+  });
+  ['dragleave','drop'].forEach(function(t){
+    drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop',function(e){
+    if(e.dataTransfer.files&&e.dataTransfer.files.length)sendAll(e.dataTransfer.files);
+  });
+
+  drop.addEventListener('paste',function(e){
+    const items=(e.clipboardData&&e.clipboardData.items)||[];
+    for(const item of items){
+      if(item.type&&item.type.indexOf('image/')===0){ e.preventDefault(); return send(item.getAsFile()); }
+    }
+  });
+});
+</script>
+</body>
+</html>

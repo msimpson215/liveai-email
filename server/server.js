@@ -1687,62 +1687,25 @@ app.post('/api/brain/memory/remember', async (req, res) => {
  */
 const ART_DIR = path.join(__dirname, '..', 'public', 'art')
 
-app.get('/upload', (req, res) => {
+app.get('/upload', (_req, res) => {
   res.set('Cache-Control', 'no-store')
-  res.type('html').send(`<!doctype html><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Drop artwork here</title>
-<style>
-body{margin:0;padding:44px 22px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#eef2fb;color:#0d1b3e;display:flex;justify-content:center}
-.box{width:100%;max-width:520px}
-h1{font-size:22px;margin:0 0 8px}
-p{color:#5b6785;line-height:1.55;margin:0 0 22px}
-input[type=file]{display:block;width:100%;padding:22px;background:#fff;border:2px dashed #c9d4ee;
-  border-radius:12px;font:inherit;margin-bottom:16px}
-button{background:#0a2466;color:#fff;border:0;border-radius:9px;font:inherit;font-size:16px;
-  font-weight:600;padding:14px 22px;cursor:pointer}
-#out{margin-top:22px;font-size:14px;line-height:1.7;color:#0d1b3e;word-break:break-all}
-#out b{color:#1a7f3c}
-</style>
-<div class="box">
-<h1>Drop the artwork here</h1>
-<p>Pick the PNG or JPEG files. You can select several at once. They upload straight
-to the site and I'll take them from there.</p>
-<form id="f">
-  <input type="file" name="art" accept="image/*" multiple required>
-  <button type="submit">Upload</button>
-</form>
-<div id="out"></div>
-</div>
-<script>
-const f=document.getElementById('f'),out=document.getElementById('out');
-f.addEventListener('submit',async e=>{
-  e.preventDefault();
-  out.textContent='Uploading…';
-  const files=f.querySelector('input[type=file]').files;
-  const lines=[];
-  for(const file of files){
-    const fd=new FormData(); fd.append('art',file);
-    try{
-      const r=await fetch('/api/upload-art',{method:'POST',body:fd});
-      const d=await r.json();
-      lines.push(d.ok? '<b>&#10003;</b> '+d.name+'  &rarr;  '+d.url : '&#10007; '+file.name+' — '+(d.error||'failed'));
-    }catch(err){ lines.push('&#10007; '+file.name+' — upload failed'); }
-    out.innerHTML=lines.join('<br>');
-  }
-  out.innerHTML=lines.join('<br>')+'<br><br>Done. Tell me the file names and I will wire them up.';
-});
-</script>`)
+  res.sendFile(path.join(__dirname, '..', 'public', 'upload.html'))
 })
 
 /**
- * Fetch artwork the browser could only give us as a link.
+ * One address for artwork, and only one.
  *
- * This is the server making an outbound request on someone else's say-so, so it
- * is kept narrow: http(s) only, no private or loopback addresses, must come
- * back as an image, and capped at the same size as an upload.
+ * /upload is where it has always gone. Two other paths were invented along the
+ * way, which meant three different answers to the same question; they redirect
+ * here so every link ever handed out still works.
  */
+for (const old of ['/cards/artwork.html', '/cards/sabc-artwork.html']) {
+  app.get(old, (_req, res) => {
+    res.set('Cache-Control', 'no-store')
+    res.redirect(301, '/upload')
+  })
+}
+
 /**
  * Fetch artwork the browser could only give us as a link.
  *

@@ -208,7 +208,7 @@
     note.innerHTML =
       'The artwork <code>' +
       art.getAttribute('src') +
-      '</code> is not on the server yet. <a href="/cards/artwork.html">Drop the PNG in here</a> and reload this page.'
+      '</code> is not on the server yet. <a href="/upload">Drop the PNG in here</a> and reload this page.'
     stage.appendChild(note)
   }
 
