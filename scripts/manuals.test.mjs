@@ -111,6 +111,17 @@ try {
   check('an unknown manual sends you to the upload page', missing.status === 404 || missing.status === 302)
   check('and no code is drawn for it', (await fetch(`${base}/qr/manual/not-a-real-manual.png`)).status === 404)
 
+  /* --- a manual that ships with the code, so a printed label keeps working --- */
+  const shipped = await (await fetch(`${base}/api/manual`)).json()
+  const seeded = (shipped.manuals || []).find(m => m.shipped)
+  check('manuals can ship with the code', Boolean(seeded), JSON.stringify(shipped.manuals))
+  if (seeded) {
+    const seededPage = await fetch(`${base}/manual/${seeded.slug}`)
+    check('a shipped manual opens without anything being uploaded', seededPage.ok)
+    check('and survives a wipe of the upload disk',
+      !fs.existsSync(path.join(ROOT, 'data', 'manuals', `${seeded.slug}.json`)))
+  }
+
   /* --- a file with no text in it --- */
   const junk = new FormData()
   junk.append('file', new Blob([Buffer.from([0x89, 0x50, 0x4e, 0x47])], { type: 'image/png' }), 'photo.png')

@@ -16,6 +16,16 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dirname, '..', 'data', 'manuals')
 
+/**
+ * Manuals that ship with the code.
+ *
+ * A QR code stuck on a box has to keep working. Uploads land on Render's disk,
+ * which is wiped on every deploy, so anything meant to last is committed here
+ * and read from the repo. Uploads win when both exist, so a newer version of
+ * the same instructions replaces the shipped one until the next deploy.
+ */
+const SEED = path.join(__dirname, '..', 'manuals')
+
 const MAX_CHARS = 60_000
 const MAX_INJECT = 40_000
 
@@ -33,25 +43,37 @@ function fileFor(slug) {
   return path.join(ROOT, `${path.basename(slug)}.json`)
 }
 
+/** Uploaded copy if there is one, otherwise the copy that ships with the code. */
+function anyFileFor(slug) {
+  const uploaded = fileFor(slug)
+  if (fs.existsSync(uploaded)) return uploaded
+  const seeded = path.join(SEED, `${path.basename(slug)}.json`)
+  return fs.existsSync(seeded) ? seeded : null
+}
+
 function list() {
-  if (!fs.existsSync(ROOT)) return []
-  return fs.readdirSync(ROOT)
-    .filter(f => f.endsWith('.json'))
-    .map(f => {
+  const seen = new Map()
+  for (const dir of [SEED, ROOT]) {          // uploads listed second so they win
+    if (!fs.existsSync(dir)) continue
+    for (const f of fs.readdirSync(dir).filter(n => n.endsWith('.json'))) {
       try {
-        const raw = JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'))
-        return { slug: raw.slug, title: raw.title, addedAt: raw.addedAt, chars: (raw.text || '').length }
-      } catch {
-        return null
-      }
-    })
-    .filter(Boolean)
-    .sort((a, b) => String(b.addedAt).localeCompare(String(a.addedAt)))
+        const raw = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))
+        seen.set(raw.slug, {
+          slug: raw.slug,
+          title: raw.title,
+          addedAt: raw.addedAt,
+          chars: (raw.text || '').length,
+          shipped: dir === SEED
+        })
+      } catch { /* skip anything unreadable */ }
+    }
+  }
+  return [...seen.values()].sort((a, b) => String(b.addedAt).localeCompare(String(a.addedAt)))
 }
 
 function get(slug) {
-  const file = fileFor(slugify(slug))
-  if (!fs.existsSync(file)) return null
+  const file = anyFileFor(slugify(slug))
+  if (!file) return null
   try {
     return JSON.parse(fs.readFileSync(file, 'utf8'))
   } catch {
@@ -117,4 +139,4 @@ function promptBlock(slug) {
   return `THE INSTRUCTIONS, IN FULL — this is "${entry.title}". Everything you say about this product comes from here and nowhere else:\n\n${entry.text.slice(0, MAX_INJECT)}`
 }
 
-export { list, get, save, remove, promptBlock, slugify, ROOT }
+export { list, get, save, remove, promptBlock, slugify, ROOT, SEED }
