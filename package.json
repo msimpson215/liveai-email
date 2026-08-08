@@ -11,7 +11,8 @@
     "extract-docx": "node scripts/extract-docx-brains.js",
     "ingest-brains": "node scripts/ingest-brains.js",
     "test:sabc": "node scripts/sabc-profile.test.mjs",
-    "test:sabc-page": "node scripts/sabc-page.test.mjs"
+    "test:sabc-page": "node scripts/sabc-page.test.mjs",
+    "measure": "node scripts/measure-card.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -2,19 +2,30 @@
  * Measure where things actually sit in a finished card image.
  *
  *   node scripts/measure-card.mjs public/art/sabc-orb.png
+ *   node scripts/measure-card.mjs public/art/sabc-orb.png --write public/sabc.html
  *
- * Reads the real pixels rather than trusting a guess: the orb is found by its
- * blue, the printed buttons by their outlines against the paper. Prints the
- * percentages the page uses for its hotspots, so the invisible controls land on
- * the drawn ones exactly.
+ * Reads the real pixels rather than trusting a guess, so the invisible controls
+ * land on the drawn ones exactly:
+ *
+ *   the orb     — the widest run of orb-blue is its equator, which gives both
+ *                 the diameter and the centre. Measuring the blue's bounding
+ *                 box instead would include the glow and the reflection under
+ *                 it, and the hotspot would sit low and too tall.
+ *   the buttons — outlines against the paper, taken as the pair of wide shapes
+ *                 that share a top edge. The heading above them is also darker
+ *                 than the paper, so a single widest-shape rule finds the text.
+ *
+ * With --write the numbers go straight into the page, so a re-exported card is
+ * one command away from being aligned and nobody retypes a number.
  */
 import fs from 'fs'
 import path from 'path'
 import { PNG } from 'pngjs'
 
 const file = process.argv[2]
+const writeTo = process.argv.includes('--write') ? process.argv[process.argv.indexOf('--write') + 1] : null
 if (!file) {
-  console.error('Usage: node scripts/measure-card.mjs <image.png>')
+  console.error('Usage: node scripts/measure-card.mjs <image.png> [--write <page.html>]')
   process.exit(1)
 }
 
@@ -24,93 +35,66 @@ const at = (x, y) => {
   const i = (y * W + x) << 2
   return [data[i], data[i + 1], data[i + 2]]
 }
+const pct = (v, total) => +((v / total) * 100).toFixed(1)
+const measured = {}
 
 console.log(`${path.basename(file)} — ${W}x${H}`)
 
-/* ---- the orb: strongly blue, and nothing else on the card is ---- */
-let ox0 = W, oy0 = H, ox1 = 0, oy1 = 0, blue = 0
-for (let y = 0; y < H; y++) {
-  for (let x = 0; x < W; x++) {
-    const [r, g, b] = at(x, y)
-    if (b > 110 && b - r > 55 && b - g > 25) {
-      blue++
-      if (x < ox0) ox0 = x
-      if (x > ox1) ox1 = x
-      if (y < oy0) oy0 = y
-      if (y > oy1) oy1 = y
-    }
-  }
-}
-if (blue > 500) {
-  // The logo and the footer are blue too; keep the largest run, which is the orb.
-  const rows = []
-  for (let y = 0; y < H; y++) {
-    let count = 0
-    for (let x = 0; x < W; x++) {
-      const [r, g, b] = at(x, y)
-      if (b > 110 && b - r > 55 && b - g > 25) count++
-    }
-    rows.push(count)
-  }
-  const wide = rows.map((c, y) => ({ c, y })).filter(r => r.c > W * 0.12)
-  if (wide.length) {
-    // longest unbroken band of wide blue rows
-    let best = { start: wide[0].y, end: wide[0].y }
-    let cur = { start: wide[0].y, end: wide[0].y }
-    for (let i = 1; i < wide.length; i++) {
-      if (wide[i].y === wide[i - 1].y + 1) cur.end = wide[i].y
-      else {
-        if (cur.end - cur.start > best.end - best.start) best = { ...cur }
-        cur = { start: wide[i].y, end: wide[i].y }
-      }
-    }
-    if (cur.end - cur.start > best.end - best.start) best = { ...cur }
+/* ---- the orb ---- */
 
-    let x0 = W, x1 = 0
-    for (let y = best.start; y <= best.end; y++) {
-      for (let x = 0; x < W; x++) {
-        const [r, g, b] = at(x, y)
-        if (b > 110 && b - r > 55 && b - g > 25) {
-          if (x < x0) x0 = x
-          if (x > x1) x1 = x
-        }
-      }
-    }
-    const w = x1 - x0
-    const h = best.end - best.start
-    const d = Math.max(w, h)
-    const cx = x0 + w / 2
-    const cy = best.start + h / 2
-    console.log('\norb (the sphere itself, glow excluded by the colour test):')
-    console.log(`  pixels: x ${x0}-${x1}, y ${best.start}-${best.end}  (${w}x${h})`)
-    console.log(`  orb: { left:${(((cx - d / 2) / W) * 100).toFixed(1)}, top:${(((cy - d / 2) / H) * 100).toFixed(1)}, width:${((d / W) * 100).toFixed(1)} }`)
+const isOrbBlue = (x, y) => {
+  const [r, g, b] = at(x, y)
+  return b > 110 && b - r > 55 && b - g > 25
+}
+
+let equator = { y: -1, x0: 0, x1: 0, w: 0 }
+for (let y = 0; y < H; y++) {
+  let x0 = -1
+  let x1 = -1
+  for (let x = 0; x < W; x++) {
+    if (!isOrbBlue(x, y)) continue
+    if (x0 < 0) x0 = x
+    x1 = x
   }
+  if (x1 - x0 > equator.w) equator = { y, x0, x1, w: x1 - x0 }
+}
+
+if (equator.w > W * 0.15) {
+  const d = equator.w
+  const left = equator.x0
+  const top = equator.y - d / 2
+  measured.orb = { left: pct(left, W), top: pct(top, H), width: pct(d, W) }
+  console.log('\norb:')
+  console.log(`  equator at y ${equator.y}, x ${equator.x0}-${equator.x1} — diameter ${d}px`)
+  console.log(`  pixels: x ${left}-${left + d}, y ${Math.round(top)}-${Math.round(top + d)}`)
+  console.log(`  ${JSON.stringify(measured.orb)}`)
 } else {
   console.log('\nno orb on this card')
 }
 
-/* ---- the printed buttons: outlines against the paper ---- */
+/* ---- the printed buttons ---- */
+
 const paper = at(Math.round(W * 0.5), Math.round(H * 0.02))
 const differs = (x, y) => {
   const [r, g, b] = at(x, y)
   return Math.abs(r - paper[0]) + Math.abs(g - paper[1]) + Math.abs(b - paper[2]) > 26
 }
 
-// Look only in the band where buttons live, above the footer bar.
-const top = Math.round(H * 0.70)
-const bottom = Math.round(H * 0.94)
+const bandTop = Math.round(H * 0.72)
+const bandBottom = Math.round(H * 0.92)
 const seen = new Uint8Array(W * H)
-const boxes = []
-for (let y = top; y < bottom; y++) {
+const shapes = []
+for (let y = bandTop; y < bandBottom; y++) {
   for (let x = 0; x < W; x++) {
     if (seen[y * W + x] || !differs(x, y)) continue
-    // flood fill this blob
     const stack = [[x, y]]
-    let bx0 = x, bx1 = x, by0 = y, by1 = y, size = 0
     seen[y * W + x] = 1
+    let bx0 = x
+    let bx1 = x
+    let by0 = y
+    let by1 = y
     while (stack.length) {
       const [cx, cy] = stack.pop()
-      size++
       if (cx < bx0) bx0 = cx
       if (cx > bx1) bx1 = cx
       if (cy < by0) by0 = cy
@@ -118,25 +102,57 @@ for (let y = top; y < bottom; y++) {
       for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
         const nx = cx + dx
         const ny = cy + dy
-        if (nx < 0 || ny < top || nx >= W || ny >= bottom) continue
+        if (nx < 0 || ny < bandTop || nx >= W || ny >= bandBottom) continue
         if (seen[ny * W + nx] || !differs(nx, ny)) continue
         seen[ny * W + nx] = 1
         stack.push([nx, ny])
       }
     }
-    const bw = bx1 - bx0
-    const bh = by1 - by0
-    if (bw > W * 0.2 && bh > H * 0.02 && bh < H * 0.09) boxes.push({ bx0, by0, bw, bh, size })
+    if (bx1 - bx0 > W * 0.18) shapes.push({ x: bx0, y: by0, w: bx1 - bx0, h: by1 - by0 })
   }
 }
-boxes.sort((a, b) => a.bx0 - b.bx0)
-if (boxes.length) {
+
+// Two buttons side by side share a top edge; a heading does not.
+let pair = null
+for (const a of shapes) {
+  for (const b of shapes) {
+    if (a === b || a.x >= b.x) continue
+    if (Math.abs(a.y - b.y) > H * 0.01) continue
+    if (Math.abs(a.h - b.h) > H * 0.01) continue
+    if (a.x + a.w >= b.x) continue
+    if (!pair || a.y > pair[0].y) pair = [a, b]
+  }
+}
+
+if (pair) {
+  const [upload, review] = pair
+  measured.upload = { left: pct(upload.x, W), top: pct(upload.y, H), width: pct(upload.w, W), height: pct(upload.h, H) }
+  measured.review = { left: pct(review.x, W), top: pct(review.y, H), width: pct(review.w, W), height: pct(review.h, H) }
   console.log('\nprinted buttons:')
-  const names = ['upload', 'review']
-  boxes.slice(0, 2).forEach((b, i) => {
-    console.log(`  ${names[i] || 'button' + i}: pixels x ${b.bx0}-${b.bx0 + b.bw}, y ${b.by0}-${b.by0 + b.bh}`)
-    console.log(`  ${names[i] || 'button' + i}: { left:${((b.bx0 / W) * 100).toFixed(1)}, top:${((b.by0 / H) * 100).toFixed(1)}, width:${((b.bw / W) * 100).toFixed(1)}, height:${((b.bh / H) * 100).toFixed(1)} }`)
-  })
+  console.log(`  upload: pixels x ${upload.x}-${upload.x + upload.w}, y ${upload.y}-${upload.y + upload.h}`)
+  console.log(`  ${JSON.stringify(measured.upload)}`)
+  console.log(`  review: pixels x ${review.x}-${review.x + review.w}, y ${review.y}-${review.y + review.h}`)
+  console.log(`  ${JSON.stringify(measured.review)}`)
 } else {
-  console.log('\nno printed buttons found in the lower band')
+  console.log('\nno pair of printed buttons found')
+}
+
+/* ---- put them into the page ---- */
+
+if (writeTo) {
+  if (!measured.orb || !measured.upload || !measured.review) {
+    console.error('\nNot writing: the orb or the buttons were not found. Check the image before trusting anything above.')
+    process.exit(2)
+  }
+  const line = (name, box) =>
+    `  ${name}:${' '.repeat(Math.max(1, 7 - name.length))}{ left:${box.left}, top:${box.top}, width:${box.width}${box.height ? `, height:${box.height}` : ''} }`
+  const block = `window.SABC_HOTSPOTS = {\n${line('orb', measured.orb)},\n${line('upload', measured.upload)},\n${line('review', measured.review)}\n};`
+  const page = fs.readFileSync(writeTo, 'utf8')
+  const next = page.replace(/window\.SABC_HOTSPOTS = \{[\s\S]*?\};/, block)
+  if (next === page) {
+    console.error(`\nNot writing: no hotspot block found in ${writeTo}.`)
+    process.exit(2)
+  }
+  fs.writeFileSync(writeTo, next)
+  console.log(`\nwrote the measurements into ${writeTo}`)
 }
