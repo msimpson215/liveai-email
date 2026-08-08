@@ -136,6 +136,49 @@ async function run() {
   const after = await (await fetch(`${base}/api/founder/status?code=${MINE}`)).json()
   check('nothing is left afterwards', (after.docs || []).length === 0 && (after.summaries || []).length === 0)
 
+  /* --- artwork arriving by link, since a browser cannot always hand over a file --- */
+  const LIVE_IMAGE = 'https://liveai-email.onrender.com/qr/mbm-ask.png'
+  let online = false
+  try { online = (await fetch(LIVE_IMAGE, { method: 'HEAD' })).ok } catch { online = false }
+  if (online) {
+    const linked = await (await fetch(`${base}/api/upload-art`, {
+      method: 'POST',
+      body: (() => {
+        const f = new FormData()
+        f.append('as', 'test-linked.png')
+        f.append('url', LIVE_IMAGE)
+        return f
+      })()
+    })).json()
+    check('artwork can be fetched from a link', linked.ok && linked.name === 'test-linked.png', JSON.stringify(linked))
+    check('and lands where the page expects it', fs.existsSync(path.join(ROOT, 'public', 'art', 'test-linked.png')))
+    fs.rmSync(path.join(ROOT, 'public', 'art', 'test-linked.png'), { force: true })
+  } else {
+    console.log('  skip  artwork from a link — no outbound network from this machine')
+  }
+
+  const inward = await (await fetch(`${base}/api/upload-art`, {
+    method: 'POST',
+    body: (() => {
+      const f = new FormData()
+      f.append('as', 'test-bad.png')
+      f.append('url', 'http://127.0.0.1:22/secrets')
+      return f
+    })()
+  })).json()
+  check('a link pointing inside the server is refused', !inward.ok && /inside the server/.test(inward.error), JSON.stringify(inward))
+
+  const notImage = await (await fetch(`${base}/api/upload-art`, {
+    method: 'POST',
+    body: (() => {
+      const f = new FormData()
+      f.append('as', 'test-page.png')
+      f.append('url', 'https://example.com/')
+      return f
+    })()
+  })).json()
+  check('a link to a page says what to do instead', !notImage.ok && /not an image/.test(notImage.error), JSON.stringify(notImage))
+
   /* --- a session with no OpenAI key fails politely rather than crashing --- */
   const summary = await fetch(`${base}/api/founder/summary`, {
     method: 'POST',

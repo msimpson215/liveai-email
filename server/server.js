@@ -1729,9 +1729,50 @@ f.addEventListener('submit',async e=>{
 </script>`)
 })
 
+/**
+ * Fetch artwork the browser could only give us as a link.
+ *
+ * This is the server making an outbound request on someone else's say-so, so it
+ * is kept narrow: http(s) only, no private or loopback addresses, must come
+ * back as an image, and capped at the same size as an upload.
+ */
+async function fetchRemoteImage(rawUrl) {
+  let url
+  try {
+    url = new URL(String(rawUrl))
+  } catch {
+    throw new Error('That is not a link I can read.')
+  }
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Only http and https links.')
+  const host = url.hostname.toLowerCase()
+  const blocked =
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host === '::1' ||
+    /^(0|10|127)\./.test(host) ||
+    /^169\.254\./.test(host) ||
+    /^192\.168\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host)
+  if (blocked) throw new Error('That link points inside the server.')
+
+  const response = await fetch(url.href, { redirect: 'follow', size: 8 * 1024 * 1024, timeout: 20000 })
+  if (!response.ok) throw new Error(`That link came back ${response.status}. If it needs a login, save the image and pick the file instead.`)
+  const type = String(response.headers.get('content-type') || '')
+  if (!type.startsWith('image/')) {
+    throw new Error('That link is a page, not an image file. Right-click the image itself and copy the image address, or just save it and pick the file.')
+  }
+  const buffer = Buffer.from(await response.arrayBuffer())
+  if (!buffer.length) throw new Error('That link gave back an empty file.')
+  return { buffer, type }
+}
+
 app.post('/api/upload-art', upload.single('art'), async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
+    if (!req.file && req.body?.url) {
+      const { buffer } = await fetchRemoteImage(req.body.url)
+      req.file = { buffer, originalname: String(req.body.as || 'art.png'), mimetype: 'image/png' }
+    }
     if (!req.file) return res.status(400).json({ ok: false, error: 'No file' })
     // A page can ask for a fixed filename ("as") so the artwork lands on the
     // path that page already points at, whatever the file is called on the
@@ -1748,7 +1789,9 @@ app.post('/api/upload-art', upload.single('art'), async (req, res) => {
     fs.writeFileSync(path.join(ART_DIR, safe), req.file.buffer)
     return res.json({ ok: true, name: safe, url: '/art/' + safe })
   } catch (error) {
-    return res.status(500).json({ ok: false, error: 'Could not save that one' })
+    // The link failures say something useful about what to do instead; pass
+    // them through rather than replacing them with "could not save that one".
+    return res.status(400).json({ ok: false, error: error.message || 'Could not save that one' })
   }
 })
 
