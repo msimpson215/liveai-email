@@ -2065,7 +2065,10 @@ app.get('/qr/manual/:slug.png', async (req, res) => {
   if (!entry) return res.status(404).send('No such instructions.')
   try {
     const QRCode = (await import('qrcode')).default
-    const url = `${req.protocol}://${req.get('host')}/manual/${entry.slug}`
+    // Render terminates TLS in front of us, so req.protocol reads http; the
+    // code has to carry the address a phone can actually open.
+    const scheme = String(req.get('x-forwarded-proto') || req.protocol).split(',')[0].trim()
+    const url = `${scheme}://${req.get('host')}/manual/${entry.slug}`
     const png = await QRCode.toBuffer(url, {
       errorCorrectionLevel: 'H',
       margin: 2,
