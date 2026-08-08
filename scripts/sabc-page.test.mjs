@@ -4,30 +4,33 @@
  *   npm i --no-save playwright   (test-only, as with the other browser tests)
  *   node scripts/sabc-page.test.mjs
  *
- * Stand-in artwork is generated at the same proportions as Tim's PNG, with the
- * orb and the two buttons where the real ones are. The page is then loaded in a
- * real browser and the hotspots are measured against what is drawn — because a
- * button you cannot hit is the same as a button that does not work.
+ * Runs against the real artwork in public/art. The positions below were measured
+ * off those files pixel by pixel (scripts/measure-card.mjs), and the page is
+ * loaded in a real browser to check the invisible controls land on the drawn
+ * ones — because a button you cannot hit is the same as a button that does not
+ * work. The QR card is also scanned the way a phone camera would scan it.
  */
 import fs from 'fs'
 import http from 'http'
 import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { PNG } from 'pngjs'
+import jsQR from '../node_modules/jsqr/dist/jsQR.js'
 import { chromium } from 'playwright'
 import { keyFor, forget } from '../server/founder-file.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PUBLIC = path.join(__dirname, '..', 'public')
-const WIDTH = 768
-const HEIGHT = 1024
-
-/* Where the real artwork puts things, in artwork pixels. */
+/* Measured off public/art/sabc-orb.png (1086x1448) and sabc-qr.png (941x1672). */
+const WIDTH = 1086
+const HEIGHT = 1448
 const DRAWN = {
-  orb: { x: 218, y: 286, d: 367 },
-  upload: { x: 105, y: 822, w: 285, h: 57 },
-  review: { x: 400, y: 822, w: 295, h: 57 }
+  orb: { x: 274, y: 373, d: 582 },
+  upload: { x: 151, y: 1155, w: 401, h: 94 },
+  review: { x: 585, y: 1155, w: 400, h: 94 }
 }
+const QR_CARD = { width: 941, height: 1672, modules: { x: 187, y: 477, w: 567, h: 552 } }
 
 const art = fs.mkdtempSync(path.join(os.tmpdir(), 'sabc-art-'))
 const failures = []
@@ -62,24 +65,19 @@ function serve() {
   return new Promise(resolve => server.listen(0, () => resolve(server)))
 }
 
-async function makeFixture(browser) {
-  const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT } })
-  const btn = (b, label) =>
-    `<div class="b" style="left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px">${label}</div>`
-  await page.setContent(`<!doctype html><meta charset="utf-8"><style>
-    html,body{margin:0}
-    body{width:${WIDTH}px;height:${HEIGHT}px;background:#faf8f5;position:relative;overflow:hidden;
-      font-family:Helvetica,Arial,sans-serif}
-    .orb{position:absolute;left:${DRAWN.orb.x}px;top:${DRAWN.orb.y}px;width:${DRAWN.orb.d}px;height:${DRAWN.orb.d}px;
-      border-radius:50%;background:radial-gradient(circle at 38% 30%,#7fb6ff,#0a4fd6 60%,#062f80)}
-    .b{position:absolute;border:1px solid #dcd6cd;border-radius:14px;background:#fff;
-      display:flex;align-items:center;justify-content:center;font-size:15px;color:#12203a}
-  </style>
-  <div class="orb"></div>
-  ${btn(DRAWN.upload, 'Upload Documents')}
-  ${btn(DRAWN.review, 'My Business Review')}`)
-  await page.screenshot({ path: path.join(art, 'sabc-orb.png') })
-  await page.close()
+/* The real files, served exactly as the site serves them. */
+function useRealArtwork() {
+  for (const name of ['sabc-orb.png', 'sabc-qr.png']) {
+    const from = path.join(PUBLIC, 'art', name)
+    if (!fs.existsSync(from)) throw new Error(`missing artwork: ${from}`)
+    fs.copyFileSync(from, path.join(art, name))
+  }
+}
+
+function scanPng(buffer) {
+  const png = PNG.sync.read(buffer)
+  const found = jsQR(new Uint8ClampedArray(png.data), png.width, png.height, { inversionAttempts: 'dontInvert' })
+  return found && found.data
 }
 
 const inside = (hot, drawn) => {
@@ -90,7 +88,7 @@ const inside = (hot, drawn) => {
 
 async function run() {
   const browser = await chromium.launch()
-  await makeFixture(browser)
+  useRealArtwork()
   const server = await serve()
   const base = `http://127.0.0.1:${server.address().port}`
   const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT + 260 }, deviceScaleFactor: 1 })
@@ -103,7 +101,11 @@ async function run() {
   })
 
   await page.goto(`${base}/sabc.html`)
+  // Render at the artwork's own size so hotspot boxes can be compared with the
+  // pixel positions measured off the file.
+  await page.addStyleTag({ content: '.stage{max-width:none !important}' })
   await page.waitForSelector('#orbHot')
+  await page.waitForTimeout(300)
 
   const orb = await page.locator('#orbHot').boundingBox()
   const orbCentre = { x: orb.x + orb.width / 2, y: orb.y + orb.height / 2 }
@@ -166,8 +168,29 @@ async function run() {
   check('the upload button opens a file picker', await page.locator('#docInput').count() === 1)
   check('no page errors', errors.length === 0, errors.join(' | '))
 
+  /* --- the QR card: the printed code is decorative, so it must be covered --- */
+  const qrPage = await browser.newPage({ viewport: { width: QR_CARD.width, height: QR_CARD.height }, deviceScaleFactor: 1 })
+  await qrPage.goto(`${base}/cards/sabc-qr.html`)
+  await qrPage.addStyleTag({ content: '.stage{max-width:none !important}' })   // render at the file's own size
+  await qrPage.waitForSelector('.qr', { timeout: 20000 })
+  await qrPage.waitForTimeout(400)
+  const artBox = await qrPage.locator('.art').boundingBox()
+  const cover = await qrPage.locator('.qr').boundingBox()
+  const rel = { x: cover.x - artBox.x, y: cover.y - artBox.y, width: cover.width, height: cover.height }
+  const m = QR_CARD.modules
+  check('the working code covers the printed one',
+    rel.x <= m.x && rel.y <= m.y && rel.x + rel.width >= m.x + m.w && rel.y + rel.height >= m.y + m.h,
+    JSON.stringify(rel))
+  check('and stays inside the printed frame',
+    rel.x > 150 && rel.y > 430 && rel.x + rel.width < 800 && rel.y + rel.height < 1075, JSON.stringify(rel))
+  const shot = await qrPage.screenshot({ fullPage: true })
+  const scan = scanPng(shot)
+  check('a phone reading the card gets the live page', scan === 'https://liveai-email.onrender.com/start', String(scan))
+  check('both printed buttons on the card are live', await qrPage.locator('a.printed').count() === 2)
+  await qrPage.close()
+
   /* Missing artwork says so rather than showing a blank page. */
-  fs.renameSync(path.join(art, 'sabc-orb.png'), path.join(art, 'held.png'))
+  await page.route('**/art/sabc-orb.png', route => route.fulfill({ status: 404, body: 'gone' }))
   await page.goto(`${base}/sabc.html`)
   await page.waitForSelector('body.noart', { timeout: 5000 }).catch(() => {})
   check('missing artwork explains itself', await page.locator('#missing').isVisible())
