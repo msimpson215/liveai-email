@@ -1640,6 +1640,53 @@ const upload = multer({
   limits: { fileSize: 8 * 1024 * 1024, files: 1 }
 })
 
+// Instruction sheets arrive as photographs more often than as PDFs — the paper
+// is in the box and the box is on the floor. Several pages at once, and room
+// for a phone camera's full-size picture.
+const uploadPages = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 12 * 1024 * 1024, files: 8 }
+})
+
+/**
+ * Read a photographed page.
+ *
+ * A picture of a page is worthless to the assistant until it is text, so the
+ * vision model transcribes it. Transcription only — it is told not to tidy,
+ * summarise or renumber anything, because a step it "improves" is a step
+ * somebody follows with a bed rail in their hands.
+ */
+async function readPhotographedPage(file, pageNumber) {
+  if (!hasApiKey()) throw new Error('The server has no OpenAI key, so it cannot read a photograph.')
+  const dataUrl = `data:${file.mimetype || 'image/jpeg'};base64,${file.buffer.toString('base64')}`
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: process.env.OPENAI_VISION_MODEL || 'gpt-4o-mini',
+      temperature: 0,
+      max_tokens: 3000,
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: `Transcribe this page of an instruction manual into plain text. Rules: every word, number, step number, part name, part letter, measurement, weight limit and warning, in the order they appear. Keep the original numbering exactly. Where a diagram is labelled, write the labels and say briefly what the diagram shows. Do not summarise, do not tidy up the wording, do not renumber, do not add anything that is not printed. If part of it is unreadable, write [unclear] rather than guessing. Output only the transcription.`
+          },
+          { type: 'image_url', image_url: { url: dataUrl, detail: 'high' } }
+        ]
+      }]
+    })
+  })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data?.error?.message || 'could not read that photo')
+  const text = data.choices?.[0]?.message?.content?.trim() || ''
+  return text ? `--- page ${pageNumber} ---\n${text}` : ''
+}
+
 async function extractUploadedText(file) {
   const name = file.originalname || 'document'
   const lower = name.toLowerCase()
@@ -2014,13 +2061,27 @@ app.get('/api/founder/summary/:id.pdf', async (req, res) => {
  * Hand over a manual, get back a page and a code for the box. The QR is drawn
  * on request rather than written to disk, so it cannot go missing.
  */
-app.post('/api/manual', upload.single('file'), async (req, res) => {
+app.post('/api/manual', uploadPages.array('file', 8), async (req, res) => {
   res.set('Cache-Control', 'no-store')
   try {
-    if (!req.file) return res.status(400).json({ ok: false, error: 'Choose the instructions file first.' })
-    const text = await extractUploadedText(req.file)
+    const files = req.files || []
+    if (!files.length) return res.status(400).json({ ok: false, error: 'Choose the instructions first.' })
+
+    // A document is read directly; photographs of the printed sheet are
+    // transcribed a page at a time, in the order they were picked.
+    let text = ''
+    const photos = files.filter(f => String(f.mimetype || '').startsWith('image/'))
+    if (photos.length === files.length) {
+      const pages = []
+      for (let i = 0; i < photos.length; i++) pages.push(await readPhotographedPage(photos[i], i + 1))
+      text = pages.filter(Boolean).join('\n\n')
+      if (!text) throw new Error('I could not make out any text on those photos. Try again with more light, the page filling the frame, and the camera straight on.')
+    } else {
+      text = await extractUploadedText(files[0])
+    }
+
     const title = String(req.body?.title || '').trim() ||
-      String(req.file.originalname || 'Instructions').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ')
+      String(files[0].originalname || 'Instructions').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ')
     const entry = manuals.save(title, text, req.body?.slug)
     res.json({
       ok: true,

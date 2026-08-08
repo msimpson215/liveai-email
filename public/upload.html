@@ -69,10 +69,11 @@
 
   <div class="slot" data-manual="1">
     <h3>Instruction manual</h3>
-    <p class="what">A PDF or Word file with real text in it. You get back a page and a QR code
-    for the box &mdash; scan it and it walks you through the job one step at a time, hands free.</p>
-    <div class="drop" tabindex="0">Choose the manual, <b>drag it here</b>, or click and paste</div>
-    <input type="file" class="file" accept=".pdf,.doc,.docx,.txt,.md,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+    <p class="what">A PDF, a Word file, <b>or just photograph the printed sheet</b> &mdash; both sides,
+    several pictures at once is fine. You get back a page and a QR code for the box: scan it and it walks
+    you through the job one step at a time, hands free.</p>
+    <div class="drop" tabindex="0">Choose the manual or the photos, <b>drag them here</b>, or click and paste</div>
+    <input type="file" class="file" multiple accept=".pdf,.doc,.docx,.txt,.md,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
     <p class="state"></p>
     <img class="shot" alt="">
   </div>
@@ -108,7 +109,7 @@ document.querySelectorAll('.slot').forEach(function(slot){
 
   async function send(f){
     if(!f)return;
-    if(isManual)return sendManual(f);
+    if(isManual)return;                    /* manuals are sent together, below */
     if(!/^image\//.test(f.type||'')){ show('\u2717 '+f.name+' is not an image file.','bad'); return; }
     show('Uploading '+(many?f.name:'')+'\u2026');
     const body=new FormData();
@@ -124,14 +125,21 @@ document.querySelectorAll('.slot').forEach(function(slot){
   }
 
   async function sendAll(list){
+    if(isManual)return sendManual(list);   /* pages of one manual, in one go */
     for(const f of list) await send(f);
   }
 
-  /* A manual is read, not displayed: it comes back as a page and a code. */
-  async function sendManual(f){
-    show('Reading '+f.name+'\u2026 this takes a few seconds for a long one.');
+  /* A manual is read, not displayed: it comes back as a page and a code.
+     Photographs of a printed sheet go up together and are read in order. */
+  async function sendManual(list){
+    const files=[...list];
+    if(!files.length)return;
+    const photos=files.filter(function(f){return /^image\//.test(f.type||'')}).length;
+    show(photos===files.length
+      ? 'Reading '+files.length+(files.length===1?' photo':' photos')+'\u2026 this takes a few seconds a page.'
+      : 'Reading '+files[0].name+'\u2026 this takes a few seconds for a long one.');
     const body=new FormData();
-    body.append('file',f);
+    for(const f of files) body.append('file',f);
     try{
       const r=await fetch('/api/manual',{method:'POST',body:body});
       const d=await r.json();
