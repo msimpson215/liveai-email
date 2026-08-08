@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#faf8f5">
 <meta name="robots" content="noindex">
-<title>Start Your Business — StartABusiness.Center</title>
+<title>Start Your Business — StartABusiness.Center (version 1)</title>
 <link rel="stylesheet" href="/css/sabc-card.css">
 </head>
 <body data-state="idle">
 
+<!--
+  Version 1, kept exactly as it was on 8 August 2026 and never overwritten.
+  /start always shows the current artwork; this URL always shows this one, so a
+  version that works can never be lost to a later export.
+-->
 <div class="stage" id="stage">
-  <p class="missing" id="missing">This page shows your artwork and nothing else, and the artwork file has not
-    reached the server yet. Nothing has been designed, drawn or substituted in its place.
-    <a href="/cards/sabc-artwork.html">Send the PNG here</a> and this page becomes the card, exactly as drawn.
-    <span class="plain">The consultant itself is already running. To hear it without the artwork:
-    <a href="/talk-to-the-consultant">plain test page</a>.</span></p>
-  <img class="art" id="art" src="/art/sabc-orb.png"
+  <p class="missing" id="missing">Version 1 of the artwork is not on this server.</p>
+  <img class="art" id="art" src="/art/sabc-orb-v1.png"
        alt="Start your business — talk with our AI business consultant">
   <button type="button" class="hot" id="orbHot" aria-label="Tap the orb to talk about your business">Tap the orb</button>
   <button type="button" class="hot btnHot" id="uploadHot" aria-label="Upload documents">Upload documents</button>
@@ -34,9 +35,6 @@
 
 <script src="/axon-voice.js"></script>
 <script>
-/* Where the orb and the two printed buttons sit inside the artwork, as
-   percentages of the image. Measured from the finished PNG; add ?tune=1 to the
-   URL to outline them if the artwork is ever re-exported. */
 window.SABC_HOTSPOTS = {
   orb:    { left:25.2, top:25.8, width:53.6 },
   upload: { left:13.9, top:79.8, width:36.9, height:6.5 },
