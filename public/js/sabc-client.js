@@ -14,6 +14,7 @@ const art=document.getElementById('art');
 const orbHot=document.getElementById('orbHot');
 const uploadHot=document.getElementById('uploadHot');
 const reviewHot=document.getElementById('reviewHot');
+const summaryHot=document.getElementById('summaryHot');   /* only on artwork that has it */
 const statusEl=document.getElementById('status');
 const rowEl=document.getElementById('row');
 const docInput=document.getElementById('docInput');
@@ -34,8 +35,12 @@ if(HOTSPOTS){
   place(orbHot,HOTSPOTS.orb);
   place(uploadHot,HOTSPOTS.upload);
   place(reviewHot,HOTSPOTS.review);
+  place(summaryHot,HOTSPOTS.summary);
+  /* A control with nothing drawn under it must not be clickable. */
+  if(summaryHot&&!HOTSPOTS.summary)summaryHot.style.display='none';
   if(/[?&]tune=1/.test(location.search)){
-    [orbHot,uploadHot,reviewHot].forEach(function(el){
+    [orbHot,uploadHot,reviewHot,summaryHot].forEach(function(el){
+      if(!el||el.style.display==='none')return;
       el.style.outline='2px dashed #f4681f';
       el.style.background='rgba(244,104,31,.18)';
     });
@@ -274,6 +279,24 @@ profileInput.addEventListener('change',async function(){
     say('Loaded. '+d.answered+' of '+d.total+' questions already answered \u2014 tap the orb and we\u2019ll carry on.');
   }catch(e){ say(e.message||'That file could not be read as a business profile.',true); }
   profileInput.value='';
+  refresh();
+});
+
+/* ---- download summary: what this conversation covered, to keep ----
+   Distinct from the business review, which analyses the whole profile. This is
+   the shorter "here is where you are and what to do next" write-up. */
+if(summaryHot)summaryHot.addEventListener('click',async function(){
+  if(!hasTalked()){ say('Talk with me for a minute first, then I can write it up.',true); return; }
+  say('Writing your summary\u2026');
+  summaryHot.disabled=true;
+  try{
+    const r=await fetch('/api/founder/summary',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code:CODE,turns:turns()})});
+    const d=await r.json();
+    if(!d.ok)throw new Error(d.error||'summary failed');
+    say('Your summary is ready \u2014 <a href="'+d.url+'" download>download the PDF</a>.');
+  }catch(e){ say(e.message||'I could not write that up just now.',true); }
+  summaryHot.disabled=false;
   refresh();
 });
 

@@ -112,29 +112,32 @@ for (let y = bandTop; y < bandBottom; y++) {
   }
 }
 
-// Two buttons side by side share a top edge; a heading does not.
-let pair = null
-for (const a of shapes) {
-  for (const b of shapes) {
-    if (a === b || a.x >= b.x) continue
-    if (Math.abs(a.y - b.y) > H * 0.01) continue
-    if (Math.abs(a.h - b.h) > H * 0.01) continue
-    if (a.x + a.w >= b.x) continue
-    if (!pair || a.y > pair[0].y) pair = [a, b]
-  }
+// Buttons sit in a row sharing a top edge, so group the shapes by their top and
+// take the largest row. A heading is one shape on its own and drops out.
+const rows = []
+for (const shape of shapes) {
+  const row = rows.find(r => Math.abs(r[0].y - shape.y) <= H * 0.01 && Math.abs(r[0].h - shape.h) <= H * 0.01)
+  if (row) row.push(shape)
+  else rows.push([shape])
 }
+const row = rows
+  .filter(r => r.length >= 2)
+  .sort((a, b) => b.length - a.length || b[0].y - a[0].y)[0]
 
-if (pair) {
-  const [upload, review] = pair
-  measured.upload = { left: pct(upload.x, W), top: pct(upload.y, H), width: pct(upload.w, W), height: pct(upload.h, H) }
-  measured.review = { left: pct(review.x, W), top: pct(review.y, H), width: pct(review.w, W), height: pct(review.h, H) }
-  console.log('\nprinted buttons:')
-  console.log(`  upload: pixels x ${upload.x}-${upload.x + upload.w}, y ${upload.y}-${upload.y + upload.h}`)
-  console.log(`  ${JSON.stringify(measured.upload)}`)
-  console.log(`  review: pixels x ${review.x}-${review.x + review.w}, y ${review.y}-${review.y + review.h}`)
-  console.log(`  ${JSON.stringify(measured.review)}`)
+if (row) {
+  // Left to right, they are Upload Documents, My Business Review, and — on the
+  // artwork that has three — Download Summary.
+  const names = ['upload', 'review', 'summary']
+  const buttons = row.sort((a, b) => a.x - b.x).slice(0, 3)
+  console.log(`\nprinted buttons (${buttons.length}):`)
+  buttons.forEach((b, i) => {
+    const name = names[i]
+    measured[name] = { left: pct(b.x, W), top: pct(b.y, H), width: pct(b.w, W), height: pct(b.h, H) }
+    console.log(`  ${name}: pixels x ${b.x}-${b.x + b.w}, y ${b.y}-${b.y + b.h}`)
+    console.log(`  ${JSON.stringify(measured[name])}`)
+  })
 } else {
-  console.log('\nno pair of printed buttons found')
+  console.log('\nno row of printed buttons found')
 }
 
 /* ---- put them into the page ---- */
@@ -146,13 +149,20 @@ if (writeTo) {
   }
   const line = (name, box) =>
     `  ${name}:${' '.repeat(Math.max(1, 7 - name.length))}{ left:${box.left}, top:${box.top}, width:${box.width}${box.height ? `, height:${box.height}` : ''} }`
-  const block = `window.SABC_HOTSPOTS = {\n${line('orb', measured.orb)},\n${line('upload', measured.upload)},\n${line('review', measured.review)}\n};`
+  const rowsOut = [line('orb', measured.orb), line('upload', measured.upload), line('review', measured.review)]
+  if (measured.summary) rowsOut.push(line('summary', measured.summary))
+  const block = `window.SABC_HOTSPOTS = {\n${rowsOut.join(',\n')}\n};`
   const page = fs.readFileSync(writeTo, 'utf8')
-  const next = page.replace(/window\.SABC_HOTSPOTS = \{[\s\S]*?\};/, block)
-  if (next === page) {
+  const pattern = /window\.SABC_HOTSPOTS = \{[\s\S]*?\};/
+  if (!pattern.test(page)) {
     console.error(`\nNot writing: no hotspot block found in ${writeTo}.`)
     process.exit(2)
   }
-  fs.writeFileSync(writeTo, next)
-  console.log(`\nwrote the measurements into ${writeTo}`)
+  const next = page.replace(pattern, block)
+  if (next === page) {
+    console.log(`\n${writeTo} already has these measurements — nothing to change.`)
+  } else {
+    fs.writeFileSync(writeTo, next)
+    console.log(`\nwrote the measurements into ${writeTo}`)
+  }
 }
