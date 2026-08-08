@@ -124,6 +124,26 @@ async function run() {
     return s.backgroundColor === 'rgba(0, 0, 0, 0)' && s.borderTopWidth === '0px'
   }))
 
+  /* Nothing may be painted on, over or around the artwork — the orb especially. */
+  const paint = await page.locator('#stage').evaluate(el =>
+    [...el.children].filter(child => child.tagName !== 'IMG').map(child => {
+      const s = getComputedStyle(child)
+      return {
+        tag: child.id || child.tagName,
+        background: s.backgroundColor,
+        image: s.backgroundImage,
+        shadow: s.boxShadow,
+        outline: s.outlineStyle,
+        border: s.borderTopWidth,
+        opacity: s.opacity
+      }
+    }))
+  const painted = paint.filter(p =>
+    p.background !== 'rgba(0, 0, 0, 0)' || p.image !== 'none' || p.shadow !== 'none' ||
+    (p.outline !== 'none' && p.outline !== '') || p.border !== '0px')
+  check('nothing is drawn on the artwork', painted.length === 0, JSON.stringify(painted))
+  check('the only thing over the image is invisible hotspots', paint.length === 3, JSON.stringify(paint.map(p => p.tag)))
+
   /* The artwork must be shown as delivered, at its own proportions. */
   const shown = await page.locator('#art').evaluate(el => ({ w: el.clientWidth, h: el.clientHeight, nw: el.naturalWidth, nh: el.naturalHeight }))
   check('the artwork keeps its proportions',

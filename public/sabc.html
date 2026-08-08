@@ -30,20 +30,10 @@
   }
   .hot:focus-visible{ outline:3px solid var(--orange); outline-offset:3px }
   #orbHot{ border-radius:50%; aspect-ratio:1 }
-  #orbHot:active{ transform:scale(.99) }
-  .btnHot{ border-radius:14px }
+    .btnHot{ border-radius:14px }
 
-  /* The orb is a finished image and stays untouched; a ring outside its edge is
-     the only way to show listening without drawing on it. */
-  .halo{
-    position:absolute; border-radius:50%; pointer-events:none; opacity:0;
-    box-shadow:0 0 0 3px rgba(41,120,255,.55), 0 0 46px 14px rgba(41,120,255,.35);
-    transition:opacity .25s ease;
-  }
-  body[data-state="connecting"] .halo{ opacity:1; animation:pulse 1.2s ease-in-out infinite }
-  body[data-state="listening"] .halo{ opacity:1 }
-  body[data-state="speaking"] .halo{ opacity:1; box-shadow:0 0 0 4px rgba(41,120,255,.75), 0 0 66px 20px rgba(41,120,255,.45) }
-  @keyframes pulse{ 50%{ opacity:.45 } }
+  /* Nothing is drawn on or around the artwork. What the assistant is doing is
+     said in words under the image instead. */
 
   .tray{ width:100%; max-width:768px; padding:16px 22px 30px; text-align:center }
   .status{ margin:0; font-size:16px; line-height:1.5; color:var(--muted); min-height:24px }
@@ -66,7 +56,6 @@
 <div class="stage" id="stage">
   <img class="art" id="art" src="/art/sabc-orb.png"
        alt="Start your business — talk with our AI business consultant">
-  <span class="halo" id="halo"></span>
   <button type="button" class="hot" id="orbHot" aria-label="Tap the orb to talk about your business">Tap the orb</button>
   <button type="button" class="hot btnHot" id="uploadHot" aria-label="Upload documents">Upload documents</button>
   <button type="button" class="hot btnHot" id="reviewHot" aria-label="My business review">My business review</button>
@@ -94,7 +83,6 @@ const HOTSPOTS = {
 
 const stage=document.getElementById('stage');
 const art=document.getElementById('art');
-const halo=document.getElementById('halo');
 const orbHot=document.getElementById('orbHot');
 const uploadHot=document.getElementById('uploadHot');
 const reviewHot=document.getElementById('reviewHot');
@@ -112,12 +100,6 @@ function place(el,box){
 place(orbHot,HOTSPOTS.orb);
 place(uploadHot,HOTSPOTS.upload);
 place(reviewHot,HOTSPOTS.review);
-/* The ring sits just outside the orb so the artwork itself is never covered. */
-halo.style.left=(HOTSPOTS.orb.left-1.4)+'%';
-halo.style.top=(HOTSPOTS.orb.top-1.4)+'%';
-halo.style.width=(HOTSPOTS.orb.width+2.8)+'%';
-halo.style.aspectRatio='1';
-
 if(/[?&]tune=1/.test(location.search)){
   [orbHot,uploadHot,reviewHot].forEach(function(el){
     el.style.outline='2px dashed #f4681f';
