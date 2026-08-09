@@ -6,91 +6,55 @@
 <meta name="theme-color" content="#0b0b0b">
 <meta name="robots" content="noindex">
 <title>Scan Here — A1 Professional Asphalt</title>
-<link rel="stylesheet" href="/cards/card.css">
 <style>
-  body{ background:#111 }
-  .stage{ max-width:1024px }
-  .dropneed{
-    margin:0; padding:36px 28px; text-align:center; color:#f4f4f4;
-    font-size:16px; line-height:1.6; background:#0b0b0b;
-    border:2px dashed #fdba01; border-radius:12px; cursor:pointer;
+  :root{ --black:#0b0b0b; --yellow:#fdba01; --white:#f4f4f4 }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--black); color:var(--white); min-height:100vh;
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:flex; justify-content:center;
   }
-  .dropneed b{ color:#fdba01 }
-  .dropneed.over{ background:#1a1500 }
-  .dropneed .err{ color:#ff8a80; display:block; margin-top:12px }
+  .sheet{ width:100%; max-width:600px; min-height:100vh; display:flex; flex-direction:column; background:var(--black) }
+  .logo{ display:block; width:100%; height:auto }
+  .stripes{ height:14px; background:repeating-linear-gradient(135deg,var(--yellow) 0 22px,#111 22px 44px) }
+  main{ padding:28px 24px 36px; text-align:center; flex:1 0 auto }
+  h1{ margin:0 0 8px; font-size:28px; line-height:1.2; font-weight:800; text-transform:uppercase; letter-spacing:.02em }
+  h1 em{ font-style:normal; color:var(--yellow) }
+  .sub{ margin:0 0 22px; font-size:16px; color:#cfcfcf; line-height:1.45 }
+  .panel{
+    background:#fff; border:4px solid var(--yellow); border-radius:12px; padding:18px;
+    margin:0 auto 22px; max-width:360px;
+  }
+  .panel img{ width:100%; max-width:300px; height:auto; display:block; margin:0 auto }
+  .scan{ margin:0 0 18px; font-size:22px; font-weight:800; letter-spacing:.08em; color:var(--yellow) }
+  .about{ margin:0 auto; max-width:420px; font-size:16px; line-height:1.5; color:#ddd }
+  .about b{ color:var(--yellow) }
+  .try{
+    display:inline-block; margin:26px 0 0; text-decoration:none;
+    background:var(--yellow); color:#111; font-size:16px; font-weight:800;
+    padding:14px 24px; border-radius:10px;
+  }
 </style>
 </head>
 <body>
-
-<!-- Back of the card, as delivered. Working code over the printed one → A1 brain. -->
-<div class="stage" id="stage"
-     data-card
-     data-url="https://liveai-email.onrender.com/a1-ask.html"
-     data-qr="/qr/a1-ask-overlay.svg"
-     data-qr-box="8.5,42.0,32.0,48.0">
-  <img class="art" id="art" src="/art/a1-card-back.png"
-       alt="Scan here to talk with the A1 Professional Asphalt AI team member">
+<div class="sheet">
+  <img class="logo" src="/art/a1-logo.jpg" alt="A1 Professional Asphalt and Sealing LLC">
+  <div class="stripes"></div>
+  <main>
+    <h1>Scan Here</h1>
+    <p class="sub">Talk with our <em>AI team member</em> about A1 Professional Asphalt.</p>
+    <div class="panel">
+      <img src="/qr/a1-ask.png" alt="QR code — scan to open the A1 AI team member">
+    </div>
+    <p class="scan">SCAN HERE</p>
+    <p class="about">
+      Learn all about <b>A1 Professional Asphalt.</b><br>
+      Talk with our <b>AI team member now</b> to get your questions answered.
+    </p>
+    <a class="try" href="/a1-ask.html">Open the AI team member</a>
+  </main>
+  <div class="stripes"></div>
 </div>
-
-<script>
-(function () {
-  const stage = document.getElementById('stage');
-  const art = document.getElementById('art');
-  const asName = 'a1-card-back.png';
-
-  function wireLive() {
-    const s = document.createElement('script');
-    s.src = '/cards/card.js';
-    document.body.appendChild(s);
-  }
-
-  function showDrop() {
-    art.style.display = 'none';
-    const p = document.createElement('p');
-    p.className = 'dropneed';
-    p.innerHTML = 'Drop the <b>back</b> PNG (SCAN HERE) right on this page.';
-    stage.appendChild(p);
-    const file = document.createElement('input');
-    file.type = 'file';
-    file.accept = 'image/*';
-    file.style.display = 'none';
-    stage.appendChild(file);
-
-    async function send(f) {
-      if (!f || !/^image\//.test(f.type || '')) {
-        p.innerHTML += '<span class="err">That was not an image file.</span>';
-        return;
-      }
-      p.innerHTML = 'Saving\u2026';
-      const body = new FormData();
-      body.append('as', asName);
-      body.append('art', f, asName);
-      try {
-        const r = await fetch('/api/upload-art', { method: 'POST', body });
-        const d = await r.json();
-        if (!d.ok) throw new Error(d.error || 'failed');
-        if (d.bytes && d.bytes < 10000) throw new Error('Need the real Canva PNG');
-        location.reload();
-      } catch (err) {
-        p.innerHTML = 'Could not save that. <span class="err">' + (err.message || '') + '</span>';
-      }
-    }
-
-    p.addEventListener('click', () => file.click());
-    file.addEventListener('change', () => send(file.files[0]));
-    ['dragenter', 'dragover'].forEach(t => p.addEventListener(t, e => { e.preventDefault(); p.classList.add('over'); }));
-    ['dragleave', 'drop'].forEach(t => p.addEventListener(t, e => { e.preventDefault(); p.classList.remove('over'); }));
-    p.addEventListener('drop', e => {
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) send(e.dataTransfer.files[0]);
-    });
-  }
-
-  if (art.complete && art.naturalWidth) wireLive();
-  else {
-    art.addEventListener('load', wireLive);
-    art.addEventListener('error', showDrop);
-  }
-})();
-</script>
 </body>
 </html>

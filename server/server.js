@@ -256,6 +256,11 @@ app.get('/a1/card/back', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/cards/a1-card-back.html')
 })
+/** Short path to the scannable A1 QR page (same as the back of the card). */
+app.get('/a1/qr', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cards/a1-card-back.html')
+})
 
 /** The same consultant with no artwork around it, for hearing it work. */
 app.get('/talk-to-the-consultant', (_req, res) => {
