@@ -247,6 +247,16 @@ app.get('/card/back', (_req, res) => {
   res.redirect(302, '/cards/sabc-card-back.html')
 })
 
+/** A1 Professional Asphalt business card — front display, back scans to the A1 brain. */
+app.get('/a1/card', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cards/a1-card.html')
+})
+app.get('/a1/card/back', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cards/a1-card-back.html')
+})
+
 /** The same consultant with no artwork around it, for hearing it work. */
 app.get('/talk-to-the-consultant', (_req, res) => {
   res.set('Cache-Control', 'no-store')

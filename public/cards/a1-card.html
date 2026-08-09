@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0b">
+<meta name="robots" content="noindex">
+<title>Joe Schanz — A1 Professional Asphalt</title>
+<link rel="stylesheet" href="/cards/card.css">
+<style>
+  body{ background:#111 }
+  .stage{ max-width:1024px }
+  .dropneed{
+    margin:0; padding:36px 28px; text-align:center; color:#f4f4f4;
+    font-size:16px; line-height:1.6; background:#0b0b0b;
+    border:2px dashed #fdba01; border-radius:12px; cursor:pointer;
+  }
+  .dropneed b{ color:#fdba01 }
+  .dropneed.over{ background:#1a1500 }
+  .dropneed .err{ color:#ff8a80; display:block; margin-top:12px }
+</style>
+</head>
+<body>
+
+<!-- Front of the card, as delivered. No live hotspot — the back carries the code. -->
+<div class="stage" id="stage"
+     data-art-as="a1-card-front.png">
+  <img class="art" id="art" src="/art/a1-card-front.png"
+       alt="Joe Schanz, Owner — A1 Professional Asphalt &amp; Sealing LLC">
+</div>
+
+<script>
+(function () {
+  const stage = document.getElementById('stage');
+  const art = document.getElementById('art');
+  const asName = stage.dataset.artAs;
+
+  function showDrop(msg) {
+    if (stage.querySelector('.dropneed')) return;
+    art.style.display = 'none';
+    const p = document.createElement('p');
+    p.className = 'dropneed';
+    p.innerHTML = msg || ('Drop the <b>front</b> PNG of the A1 business card right here.<br>It stays as-is — nothing is redrawn.');
+    stage.appendChild(p);
+    const file = document.createElement('input');
+    file.type = 'file';
+    file.accept = 'image/*';
+    file.style.display = 'none';
+    stage.appendChild(file);
+
+    async function send(f) {
+      if (!f || !/^image\//.test(f.type || '')) {
+        p.innerHTML += '<span class="err">That was not an image file.</span>';
+        return;
+      }
+      p.innerHTML = 'Saving\u2026';
+      const body = new FormData();
+      body.append('as', asName);
+      body.append('art', f, asName);
+      try {
+        const r = await fetch('/api/upload-art', { method: 'POST', body });
+        const d = await r.json();
+        if (!d.ok) throw new Error(d.error || 'failed');
+        if (d.bytes && d.bytes < 10000) throw new Error('File too small — need the real Canva PNG');
+        location.reload();
+      } catch (err) {
+        p.innerHTML = 'Could not save that. <span class="err">' + (err.message || '') + '</span><br>Drop the front PNG here again.';
+      }
+    }
+
+    p.addEventListener('click', () => file.click());
+    file.addEventListener('change', () => send(file.files[0]));
+    ['dragenter', 'dragover'].forEach(t => p.addEventListener(t, e => { e.preventDefault(); p.classList.add('over'); }));
+    ['dragleave', 'drop'].forEach(t => p.addEventListener(t, e => { e.preventDefault(); p.classList.remove('over'); }));
+    p.addEventListener('drop', e => {
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) send(e.dataTransfer.files[0]);
+    });
+  }
+
+  function ready() {
+    if (!art.naturalWidth) showDrop();
+  }
+  if (art.complete) ready();
+  else {
+    art.addEventListener('load', ready);
+    art.addEventListener('error', () => showDrop());
+  }
+})();
+</script>
+</body>
+</html>
