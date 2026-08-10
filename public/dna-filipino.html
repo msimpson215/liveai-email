@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="DNA Sagot"/>
+<meta name="theme-color" content="#0a2466"/>
+<meta name="cache-control" content="no-store"/>
+<meta name="description" content="DNA Sagot — magtanong tungkol sa paternity testing sa Filipino. Pribado, walang judgment."/>
+<link rel="apple-touch-icon" href="/icons/axon-blue-180.png"/>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<title>DNA Sagot — Magtanong tungkol sa paternity testing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:#0d1b3e;
+  background:#f5f9ff;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{width:min(100%,560px);margin:0 auto;padding:0 1.15rem}
+.hero{
+  background:
+    radial-gradient(90% 60% at 50% 0%, #2f6fe0 0%, #123a8c 45%, #061a4e 100%);
+  color:#fff;
+  padding:2.4rem 0 2.6rem;
+  text-align:center;
+  border-radius:0 0 28px 28px;
+}
+.brand{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:#bfd6ff;margin-bottom:1.1rem;
+}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:#7fb0ff;box-shadow:0 0 10px #7fb0ff}
+h1{
+  font-size:clamp(1.75rem,7vw,2.35rem);
+  font-weight:800;letter-spacing:-.03em;line-height:1.12;
+}
+.hero p{
+  margin-top:.85rem;font-size:1.05rem;line-height:1.5;color:#d3e2ff;
+  max-width:23rem;margin-left:auto;margin-right:auto;
+}
+#orb{
+  margin:1.6rem auto .9rem;display:block;
+  width:min(46vw,168px);aspect-ratio:1;border:0;padding:0;cursor:pointer;border-radius:50%;
+  background:radial-gradient(circle at 36% 30%, #f2f8ff 0%, #a9ccff 26%, #4b90f7 58%, #1b4bb8 100%);
+  box-shadow:0 16px 44px rgba(0,0,0,.35),
+    inset 0 -12px 28px rgba(6,26,78,.45),
+    inset 0 10px 24px rgba(255,255,255,.5);
+  transition:transform .18s ease;animation:breathe 4.5s ease-in-out infinite;
+}
+#orb:active{transform:scale(.96)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+body[data-state="connecting"] #orb,
+body[data-state="speaking"] #orb{animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.07);filter:brightness(1.15)}}
+.hint{font-size:1rem;font-weight:600;color:#eaf2ff;min-height:1.5em}
+.subhint{margin-top:.35rem;font-size:.82rem;color:#9dbcf0}
+section{padding:1.9rem 0 .4rem}
+h2{
+  font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:#5b7bc4;margin-bottom:.9rem;
+}
+.tests{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.t{
+  background:#fff;border:1px solid rgba(30,64,175,.13);border-radius:13px;
+  padding:.75rem .8rem;
+}
+.t b{display:block;font-size:.9rem;margin-bottom:.15rem}
+.t span{font-size:.76rem;line-height:1.35;color:#5b6b8c}
+.t.wide{grid-column:1 / -1}
+.t.hi{background:linear-gradient(160deg,#eef4ff,#fff);border-color:rgba(30,64,175,.28)}
+.t.hi b{color:#1e40af}
+ol.steps{list-style:none;counter-reset:s;margin-top:.2rem}
+ol.steps li{
+  counter-increment:s;position:relative;padding-left:2.05rem;margin-bottom:.7rem;
+  font-size:.94rem;line-height:1.45;color:#28395f;
+}
+ol.steps li:last-child{margin-bottom:0}
+ol.steps li::before{
+  content:counter(s);position:absolute;left:0;top:-.05rem;
+  width:1.45rem;height:1.45rem;border-radius:50%;
+  background:#1e40af;color:#fff;font-size:.75rem;font-weight:700;
+  display:grid;place-items:center;
+}
+.privacy{
+  background:#0d1b3e;color:#cfe0ff;border-radius:16px;
+  padding:1.1rem 1.15rem;margin-top:1.4rem;font-size:.9rem;line-height:1.55;
+}
+.privacy b{color:#fff}
+.cta{
+  display:block;text-align:center;text-decoration:none;margin-top:1.5rem;
+  background:linear-gradient(180deg,#3b82f6,#1e40af);color:#fff;
+  font-weight:700;font-size:1.05rem;padding:1.05rem;border-radius:14px;
+  box-shadow:0 12px 28px rgba(30,64,175,.28);
+}
+.cta span{display:block;font-weight:500;font-size:.8rem;opacity:.87;margin-top:.2rem}
+footer{
+  text-align:center;padding:1.6rem 0 2.4rem;
+  font-size:.76rem;line-height:1.55;color:#7385a8;
+}
+footer b{color:#1e40af}
+.lang{margin-top:1rem;font-size:.8rem}
+.lang a{color:#9dbcf0}
+</style>
+</head>
+<body data-state="idle">
+
+  <div class="hero">
+    <div class="wrap">
+      <div class="brand"><span class="dot"></span>DNA Sagot · Filipino</div>
+      <h1>May tanong tungkol sa paternity test?</h1>
+      <p>I-tap at magsalita lang sa Filipino. Walang hold music, walang judgment — kahit anong oras.</p>
+      <button type="button" id="orb" aria-label="I-tap para magsalita"></button>
+      <p class="hint" id="hint">I-tap para magsalita</p>
+      <p class="subhint">Itanong ang gastos, paano ito ginagawa, o anong test ang kailangan mo</p>
+      <p class="lang"><a href="/dna">English version</a></p>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <h2>Lahat ng test, isang lugar</h2>
+      <div class="tests">
+        <div class="t hi"><b>Legal</b><span>Pwedeng gamitin sa korte — support, custody, birth certificate</span></div>
+        <div class="t hi"><b>Informational</b><span>Peace of mind. Parehong accuracy, pribado</span></div>
+        <div class="t wide"><b>Prenatal — bago isilang ang bata</b><span>Blood draw mula sa nanay at cheek swab mula sa ama. Walang kinukuha sa sanggol. Mula bandang pitong linggo.</span></div>
+        <div class="t"><b>Lolo / Lola</b><span>Kapag hindi available ang ama</span></div>
+        <div class="t"><b>Tiyahin / Tito</b><span>Isa pang daan sa parehong sagot</span></div>
+        <div class="t"><b>Kapatid</b><span>Full o half</span></div>
+        <div class="t"><b>Immigration</b><span>Para sa petisyon</span></div>
+        <div class="t"><b>Maternity</b><span>Para sa ina</span></div>
+        <div class="t"><b>Kambal</b><span>Identical o fraternal</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Paano ito gumagana</h2>
+      <ol class="steps">
+        <li>Sabihin kung ano ang gusto mong malaman. Sasabihin namin kung aling test ang bagay.</li>
+        <li>Ise-schedule namin ang collection sa lab na malapit sa'yo — kino-confirm ng team ang lokal na site.</li>
+        <li>Painless cheek swab. Walang karayom. Hindi kailangang sabay-sabay o magkaparehong lungsod.</li>
+        <li>Results bandang tatlo hanggang limang business days pagkatapos matanggap ng lab ang samples.</li>
+      </ol>
+    </section>
+
+    <div class="privacy">
+      <b>Mas karaniwan ito kaysa sa iniisip mo.</b> Walang magugulat dito sa sitwasyon mo,
+      at walang huhusga. Itanong ang kailangan mong itanong — pribado at may respeto.
+    </div>
+
+    <a class="cta" href="#orb" id="ctaTalk">
+      Magsimulang mag-usap ngayon
+      <span>Sumasagot ng tanong, nagpapaliwanag ng options, walang pressure</span>
+    </a>
+
+    <footer>
+      <b>DNA Sagot</b> · Powered by Axon AI<br/>
+      AI guide, hindi tao. Hindi nito hinuhulaan o iniinterpret ang result ng sinuman,
+      at hindi ito nagbibigay ng legal o medical advice. Human staff ang nagko-confirm
+      ng presyo at scheduling.
+    </footer>
+
+  </div>
+
+<script>
+const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+let pc=null,localStream=null,starting=false,audioEl=null;
+
+function setState(s,msg){
+  document.body.dataset.state=s||'idle';
+  if(msg!==undefined)hint.textContent=msg;
+}
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;audioEl.playsInline=true;
+    document.body.appendChild(audioEl);
+  }
+  return audioEl;
+}
+async function stopVoice(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setState('idle','I-tap para magsalita');
+}
+async function connectVoice(){
+  const r=await fetch('/session?src=dnafil',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error){
+    const err=new Error(data.error||'session');
+    err.status=r.status;err.detail=data.error;throw err;
+  }
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){
+      audio.srcObject=e.streams[0];
+      audio.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
+  });
+  const micTrack=localStream.getTracks()[0];
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  let greeted=false,micOpened=false;
+  function openMic(){
+    if(micOpened)return;
+    micOpened=true;
+    try{micTrack.enabled=true}catch(e){}
+  }
+  dc.addEventListener('open',()=>{
+    if(greeted)return;
+    greeted=true;
+    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.type==='response.created')setState('speaking','Nagsasalita…');
+      if(msg.type==='response.done'){
+        openMic();
+        setState('listening','Nakikinig — sige, magsalita');
+      }
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok){
+    let detail='';
+    try{detail=await sdp.text()}catch(e){}
+    const outOfCredit=/insufficient_quota|exceeded your current quota|billing/i.test(detail);
+    const err=new Error(outOfCredit?'quota':(sdp.status===429?'busy':'sdp'));
+    err.status=sdp.status;throw err;
+  }
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  setState('listening','Nakikinig — sige, magsalita');
+}
+async function toggleVoice(){
+  if(starting)return;
+  if(pc){await stopVoice();return}
+  starting=true;
+  setState('connecting','Sandali lang…');
+  try{
+    await connectVoice();
+  }catch(e){
+    console.error(e);
+    starting=false;
+    await stopVoice();
+    if(e&&e.status===429&&e.detail){setState('idle',e.detail);return}
+    const why=e&&e.message;
+    setState('idle',
+      why==='quota'?'Pansamantalang hindi available. Subukan ulit mamaya.':
+      why==='busy'?'Abala ngayon. Subukan ulit sa isang minuto.':
+      'Hindi nakonekta. I-tap ulit.');
+    return;
+  }
+  starting=false;
+}
+orb.addEventListener('click',toggleVoice);
+document.getElementById('ctaTalk').addEventListener('click',function(e){
+  e.preventDefault();
+  orb.scrollIntoView({behavior:'smooth',block:'center'});
+  if(!pc&&!starting)toggleVoice();
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&(pc||starting))stopVoice();
+});
+window.addEventListener('pagehide',()=>{if(pc||starting)stopVoice()});
+</script>
+</body>
+</html>
