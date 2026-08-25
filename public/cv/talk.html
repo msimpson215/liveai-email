@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Talk with Marty’s AI Team Member</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/cv/cv.css"/>
+<style>
+  body.talk {
+    min-height: 100dvh;
+    background:
+      radial-gradient(80% 60% at 70% 20%, rgba(26,61,99,.18), transparent 55%),
+      #f7f9fb;
+  }
+  .talk-stage {
+    min-height: calc(100dvh - 78px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 32px 20px 48px;
+  }
+  .talk-stage h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: -.04em; color: var(--navy); line-height: 1.08;
+    max-width: 16ch;
+  }
+  .talk-stage .lede { margin: 14px auto 0; font-size: 18px; }
+  #orb {
+    margin-top: 36px;
+    width: min(46vw, 220px); height: min(46vw, 220px);
+    border: 0; border-radius: 50%; cursor: pointer;
+    color: #fff; background: var(--navy);
+    display: grid; place-items: center;
+    box-shadow: 0 18px 50px rgba(11,35,64,.28);
+    animation: pulse 2.8s ease-in-out infinite;
+  }
+  #orb svg { width: 64px; height: 64px; }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); box-shadow: 0 18px 50px rgba(11,35,64,.28); }
+    50% { transform: scale(1.04); box-shadow: 0 22px 64px rgba(11,35,64,.38); }
+  }
+  body.connecting #orb, body.active #orb { animation: pulseOn 1.2s ease-in-out infinite alternate; }
+  @keyframes pulseOn { from { transform: scale(.98); } to { transform: scale(1.06); } }
+  #status { margin-top: 22px; font-size: 16px; font-weight: 750; color: var(--navy); min-height: 1.4em; }
+  body.idle #status::after { content: "Tap the microphone to talk"; }
+  body.connecting #status::after { content: "Connecting…"; }
+  body.active #status::after { content: "Listening — ask about Marty"; }
+  body.error #status::after { content: "Tap to try again"; }
+  .back { margin-top: 28px; font-weight: 700; color: var(--navy-2); text-decoration: none; }
+</style>
+</head>
+<body class="talk idle">
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/cv/">
+      <strong>Martin David Simpson</strong>
+      <span>Entrepreneur · Business Builder · Inventor · Property Developer</span>
+    </a>
+    <nav class="top-nav" aria-label="Primary">
+      <a href="/cv/overview.html">Overview</a>
+      <a href="/cv/businesses.html">Businesses</a>
+      <a href="/cv/development.html">Development</a>
+      <a href="/cv/inventions.html">Inventions</a>
+      <a href="/cv/community.html">Community</a>
+      <a href="/cv/media.html">Media</a>
+      <a href="/cv/current.html">Current Work</a>
+      <a href="/cv/education.html">Education</a>
+      <a class="btn-talk" href="/cv/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Marty’s AI Team Member</a>
+    </nav>
+    <button class="menu-btn" type="button" aria-label="Open menu"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="talk-stage">
+  <div class="kicker">AI Curriculum Vitae</div>
+  <h1>Talk with Marty’s AI Team Member</h1>
+  <p class="lede">Ask about his experience, businesses, inventions, projects, or professional background.</p>
+  <button id="orb" type="button" aria-label="Tap to talk to Marty’s AI team member"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <div id="status" aria-live="polite"></div>
+  <a class="back" href="/cv/">← Back to the curriculum vitae</a>
+</div>
+<script src="/axon-voice.js"></script>
+<script>
+const SRC='marty';
+const SEA_TIER=(new URLSearchParams(location.search).get('tier')||'').toLowerCase();
+const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC)+(SEA_TIER?'&tier='+encodeURIComponent(SEA_TIER):'');
+let pc=null,localStream=null,starting=false,audioEl=null;
+function setState(s){document.body.classList.remove('idle','connecting','active','error');document.body.classList.add('talk',s);}
+function ensureAudio(){if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}return audioEl;}
+function resumeAudio(){if(audioEl&&audioEl.paused){audioEl.play().catch(function(){});return true;}return false;}
+async function stop(){
+  if(voice){voice.detach();voice=null}
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  dc=null;micTrack=null;
+  starting=false;setState('idle');
+}
+let micTrack=null,dc=null,voice=null;
+let reconnecting=false,reconnectTries=0;
+async function handleLost(){
+  if(reconnecting)return;
+  reconnecting=true;
+  const startFn=(typeof connectVoice==='function')?connectVoice:null;
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc){pc.close()}}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async function(){
+    try{ if(startFn)await startFn(); reconnectTries=0; }
+    catch(e){ if(reconnectTries<5)handleLost(); }
+    finally{ reconnecting=false; }
+  },wait);
+}
+async function connectVoice(){
+  const r=await fetch(sessionUrl,{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  let remoteStream=null;
+  pc.ontrack=function(e){
+    remoteStream=e.streams[0];
+    if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(function(){});}
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  micTrack=localStream.getAudioTracks()[0];
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+  dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',function(){if(AxonVoice.hasHistory())return;try{dc.send(JSON.stringify({type:'response.create'}));}catch(e){}});
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
+    method:'POST',body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
+  setState('active');
+}
+async function start(){
+  if(pc||starting)return;
+  starting=true;setState('connecting');
+  try{await connectVoice();}
+  catch(e){console.error(e);await stop();setState('error');}
+  starting=false;
+}
+function toggleVoice(){if(pc||starting){if(!resumeAudio())stop();}else{start();}}
+const orb=document.getElementById('orb');
+orb.addEventListener('click',function(e){e.stopPropagation();toggleVoice();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')stop();});
+window.addEventListener('pagehide',function(){if(pc||starting)stop();});
+window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
+setState('idle');
+</script>
+<script src="/cv/cv.js"></script>
+</body>
+</html>

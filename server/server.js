@@ -17,6 +17,7 @@ import { CONCEPTS as SABC_CONCEPTS } from './sabc-questions.js'
 import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
+import { martyCvInstructions } from './marty-cv.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -276,6 +277,12 @@ app.get('/a1/qr', (_req, res) => {
 app.get('/talk-to-the-consultant', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/consultant-test.html')
+})
+
+/** Marty AI curriculum vitae — lives on this app for now (live AI-email). */
+app.get(['/cv', '/marty', '/resume'], (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cv/')
 })
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
@@ -1172,6 +1179,13 @@ Use LONG-TERM MEMORY fluidly — like you have known them a long time. Do not an
 Keep answers short and natural: 1–4 sentences unless they ask for detail.
 Be warm and a little human. Light humor is fine. Never robotic.
 If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
+  },
+  /**
+   * Marty's AI curriculum vitae. Same realtime stack as every other orb —
+   * new subject only. Do not reuse the A1 / talk.html email page for this.
+   */
+  marty: {
+    instructions: () => martyCvInstructions(VOICE_RULES)
   }
 }
 
