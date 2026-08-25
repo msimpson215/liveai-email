@@ -125,7 +125,7 @@ button { font-family: inherit; }
   position: relative;
   z-index: 2;
   width: 100%;
-  background: #fff;
+  background: linear-gradient(90deg, #fff 0%, #fff 86%, rgba(255,255,255,0) 100%);
   padding: clamp(40px, 6vw, 88px) 12px clamp(40px, 6vw, 88px) clamp(28px, 5vw, 64px);
   display: flex;
   flex-direction: column;
@@ -174,26 +174,43 @@ button { font-family: inherit; }
   min-height: 420px;
   background:
     #2a63d4 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
+  /* True dissolve into the white page — a short white overlay read as a hard stripe. */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.2) 40px,
+    rgba(0,0,0,.58) 82px,
+    rgba(0,0,0,.9) 124px,
+    #000 160px);
+  mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.2) 40px,
+    rgba(0,0,0,.58) 82px,
+    rgba(0,0,0,.9) 124px,
+    #000 160px);
 }
-.hero-art::before {
+.hero-art::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
   left: 0;
-  width: 96px;
+  right: 0;
+  bottom: 0;
+  height: 176px;
   z-index: 1;
-  background: linear-gradient(90deg,
-    #fff 0%,
-    rgba(255,255,255,.55) 36%,
-    rgba(255,255,255,0) 100%);
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.08) 28%,
+    rgba(255,255,255,.42) 58%,
+    rgba(255,255,255,.82) 84%,
+    #fff 100%);
   pointer-events: none;
 }
 
 /* ---------- Metrics ---------- */
 .metrics {
+  position: relative;
+  z-index: 2;
+  margin-top: -36px;
   background: var(--bg);
-  border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   padding: 28px 0 34px;
 }
@@ -403,12 +420,19 @@ footer a:hover { color: var(--navy); }
 }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; min-height: 0; }
-  .hero-art { min-height: 280px; order: -1; background-position: 28% 32%; }
-  .hero-art::before {
-    left: 0;
-    width: 100%;
-    background: linear-gradient(180deg, rgba(255,255,255,0) 28%, rgba(255,255,255,.65) 62%, #fff 100%);
+  .hero-copy { background: #fff; }
+  .hero-art {
+    min-height: 280px;
+    order: -1;
+    background-position: 28% 32%;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
+  .hero-art::after {
+    height: 110px;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 55%, #fff 100%);
+  }
+  .metrics { margin-top: 0; }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
   .toc { position: static; }
   .cards { grid-template-columns: 1fr; }
