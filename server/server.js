@@ -284,6 +284,10 @@ app.get(['/cv', '/marty', '/resume'], (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/cv/')
 })
+app.get('/cv-v1', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cv-v1/')
+})
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
