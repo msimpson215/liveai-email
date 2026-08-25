@@ -132,12 +132,18 @@ button { font-family: inherit; }
   justify-content: center;
 }
 .kicker {
-  font-size: 13px;
+  font-size: clamp(18px, 2.2vw, 26px);
   font-weight: 800;
-  letter-spacing: .16em;
+  letter-spacing: .08em;
   text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.kicker-sub {
+  margin: 0 0 18px;
+  font-size: clamp(16px, 1.5vw, 18px);
+  font-weight: 600;
   color: var(--navy-3);
-  margin-bottom: 18px;
 }
 .hero h1 {
   font-size: clamp(42px, 6.4vw, 76px);
@@ -167,17 +173,21 @@ button { font-family: inherit; }
   position: relative;
   min-height: 420px;
   background:
-    #1a1230 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
+    #8eb8e8 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
 }
 .hero-art::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: -90px;
+  width: calc(100% + 90px);
   background: linear-gradient(90deg,
     #fff 0%,
-    rgba(255,255,255,.97) 14%,
-    rgba(255,255,255,.55) 38%,
-    rgba(255,255,255,0) 62%);
+    rgba(255,255,255,.96) 28%,
+    rgba(255,255,255,.55) 52%,
+    rgba(255,255,255,.18) 72%,
+    rgba(255,255,255,0) 88%);
   pointer-events: none;
 }
 
@@ -339,12 +349,28 @@ a.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 footer.site-footer {
   border-top: 1px solid var(--line);
   padding: 28px 0 36px;
-  color: #8a96a5;
-  font-size: 13.5px;
+  color: #5d6b7c;
+  font-size: 14px;
 }
-.footer-inner { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-footer a { color: #8a96a5; text-decoration: none; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+footer a { color: var(--navy-2); text-decoration: none; }
 footer a:hover { color: var(--navy); }
+.powered {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--navy);
+  font-weight: 800;
+  font-size: 16px;
+}
+.powered img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: block;
+}
+.powered a { color: var(--navy); font-weight: 800; }
+.photo-credit { width: 100%; font-size: 12px; color: #8a96a5; }
 
 @media (max-width: 1100px) {
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
@@ -380,7 +406,7 @@ footer a:hover { color: var(--navy); }
   .hero { grid-template-columns: 1fr; min-height: 0; }
   .hero-art { min-height: 280px; order: -1; background-position: 28% 32%; }
   .hero-art::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0) 36%, rgba(255,255,255,.7) 72%, #fff 100%);
+    background: linear-gradient(180deg, rgba(255,255,255,0) 28%, rgba(255,255,255,.65) 62%, #fff 100%);
   }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
   .toc { position: static; }
