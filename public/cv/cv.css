@@ -173,18 +173,7 @@ button { font-family: inherit; }
   position: relative;
   min-height: 420px;
   background:
-    #2f86e0 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
-}
-.hero-art::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg,
-    rgba(20, 118, 232, .45) 0%,
-    rgba(30, 144, 255, .22) 34%,
-    rgba(30, 144, 255, 0) 56%);
-  mix-blend-mode: overlay;
-  pointer-events: none;
+    #2a63d4 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
 }
 .hero-art::before {
   content: "";
@@ -192,11 +181,11 @@ button { font-family: inherit; }
   top: 0;
   bottom: 0;
   left: 0;
-  width: 108px;
+  width: 96px;
   z-index: 1;
   background: linear-gradient(90deg,
     #fff 0%,
-    rgba(255,255,255,.7) 42%,
+    rgba(255,255,255,.55) 36%,
     rgba(255,255,255,0) 100%);
   pointer-events: none;
 }
