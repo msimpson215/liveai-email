@@ -116,7 +116,7 @@ button { font-family: inherit; }
 /* ---------- Hero ---------- */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+  grid-template-columns: minmax(0, 0.86fr) minmax(420px, 1.2fr);
   min-height: min(82vh, 860px);
   background: #fff;
   overflow: hidden;
@@ -126,7 +126,7 @@ button { font-family: inherit; }
   z-index: 2;
   width: 100%;
   background: #fff;
-  padding: clamp(40px, 6vw, 88px) clamp(28px, 5vw, 72px);
+  padding: clamp(40px, 6vw, 88px) 12px clamp(40px, 6vw, 88px) clamp(28px, 5vw, 64px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -173,21 +173,31 @@ button { font-family: inherit; }
   position: relative;
   min-height: 420px;
   background:
-    #8eb8e8 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
+    #2f86e0 url("/cv/images/st-louis-skyline.jpg") 28% 42% / cover no-repeat;
+}
+.hero-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(20, 118, 232, .45) 0%,
+    rgba(30, 144, 255, .22) 34%,
+    rgba(30, 144, 255, 0) 56%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 .hero-art::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -90px;
-  width: calc(100% + 90px);
+  left: 0;
+  width: 108px;
+  z-index: 1;
   background: linear-gradient(90deg,
     #fff 0%,
-    rgba(255,255,255,.96) 28%,
-    rgba(255,255,255,.55) 52%,
-    rgba(255,255,255,.18) 72%,
-    rgba(255,255,255,0) 88%);
+    rgba(255,255,255,.7) 42%,
+    rgba(255,255,255,0) 100%);
   pointer-events: none;
 }
 
@@ -406,6 +416,8 @@ footer a:hover { color: var(--navy); }
   .hero { grid-template-columns: 1fr; min-height: 0; }
   .hero-art { min-height: 280px; order: -1; background-position: 28% 32%; }
   .hero-art::before {
+    left: 0;
+    width: 100%;
     background: linear-gradient(180deg, rgba(255,255,255,0) 28%, rgba(255,255,255,.65) 62%, #fff 100%);
   }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
