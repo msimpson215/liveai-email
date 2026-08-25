@@ -124,12 +124,12 @@ button { font-family: inherit; }
 .hero-copy {
   position: relative;
   z-index: 2;
+  width: 100%;
   background: #fff;
   padding: clamp(40px, 6vw, 88px) clamp(28px, 5vw, 72px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 760px;
 }
 .kicker {
   font-size: 13px;
