@@ -159,6 +159,127 @@ pre-op instructions. One scoped brain per procedure, one QR code per wall.
 
 ---
 
+## Voice console — talk to the computer instead of reaching for it (IDEA)
+
+**Where it came from:** Marty was deleting an old screensaver Chrome app and got
+annoyed that using a browser extension he likes — Go Full Page — takes a trip up
+to the toolbar with the mouse, then a second click down in a menu. The address
+is already in the machine. The only reason his arm is involved is that nobody
+built another way to ask for it. He laid out the chain himself: brain, shoulder,
+forearm, finger, mouse, wire, click — all of it overhead on a lookup.
+
+He is from Palo Alto, two miles from where the mouse was being worked on. His
+point is not that the mouse is bad, it is that it should not be the *primary*
+navigation layer for things he does the same way every single morning.
+
+### The commit token — "22"
+
+The design idea that makes this work, and it is his: the trigger goes at the
+**end** of the phrase, not the beginning.
+
+- "Gmail **22**" → opens Gmail
+- "Yahoo News **22**" → opens Yahoo News
+- "IAAI **22**" → salvage auction listings
+
+Nothing fires until the number lands. So he can think out loud, trail off,
+change his mind mid-sentence, and the machine stays still. This is strictly
+better than a wake word: Alexa makes you say her name every time before you
+have finished deciding what you want. A trailing token lets you decide first
+and commit second.
+
+Everything he says gets transcribed; anything not ending in his number is
+discarded. The assistant does not need to be addressed at all during the day —
+its name is only for waking it, silencing it, or setting a timeout.
+
+### The switchboard
+
+His picture: a 1940s switchboard operator sitting between him and the screen.
+The board has jacks for the places he actually goes — X, Al Jazeera, Morrow
+Newhall, Google News, Google Docs, Gmail, YouTube, IAAI. She plugs him in. She
+also *remembers who she has connected*, which is the part that matters:
+
+> "Take Marty's CV and put it in Gmail" — she still knows what he just pulled.
+
+So the build needs a registry of destinations plus a short-term handoff buffer,
+the operator's cord held in her hand between two jacks.
+
+### Axon-marks — the real product insight
+
+His name for it, and it is better than a pun. A bookmark is an address the
+machine already knows, that you are forced to retrieve with your hand. Replace
+the bookmarks bar with an index you can **address** instead of **reach for**.
+
+The bar is roughly 95% of his day. Anything outside it goes through a general
+search command instead of a saved jack.
+
+### Why this is buildable — the three tiers
+
+The tiers matter because the first one is nearly free and would already cut most
+of his mousing.
+
+| Tier | Example | What it needs |
+|------|---------|---------------|
+| Navigation | "YouTube 22", "morning 22" | URLs. No auth, no API keys, nothing. |
+| Reading the page | "what does this article say" | Browser extension to pull page text |
+| Acting across apps | "send the CV to Tim Donahue" | One-time OAuth per service, token kept |
+
+**Start with the morning macro.** His routine is the same five destinations every
+day in roughly the same order: X, Al Jazeera / Morrow Newhall, Google News,
+IAAI, YouTube. That is not five commands, it is **one** — "morning 22" opens all
+of them in tabs while he is still getting coffee. Zero credentials required.
+
+### The last inch nobody shipped
+
+Gemini and ChatGPT already have the Gmail connector. They made him authorize it.
+And they still hand him a draft and make him click the arrow. The connector is
+done; the last inch is missing. Voice in → action executed → spoken confirmation
+back *is* the product.
+
+Everyone avoids it because an assistant sending the wrong email is a real risk.
+The solution is boring: **read it back before it goes.** "To Tim Donahue,
+subject Curriculum Vitae, CV attached — send it?" Two seconds instead of six
+clicks, and it makes voice-driven action safe enough to actually use. Voice ID
+or a camera can come later; the confirmation step is the practical guard.
+
+### The orb
+
+Not decoration — it is the confirmation loop. A small always-present presence
+that shows it heard you and states what it is about to do, so you are never
+wondering whether it worked. He pictures it eventually as a hologram between him
+and the screen, Star Trek style, and wants to be able to chat with it while a
+task runs ("what should I cook tonight?") — which already works, since that is
+just conversation in the same session.
+
+Video calling is explicitly **not** wanted. He tried a camera app and the point
+of seeing a face escapes him. Voice and confirmation only.
+
+### Naming
+
+`Amelia` was the working name, then set aside — it is his daughter's formal
+name, and he would be aiming it at a machine forty times a day. `Axon` is the
+company. The assistant should get its own short, easy word. Undecided.
+
+### Open questions
+
+- Wake-on-always vs. push-to-talk, and what that costs running all day
+- Where transcription runs. Local keeps it private and cheap; hosted is better
+  at accuracy
+- Whether the desktop side is a tray app or leans entirely on the existing
+  `extension/` folder for browser reach
+- Security posture once it can send mail on his behalf, beyond read-back
+
+### Related note: dictation keeps losing his long messages
+
+Not part of the product, but it is the reason this idea keeps getting retyped.
+Long voice takes in the Cursor client spin and then come back blank, losing
+several minutes of thinking at a time. The fix that works is OS-level dictation
+(Windows key + H, or the Mac dictation key), which types into the field as you
+speak — the words accumulate on screen and cannot evaporate on send. Worth
+noting because it is the same problem the product solves: voice in, nothing
+lost.
+
+---
+
 ## Known open items
 
 - **Render persistent disk.** Every deploy wipes `data/joe-memory/`, so all
