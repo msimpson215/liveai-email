@@ -1,9 +1,10 @@
 :root {
-  --navy: #0b2340;
-  --navy-2: #123056;
-  --navy-3: #1a3d63;
-  --ink: #122033;
-  --muted: #5d6b7c;
+  /* Nothing here is black — the darkest text is a blue, to sit with the sky. */
+  --navy: #1c4a7a;
+  --navy-2: #235a8f;
+  --navy-3: #2f6d9f;
+  --ink: #26506f;
+  --muted: #537691;
   --line: #e4eaf1;
   --bg: #f6f8fb;
   --white: #ffffff;
@@ -174,7 +175,7 @@ button { font-family: inherit; }
 .hero-art {
   position: relative;
   min-height: 300px;
-  background: #fff url("/cv2/images/skyline-canva.jpg") center center / contain no-repeat;
+  background: #fff url("/cv2/images/skyline-canva.jpg") center 22% / contain no-repeat;
 }
 
 /* ---------- Metrics ---------- */
@@ -285,7 +286,7 @@ button { font-family: inherit; }
 }
 .article h1 { font-size: clamp(36px, 4.6vw, 56px); line-height: 1.05; margin-bottom: 18px; }
 .article h2 { font-size: clamp(22px, 2.4vw, 30px); margin: 36px 0 12px; }
-.article p, .article li { font-size: 18px; color: #33475b; }
+.article p, .article li { font-size: 18px; color: #35608a; }
 .article p + p { margin-top: 16px; }
 .article ul { margin: 12px 0 0 1.15em; }
 .article li { margin: 8px 0; }
@@ -337,7 +338,7 @@ a.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 footer.site-footer {
   border-top: 1px solid var(--line);
   padding: 28px 0 36px;
-  color: #5d6b7c;
+  color: var(--muted);
   font-size: 14px;
 }
 .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -358,7 +359,7 @@ footer a:hover { color: var(--navy); }
   display: block;
 }
 .powered a { color: var(--navy); font-weight: 800; }
-.photo-credit { width: 100%; font-size: 12px; color: #8a96a5; }
+.photo-credit { width: 100%; font-size: 12px; color: #61819d; }
 
 @media (max-width: 1100px) {
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
