@@ -45,6 +45,39 @@ script. Turn it into a conversation:
 4. It drafts; they read it back and approve
 5. It goes live, and from then on it answers questions
 
+### No question bank — this is what decides whether it is a product
+
+Marty caught himself walking into what he called the old analog trap: writing
+out fifty questions. **A list of fifty questions is a form wearing a costume.**
+
+The man in Belleville had no list. He had a goal for the conversation and asked
+whatever got him there. So each section carries an **objective** — know what
+they actually built, know what their role was, know what they would do
+differently — and the brain asks whatever satisfies it, recognises when it has
+enough, and moves on. Different customer, different questions, same
+destination.
+
+### The second half nobody sells: he coached Marty on the interview
+
+The detail Marty nearly threw away. He was 21 or 22, first thing out of college,
+had never had a resume, and it was nerve-wracking — and **he still remembers it**
+because the man sent him out of there able to *talk* about himself.
+
+So Axon CV has two halves:
+
+1. Produce the thing
+2. Rehearse the person for the room
+
+Nobody sells the second half.
+
+### Tone: beside you, not across a desk
+
+Marty remembered that office in detail — yellow walls, a sitting room, the
+office beyond it — and remembered the man sat on the far side of the desk, and
+thought he should have opened it up. He was right, and it transfers: an
+interview should feel like something sitting beside you, not across a desk
+taking a statement. That is the register for the orb while it interviews.
+
 ### Two tiers of knowledge — the structural decision
 
 Marty asked to include strengths and weaknesses. Do ask. **That answer must
@@ -69,6 +102,18 @@ never characterise another party — become the pitch rather than the fine print
 
 The $1.2M that should have been $4M is the proof case. Marty caught it. Nothing
 else did.
+
+### Sequencing
+
+Axon CV becomes its own site, and Marty's own CV is the proof. Finish his first —
+a product like this is sold by showing one that works, not by describing it.
+
+And prove the interview by hand before automating it: Marty talks a section
+through in conversation, the follow-ups get asked live, the copy gets written. If
+the format holds up between two people it is worth building. If it does not, that
+surfaces in an hour rather than after the whole thing is built.
+
+He wants his finished because he owes it to Katie and Nikki.
 
 ---
 
