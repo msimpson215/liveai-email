@@ -340,6 +340,45 @@ they walk into together. Keep the set 1950s; the light is what changes.
 Suggested ending: no tagline. She says her line, they touch it, color floods the
 kitchen, and he just says her name. Cut.
 
+**What she wears when the color arrives.** Marty wanted her out of the apron and
+into a business suit, to land the equality note. The sharper version answers his
+own question — *what do people carry these days?* **Nothing.** In 1950 the
+husband carries a briefcase because information had to be physically carried. In
+color, neither of them carries anything, because it is all in the object on the
+table. The missing briefcase *is* the modernization, and it beats handing her a
+laptop bag, which tips into the career-woman-montage cliché. The apron
+disappearing says enough. Both dressed, both reaching for the same object, both
+out the same door. Equal footing, no punchline.
+
+### Second commercial — the cords become light
+
+Possibly stronger than the first. The switchboard operator, board fully lit,
+cords tangled in both hands, more calls arriving than she can plug. She is
+genuinely losing.
+
+Then **she has the idea** — Marty's beat, and it is the load-bearing one. She is
+not rescued by the future, she *thinks* of it.
+
+The money shot for a company named Axon: **the cords come loose and become
+light.** They stop being rubber and copper and turn into signal, everything
+reaching everything at once, no plugging required. Color floods the room. The
+board goes dark because it is no longer needed.
+
+Thirty seconds, and it never says the word AI.
+
+### How to say it — article, pronoun, and what not to call it
+
+- **Product name:** `Axon Operator`, no article. Articles kill names.
+- **Referring to it:** "my operator."
+- **Talking to it:** "Axon."
+- **Never** "the Axon Operator." Nobody says "the Siri."
+
+**Do not give it a gendered pronoun.** The operator in the commercial is a woman
+because she is a *person* in 1948. The moment the product becomes "she," it
+rebuilds the servitude the ad is working to escape, and it dates the thing on day
+one. Use the name and the question never comes up: "Axon can do that," not "she
+can."
+
 ### Open questions
 
 - Wake-on-always vs. push-to-talk, and what that costs running all day
