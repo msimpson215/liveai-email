@@ -71,18 +71,41 @@ things in his material. Someone else's four will differ. The brain finishes the
 interview and then picks the four questions that make that person look best —
 real leverage, because most people choose the wrong four about themselves.
 
-### The second half nobody sells: he coached Marty on the interview
+### Axon Job Coach — the second half, and probably the bigger business
 
 The detail Marty nearly threw away. He was 21 or 22, first thing out of college,
 had never had a resume, and it was nerve-wracking — and **he still remembers it**
 because the man sent him out of there able to *talk* about himself.
 
-So Axon CV has two halves:
+Marty's name for this half: **Axon Job Coach**. A section where the AI asks the
+client questions, advises, works through likely interview questions, and takes
+the anxiety down. A job coach, not a document service.
 
-1. Produce the thing
-2. Rehearse the person for the room
+**Why it is the bigger business.** A resume is bought once. Coaching gets used
+every time the person interviews, across years and multiple jobs. One is a
+transaction; the other has a second month.
 
-Nobody sells the second half.
+**Why it is ours to win.** An interview is *spoken*. A chat tool can hand
+somebody a list of answers to read, but reading is not speaking — nobody
+discovers their voice shakes on the salary question by typing. The voice-to-voice
+pipeline already exists in this repo. It is not a feature to add.
+
+**Where the two-tier split pays off.** The coach has the private tier — the gap
+between jobs, the business that closed, the weakness admitted during onboarding.
+So it does not rehearse generic questions. It rehearses *the one they are
+dreading*, until saying it out loud stops costing them anything.
+
+**On the tagline.** Marty floated "here to help you with your CV," which
+describes the document. The promise worth paying for is about the room — nearer
+to *"practice the hard question before somebody asks it."* Undecided.
+
+### Interview first, then the CV — the sequencing is structural
+
+The man in 1989 asked about Marty first and built the paper afterwards. Same
+order here, and it means the CV pages are an **output**, not a template someone
+fills in. It also means the employer-facing suggested questions cannot be written
+until the interview is finished, because they are chosen from the material it
+produced.
 
 ### Tone: beside you, not across a desk
 
