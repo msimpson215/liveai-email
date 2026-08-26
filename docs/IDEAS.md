@@ -366,6 +366,25 @@ board goes dark because it is no longer needed.
 
 Thirty seconds, and it never says the word AI.
 
+### The end card
+
+Caption, after the room turns to color and we hold on their faces:
+
+> **Introducing your own operator.**
+
+Then the mark, Intel-style: **Powered by Axon AI**. Nothing explaining what it
+does — the kitchen already did that.
+
+Why the line works: **"your own"** carries the entire pitch. The operator in
+1948 was never yours, she worked for the phone company and served a whole town.
+Yours means the board is private, the codes are yours, the routine is yours.
+That one word turns a service into possession, which is the precise opposite of
+what every competitor sells — access to *their* model.
+
+The ingredient-brand play is already in motion: the CV footer says "Powered by
+Axon AI" today. Intel was never the computer, it was inside the computer, and it
+rode on every box until people asked for it by name.
+
 ### How to say it — article, pronoun, and what not to call it
 
 - **Product name:** `Axon Operator`, no article. Articles kill names.
