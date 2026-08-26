@@ -288,6 +288,11 @@ app.get('/cv-v1', (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/cv-v1/')
 })
+/** Second look: softer skyline, blue sky faded behind the words. /cv/ is untouched. */
+app.get(['/cv2', '/cv/2', '/cv/2/'], (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/cv2/')
+})
 
 const REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime'
 const REALTIME_VOICE = 'coral'
