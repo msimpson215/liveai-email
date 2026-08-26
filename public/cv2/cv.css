@@ -171,12 +171,54 @@ button { font-family: inherit; }
 .btn-talk.xl svg { width: 20px; height: 20px; }
 .hint { font-size: 14px; color: var(--muted); max-width: 420px; }
 
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 /* The blue sky, the haze, and the dissolve into white are baked into the file
    itself, so there is no CSS edge here that can ever read as a hard stripe. */
 .hero-art {
   position: relative;
+  flex: 1 1 auto;
   min-height: 300px;
   background: #fff url("/cv2/images/skyline-canva.jpg") center 6% / contain no-repeat;
+}
+
+/* The column under the photo was dead white space. The page promises a resume
+   you can talk to, so it holds the openings people can actually say out loud. */
+.hero-asks {
+  flex: 0 0 auto;
+  padding: 0 clamp(20px, 3vw, 40px) clamp(24px, 3vw, 34px);
+}
+.asks-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--navy-3);
+  margin-bottom: 12px;
+}
+.asks { display: flex; flex-wrap: wrap; gap: 9px; }
+.asks a {
+  display: inline-block;
+  padding: 10px 15px;
+  border: 1px solid #d7e3f2;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--navy-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: border-color .12s ease, color .12s ease, box-shadow .12s ease;
+}
+.asks a::before { content: "“"; }
+.asks a::after { content: "”"; }
+.asks a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 4px 14px rgba(22,104,216,.14);
 }
 
 /* ---------- Metrics ---------- */
@@ -398,10 +440,10 @@ footer a:hover { color: var(--navy); }
   .hero-copy { background: #fff; }
   .hero-art {
     min-height: 220px;
-    order: -1;
     margin-left: 0;
     background-position: center center;
   }
+  .hero-asks { padding: 18px 22px 4px; }
   .metrics { margin-top: 0; }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
   .toc { position: static; }
