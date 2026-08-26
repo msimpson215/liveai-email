@@ -45,17 +45,31 @@ script. Turn it into a conversation:
 4. It drafts; they read it back and approve
 5. It goes live, and from then on it answers questions
 
-### No question bank — this is what decides whether it is a product
+### Two different question sets — do not confuse them
 
-Marty caught himself walking into what he called the old analog trap: writing
-out fifty questions. **A list of fifty questions is a form wearing a costume.**
+**1. Interview questions live inside the brain.** Preloaded, never shown. The
+client talks; the brain works from what it is carrying. No form ever appears on
+screen. That is the Belleville guy — he had his questions, Marty just never saw
+the sheet.
 
-The man in Belleville had no list. He had a goal for the conversation and asked
-whatever got him there. So each section carries an **objective** — know what
-they actually built, know what their role was, know what they would do
-differently — and the brain asks whatever satisfies it, recognises when it has
-enough, and moves on. Different customer, different questions, same
-destination.
+The trap Marty named is *displaying* fifty questions, not having them. A
+question list on screen is a form wearing a costume. Held in the brain and asked
+conversationally, the same material is an interview. Each section also carries
+an objective — know what they built, know what their role was, know what they
+would do differently — so the brain can recognise when it has enough and move
+on.
+
+**2. Suggested questions live on the finished resume.** Visible, tappable, aimed
+at the employer — the `Try asking` chips on `/cv/2`. Marty's read on these: they
+are an instruction manual for using the AI, and they work because they do two
+jobs at once. They teach a visitor that the page can be talked to, and they
+steer him toward the strongest parts of the story.
+
+**These should be generated, not hand-written.** Marty's came out as the patent,
+Maplewood, the HIV/AIDS years, and Axon AI because those are the four strongest
+things in his material. Someone else's four will differ. The brain finishes the
+interview and then picks the four questions that make that person look best —
+real leverage, because most people choose the wrong four about themselves.
 
 ### The second half nobody sells: he coached Marty on the interview
 
