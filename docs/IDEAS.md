@@ -2,6 +2,76 @@
 
 ---
 
+## Axon CV — productise the thing we just built for Marty (IDEA)
+
+**Where it came from:** after the CV at `/cv/2` came together, Marty asked why
+this shouldn't be a product. Then he remembered driving up to Belleville in 1989
+to pay a man $110 for a two-page resume — the guy talked about paper stock and
+which font he used, and it came out beautiful.
+
+**The insight sitting inside that memory.** He did not pay for paper stock. He
+paid because the man **interviewed him** — asked the questions Marty would never
+have thought to answer about himself, then wrote it better than Marty would
+have. The typesetting was the deliverable. *The interview was the product.*
+
+Every resume builder since has had it backwards. They all hand you a form.
+Nobody rebuilt the guy in Belleville.
+
+And the 1989 version sat in a folder. This one answers a recruiter in another
+time zone at two in the morning.
+
+### The name
+
+**Axon CV.** Marty reached for it without thinking, which is usually the tell.
+It also gives the family a logic that explains itself:
+
+| Product | What it does |
+|---------|--------------|
+| Axon AI | the brain |
+| Axon Operator | runs your machine |
+| Axon CV | speaks for you |
+
+Keep **"A resume you can talk to"** as the line underneath. Six words, whole
+product.
+
+### The flow — nobody types anything
+
+Marty's own capture file (`docs/MARTY-CAREER-CAPTURE.md`) is the onboarding
+script. Turn it into a conversation:
+
+1. We build the structure first — the page and its sections already exist
+2. The customer talks through each section, a few minutes each
+3. The AI asks the follow-up they would have skipped
+4. It drafts; they read it back and approve
+5. It goes live, and from then on it answers questions
+
+### Two tiers of knowledge — the structural decision
+
+Marty asked to include strengths and weaknesses. Do ask. **That answer must
+never reach the page.** Which points at the architecture:
+
+- **Published** — the page. Facts, numbers, dates, the arc.
+- **Private** — everything else the AI holds in order to answer well: the
+  weaknesses, the gap between jobs, the business that failed, why they left.
+  Never printed. Available so that when an interviewer asks the hard question,
+  the AI answers gracefully instead of stalling.
+
+This is genuinely new. A paper resume must either disclose or hide. A talking
+one can hold context it does not broadcast.
+
+### The guardrails are the selling point, not overhead
+
+"It will not invent your numbers" is a feature. Every AI resume tool on the
+market quietly inflates people, and anyone who has been burned by that will pay
+to avoid it. The rules already written in the capture file — no unconfirmed
+figures, no naming private individuals, under-claim rather than over-claim,
+never characterise another party — become the pitch rather than the fine print.
+
+The $1.2M that should have been $4M is the proof case. Marty caught it. Nothing
+else did.
+
+---
+
 ## QR → scan → talk: the reusable structure
 
 The generalized version. Scan a code, a page opens, tap once, talk to Axon AI
