@@ -282,15 +282,63 @@ just conversation in the same session.
 Video calling is explicitly **not** wanted. He tried a camera app and the point
 of seeing a face escapes him. Voice and confirmation only.
 
-### Naming
+### Naming — settling on Axon, and never "assistant"
 
 `Amelia` was the working name, then set aside — it is his daughter's formal
-name, and he would be aiming it at a machine forty times a day. `Axon` is the
-company. The assistant should get its own short, easy word. Undecided.
+name, and he would be aiming it at a machine forty times a day.
 
-Leaning back toward `Axon` for the orb itself — everything he already refers to
-as Axon *is* this thing, so the orb, the hologram, and the brain are one name.
-"Good morning, Axon" wakes it and the newspaper arrives.
+**Axon is the name, and it is earned rather than decorative.** Marty was a
+biology major, pre-med at Washington University, and considered going into
+neuroscience — drawn to how picking something up with your fingers is electrical
+impulses traveling along a path. Same as the wire to the computer.
+
+The word works in two directions at once, which is why it should stay:
+
+- An axon *carries the signal*. Not the thinking, not the deciding — the
+  conduction. This whole product is a complaint about the conduction path being
+  made of shoulder, forearm, finger, and a wire from 1976.
+- It is also how he describes building companies: you have this, you need that,
+  and there is always a little connection between them. An axon.
+
+"Is Axon hard to say?" is close to moot, because of his own design. The trailing
+"22" does the work a wake word normally does, so he says the name to wake it in
+the morning and to tell it to hush — a handful of times a day, not forty. Two
+syllables, no sibilants, soft ending.
+
+**Do not call it an assistant.** The better word came out of his own switchboard
+picture: **operator**. Not someone who assists you — someone who *operates the
+board*. It carries the 1940s image exactly, it reads as competence instead of
+servitude, and the second meaning sits right there: the one who works the
+machine. "My operator" sounds like something a serious person has. "My
+assistant" sounds like an app.
+
+Also floated at some point: `VoxShots`.
+
+### The commercial — black and white, and the color arrives
+
+Marty's, and it is good enough to keep verbatim in spirit.
+
+1950s, black and white. A woman opens the front door and picks up off the step —
+not a newspaper — **Axon**. It is the only object with color in the frame. She
+carries it to the kitchen, sets it on the table with the coffee and the donut.
+The husband comes out in the suit. She says, *"Here, honey, here's your Axon AI
+for today."*
+
+**They both touch it.** The room floods into color and modernity. An awakening
+of information.
+
+Why it works: the black and white *is* the argument, so nothing needs
+explaining. The paper on the step is information as it used to be — flat, gray,
+a day old, identical for everyone on the street. It is the Oz reveal.
+
+The detail that saves it from being a 1950s costume piece is his, and it is
+load-bearing: **both** of them touch it. If she hands it over and stands there,
+it is a woman serving a man his newspaper and the ad is about him. Two hands on
+it and the room comes alive for the pair of them — service becomes an awakening
+they walk into together. Keep the set 1950s; the light is what changes.
+
+Suggested ending: no tagline. She says her line, they touch it, color floods the
+kitchen, and he just says her name. Cut.
 
 ### Open questions
 
