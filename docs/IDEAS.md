@@ -379,6 +379,37 @@ rebuilds the servitude the ad is working to escape, and it dates the thing on da
 one. Use the name and the question never comes up: "Axon can do that," not "she
 can."
 
+### Model routing — the seatbelt, not the discount
+
+Marty's read, and it is strategically right: stop depending on any single
+provider. Take the best piece from each. AI ends up as a signal you plug into,
+the way nobody owns the internet.
+
+Two corrections worth keeping straight before this gets pitched to anyone:
+
+**We would not be first.** Routing is a mature market — OpenRouter, LiteLLM,
+Requesty, Portkey, NotDiamond, Martian. That is good news, not bad: the hard
+part is done and adopting it is close to a base-URL change.
+
+**Do not sell it as cost savings.** Vendors advertise 90%+ reductions.
+Independent 2026 benchmarking (LLMRouterBench, 21 datasets, 33 models) found
+several commercial routers performing *worse* than simply always using the best
+single model — OpenRouter scored −24.7% against that baseline. Real gains where
+they exist land nearer ~30% cost reduction while merely *matching* the best
+single model.
+
+**The actual argument is independence.** If a provider triples its price,
+changes terms, or decides our category is now their category, we switch models
+that afternoon instead of rebuilding the company. A seatbelt, not a discount.
+
+**And the metaphor is already the architecture.** A switchboard operator *is* a
+router — a call arrives, she decides which line takes it. The front of the
+product and the back of the product are the same picture.
+
+Practical: `LiteLLM` self-hosted for zero markup and full control, or
+`OpenRouter` for instant access at ~5.5%. Decide by whether we want to own the
+routing decision or rent it.
+
 ### Open questions
 
 - Wake-on-always vs. push-to-talk, and what that costs running all day
