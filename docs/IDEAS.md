@@ -340,6 +340,32 @@ they walk into together. Keep the set 1950s; the light is what changes.
 Suggested ending: no tagline. She says her line, they touch it, color floods the
 kitchen, and he just says her name. Cut.
 
+**Shot list (Marty's porch beat, added later — better than the original).** The
+newspaper is present as the *old* thing sitting next to the orb, so the choice
+happens on screen and nobody has to explain it.
+
+| # | Shot | Frame |
+|---|------|-------|
+| 1 | Front door opens, morning | B&W. Screen door, milk bottles, quiet street. |
+| 2 | The paper on the step | Tight. Folded broadsheet, **EXTRA** banner, dense gray type. Yesterday's world. |
+| 3 | Her hand reaches for it | She is committed to the paper. This is the habit. |
+| 4 | **She glances right** | Her hand stops. Something is lighting the porch boards blue. |
+| 5 | The orb | Beside the paper. Calm blue pulse, the only color in the film. It is not asking for anything. |
+| 6 | She touches it | The pulse answers her hand. Light spills up her arm. |
+| 7 | Kitchen | Coffee, percolator, donut, chrome dinette. He comes out in the gray suit. Orb on the table between them. |
+| 8 | Both hands on it | Color floods outward. Corners still gray. No apron. Neither carrying anything. |
+| 9 | Hold on their faces | *"Here, honey — here's your Axon for today."* |
+| 10 | End card | **Introducing your own operator.** Then *Powered by Axon AI.* |
+
+**The paper stays on the step. Never picked up. That is the ad.**
+
+On shot 6 — when she touches it, it should bloom into **light, not a person.**
+Marty's own objection to the camera app was that seeing somebody's face is
+pointless; the moment a woman materializes out of the orb it becomes a video
+call and invites exactly that criticism. Presence and form, no face. It also
+keeps the orb as the mark, which is already in use in the email product and on
+the CV.
+
 **What she wears when the color arrives.** Marty wanted her out of the apron and
 into a business suit, to land the equality note. The sharper version answers his
 own question — *what do people carry these days?* **Nothing.** In 1950 the
