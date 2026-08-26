@@ -174,22 +174,28 @@ button { font-family: inherit; }
 .hero-right {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: clamp(18px, 3vh, 40px);
   min-width: 0;
+  padding-bottom: clamp(12px, 2vw, 24px);
 }
 /* The blue sky, the haze, and the dissolve into white are baked into the file
    itself, so there is no CSS edge here that can ever read as a hard stripe. */
+/* Hug the photo's own shape. Stretching this box was what opened a hole
+   between the skyline and the questions on narrower screens. */
 .hero-art {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 300px;
-  background: #fff url("/cv2/images/skyline-canva.jpg") center 6% / contain no-repeat;
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 1792 / 830;
+  background: #fff url("/cv2/images/skyline-canva.jpg") center top / contain no-repeat;
 }
 
 /* The column under the photo was dead white space. The page promises a resume
    you can talk to, so it holds the openings people can actually say out loud. */
 .hero-asks {
   flex: 0 0 auto;
-  padding: 0 clamp(20px, 3vw, 40px) clamp(24px, 3vw, 34px);
+  padding: 0 clamp(20px, 3vw, 40px);
 }
 .asks-label {
   font-size: 12px;
@@ -199,10 +205,10 @@ button { font-family: inherit; }
   color: var(--navy-3);
   margin-bottom: 12px;
 }
-.asks { display: flex; flex-wrap: wrap; gap: 9px; }
+.asks { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .asks a {
   display: inline-block;
-  padding: 10px 15px;
+  padding: 11px 17px;
   border: 1px solid #d7e3f2;
   border-radius: 999px;
   background: #fff;
@@ -435,15 +441,30 @@ footer a:hover { color: var(--navy); }
   .header-talk { font-size: 0; gap: 0; padding: 10px 12px; }
   .header-talk svg { width: 18px; height: 18px; }
 }
+/* Between roughly 900 and 1300 the headline wraps to four lines and the copy
+   column outruns what a 2.16:1 photo can fill, which opened a hole under the
+   skyline. Give the photo more width and pull the copy in so both columns
+   finish together. */
+@media (max-width: 1300px) {
+  .hero {
+    grid-template-columns: minmax(0, 0.78fr) minmax(430px, 1.26fr);
+    min-height: 0;
+  }
+  .hero-copy { padding-top: 34px; padding-bottom: 34px; }
+  .hero h1 { font-size: clamp(38px, 4.9vw, 60px); }
+  .lede { margin-top: 18px; font-size: 17.5px; line-height: 1.45; }
+  .hero-actions { margin-top: 26px; }
+  .btn-talk.xl { font-size: 16.5px; padding: 15px 22px; }
+  .hero-right { gap: 22px; }
+}
+
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; min-height: 0; }
   .hero-copy { background: #fff; }
-  .hero-art {
-    min-height: 220px;
-    margin-left: 0;
-    background-position: center center;
-  }
-  .hero-asks { padding: 18px 22px 4px; }
+  .hero-right { gap: 16px; padding-bottom: 0; }
+  .hero-art { margin-left: 0; background-position: center center; }
+  .hero-asks { padding: 0 22px 4px; }
+  .asks { flex-direction: row; flex-wrap: wrap; }
   .metrics { margin-top: 0; }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
   .toc { position: static; }
