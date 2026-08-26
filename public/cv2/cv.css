@@ -116,8 +116,8 @@ button { font-family: inherit; }
 /* ---------- Hero ---------- */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(430px, 1.15fr);
-  min-height: min(70vh, 720px);
+  grid-template-columns: minmax(0, 0.86fr) minmax(430px, 1.2fr);
+  min-height: min(64vh, 640px);
   background: #fff;
   overflow: hidden;
 }
@@ -126,7 +126,7 @@ button { font-family: inherit; }
   z-index: 2;
   width: 100%;
   background: transparent;
-  padding: clamp(36px, 5vw, 76px) 12px clamp(36px, 5vw, 76px) clamp(28px, 5vw, 64px);
+  padding: clamp(32px, 4vw, 58px) 12px clamp(32px, 4vw, 58px) clamp(28px, 5vw, 64px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -173,8 +173,8 @@ button { font-family: inherit; }
    itself, so there is no CSS edge here that can ever read as a hard stripe. */
 .hero-art {
   position: relative;
-  min-height: 360px;
-  background: #fff url("/cv2/images/st-louis-skyline.jpg") center center / contain no-repeat;
+  min-height: 300px;
+  background: #fff url("/cv2/images/skyline-canva.jpg") center center / contain no-repeat;
 }
 
 /* ---------- Metrics ---------- */
