@@ -228,6 +228,35 @@ day in roughly the same order: X, Al Jazeera / Morrow Newhall, Google News,
 IAAI, YouTube. That is not five commands, it is **one** — "morning 22" opens all
 of them in tabs while he is still getting coffee. Zero credentials required.
 
+### The proverbial newspaper — the sharper version of the morning macro
+
+His own frame, and it is a real step past opening tabs. The 1950s picture: the
+husband sits down at the counter in his suit, and the paper is already there
+with the coffee. He does not navigate anything. Every article is already in it.
+
+That is the distinction that matters:
+
+| | |
+|---|---|
+| **Bookmark** | You still go get it |
+| **Newspaper** | It was delivered, already assembled |
+
+Five tabs opening is still work. Being told what happened is not. So the orb
+greets him, says the four things that happened overnight, and only opens
+something on screen when he says "show me that one." He is not driving.
+
+Feasibility, honestly:
+
+- **News is nearly free.** Google News, Yahoo News, and Al Jazeera all publish
+  feeds. No keys, no permission, no scraping. Headlines can be assembled before
+  he is awake.
+- **X is the expensive one.** API access is paid now, and this is the one source
+  that may not survive the first version.
+- **IAAI needs a login**, so it is a session problem rather than a feed.
+
+The core of his actual morning — what happened overnight, what is on the news —
+is a feed pull plus a summary, with nothing clicked anywhere.
+
 ### The last inch nobody shipped
 
 Gemini and ChatGPT already have the Gmail connector. They made him authorize it.
@@ -258,6 +287,10 @@ of seeing a face escapes him. Voice and confirmation only.
 `Amelia` was the working name, then set aside — it is his daughter's formal
 name, and he would be aiming it at a machine forty times a day. `Axon` is the
 company. The assistant should get its own short, easy word. Undecided.
+
+Leaning back toward `Axon` for the orb itself — everything he already refers to
+as Axon *is* this thing, so the orb, the hologram, and the brain are one name.
+"Good morning, Axon" wakes it and the newspaper arrives.
 
 ### Open questions
 
