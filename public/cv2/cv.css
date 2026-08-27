@@ -226,6 +226,66 @@ button { font-family: inherit; }
   box-shadow: 0 4px 14px rgba(22,104,216,.14);
 }
 
+/* ---------- The orb, in page ----------
+   Axon never sends anyone off the host site to talk. It sits in the upper right
+   and opens the line where it stands. */
+.axon-orb-dock {
+  position: fixed;
+  top: 96px;
+  right: clamp(14px, 2vw, 28px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+#axonOrb {
+  pointer-events: auto;
+  width: 62px;
+  height: 62px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff;
+  background: radial-gradient(120% 120% at 32% 26%, #4f97f0 0%, var(--accent) 52%, #0f4fa8 100%);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 34px rgba(22,104,216,.42);
+  animation: orbBreathe 2.8s ease-in-out infinite;
+}
+#axonOrb svg { width: 26px; height: 26px; }
+#axonOrb:hover { filter: brightness(1.06); }
+@keyframes orbBreathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 12px 34px rgba(22,104,216,.42); }
+  50%      { transform: scale(1.05); box-shadow: 0 16px 44px rgba(22,104,216,.58); }
+}
+body.axon-connecting #axonOrb { animation: orbLive .9s ease-in-out infinite; }
+body.axon-active #axonOrb { animation: orbLive 1.5s ease-in-out infinite; }
+@keyframes orbLive {
+  0%, 100% { transform: scale(1);    filter: brightness(1); }
+  50%      { transform: scale(1.08); filter: brightness(1.14); }
+}
+body.axon-error #axonOrb { animation: none; background: #b23a3a; }
+.axon-orb-status {
+  pointer-events: none;
+  max-width: 190px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--navy-2);
+  background: rgba(255,255,255,.92);
+  border-radius: 10px;
+  padding: 5px 9px;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+body.axon-connecting .axon-orb-status,
+body.axon-active .axon-orb-status,
+body.axon-error .axon-orb-status { opacity: 1; }
+#axonOrb:hover + .axon-orb-status { opacity: 1; }
+
 /* ---------- Metrics ---------- */
 .metrics {
   position: relative;
