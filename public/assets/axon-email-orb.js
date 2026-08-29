@@ -5,8 +5,8 @@
   var PLATE = '/email-plate.html';
   var LAUNCH = '/launch.html';
   var NAME = 'axon_a1_orb';
-  var W = 168;
-  var H = 190;
+  var W = 200;
+  var H = 260;
   var MARGIN = 12;
 
   function plateUrl(params, origin) {
