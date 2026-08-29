@@ -8,30 +8,41 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
   width:100%;height:100%;overflow:hidden;
-  background:#fff;
+  background:#0b1220;
   display:flex;align-items:center;justify-content:center;
 }
 #orb{
-  width:200px;height:200px;border:0;border-radius:50%;
+  width:168px;height:168px;border:0;border-radius:50%;
   cursor:pointer;display:block;background:transparent;
   -webkit-user-drag:none;user-select:none;
+  animation:pulse 2.8s ease-in-out infinite;
+  filter:drop-shadow(0 0 22px rgba(64,140,255,0.45));
 }
-body.connecting #orb,body.active #orb{filter:drop-shadow(0 0 18px rgba(254,209,0,0.65));}
-body.error #orb{filter:drop-shadow(0 0 12px rgba(197,34,31,0.8));}
+body.connecting #orb,body.active #orb{
+  animation:pulseOn 1.15s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 34px rgba(90,170,255,0.75));
+}
+body.error #orb{filter:drop-shadow(0 0 16px rgba(197,34,31,0.85));}
+@keyframes pulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.045);}
+}
+@keyframes pulseOn{
+  from{transform:scale(1.02);}
+  to{transform:scale(1.08);}
+}
 </style>
 </head>
 <body>
-<!-- Same orb as the email — do not replace with a different asset -->
-<img id="orb" src="/email/orb-pulse.gif" width="200" height="200" alt="A1" role="button" tabindex="0"/>
+<img id="orb" src="/art/axon-orb-blue.png" width="168" height="168" alt="A1" role="button" tabindex="0"/>
 <script src="/axon-voice.js"></script>
 <script>
-let pc=null,localStream=null,starting=false,voice=null;
-const _p=new URLSearchParams(location.search);
+let pc=null,localStream=null,starting=false,voice=null,armed=false;
 const sessionUrl='/session?gate=1&src=email';
 const orb=document.getElementById('orb');
-const W=220,H=240,M=12;
+const W=200,H=220,M=12;
 
-if(_p.get('popup')==='1'){
+if(new URLSearchParams(location.search).get('popup')==='1'){
   try{
     const left=Math.max(0,(screen.availWidth||screen.width)-W-M);
     window.resizeTo(W,H);
@@ -111,9 +122,22 @@ orb.addEventListener('click',toggle);
 orb.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
+
+/* Click back to Gmail → end the call and close this little window */
+window.addEventListener('blur',function(){
+  if(!armed)return;
+  stop();
+  try{window.close()}catch(e){}
+});
+document.addEventListener('visibilitychange',function(){
+  if(!armed||!document.hidden)return;
+  stop();
+  try{window.close()}catch(e){}
+});
 
 setTimeout(toggle,280);
+/* Arm after mic prompt / first focus settle so permission dialogs don't kill it */
+setTimeout(function(){armed=true},3500);
 </script>
 </body>
 </html>

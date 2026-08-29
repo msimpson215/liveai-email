@@ -10,8 +10,6 @@
   try { w = AxonEmailOrb.openEmailOrb({ src: 'email' }); } catch (e) {}
   if (w) {
     try { window.close(); } catch (e) {}
-    /* If this tab can't close (Gmail opened it), jump focus isn't possible —
-       leave a blank page so it isn't a second "product". */
     document.write('');
   } else {
     location.replace('/email-plate.html?src=email&popup=1&autostart=1');
