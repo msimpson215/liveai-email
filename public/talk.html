@@ -50,12 +50,25 @@ body.ptt.listening #orb{box-shadow:0 0 0 4px rgba(124,252,122,.55),0 0 34px rgba
 #poweredBy b{font-weight:800;color:rgba(255,255,255,0.90);}
 #outreachPage{display:none;}
 body.outreach{background:#fff;}
-body.outreach #bg{display:none;}
-body.outreach #outreachPage{
+body.outreach #bg,body.corner #bgWrap{display:none;}
+body.outreach #outreachPage,body.corner #outreachPage{
   position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
   justify-content:flex-start;background:#fff;color:#111;font-family:system-ui,sans-serif;
   padding:clamp(22px,5vw,54px) 22px;text-align:center;
 }
+/* Email corner window: clean A1 page, orb upper-right — no Gmail masquerade */
+body.corner{
+  background:linear-gradient(165deg,#fffef8 0%,#f5f2ea 48%,#eee8dc 100%);
+}
+body.corner #outreachPage{
+  align-items:flex-start;text-align:left;background:transparent;
+  padding:22px 28px 100px;max-width:100%;
+  padding-right:min(48%,200px);
+}
+body.corner .a1Mark{font-size:clamp(42px,11vw,72px);}
+body.corner .a1Brand{font-size:clamp(18px,4.2vw,28px);}
+body.corner .a1Sub{font-size:clamp(14px,2.2vw,17px);max-width:280px;color:#444;}
+body.popup.corner #dock{padding-bottom:calc(12px + env(safe-area-inset-bottom));}
 .a1Mark{font-weight:950;letter-spacing:-0.05em;font-size:clamp(56px,12vw,112px);line-height:0.8;color:#111;}
 .a1Brand{font-weight:900;font-size:clamp(22px,5vw,44px);line-height:1.05;margin-top:10px;}
 .a1Brand span{display:block;color:#f1be00;}
@@ -156,7 +169,7 @@ body.noisy #textPanel .note{display:block;}
 }
 </style>
 </head>
-<body class="idle">
+<body class="idle corner">
 <div id="bgWrap"><div id="bg"></div></div>
 <div id="outreachPage" aria-hidden="true">
   <div class="a1Mark">A1</div>
@@ -191,21 +204,34 @@ const params=new URLSearchParams(location.search);
 const source=(params.get('src')||'email').toLowerCase();
 const sessionSource=(source==='a1tony'||source==='a1outreach')?source:'email';
 const isOutreach=sessionSource==='a1tony'||sessionSource==='a1outreach';
-/* talk-bg-v2.png = gap-free artwork with the Promotions/Updates tabs painted out. */
-const IMG_W=1536,IMG_H=979;         // background natural size
-const RING_CX=0.512, RING_CY=0.499; // eclipse center (px 786, 488 measured)
-const RING_D=0.255;                 // bright soft ring (its glow band lands on the art ring)
-const RINGDIM_D=0.40;               // large dim flare that fades out
-const SHADE_D=0.12;                 // dark eclipse center — stays INSIDE the bright ring
-const ARCH_F=0.1624;                // arch-tip row (px159/979) — pin near the top
-const TOP_F=0.03;                   // desired top margin above the arch
-const LOGO_EDGE=217;                // (logo right px971 + margin) - IMG_W/2, keeps logo on phone
+/* Email product: abandon Gmail masquerade. Clean A1 page + orb upper-right.
+   ?popup=1 is the small corner window opened over the customer's mail. */
+const isPopup=params.get('popup')==='1';
+const isCorner=!isOutreach;
+/* Legacy Gmail-art path kept only if someone forces ?illusion=1 */
+const useIllusion=!isCorner&&!isOutreach&&params.get('illusion')==='1';
+const IMG_W=1536,IMG_H=979;
+const RING_CX=0.512, RING_CY=0.499;
+const RING_D=0.255;
+const RINGDIM_D=0.40;
+const SHADE_D=0.12;
+const ARCH_F=0.1624;
+const TOP_F=0.03;
+const LOGO_EDGE=217;
 const bgEl=document.getElementById('bg');
 const orb=document.getElementById('orb');
 const orbShade=document.getElementById('orbShade');
 const orbRingDim=document.getElementById('orbRingDim');
 const orbRing=document.getElementById('orbRing');
 const humanLink=document.getElementById('humanLink');
+if(isPopup){
+  try{
+    const W=420,H=560,M=16;
+    const left=Math.max(0,(screen.availWidth||screen.width)-W-M);
+    window.resizeTo(W,H);
+    window.moveTo(left,M);
+  }catch(e){}
+}
 function placeOrb(){
   const vw=window.innerWidth,vh=window.innerHeight;
   if(isOutreach){
@@ -217,18 +243,24 @@ function placeOrb(){
     setBox(orb,cx,cy,ring*0.95);
     return;
   }
-  /* Zoom to pin the arch near the top and fill the screen (no dead space top or
-     bottom). On wide screens this fully slides up; on a narrow phone the zoom is
-     capped so the whole A1 logo still fits. */
+  if(isCorner||!useIllusion){
+    /* Orb parked in the upper-right; brand copy sits to the left */
+    const ring=Math.max(118,Math.min(Math.min(vw,vh)*(isPopup?0.42:0.28),isPopup?200:240));
+    const margin=isPopup?18:28;
+    const cx=vw-margin-ring/2;
+    const cy=margin+ring/2+(isPopup?4:12);
+    setBox(orbShade,cx,cy,ring*0.78);
+    setBox(orbRingDim,cx,cy,ring*1.55);
+    setBox(orbRing,cx,cy,ring);
+    setBox(orb,cx,cy,ring*0.95);
+    return;
+  }
   const scaleCover=Math.max(vw/IMG_W,vh/IMG_H);
-  const scaleArch=((1-TOP_F)/(1-ARCH_F))*vh/IMG_H;  // fills AND arch at TOP_F
-  const scaleLogo=vw/(2*LOGO_EDGE);                 // keep full logo width visible
+  const scaleArch=((1-TOP_F)/(1-ARCH_F))*vh/IMG_H;
+  const scaleLogo=vw/(2*LOGO_EDGE);
   const scale=Math.max(scaleCover,Math.min(scaleArch,scaleLogo));
   const rw=IMG_W*scale,rh=IMG_H*scale;
   const offX=(vw-rw)/2;
-  /* Pin arch at TOP_F. On narrow/portrait a small area at the very bottom may fall
-     below the image; #bgWrap is the inbox color so it blends, and the floating
-     controls sit over it — so the arch reaches the top on every device. */
   let offY=Math.min(0,TOP_F*vh-ARCH_F*rh);
   if(bgEl){
     bgEl.style.backgroundSize=rw+'px '+rh+'px';
@@ -275,7 +307,7 @@ let canInterrupt=false,protectLine=false,noiseAskUntil=0,roomLoud=false;
    available as an opt-in for anyone who truly needs a push-to-talk in a bar. */
 let ptt=false,pttAuto=false,listening=false;
 function applyClasses(){
-  let c=connState+(isOutreach?' outreach':'');
+  let c=connState+(isOutreach?' outreach':'')+(isCorner?' corner':'')+(isPopup?' popup':'');
   if(isTexting)c+=' texting';
   if(isNoisy)c+=' noisy';
   if(isPaused)c+=' paused';

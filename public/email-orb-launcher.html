@@ -33,8 +33,8 @@ a.repo{color:var(--yellow);}
   <p class="lead">Correct repo: <a class="repo" href="https://github.com/msimpson215/liveai-email">github.com/msimpson215/liveai-email</a> · Deploy: <strong>liveai-email</strong> on Render (not a1-fence).</p>
 
   <div class="metaphor">
-    <strong>Gmail = the table.</strong> Images and links only.<br/>
-    <strong>Axon = the plate.</strong> A small window opens on top with voice/chat. AI runs on this app — never inside Google.
+    <strong>Customer stays on Gmail.</strong> Clicking the orb opens a small A1 talk window in the <strong>upper-right</strong> corner.<br/>
+    No Gmail masquerade — just a real conversation panel. Clicking back to Gmail dismisses it.
   </div>
 
   <div class="block">
@@ -50,19 +50,19 @@ a.repo{color:var(--yellow);}
   </div>
 
   <div class="block">
-    <h2>Best illusion — JavaScript link on orb image</h2>
-    <p class="note">Hyperlink the orb in Gmail with this URL. Gmail stays visible; popup opens centered.</p>
-    <div class="code" id="jsLink"></div>
-    <button type="button" class="btn" data-copy="jsLink">Copy JavaScript link</button>
-    <button type="button" class="btn secondary" id="testJs">Test popup</button>
-    <p class="note warn">Some clients strip <code>javascript:</code> links — use HTTPS below if needed.</p>
+    <h2>Preferred — HTTPS launch (mailer uses this)</h2>
+    <p class="note">Opens a 420×560 window in the upper-right with the A1 orb. Works in Gmail; the launcher tab tries to close itself.</p>
+    <div class="code" id="httpsLink"></div>
+    <button type="button" class="btn" data-copy="httpsLink">Copy HTTPS link</button>
+    <button type="button" class="btn secondary" id="testJs">Test upper-right window</button>
   </div>
 
   <div class="block">
-    <h2>Fallback — HTTPS link (mailer uses this)</h2>
-    <div class="code" id="httpsLink"></div>
-    <button type="button" class="btn" data-copy="httpsLink">Copy HTTPS link</button>
-    <p class="note">Fallback only — opens a tab, not a popup over Gmail. Use JavaScript link on the orb.</p>
+    <h2>Optional — JavaScript popup link</h2>
+    <p class="note">Same upper-right window, no intermediate tab. Some clients strip <code>javascript:</code> — prefer HTTPS above.</p>
+    <div class="code" id="jsLink"></div>
+    <button type="button" class="btn" data-copy="jsLink">Copy JavaScript link</button>
+    <p class="note warn">Abandoned: Chrome extension / Gmail plate illusion. Do not use for new sends.</p>
   </div>
 
   <div class="block">
@@ -74,7 +74,6 @@ a.repo{color:var(--yellow);}
 <script>
 (function () {
   var origin = document.getElementById('origin');
-  var orbImg = document.getElementById('orbImg');
 
   function baseOrigin() {
     var v = (origin.value || '').trim().replace(/\/$/, '');

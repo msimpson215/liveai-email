@@ -1,52 +1,69 @@
 /**
- * Live AI Dash Email — 236px transparent popup over Gmail (orb only).
- * Gmail: images + links only. Voice runs on liveai-email (Axon), not inside Google.
+ * Live AI Dash Email — A1 talk window in the upper-right corner.
+ * Gmail (or whatever mail client) stays open underneath. Clicking back
+ * to mail dismisses this popup. No Gmail masquerade / illusion.
  */
 (function (g) {
-  var PLATE = '/email-plate.html';
+  var TALK = '/talk.html';
   var LAUNCH = '/launch.html';
-  var NAME = 'axon_plate';
-  var W = 236;
-  var H = 236;
+  var NAME = 'axon_a1_talk';
+  /* Compact panel — does not take over the screen */
+  var W = 420;
+  var H = 560;
+  var MARGIN = 16;
 
-  function plateUrl(params, origin) {
+  function talkUrl(params, origin) {
     var q = new URLSearchParams();
     q.set('src', (params && params.src) || 'email');
     q.set('popup', '1');
     q.set('autostart', '1');
-    return (origin || g.location.origin) + PLATE + '?' + q;
+    if (params && params.name) q.set('name', params.name);
+    if (params && params.tier) q.set('tier', params.tier);
+    return (origin || g.location.origin) + TALK + '?' + q;
   }
 
   function launchUrl(params, origin) {
     var q = new URLSearchParams();
     q.set('src', (params && params.src) || 'email');
+    if (params && params.name) q.set('name', params.name);
+    if (params && params.tier) q.set('tier', params.tier);
     return (origin || g.location.origin) + LAUNCH + '?' + q;
   }
 
-  function features() {
-    var l = Math.round(((g.screen.width || 1200) - W) / 2);
-    var t = Math.round(((g.screen.height || 800) - H) / 2);
-    return 'popup=yes,width=' + W + ',height=' + H + ',left=' + l + ',top=' + t +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no';
+  function leftTop() {
+    var sw = g.screen.availWidth || g.screen.width || 1200;
+    var l = Math.max(0, sw - W - MARGIN);
+    var t = MARGIN;
+    return { left: l, top: t };
   }
 
+  function features() {
+    var p = leftTop();
+    return 'popup=yes,width=' + W + ',height=' + H + ',left=' + p.left + ',top=' + p.top +
+      ',toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes,directories=no';
+  }
+
+  /* String form for javascript: email hyperlinks (evaluates screen at click time) */
   function jsFeatures() {
     return 'popup=yes,width=' + W + ',height=' + H +
-      ",left='+(screen.width-" + W + ")/2,top='+(screen.height-" + H + ")/2" +
-      ',toolbar=no,menubar=no,location=no,status=no,resizable=no,scrollbars=no,directories=no';
+      ",left='+Math.max(0,(screen.availWidth||screen.width)-" + W + '-' + MARGIN + ")+',top=" + MARGIN +
+      "',toolbar=no,menubar=no,location=no,status=no,resizable=yes,scrollbars=yes,directories=no";
   }
 
   function openEmailOrb(params, origin) {
-    return g.open(plateUrl(params, origin), NAME, features());
+    return g.open(talkUrl(params, origin), NAME, features());
   }
 
   g.AxonEmailOrb = {
+    WIDTH: W,
+    HEIGHT: H,
     openEmailOrb: openEmailOrb,
-    buildPlateUrl: plateUrl,
+    buildTalkUrl: talkUrl,
+    buildPlateUrl: talkUrl, /* legacy alias */
     buildLaunchUrl: launchUrl,
     httpsHyperlink: launchUrl,
     javascriptHyperlink: function (params, origin) {
-      var u = plateUrl(params, origin).replace(/'/g, '%27');
+      var u = talkUrl(params, origin).replace(/'/g, '%27');
       return "javascript:void(window.open('" + u + "','" + NAME + "'," + jsFeatures() + '))';
     }
   };

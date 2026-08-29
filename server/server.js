@@ -29,7 +29,7 @@ app.use(express.static('public', {
   }
 }))
 
-const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/talk.html'
+const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/launch.html'
 
 /**
  * Personal Axon links: /joe, /tim, /ira all serve the one orb page with that
