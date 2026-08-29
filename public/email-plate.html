@@ -40,21 +40,28 @@ body.error .orb{border-color:#c5221f;box-shadow:0 0 16px rgba(197,34,31,0.45);}
   font-size:11px;font-weight:700;color:#333;text-align:center;
   line-height:1.25;max-width:100%;pointer-events:none;flex-shrink:0;
 }
+.hint{
+  font-size:10px;font-weight:600;color:#8a8a8a;text-align:center;
+  line-height:1.2;pointer-events:none;flex-shrink:0;margin-top:-4px;
+}
 </style>
 </head>
 <body>
-<div class="orb" id="orb" role="button" tabindex="0" aria-label="A1 asphalt team member"></div>
-<div class="label">A1 asphalt team member</div>
+<div class="orb" id="orb" role="button" tabindex="0" aria-label="A1 Asphalt Team Member"></div>
+<div class="label">A1 Asphalt Team Member</div>
+<div class="hint" id="hint">Click to talk</div>
 <script src="/axon-voice.js"></script>
 <script>
 let pc=null,localStream=null,starting=false,voice=null,armed=false;
 const sessionUrl='/session?gate=1&src=email';
 const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+function setHint(t){if(hint)hint.textContent=t;}
 
 /* How much room the CONTENT needs. window.resizeTo sizes the OUTER window,
    which includes the popup's title bar and address bar — that chrome is what
    was eating the orb. Measure it, then size for the inner area. */
-const INNER_W=190,INNER_H=225,MARGIN=12;
+const INNER_W=190,INNER_H=240,MARGIN=12;
 function fitWindow(){
   try{
     const chromeW=Math.max(0,window.outerWidth-window.innerWidth);
@@ -79,6 +86,7 @@ async function stop(){
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
   document.body.classList.remove('active','connecting','error','talking');
   starting=false;
+  setHint('Click to talk');
 }
 
 async function fetchSession(){
@@ -133,6 +141,7 @@ async function connectVoice(){
   });
   document.body.classList.add('active','talking');
   document.body.classList.remove('connecting','error');
+  setHint('Click to stop');
 }
 
 async function toggle(){
@@ -140,8 +149,9 @@ async function toggle(){
   starting=true;
   document.body.classList.add('connecting');
   document.body.classList.remove('error');
+  setHint('Connecting…');
   try{ await connectVoice(); }
-  catch(e){ console.error(e); await stop(); document.body.classList.add('error'); }
+  catch(e){ console.error(e); await stop(); document.body.classList.add('error'); setHint('Click to try again'); }
   starting=false;
 }
 
