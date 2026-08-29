@@ -5,8 +5,10 @@
   var PLATE = '/email-plate.html';
   var LAUNCH = '/launch.html';
   var NAME = 'axon_a1_orb';
+  /* Outer size guess — includes the popup's title/address bar. email-plate.html
+     measures the real chrome height on load and corrects this. */
   var W = 200;
-  var H = 260;
+  var H = 330;
   var MARGIN = 12;
 
   function plateUrl(params, origin) {
