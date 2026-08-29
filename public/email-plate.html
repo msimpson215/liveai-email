@@ -8,39 +8,48 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
   width:100%;height:100%;overflow:hidden;
-  background:#0b1220;
-  display:flex;align-items:center;justify-content:center;
+  /* Popups can't be truly transparent — white blends with Gmail */
+  background:#fff;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+  gap:8px;
 }
-#orb{
-  width:168px;height:168px;border:0;border-radius:50%;
-  cursor:pointer;display:block;background:transparent;
-  -webkit-user-drag:none;user-select:none;
-  animation:pulse 2.8s ease-in-out infinite;
-  filter:drop-shadow(0 0 22px rgba(64,140,255,0.45));
+.orb{
+  width:118px;height:118px;border-radius:50%;cursor:pointer;flex-shrink:0;
+  background:#FED100 url('/email/a1-logo.jpg') center/62% no-repeat;
+  background-color:#FED100;
+  border:2px solid #FED100;
+  box-shadow:0 0 22px rgba(254,209,0,0.35);
+  transition:box-shadow .25s ease, transform .25s ease;
 }
-body.connecting #orb,body.active #orb{
-  animation:pulseOn 1.15s ease-in-out infinite alternate;
-  filter:drop-shadow(0 0 34px rgba(90,170,255,0.75));
+body.connecting .orb{
+  box-shadow:0 0 28px rgba(254,209,0,0.55);
 }
-body.error #orb{filter:drop-shadow(0 0 16px rgba(197,34,31,0.85));}
-@keyframes pulse{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.045);}
+body.talking .orb{
+  animation:talkPulse 0.9s ease-in-out infinite alternate;
 }
-@keyframes pulseOn{
-  from{transform:scale(1.02);}
-  to{transform:scale(1.08);}
+body.error .orb{border-color:#c5221f;box-shadow:0 0 16px rgba(197,34,31,0.45);}
+@keyframes talkPulse{
+  from{transform:scale(1);box-shadow:0 0 18px rgba(254,209,0,0.4);}
+  to{transform:scale(1.08);box-shadow:0 0 36px rgba(254,209,0,0.85);}
+}
+.label{
+  font-size:11px;font-weight:700;letter-spacing:0.02em;
+  color:#333;text-align:center;line-height:1.25;
+  max-width:140px;pointer-events:none;
 }
 </style>
 </head>
 <body>
-<img id="orb" src="/art/axon-orb-blue.png" width="168" height="168" alt="A1" role="button" tabindex="0"/>
+<div class="orb" id="orb" role="button" tabindex="0" aria-label="A1 asphalt team member"></div>
+<div class="label">A1 asphalt team member</div>
 <script src="/axon-voice.js"></script>
 <script>
 let pc=null,localStream=null,starting=false,voice=null,armed=false;
 const sessionUrl='/session?gate=1&src=email';
 const orb=document.getElementById('orb');
-const W=200,H=220,M=12;
+const W=168,H=190,M=12;
 
 if(new URLSearchParams(location.search).get('popup')==='1'){
   try{
@@ -54,7 +63,7 @@ async function stop(){
   if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  document.body.classList.remove('active','connecting','error');
+  document.body.classList.remove('active','connecting','error','talking');
   starting=false;
 }
 
@@ -103,8 +112,15 @@ async function connectVoice(){
   });
   if(!sdp.ok)throw new Error('sdp');
   await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
+  voice=AxonVoice.attach({
+    dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,
+    voice:data.voice,pc:pc,onLost:handleLost,
+    onAiSpeaking:function(on){
+      document.body.classList.toggle('talking',!!on);
+    }
+  });
   document.body.classList.add('active');
+  document.body.classList.add('talking'); /* greeting is starting */
   document.body.classList.remove('connecting','error');
 }
 
@@ -123,7 +139,6 @@ orb.addEventListener('keydown',e=>{
   if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}
 });
 
-/* Click back to Gmail → end the call and close this little window */
 window.addEventListener('blur',function(){
   if(!armed)return;
   stop();
@@ -136,7 +151,6 @@ document.addEventListener('visibilitychange',function(){
 });
 
 setTimeout(toggle,280);
-/* Arm after mic prompt / first focus settle so permission dialogs don't kill it */
 setTimeout(function(){armed=true},3500);
 </script>
 </body>

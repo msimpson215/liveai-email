@@ -1,13 +1,7 @@
-# A1 email orb
+# A1 email link
 
-**Live:** https://liveai-email.onrender.com
+```
+https://liveai-email.onrender.com/launch.html
+```
 
-Customer stays on Gmail. Click opens a **tiny orb window in the upper-right**. Just the pulsing A1 orb — they talk, it talks. No fake Gmail UI.
-
-| Piece | URL |
-|-------|-----|
-| Email link | `/launch.html` |
-| Tiny orb window | `/email-plate.html?src=email&popup=1` |
-| Mailer copy | `/mailer.html` |
-
-Send yourself `/mailer.html` → click orb → small window, top-right.
+Small yellow A1 orb + “A1 asphalt team member”, white window, upper-right. Pulses while talking. Click back to Gmail closes it.

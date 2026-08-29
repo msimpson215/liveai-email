@@ -1,12 +1,12 @@
 /**
- * A1 email link → tiny blue-orb window, upper-right over Gmail.
+ * A1 email link → small yellow A1 orb, upper-right over Gmail.
  */
 (function (g) {
   var PLATE = '/email-plate.html';
   var LAUNCH = '/launch.html';
   var NAME = 'axon_a1_orb';
-  var W = 200;
-  var H = 220;
+  var W = 168;
+  var H = 190;
   var MARGIN = 12;
 
   function plateUrl(params, origin) {
