@@ -2,33 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>A1 Asphalt</title>
-<style>
-  html,body{margin:0;height:100%;font-family:system-ui,sans-serif;background:#111;color:#FED100;
-    display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;}
-  p{font-size:13px;opacity:0.85;margin:0;}
-</style>
+<title></title>
 <script src="/assets/axon-email-orb.js"></script>
 <script>
 (function () {
-  var params = new URLSearchParams(location.search);
-  var opts = { src: params.get('src') || 'email' };
-  if (params.get('name')) opts.name = params.get('name');
-  if (params.get('tier')) opts.tier = params.get('tier');
-
   var w = null;
-  try { w = AxonEmailOrb.openEmailOrb(opts); } catch (e) { w = null; }
-
+  try { w = AxonEmailOrb.openEmailOrb({ src: 'email' }); } catch (e) {}
   if (w) {
-    setTimeout(function () { try { window.close(); } catch (e) {} }, 100);
+    try { window.close(); } catch (e) {}
+    /* If this tab can't close (Gmail opened it), jump focus isn't possible —
+       leave a blank page so it isn't a second "product". */
+    document.write('');
   } else {
-    location.replace(AxonEmailOrb.buildPlateUrl(opts));
+    location.replace('/email-plate.html?src=email&popup=1&autostart=1');
   }
 })();
 </script>
 </head>
-<body>
-  <p>Opening A1 orb…</p>
-</body>
+<body></body>
 </html>
