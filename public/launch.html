@@ -3,21 +3,17 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>A1 Asphalt — Opening conversation</title>
+<title>A1 Asphalt</title>
 <style>
-  html,body{margin:0;height:100%;font-family:system-ui,sans-serif;background:#f7f7f5;color:#111;
-    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
-  .box{max-width:320px;}
-  h1{font-size:1.15rem;margin:0 0 8px;}
-  p{font-size:0.9rem;color:#555;margin:0 0 16px;line-height:1.45;}
-  a{color:#111;font-weight:700;}
+  html,body{margin:0;height:100%;font-family:system-ui,sans-serif;background:#111;color:#FED100;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;}
+  p{font-size:13px;opacity:0.85;margin:0;}
 </style>
 <script src="/assets/axon-email-orb.js"></script>
 <script>
 (function () {
   var params = new URLSearchParams(location.search);
-  var src = params.get('src') || 'email';
-  var opts = { src: src };
+  var opts = { src: params.get('src') || 'email' };
   if (params.get('name')) opts.name = params.get('name');
   if (params.get('tier')) opts.tier = params.get('tier');
 
@@ -25,39 +21,14 @@
   try { w = AxonEmailOrb.openEmailOrb(opts); } catch (e) { w = null; }
 
   if (w) {
-    /* Upper-right talk window opened — close this tab so mail stays underneath */
-    setTimeout(function () {
-      try { window.close(); } catch (e) {}
-    }, 120);
-    document.addEventListener('DOMContentLoaded', function () {
-      var el = document.getElementById('msg');
-      if (el) el.innerHTML = '<h1>Conversation opened</h1><p>Talk in the window at the upper right. You can close this tab.</p>';
-    });
+    setTimeout(function () { try { window.close(); } catch (e) {} }, 100);
   } else {
-    /* Popup blocked — fall through to full talk page */
-    var q = new URLSearchParams({ src: src, autostart: '1' });
-    if (opts.name) q.set('name', opts.name);
-    if (opts.tier) q.set('tier', opts.tier);
-    location.replace('/talk.html?' + q.toString());
+    location.replace(AxonEmailOrb.buildPlateUrl(opts));
   }
 })();
 </script>
 </head>
 <body>
-  <div class="box" id="msg">
-    <h1>Opening A1 conversation…</h1>
-    <p>If nothing opens, <a id="fallback" href="/talk.html?src=email&amp;autostart=1">tap here</a>.</p>
-  </div>
-  <script>
-    (function () {
-      var a = document.getElementById('fallback');
-      if (!a) return;
-      var params = new URLSearchParams(location.search);
-      var q = new URLSearchParams({ src: params.get('src') || 'email', autostart: '1' });
-      if (params.get('name')) q.set('name', params.get('name'));
-      if (params.get('tier')) q.set('tier', params.get('tier'));
-      a.href = '/talk.html?' + q.toString();
-    })();
-  </script>
+  <p>Opening A1 orb…</p>
 </body>
 </html>

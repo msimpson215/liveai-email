@@ -3,106 +3,52 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Live AI Dash Email — Orb Link Generator</title>
+<title>A1 email orb link</title>
 <style>
 :root{--yellow:#FED100;--bg:#0a0a0a;--panel:#141414;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:#fff;font-family:Arial,sans-serif;line-height:1.6;padding:32px 20px 64px;}
-.wrap{max-width:880px;margin:0 auto;}
-h1{font-size:1.75rem;margin-bottom:8px;}
+.wrap{max-width:720px;margin:0 auto;}
+h1{font-size:1.5rem;margin-bottom:8px;}
 h1 span{color:var(--yellow);}
-.lead{color:#aaa;margin-bottom:28px;font-size:0.95rem;}
-.metaphor{background:var(--panel);border-left:4px solid var(--yellow);padding:16px 20px;margin-bottom:32px;font-size:0.9rem;color:#ddd;}
-.metaphor strong{color:var(--yellow);}
-label{display:block;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--yellow);font-weight:800;margin-bottom:6px;}
-.field{margin-bottom:18px;}
-input{width:100%;padding:12px 14px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;font-size:0.95rem;}
-.block{background:var(--panel);border:1px solid #2a2a2a;border-radius:10px;padding:20px;margin-bottom:24px;}
-.block h2{font-size:1rem;color:var(--yellow);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em;}
-.code{background:#080808;border:1px solid #333;border-radius:8px;padding:14px;font-size:0.78rem;color:#f5e6a8;word-break:break-all;margin:10px 0 14px;line-height:1.5;}
-.note{font-size:0.8rem;color:#888;margin-top:8px;}
-.note.warn{color:#e8b84a;}
-.btn{display:inline-block;padding:14px 28px;background:var(--yellow);color:#000;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;margin-right:10px;margin-top:8px;}
+.lead{color:#aaa;margin-bottom:24px;}
+.block{background:var(--panel);border:1px solid #2a2a2a;border-radius:10px;padding:20px;margin-bottom:20px;}
+.code{background:#080808;border:1px solid #333;border-radius:8px;padding:14px;font-size:0.85rem;color:#f5e6a8;word-break:break-all;margin:10px 0 14px;}
+.btn{padding:12px 22px;background:var(--yellow);color:#000;font-weight:900;border:none;border-radius:8px;cursor:pointer;margin-right:8px;}
 .btn.secondary{background:transparent;border:2px solid var(--yellow);color:var(--yellow);}
-a.repo{color:var(--yellow);}
+.note{font-size:0.85rem;color:#888;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Live AI Dash <span>Email</span></h1>
-  <p class="lead">Correct repo: <a class="repo" href="https://github.com/msimpson215/liveai-email">github.com/msimpson215/liveai-email</a> · Deploy: <strong>liveai-email</strong> on Render (not a1-fence).</p>
-
-  <div class="metaphor">
-    <strong>Customer stays on Gmail.</strong> Clicking the orb opens a small A1 talk window in the <strong>upper-right</strong> corner.<br/>
-    No Gmail masquerade — just a real conversation panel. Clicking back to Gmail dismisses it.
-  </div>
+  <h1>A1 Asphalt <span>email orb</span></h1>
+  <p class="lead">Tiny orb window, upper-right. Gmail stays underneath. No fake inbox.</p>
 
   <div class="block">
-    <h2>Settings</h2>
-    <div class="field">
-      <label for="origin">Site URL</label>
-      <input id="origin" type="url" placeholder="https://liveai-email.onrender.com"/>
-    </div>
-    <div class="field">
-      <label for="orbImg">Orb image in email (use hosted GIF for animation)</label>
-      <input id="orbImg" type="text" value="/email/orb-pulse.gif"/>
-    </div>
-  </div>
-
-  <div class="block">
-    <h2>Preferred — HTTPS launch (mailer uses this)</h2>
-    <p class="note">Opens a 420×560 window in the upper-right with the A1 orb. Works in Gmail; the launcher tab tries to close itself.</p>
+    <p class="note">Paste this link on the orb in Gmail:</p>
     <div class="code" id="httpsLink"></div>
-    <button type="button" class="btn" data-copy="httpsLink">Copy HTTPS link</button>
-    <button type="button" class="btn secondary" id="testJs">Test upper-right window</button>
+    <button type="button" class="btn" data-copy="httpsLink">Copy link</button>
+    <button type="button" class="btn secondary" id="test">Test tiny window</button>
   </div>
 
   <div class="block">
-    <h2>Optional — JavaScript popup link</h2>
-    <p class="note">Same upper-right window, no intermediate tab. Some clients strip <code>javascript:</code> — prefer HTTPS above.</p>
-    <div class="code" id="jsLink"></div>
-    <button type="button" class="btn" data-copy="jsLink">Copy JavaScript link</button>
-    <p class="note warn">Abandoned: Chrome extension / Gmail plate illusion. Do not use for new sends.</p>
-  </div>
-
-  <div class="block">
-    <h2>Ready-made email</h2>
-    <p class="note"><a class="repo" href="/send.html"><strong>send.html</strong></a> — one-click copy, paste into Gmail. Also <a class="repo" href="/mailer.html">mailer.html</a>.</p>
+    <p class="note"><a href="/mailer.html" style="color:#FED100;">mailer.html</a> — ready email: “Talk to A1 Professional Asphalt now”</p>
   </div>
 </div>
 <script src="/assets/axon-email-orb.js"></script>
 <script>
 (function () {
-  var origin = document.getElementById('origin');
-
-  function baseOrigin() {
-    var v = (origin.value || '').trim().replace(/\/$/, '');
-    return v || window.location.origin;
-  }
-
-  function update() {
-    var o = baseOrigin();
-    document.getElementById('jsLink').textContent = AxonEmailOrb.javascriptHyperlink({ src: 'email' }, o);
-    document.getElementById('httpsLink').textContent = AxonEmailOrb.httpsHyperlink({ src: 'email' }, o);
-  }
-
-  origin.addEventListener('input', update);
-  document.getElementById('testJs').addEventListener('click', function () {
-    AxonEmailOrb.openEmailOrb({ src: 'email' }, baseOrigin());
-  });
+  var o = 'https://liveai-email.onrender.com';
+  document.getElementById('httpsLink').textContent = AxonEmailOrb.httpsHyperlink({ src: 'email' }, o);
+  document.getElementById('test').onclick = function () { AxonEmailOrb.openEmailOrb({ src: 'email' }, o); };
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
-    var defaultLabel = btn.textContent;
-    btn.addEventListener('click', function () {
-      var id = btn.getAttribute('data-copy');
-      navigator.clipboard.writeText(document.getElementById(id).textContent).then(function () {
+    btn.onclick = function () {
+      navigator.clipboard.writeText(document.getElementById(btn.getAttribute('data-copy')).textContent).then(function () {
         btn.textContent = 'Copied!';
-        setTimeout(function () { btn.textContent = defaultLabel; }, 2000);
+        setTimeout(function () { btn.textContent = 'Copy link'; }, 1500);
       });
-    });
+    };
   });
-
-  if (!origin.value) origin.value = window.location.origin || 'https://liveai-email.onrender.com';
-  update();
 })();
 </script>
 </body>

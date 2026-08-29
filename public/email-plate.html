@@ -3,62 +3,63 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title></title>
+<title>A1 Asphalt</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:none transparent;
-  background-color:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:100%;height:100%;overflow:hidden;
+  background:#111;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  font-family:system-ui,-apple-system,sans-serif;
 }
 .orb{
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  cursor:pointer;
-  background:#F5C518 url('/email/a1-logo.jpg') center/68% no-repeat;
+  width:200px;height:200px;border-radius:50%;cursor:pointer;
+  background:#F5C518 url('/email/a1-logo.jpg') center/62% no-repeat;
   background-color:#F5C518;
   border:3px solid #F5C518;
-  box-shadow:0 0 60px rgba(245,197,24,0.45),0 0 120px rgba(245,197,24,0.18);
-  animation:pulse 3s ease-in-out infinite;
+  box-shadow:0 0 50px rgba(245,197,24,0.5),0 0 100px rgba(245,197,24,0.2);
+  animation:pulse 2.4s ease-in-out infinite;
   flex-shrink:0;
+  position:relative;
+}
+.tag{
+  margin-top:10px;color:#FED100;font-weight:800;font-size:11px;
+  letter-spacing:0.06em;text-transform:uppercase;text-align:center;
+  opacity:0.9;pointer-events:none;
 }
 body.active .orb,body.connecting .orb{
   border-color:#fff;
-  animation:pulseOn 1.2s ease-in-out infinite alternate;
+  animation:pulseOn 1.1s ease-in-out infinite alternate;
 }
-body.error .orb{
-  border-color:#c5221f;
-}
+body.error .orb{border-color:#c5221f;}
 @keyframes pulse{
   0%,100%{transform:scale(1);}
-  50%{transform:scale(1.05);box-shadow:0 0 80px rgba(245,197,24,0.65),0 0 160px rgba(245,197,24,0.28);}
+  50%{transform:scale(1.06);box-shadow:0 0 70px rgba(245,197,24,0.7),0 0 140px rgba(245,197,24,0.3);}
 }
 @keyframes pulseOn{
   from{transform:scale(1.02);}
-  to{transform:scale(1.08);box-shadow:0 0 100px rgba(245,197,24,0.9),0 0 200px rgba(245,197,24,0.4);}
+  to{transform:scale(1.09);box-shadow:0 0 90px rgba(245,197,24,0.95),0 0 180px rgba(245,197,24,0.4);}
 }
 </style>
 </head>
 <body>
-<div class="orb" id="orb" role="button" tabindex="0"></div>
+<div class="orb" id="orb" role="button" tabindex="0" aria-label="Talk to A1 Professional Asphalt"></div>
+<div class="tag">A1 Asphalt · tap to talk</div>
 <script src="/axon-voice.js"></script>
 <script>
 let pc=null,localStream=null,starting=false,voice=null;
-const sessionUrl=new URLSearchParams(location.search).get('src')==='email'?'/session?gate=1&src=email':'/session?gate=1';
-const orb=document.getElementById('orb');
-
 const _p=new URLSearchParams(location.search);
-const inOverlay=_p.get('overlay')==='1'||window.top!==window.self;
-if(_p.get('popup')==='1' && !inOverlay){
+const sessionUrl=_p.get('src')==='email'?'/session?gate=1&src=email':'/session?gate=1';
+const orb=document.getElementById('orb');
+const W=260,H=280,M=12;
+
+/* Pin this tiny window to the upper-right so Gmail stays visible */
+if(_p.get('popup')==='1' && window.top===window.self){
   try{
-    window.resizeTo(236,236);
-    window.moveTo(Math.round((screen.width-236)/2),Math.round((screen.height-236)/2));
+    const left=Math.max(0,(screen.availWidth||screen.width)-W-M);
+    window.resizeTo(W,H);
+    window.moveTo(left,M);
   }catch(e){}
 }
 
@@ -77,23 +78,17 @@ async function fetchSession(){
   return data;
 }
 
-
-/* The call dropped. Nothing used to happen here, so the orb sat there looking
-   alive while nothing worked and the only fix was reloading the page. Rebuild
-   the connection quietly and keep going; axon-voice.js hands the previous turns
-   to the new session so it carries on instead of greeting again. */
 let reconnecting=false,reconnectTries=0;
 async function handleLost(){
   if(reconnecting)return;
   reconnecting=true;
-  const startFn=(typeof connectVoice==='function')?connectVoice:null;
   try{if(voice){voice.detach();voice=null}}catch(e){}
   try{if(pc){pc.close()}}catch(e){}
   pc=null;
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
   const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
   setTimeout(async function(){
-    try{ if(startFn)await startFn(); reconnectTries=0; }
+    try{ await connectVoice(); reconnectTries=0; }
     catch(e){ if(reconnectTries<5)handleLost(); }
     finally{ reconnecting=false; }
   },wait);
@@ -131,13 +126,8 @@ async function toggle(){
   starting=true;
   document.body.classList.add('connecting');
   document.body.classList.remove('error');
-  try{
-    await connectVoice();
-  }catch(e){
-    console.error(e);
-    await stop();
-    document.body.classList.add('error');
-  }
+  try{ await connectVoice(); }
+  catch(e){ console.error(e); await stop(); document.body.classList.add('error'); }
   starting=false;
 }
 
@@ -147,9 +137,8 @@ orb.addEventListener('keydown',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){stop();try{window.close()}catch(x){}}});
 
-if(new URLSearchParams(location.search).get('autostart')==='1'){
-  setTimeout(toggle,300);
-}
+/* Always start talking when this tiny window opens */
+setTimeout(toggle,280);
 </script>
 </body>
 </html>
