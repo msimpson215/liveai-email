@@ -13,6 +13,30 @@ cheap; the stories are not.
 
 ---
 
+## What to talk about — start here
+
+You know this cold. A stranger — or the AI — does not. For each section below,
+answer the **three prompts**. That is enough. Skip anything you do not want live.
+
+| Section | Prompt 1 | Prompt 2 | Prompt 3 |
+|---------|----------|----------|----------|
+| **Businesses** | What did you build that did not exist before? | Who was the customer and what problem did you solve? | What number are you sure of? (revenue, employees, years) |
+| **Development** | What was the place like before you touched it? | What was your role — not just what sold? | What would you do differently? |
+| **Inventions** | What were you staring at when the idea hit? | Issued patent or provisional — be exact. | What is it for sale/licensing vs still in your head? |
+| **Community** | What actually happened — plain terms? | What is done vs proposed? | Why kids — what changed you? |
+| **Media** | Publication, date, headline. | Link if it exists. | One sentence on why it matters. |
+| **Current work** | What is shipped and working today? | What is in progress? | What would you demo to Tim in five minutes? |
+| **Education** | Degrees and dates — exact. | What did not get finished and how do you describe it? | Where does "Axon" come from? |
+
+**Already live from your paper CV + photos:**
+- Channel 9 video: https://www.youtube.com/watch?v=o_LuKiM_pTw (homepage + Community)
+- Patent, Maplewood, Florida, Momo's, Boogaloo's photos (on the matching pages)
+
+**Still need from you:** Business Journal citation (publication, date, headline,
+link). Anything else on the paper CV we have not scanned yet.
+
+---
+
 ## Ground rules before anything goes live
 
 These exist because **whatever lands on a page also lands in the AI's mouth.**
@@ -95,7 +119,11 @@ proposed and not completed, it stays "proposed."
 
 The Business Journal piece, and anything else in print or on air.
 
-For each item, capture: **publication, date, headline, link if it exists.**
+**Channel 9 (KSDK) — LIVE:** https://www.youtube.com/watch?v=o_LuKiM_pTw
+Maplewood development, Mia, Pywacket Children's Theater, Friends of Kids with
+Cancer, family entertainment district.
+
+For each other item, capture: **publication, date, headline, link if it exists.**
 That's the whole entry. See the note at the bottom on why we cite instead of
 scanning.
 
