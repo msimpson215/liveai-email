@@ -42,17 +42,40 @@ button { font-family: inherit; }
 .header-inner {
   width: min(1360px, calc(100% - 36px));
   margin: 0 auto;
-  padding: 22px 0 16px;
+  padding: 20px 0 14px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   grid-template-areas:
-    "brand ribbon talk menu"
-    "nav nav nav nav";
-  align-items: center;
+    "title talk menu"
+    "nav nav nav";
+  align-items: end;
   column-gap: 18px;
-  row-gap: 14px;
+  row-gap: 16px;
 }
-.brand { grid-area: brand; text-decoration: none; color: var(--navy); min-width: 0; }
+.header-title {
+  grid-area: title;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.header-product {
+  display: block;
+  font-size: clamp(30px, 4.5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.02;
+  color: var(--navy);
+}
+.header-person {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.15;
+  color: var(--accent-text);
+}
+.brand { grid-area: title; text-decoration: none; color: var(--navy); min-width: 0; }
 .brand-name {
   display: block;
   font-size: clamp(22px, 2.5vw, 34px);
@@ -76,34 +99,19 @@ button { font-family: inherit; }
   font-weight: 600;
   letter-spacing: .01em;
 }
-/* Old-resume ribbon — sits in the header band, not the hero. */
-.resume-ribbon {
-  grid-area: ribbon;
-  margin: 0;
-  padding: 0;
-  font-size: clamp(13px, 1.35vw, 17px);
-  font-weight: 800;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-  transform: rotate(-18deg);
-  white-space: nowrap;
-  align-self: center;
-  justify-self: center;
-  user-select: none;
-}
-.header-talk { grid-area: talk; }
-.menu-btn { grid-area: menu; }
+/* Legacy brand block — inner pages may still reference; homepage uses .header-title */
+.header-talk { grid-area: talk; align-self: center; }
+.menu-btn { grid-area: menu; align-self: center; }
 .top-nav {
   grid-area: nav;
   display: flex;
   align-items: center;
   gap: 6px 20px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   border-top: 1px solid var(--line);
-  padding-top: 12px;
-  margin-top: 2px;
+  padding-top: 14px;
+  margin-top: 0;
 }
 .top-nav a:not(.btn-talk) {
   color: var(--navy-2);
@@ -178,11 +186,18 @@ button { font-family: inherit; }
   max-width: 16ch;
 }
 .lede {
-  margin-top: 22px;
+  margin-top: 0;
   font-size: clamp(17px, 1.7vw, 21px);
   color: var(--muted);
   max-width: 640px;
   line-height: 1.5;
+}
+.hero-lede {
+  font-size: clamp(20px, 2.2vw, 26px);
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.45;
+  max-width: 22em;
 }
 .hero-actions { margin-top: 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .btn-talk.xl {
@@ -314,8 +329,9 @@ body.axon-error .axon-orb-status { opacity: 1; }
   grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
   gap: clamp(24px, 4vw, 48px);
   align-items: center;
-  padding: clamp(36px, 5vw, 56px) 0;
-  border-bottom: 1px solid var(--line);
+  padding: clamp(48px, 6vw, 72px) 0 clamp(36px, 5vw, 56px);
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
 }
 .featured-story .eyebrow {
   font-size: 12px;
@@ -569,16 +585,15 @@ footer a:hover { color: var(--navy); }
   .header-inner {
     grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-areas:
-      "brand talk menu"
+      "title talk menu"
       "nav nav nav";
   }
-  .resume-ribbon { display: none; }
   .top-nav { display: none; justify-content: flex-start; }
   .menu-btn { display: inline-block; margin-left: 0; }
   .header-talk { font-size: 12.5px; padding: 10px 13px; }
   body.nav-open .header-inner {
     grid-template-areas:
-      "brand talk menu"
+      "title talk menu"
       "nav nav nav";
   }
   body.nav-open .top-nav {
