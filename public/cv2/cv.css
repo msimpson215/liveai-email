@@ -58,6 +58,14 @@ button { font-family: inherit; }
   color: inherit;
   min-width: 0;
 }
+.header-doc {
+  display: block;
+  font-size: clamp(19px, 2.2vw, 27px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  color: var(--navy);
+}
 .header-person {
   display: block;
   font-size: clamp(24px, 3vw, 38px);
@@ -269,6 +277,12 @@ button { font-family: inherit; }
   line-height: 1.1;
   color: var(--navy);
   margin-bottom: 10px;
+}
+.ai-feature-lead {
+  font-size: 19px !important;
+  font-weight: 700;
+  color: var(--navy) !important;
+  margin-bottom: 8px !important;
 }
 .ai-feature-copy p {
   font-size: 17px;
