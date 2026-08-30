@@ -174,7 +174,19 @@ Biology major, pre-med, Washington University. Headed toward neuroscience —
 which is where the word Axon comes from, and worth saying out loud on the page
 because it makes the company name earned rather than decorative.
 
-Also: Missouri Department of Health, and the CDC training.
+**Dictated Aug 2026:**
+
+- Graduated Washington University **1987**.
+- **Full-ride scholarship** — paid tuition; after the first year he paid for
+  housing himself. Not a scholarship that stepped up year by year with a typical
+  WashU degree path (confirm exact scholarship name if needed).
+- Grew up in the **Palo Alto school district** — Palo Alto High, near Peterson
+  (street/area TBC). Silicon Valley was starting: bike rides on **Page Mill**,
+  IBM and Hewlett-Packard in the air, watching the industry form. Still in
+  touch with friends who went huge in the dot-com years.
+- Prefers where he lives now — small town, polite; Silicon Valley got too fast.
+- Also: Missouri Department of Health, and the CDC training — professional
+  foundation after college, not a degree line.
 
 Worth talking about: degrees and dates, exactly. Anything not completed gets
 described as what it was.
@@ -185,10 +197,51 @@ described as what it was.
 
 ## The drummer, and the rest
 
-He's a drummer. He still thinks like an entrepreneur. Palo Alto, two miles from
-where the mouse was being worked on.
+He's a drummer. He loves music. He still thinks like an entrepreneur. Palo Alto,
+two miles from where the mouse was being worked on.
+
+**Mission:** give back — make a difference where you are. That thread runs
+through community work and the Channel 9 piece.
+
+**How he works:** if he sees a problem, he asks how to make it better. That is
+the whole movement — Doorways, the testing network, Maplewood, Axon.
+
+**Business as hobby:** operating companies are not a grind for him — like a
+cellist going to the symphony: "have fun at work." It is what he enjoys.
 
 Small true things carry a CV further than another adjective. Put them here.
+
+>
+
+---
+
+## Property portfolio — dictated detail (confirm numbers)
+
+**Florida — Cape San Blas / Mexico Beach:** bought beachfront by the acre;
+figured out a **legal way to subdivide** and sell in smaller chunks. That is
+where much of the capital came from to buy into **Maplewood** — via a **1031
+tax-free exchange**. Became very versed in investment properties.
+
+**Holdings (approximate — Marty said "about"):**
+
+| Item | Detail |
+|------|--------|
+| Total properties | ~10 |
+| Rentals | ~5 |
+| Rehabs | ~4 houses |
+| Maplewood | owned all the buildings in the district |
+| Lake of the Ozarks | ~$400K condo — **#1 unit** in the building |
+| Michigan | ~$200K home — **Benton Harbor** area (dictation: "paint Water") |
+| Cape San Blas | owned until a **hurricane took half**; sold remainder |
+
+**Renting:** did not lean on long-term renters much — "they just tear them up."
+Portfolio was more buy / subdivide / rehab / exchange than landlord play.
+
+**1031:** used to roll Florida gains into Maplewood without the tax hit — core
+to how the portfolio nationalized.
+
+Confirm exact counts and Michigan town name before hard-coding every number on
+pages. Dollar figures above are Marty's unless corrected.
 
 >
 
