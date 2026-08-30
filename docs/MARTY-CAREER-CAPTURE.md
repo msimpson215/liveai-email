@@ -35,8 +35,8 @@ answer the **three prompts**. That is enough. Skip anything you do not want live
 - Channel 9 video: https://www.youtube.com/watch?v=o_LuKiM_pTw (homepage + Community)
 - Patent, Maplewood, Florida, Momo's, Boogaloo's photos (on the matching pages)
 
-**Still need from you:** Business Journal citation (publication, date, headline,
-link). Anything else on the paper CV we have not scanned yet.
+**Still need from you:** Anything else on the paper CV we have not scanned yet.
+Business Journal citation is **done** — see Media section below.
 
 ---
 
@@ -55,7 +55,7 @@ something the AI will state out loud, with confidence, to a stranger.
 | Community work stays under-claimed | Two children's-house programs, a theater donation, and a 501(c)(3) restaurant fundraising *proposal*. Not more. |
 | Never characterize another party | Not "say nothing negative" — say nothing *about them*. Businesses that closed, closed. Deals that went sideways, went sideways. Flat, then move on. |
 | **Jay Schober — private only** | Facts in capture + AI brain for direct questions only. Never on public pages. No slurs, no insults out loud. |
-| Published work gets cited, not reproduced | See the Business Journal note at the bottom. Business Journal photo was good — waiting on text Marty will type in; no scanner. |
+| Published work gets cited, not reproduced | Business Journal "Pied Piper of Maplewood" (Oct 26, 2003) is now cited on the Media page with headline, byline, and date — no scan, no reproduced text. |
 
 ---
 
@@ -93,8 +93,10 @@ up. Had it all plotted on a map from friend **Mike Johnson** (now owns Sugarfire
 and Highpoint). Planned restaurant work together — Marty did Momo's, got out first
 month open ("the winds took the money" — clarify later). Boogaloo's in Maplewood.
 
-**What he built from his company:** My Cafe, Momo's, Boogaloo's, Folk Point,
-donated Pywacket kids' theater space, family district around kids.
+**What he built from his company:** My Cafe, Momo's, Boogaloo's, **The Focal Point**
+(corrected — earlier dictation transcribed as "Folk Point"; the Business Journal
+confirms The Focal Point, the Maplewood music venue), donated Pywacket kids'
+theater space, family district around kids.
 
 **The end:** Fire sale. City turned on him. Everyone did. Daughter Mia fighting
 cancer — he was at the hospital, relied on other people to keep it going, didn't
@@ -188,6 +190,47 @@ The Business Journal piece, and anything else in print or on air.
 **Channel 9 (KSDK) — LIVE:** https://www.youtube.com/watch?v=o_LuKiM_pTw
 Maplewood development, Mia, Pywacket Children's Theater, Friends of Kids with
 Cancer, family entertainment district.
+
+**St. Louis Business Journal — LIVE (cited, not reproduced):**
+"Pied Piper of Maplewood," by **Margaret Jackson**, **October 26, 2003**.
+Opening line preserved online: *"Marty Simpson plans to transform Sutton
+Boulevard in Maplewood into a children's entertainment district."*
+
+What the article establishes:
+
+| Fact | Detail |
+|------|--------|
+| Acquisition spend | Close to **$4M over ~6 years**, several million more planned |
+| The plan | Family/children entertainment district on Sutton Boulevard |
+| In talks with | A children's theater org, a circus company, a restaurant operator |
+| Inspiration | **Mia, age 3** — survived neurosurgery, radiation, chemotherapy for a brain tumor |
+| Condo play | Second floors → condos; sale revenue subsidizes very low rent for kids' orgs, brings residents downtown |
+| Also bought | Apartment building overlooking the Sutton Loop, to become upscale condos |
+| Demographics | Maplewood shifting toward young families with children |
+| Money source | Largely from **Florida real estate** development |
+| Education (as printed) | California native, to St. Louis early 1980s for WashU, **degrees in biology and sociology** |
+| Specialized Testing | ~10 years in Maplewood; contracted with **Quest Diagnostics** and **LabCorp** for health screening |
+| The Focal Point | Maplewood music venue — the building is named in the article |
+
+Online reproduction (40 South) ends partway through, so the print original may
+have carried more.
+
+**Three things to reconcile — Marty's call:**
+
+1. **The two $4M figures are different things.** The article's ~$4M is what he
+   *spent acquiring* Maplewood property. The ~$4M already on the CV is *annual
+   gross sales* at the medical testing company. And the $3.4M is the *portfolio
+   sale*. All three are now in the brain, labeled, and the AI is told never to
+   merge them. Worth reading back once to be sure the acquisition number is right.
+2. **Biology and sociology, not pre-med.** Dictation said "biology major,
+   pre-med"; the article says degrees in biology and sociology. Pages now use the
+   published version plus "headed toward neuroscience." Say the word if the
+   pre-med framing is the one you want.
+3. **The article names Jay Schober as your partner in Specialized Testing and in
+   The Focal Point building, and names two bankers.** Standing rule held: none of
+   those names are on any public page, and the AI is instructed not to speak them
+   even though the article is public. If someone quotes a name from the article,
+   the AI confirms only that the article exists. Change that only if you decide to.
 
 For each other item, capture: **publication, date, headline, link if it exists.**
 That's the whole entry. See the note at the bottom on why we cite instead of
