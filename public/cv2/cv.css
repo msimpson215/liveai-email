@@ -489,6 +489,9 @@ body.axon-error .axon-orb-status { opacity: 1; }
 .article p, .article li { font-size: 18px; color: #33475b; }
 .article p + p { margin-top: 16px; }
 .article ul { margin: 12px 0 0 1.15em; }
+.article ul.arc-list { margin: 8px 0 1.25em; padding-left: 1.2em; }
+.article ul.arc-list li { margin-bottom: 10px; }
+.article ul.arc-list li:last-child { margin-bottom: 0; }
 .article li { margin: 8px 0; }
 .article .lead { font-size: 21px; color: var(--muted); max-width: 46rem; }
 .cards {

@@ -136,6 +136,47 @@ Deliberately kept small. Two children's-house programs, a theater donation, a
 Worth talking about: what actually happened, in plain terms. If something was
 proposed and not completed, it stays "proposed."
 
+**Dictated Aug 2026 — Mia, hospital, Happy Meals (Marty unsure how much goes live):**
+
+> OK, this looks a lot of Maplewood. I realized when my daughter was diagnosed
+> with [PNG? — likely malignant / PNET brain tumor — confirm] brain tumor, it
+> changed me completely professionally. Though I always gave back and tried, I
+> went full on to try to make a difference, to give back. Really. Because I was
+> so helpless at the hospital. I couldn't do anything. Nurses and doctors, they
+> all do some, but my daughter's pain I couldn't do anything about. I got very
+> close to a lot of the kids up there.
+>
+> I don't even know if I want to put this in there, but I started a program. One
+> time because I bought my daughter a Happy Meal and the smell of it — what
+> people didn't realize, Zofran worked great on kids, no one got sick, so they
+> ate all the time. But in the hospital food, as good as it was, it just gets
+> old — same kind of flavor, same kind of this. So when I brought McDonald's in
+> — remember the roommate next to her? She's a sickle cell kid, and hardly ever
+> ate — so I bought her one and she was so happy and I went aha, I can do
+> something.
+>
+> Went and bought two wagons from Sam's that were like garden wagons — mesh,
+> steel, rubber wheels. Modified them to hold three coolers, two of them for
+> cold and one for heat 'cause I mounted batteries underneath the unit and
+> wired it all up. It was so good — [staff:] why aren't you doing it for
+> everyone?
+
+**Distilled for pages (if Marty approves):**
+
+| What happened | Detail |
+|---------------|--------|
+| Trigger | Mia's PNET (primitive neuroectodermal tumor) diagnosis — shifted him from "try to give back" to full-on |
+| Helplessness | Couldn't fix her pain; got close to other kids on the floor |
+| Spark | Happy Meal smell; roommate (sickle cell) lit up; Zofran meant kids could eat familiar food |
+| What he built | Two Sam's garden wagons → modified with 3 coolers (2 cold, 1 hot), battery-powered |
+| What he did | Saturdays on oncology — each kid got what they ordered (no pickles if chemo, etc.) |
+| Kids' name | "Happy Meals on Saturdays" (from RMK drafts) |
+| Staff line | Why aren't you doing this for everyone? → led to Ronald McDonald Kitchen / 501 proposal |
+| Status | **He ran the wagon program at the hospital.** RMK / national restaurant model = **proposal**, not live nationwide |
+
+Do not invent duration (RMK drafts say "months" / "over three months" — confirm).
+Do not claim McDonald's partnership is signed. Do not give Mia's current medical status.
+
 >
 
 ---
@@ -174,7 +215,19 @@ Biology major, pre-med, Washington University. Headed toward neuroscience —
 which is where the word Axon comes from, and worth saying out loud on the page
 because it makes the company name earned rather than decorative.
 
-Also: Missouri Department of Health, and the CDC training.
+**Dictated Aug 2026:**
+
+- Graduated Washington University **1987**.
+- **Full-ride scholarship** — paid tuition; after the first year he paid for
+  housing himself. Not a scholarship that stepped up year by year with a typical
+  WashU degree path (confirm exact scholarship name if needed).
+- Grew up in the **Palo Alto school district** — Palo Alto High, near Peterson
+  (street/area TBC). Silicon Valley was starting: bike rides on **Page Mill**,
+  IBM and Hewlett-Packard in the air, watching the industry form. Still in
+  touch with friends who went huge in the dot-com years.
+- Prefers where he lives now — small town, polite; Silicon Valley got too fast.
+- Also: Missouri Department of Health, and the CDC training — professional
+  foundation after college, not a degree line.
 
 Worth talking about: degrees and dates, exactly. Anything not completed gets
 described as what it was.
@@ -185,10 +238,51 @@ described as what it was.
 
 ## The drummer, and the rest
 
-He's a drummer. He still thinks like an entrepreneur. Palo Alto, two miles from
-where the mouse was being worked on.
+He's a drummer. He loves music. He still thinks like an entrepreneur. Palo Alto,
+two miles from where the mouse was being worked on.
+
+**Mission:** give back — make a difference where you are. That thread runs
+through community work and the Channel 9 piece.
+
+**How he works:** if he sees a problem, he asks how to make it better. That is
+the whole movement — Doorways, the testing network, Maplewood, Axon.
+
+**Business as hobby:** operating companies are not a grind for him — like a
+cellist going to the symphony: "have fun at work." It is what he enjoys.
 
 Small true things carry a CV further than another adjective. Put them here.
+
+>
+
+---
+
+## Property portfolio — dictated detail (confirm numbers)
+
+**Florida — Cape San Blas / Mexico Beach:** bought beachfront by the acre;
+figured out a **legal way to subdivide** and sell in smaller chunks. That is
+where much of the capital came from to buy into **Maplewood** — via a **1031
+tax-free exchange**. Became very versed in investment properties.
+
+**Holdings (approximate — Marty said "about"):**
+
+| Item | Detail |
+|------|--------|
+| Total properties | ~10 |
+| Rentals | ~5 |
+| Rehabs | ~4 houses |
+| Maplewood | owned all the buildings in the district |
+| Lake of the Ozarks | ~$400K condo — **#1 unit** in the building |
+| Michigan | ~$200K home — **Benton Harbor** area (dictation: "paint Water") |
+| Cape San Blas | owned until a **hurricane took half**; sold remainder |
+
+**Renting:** did not lean on long-term renters much — "they just tear them up."
+Portfolio was more buy / subdivide / rehab / exchange than landlord play.
+
+**1031:** used to roll Florida gains into Maplewood without the tax hit — core
+to how the portfolio nationalized.
+
+Confirm exact counts and Michigan town name before hard-coding every number on
+pages. Dollar figures above are Marty's unless corrected.
 
 >
 
