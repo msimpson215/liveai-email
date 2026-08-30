@@ -437,6 +437,16 @@ body.axon-active .axon-orb-status,
 body.axon-error .axon-orb-status { opacity: 1; }
 #axonOrb:hover + .axon-orb-status { opacity: 1; }
 
+.pub-cite {
+  font-size: 17px !important;
+  color: var(--navy) !important;
+  padding: 14px 16px;
+  background: var(--soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 16px;
+}
+
 /* ---------- Featured story ---------- */
 .featured-story {
   display: grid;
