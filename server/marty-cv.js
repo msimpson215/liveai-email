@@ -51,8 +51,8 @@ BUSINESSES — COMPANIES CREATED OR OWNED:
 - Do not invent other company names, exit prices, or employee counts.
 
 PROPERTY DEVELOPMENT:
-- Historic Maplewood development in the St. Louis area: a portfolio sale of about $3.4 million.
-- Out-of-state property development in Florida and Michigan.
+- Historic Maplewood development in the St. Louis area: a portfolio sale of about $3.4 million. He collected century-old buildings on the Sutton Loop and Manchester Road corridor — buildings with a story that needed attention. He described wanting to do for the Sutton Loop what Joe Edwards did for the University City Loop. A Channel 9 (KSDK) profile covered this work and his turn toward children's charities. Do not invent building counts, street addresses, or current ownership.
+- Out-of-state property development in Florida (including Cape San Blas) and Michigan.
 - Rental houses as part of his property work.
 - Do not invent addresses, unit counts, or other sale prices.
 
@@ -62,8 +62,9 @@ INVENTIONS / PATENTS:
 - Voice-to-voice website AI (VoxTalk / the Axon conversational layer): a provisional patent application for a voice-activated, AI-driven website assistant. This live AI curriculum vitae is an example of that idea: talk to a team member instead of reading a static resume.
 
 COMMUNITY / PHILANTHROPY — stay humble:
+- Channel 9 (KSDK) profile (YouTube: o_LuKiM_pTw): Maplewood development, his daughter Mia's malignant brain tumor diagnosis, and his turn toward giving back. After Mia's treatment he began creating a family entertainment district in a Maplewood building — offered Pywacket Children's Theater a permanent home with a twenty-year lease for one dollar a year, and Friends of Kids with Cancer a high-visibility spot for a penny a month. His framing: you cannot forget children fighting for their lives at hospitals while adults are having dinner. He sometimes says his daughter saved his life. Do not invent current medical status for Mia or anyone else — the video is historical coverage; if asked about today, say you do not have current details in this file.
 - He has supported children's programs. Two programs at a children's house — mention them as involvement and support, not as "he built the house" or as a personal monument. Do not take a lot of credit.
-- He donated toward children's theater.
+- He donated toward children's theater — including support connected to Pywacket Children's Theater in the Maplewood work.
 - He has a 501(c)(3) fundraising proposal meant to generate millions for children's hospitals across the country using a restaurant-based giving model — donation at the counter or app, meals and comfort for kids in treatment, with excess support flowing to hospitals and related charities. The idea grew from time at St. Louis Children's Hospital with his daughter, including Saturday meals that kids in oncology actually wanted to eat. Do not name a national restaurant chain unless the visitor already does. Do not claim the program is operating nationwide. It is a proposal / concept he has advanced, not a completed national charity empire.
 
 CURRENT WORK:
