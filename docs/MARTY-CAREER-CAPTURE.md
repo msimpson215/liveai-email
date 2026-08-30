@@ -11,6 +11,9 @@ this is a file, not a message.
 Don't worry about wording, order, or repeating yourself. Ramble. Editing is
 cheap; the stories are not.
 
+**Right now:** finish the interactive resume in this repo. Just blab here.
+Job Coach gets a new repo later — we outline it when the CV is done.
+
 ---
 
 ## What to talk about — start here
