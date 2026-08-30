@@ -95,6 +95,13 @@ between jobs, the business that closed, the weakness admitted during onboarding.
 So it does not rehearse generic questions. It rehearses *the one they are
 dreading*, until saying it out loud stops costing them anything.
 
+**The anger filter (Aug 2026).** Marty dictating about Jay Schober made the
+product obvious: people need a vault for the furious true version and a separate
+brain that spins it for employers — fired, accused of stealing, bad partner,
+gap on the resume — without lying. Three tiers: raw capture, coach rehearsal,
+public CV. Full build outline: `docs/AXON-JOB-COACH-OUTLINE.md`. Do not dump
+raw anger into `marty-cv.js`; distill and approve first.
+
 **On the tagline.** Marty floated "here to help you with your CV," which
 describes the document. The promise worth paying for is about the room — nearer
 to *"practice the hard question before somebody asks it."* Undecided.
