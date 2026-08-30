@@ -165,7 +165,7 @@ proposed and not completed, it stays "proposed."
 
 | What happened | Detail |
 |---------------|--------|
-| Trigger | Mia's malignant brain tumor diagnosis — shifted him from "try to give back" to full-on |
+| Trigger | Mia's PNET (primitive neuroectodermal tumor) diagnosis — shifted him from "try to give back" to full-on |
 | Helplessness | Couldn't fix her pain; got close to other kids on the floor |
 | Spark | Happy Meal smell; roommate (sickle cell) lit up; Zofran meant kids could eat familiar food |
 | What he built | Two Sam's garden wagons → modified with 3 coolers (2 cold, 1 hot), battery-powered |
