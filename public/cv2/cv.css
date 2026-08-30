@@ -75,6 +75,15 @@ button { font-family: inherit; }
   line-height: 1.15;
   color: var(--accent-text);
 }
+.header-powered {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .brand { grid-area: title; text-decoration: none; color: var(--navy); min-width: 0; }
 .brand-name {
   display: block;
@@ -192,12 +201,20 @@ button { font-family: inherit; }
   max-width: 640px;
   line-height: 1.5;
 }
-.hero-lede {
-  font-size: clamp(20px, 2.2vw, 26px);
-  color: var(--ink);
+.hero-tagline {
+  margin: 0 0 20px;
+  font-size: clamp(18px, 2vw, 22px);
   font-weight: 600;
-  line-height: 1.45;
-  max-width: 22em;
+  line-height: 1.5;
+  color: var(--navy);
+  max-width: 36em;
+}
+.hero-lede {
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: 36em;
 }
 .hero-actions { margin-top: 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .btn-talk.xl {
