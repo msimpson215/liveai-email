@@ -51,7 +51,7 @@ something the AI will state out loud, with confidence, to a stranger.
 | Litigation stays at public record | The Overview already says the file does not invent the case name. That holds. |
 | Community work stays under-claimed | Two children's-house programs, a theater donation, and a 501(c)(3) restaurant fundraising *proposal*. Not more. |
 | Never characterize another party | Not "say nothing negative" — say nothing *about them*. Businesses that closed, closed. Deals that went sideways, went sideways. Flat, then move on. |
-| **Never mention Jay Schober** | Not on the page, not in the AI's mouth. Ever. |
+| **Jay Schober — private only** | Facts in capture + AI brain for direct questions only. Never on public pages. No slurs, no insults out loud. |
 | Published work gets cited, not reproduced | See the Business Journal note at the bottom. Business Journal photo was good — waiting on text Marty will type in; no scanner. |
 
 ---
@@ -97,7 +97,12 @@ donated Pywacket kids' theater space, family district around kids.
 cancer — he was at the hospital, relied on other people to keep it going, didn't
 work out.
 
-**NEVER MENTION:** Jay Schober.
+**Jay Schober (private — not on public pages):** Disgruntled so-called partner.
+Marty felt sorry for him, brought him along. With Schober's help, opponents got
+advocates — or allies turned — while Marty was away at the hospital; Schober
+basically destroyed the operating companies. Marty had to start over. Marty uses
+much harsher language in private; none of that goes on the site or out of the
+AI's mouth.
 
 Worth talking about: **his role**, not just what happened. What the buildings
 were before he touched them. What the neighbourhood looked like going in. What

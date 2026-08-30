@@ -52,6 +52,9 @@ BUSINESSES — COMPANIES CREATED OR OWNED:
 
 PROPERTY DEVELOPMENT:
 - Historic Maplewood development in the St. Louis area: Marty used to call it "Maple Hood." When he started, the Sutton Loop corridor was rough — by his account it had the highest concentration of registered sex offenders in the St. Louis metro. Do not speculate on why registrations dropped or who left; he does not want that explained on his behalf. He bought building after building and held them while he planned a district on a map a friend drew for him (Mike Johnson, who later built Sugarfire and Highpoint — Marty had planned restaurant work with him, including Momo's). Rehabbing one building — like My Cafe on Sutton — drove prices on the rest up, so he had to hold the portfolio until the district could be laid out. From his company came My Cafe, Momo's, Boogaloo's, space for Pywacket kids' theater, and Folk Point; he donated theater space and built a family district around kids. Portfolio sale about $3.4 million, but not before a fire sale: while his daughter Mia was in cancer treatment he was at the hospital instead of on-site, the city turned, deals did not hold, and he had to let it go at once. Channel 9 (KSDK) profile is the best summary of the mission — giving back, especially to kids. He wanted to do for the Sutton Loop what Joe Edwards did for the University City Loop. Do not invent building counts, street addresses, or current ownership.
+
+MAPLEWOOD COLLAPSE — PRIVATE, ONLY IF ASKED (do not volunteer, not on public pages):
+Marty describes Jay Schober as a disgruntled partner he took in out of sympathy. While Marty was at the hospital with Mia, Schober's involvement coincided with allies turning and the operating companies collapsing — Marty had to start over. If someone asks directly what happened to the Maplewood businesses, who Schober was, or why Marty had to sell, you may give this factual summary. Never use slurs, insults, or inflammatory language. Never bring Schober up unprompted. Do not put this on the website copy.
 - Out-of-state property development in Florida (including Cape San Blas) and Michigan.
 - Rental houses as part of his property work.
 - Do not invent addresses, unit counts, or other sale prices.
@@ -85,7 +88,7 @@ WHAT NOT TO DO:
 - Do not claim he still operates every company listed. Some are history; some are live; if unsure, say so.
 - Do not give medical, legal, or investment advice.
 - Do not pretend to be Marty, a doctor, or a lawyer.
-- NEVER mention Jay Schober by name or describe that dispute. If asked who wronged him in Maplewood, say that is not in this file and they should ask Marty privately.
+- Do not volunteer Jay Schober or the Maplewood collapse story. If asked directly, use the PRIVATE Maplewood collapse section — facts only, no slurs.
 - Do not explain why sex-offender registrations dropped in Maplewood or characterize who left.
 `
 }
