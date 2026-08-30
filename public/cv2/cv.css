@@ -52,6 +52,13 @@ button { font-family: inherit; }
   column-gap: 18px;
   row-gap: 16px;
 }
+.header-inner--home {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "title menu"
+    "nav nav nav";
+}
+.header-inner--home .header-talk { display: none; }
 .header-title {
   grid-area: title;
   text-decoration: none;
@@ -66,6 +73,24 @@ button { font-family: inherit; }
   line-height: 1.02;
   color: var(--navy);
 }
+.header-slogan {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(15px, 1.6vw, 19px);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+  color: var(--accent-text);
+}
+.header-powered {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .header-person {
   display: block;
   margin-top: 6px;
@@ -74,15 +99,6 @@ button { font-family: inherit; }
   letter-spacing: -.025em;
   line-height: 1.15;
   color: var(--accent-text);
-}
-.header-powered {
-  display: block;
-  margin-top: 4px;
-  font-size: 13px;
-  font-weight: 650;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--muted);
 }
 .brand { grid-area: title; text-decoration: none; color: var(--navy); min-width: 0; }
 .brand-name {
@@ -202,21 +218,37 @@ button { font-family: inherit; }
   line-height: 1.5;
 }
 .hero-tagline {
-  margin: 0 0 20px;
-  font-size: clamp(18px, 2vw, 22px);
-  font-weight: 600;
-  line-height: 1.5;
+  margin: 0 0 14px;
+  font-size: clamp(19px, 2.1vw, 24px);
+  font-weight: 700;
+  line-height: 1.4;
   color: var(--navy);
   max-width: 36em;
 }
-.hero-lede {
-  font-size: clamp(16px, 1.5vw, 19px);
-  color: var(--muted);
+.hero-instructions {
+  margin: 0 0 28px;
+  font-size: clamp(16px, 1.55vw, 19px);
   font-weight: 500;
-  line-height: 1.5;
-  max-width: 36em;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 38em;
 }
-.hero-actions { margin-top: 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.hero-candidate {
+  margin: 0 0 8px;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  color: var(--accent-text);
+}
+.hero-role {
+  margin: 0 0 24px;
+  font-size: clamp(15px, 1.4vw, 17px);
+  font-weight: 500;
+  color: var(--muted);
+  max-width: 32em;
+}
+.hero-actions { margin-top: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 .btn-talk.xl {
   font-size: 18px;
   padding: 18px 26px;
