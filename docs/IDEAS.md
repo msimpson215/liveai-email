@@ -34,6 +34,29 @@ It also gives the family a logic that explains itself:
 Keep **"A resume you can talk to"** as the line underneath. Six words, whole
 product.
 
+### Axon as a noun — the Kleenex play (Aug 2026)
+
+Marty's aspiration is not just a product line; it is **category ownership by
+name.** When people say Xerox, they mean photocopy. Kleenex, tissue. He wants
+**Axon** to mean AI the same way — "get that Axon," "we need an Axon for this,"
+the company people reach for without explaining the acronym.
+
+That is separate from the neuroscience origin (the axon in biology, earned on the
+Education section). Both can be true: the name is real, and the ambition is to
+make it generic for the category.
+
+**How it shows up in product language:**
+
+- **Ingredient brand** (already moving): "Powered by Axon AI" on the CV footer —
+  Intel inside, not Intel the computer.
+- **Short invocation:** talk to it as **Axon**, not "the Axon Operator" (see
+  Operator section below).
+- **Job Coach / CV as proof:** Marty is client zero; if the orb works on his
+  hardest stories, the name rides on a outcome people can touch.
+
+Do not force it in copy. Let usage train the noun — one working demo beats ten
+taglines.
+
 ### The flow — nobody types anything
 
 Marty's own capture file (`docs/MARTY-CAREER-CAPTURE.md`) is the onboarding

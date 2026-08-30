@@ -194,6 +194,50 @@ Small true things carry a CV further than another adjective. Put them here.
 
 ---
 
+## Axon Job Coach — client voice examples (vault only)
+
+**Purpose:** Marty talks like the angry client on purpose — the guy who got
+fired, who built the whole company, who thinks it should have been his. None of
+this goes on the CV. It documents how **Axon Job Coach** has to show up: hear
+the fury, pull the facts, spin something an employer can hear.
+
+**Dictation mode:** auto is fine. Intelligence level does not matter here; this
+is capture, not product.
+
+**Brand note (same session):** Marty wants **Axon** used as a noun the way people
+say Xerox or Kleenex — when somebody says "Axon," they should think AI. "Get
+that Axon." Dream-scale company naming. See `docs/IDEAS.md` for the product
+family; this section is for the *client* voice Job Coach will have to translate.
+
+### Example 1 — fired, did everything, company should be mine
+
+**Raw (how clients actually talk):**
+
+> Well, man, I got fired, but I did everything for 'em. That company's — you
+> know — should be mine. That kind of shit.
+
+**What Job Coach has to do (not live yet — pattern only):**
+
+| Tier | Draft direction |
+|------|-----------------|
+| Vault | Keep every word Marty dictates here. Anger OK. |
+| Coach | First person, sayable out loud: what you built, what changed, what you took from it — without trashing anyone by name. |
+| CV / orb | Third person, flat: role ended; what was built; move on. Never volunteer the grievance. |
+
+**Coach prompts this example should trigger:**
+
+- What did you actually build or own before things ended?
+- What number are you sure of?
+- Who was the customer — what problem did you solve?
+- If they ask why you left, what is the one sentence you can say without shaking?
+
+*Add more examples below as Marty dictates. Fired, accused, bad partner, gap —
+same three-tier table each time.*
+
+>
+
+---
+
 ## Note on the Business Journal photo
 
 Scanning the printed page and posting it is the paper's copyright, not ours, and
