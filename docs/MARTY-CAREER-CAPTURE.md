@@ -37,6 +37,14 @@ Specialized Testing Services · Medical Testing Center · the restaurants
 (My Cafe, Momo's, Boogaloo's) · the national STAT testing model · DNA paternity
 testing at national scale.
 
+**First national patient service center network (~1993):** Took roughly six
+regional labs that each had their own patient service centers and built the
+first coast-to-coast network — call one number, get an HIV test anywhere,
+counselling included, results by phone. Nothing like it existed; people used
+phone books. Quest and LabCorp came later through consolidation. Proud of
+this. Same philosophy as everything after: counselling + risk assessment, then
+actually get people tested. 1993 — people were scared of telemedicine.
+
 Worth talking about: what he actually built versus what he bought. Who the
 customer was. What made the STAT model work when it hadn't before. Why the
 restaurants — and whether they belong on a CV as businesses or as something
