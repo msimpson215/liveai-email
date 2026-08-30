@@ -67,7 +67,7 @@ Each pattern needs: **raw prompts**, **coach rehearsal line**, **CV/orb line**,
 | Pattern | Example raw | Public spin principle |
 |---------|-------------|----------------------|
 | **Bad partner / betrayal** | Jay Schober | Took someone in; while you were elsewhere, operations failed; started over. No name unless client approves. |
-| **Fired** | "They screwed me" | Role ended; what you built anyway; what you learned. No trashing. |
+| **Fired** | "I got fired but I did everything for 'em — that company should be mine" | Role ended; what you built anyway; what you learned. No trashing. No "they owe me." |
 | **Accused of something** | "They said I stole — I didn't" | Do not repeat the accusation as fact. "There was a dispute; it was resolved / not pursued / I left." Ask lawyer if needed. |
 | **Business failed** | Fire sale, city turned | Market/timing/personal crisis; what you built before it ended. |
 | **Gap in resume** | Hospital, family, burnout | One honest sentence. No overshare. |
