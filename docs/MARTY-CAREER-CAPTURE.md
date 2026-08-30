@@ -20,7 +20,7 @@ answer the **three prompts**. That is enough. Skip anything you do not want live
 
 | Section | Prompt 1 | Prompt 2 | Prompt 3 |
 |---------|----------|----------|----------|
-| **Businesses** | What did you build that did not exist before? | Who was the customer and what problem did you solve? | What number are you sure of? (revenue, employees, years) |
+| **Businesses** | What are you proudest of building? | Who was the customer and what problem did you solve? | What number are you sure of? (revenue, employees, years) |
 | **Development** | What was the place like before you touched it? | What was your role — not just what sold? | What would you do differently? |
 | **Inventions** | What were you staring at when the idea hit? | Issued patent or provisional — be exact. | What is it for sale/licensing vs still in your head? |
 | **Community** | What actually happened — plain terms? | What is done vs proposed? | Why kids — what changed you? |
@@ -51,7 +51,8 @@ something the AI will state out loud, with confidence, to a stranger.
 | Litigation stays at public record | The Overview already says the file does not invent the case name. That holds. |
 | Community work stays under-claimed | Two children's-house programs, a theater donation, and a 501(c)(3) restaurant fundraising *proposal*. Not more. |
 | Never characterize another party | Not "say nothing negative" — say nothing *about them*. Businesses that closed, closed. Deals that went sideways, went sideways. Flat, then move on. |
-| Published work gets cited, not reproduced | See the Business Journal note at the bottom. |
+| **Never mention Jay Schober** | Not on the page, not in the AI's mouth. Ever. |
+| Published work gets cited, not reproduced | See the Business Journal note at the bottom. Business Journal photo was good — waiting on text Marty will type in; no scanner. |
 
 ---
 
@@ -61,18 +62,13 @@ Specialized Testing Services · Medical Testing Center · the restaurants
 (My Cafe, Momo's, Boogaloo's) · the national STAT testing model · DNA paternity
 testing at national scale.
 
-**First national patient service center network (~1993):** Took roughly six
-regional labs that each had their own patient service centers and built the
-first coast-to-coast network — call one number, get an HIV test anywhere,
-counselling included, results by phone. Nothing like it existed; people used
-phone books. Quest and LabCorp came later through consolidation. Proud of
-this. Same philosophy as everything after: counselling + risk assessment, then
-actually get people tested. 1993 — people were scared of telemedicine.
+**First national patient service center network (~1993):** [already live — see above]
 
-Worth talking about: what he actually built versus what he bought. Who the
-customer was. What made the STAT model work when it hadn't before. Why the
-restaurants — and whether they belong on a CV as businesses or as something
-else.
+**Quest:** Later tried to do the same national PSC play and couldn't pull it off
+the way he did. He knew what he was doing — counselling, labs, and phone as one
+system.
+
+**Still worth dictating:** DNA paternity scale, MTS details, employee counts, years.
 
 >
 
@@ -80,7 +76,28 @@ else.
 
 ## Development
 
-Maplewood (the $3.4M portfolio sale) · Florida · Michigan · rental houses.
+Maplewood (the $3.4M portfolio sale, but fire sale at the end) · Florida ·
+Michigan · rental houses.
+
+**Maple Hood:** Complete dump when he started. He used to call it Maple Hood.
+Highest concentration of registered sex offenders in the St. Louis metro — by his
+account. Got rid of a lot of that. **Do not explain why they left** — he doesn't
+care and doesn't want the AI speculating.
+
+**The district plan:** Bought building after building. Had to hold them — the
+moment he rehabbed one (My Cafe / Maya Cafe on Sutton), prices on the rest shot
+up. Had it all plotted on a map from friend **Mike Johnson** (now owns Sugarfire
+and Highpoint). Planned restaurant work together — Marty did Momo's, got out first
+month open ("the winds took the money" — clarify later). Boogaloo's in Maplewood.
+
+**What he built from his company:** My Cafe, Momo's, Boogaloo's, Folk Point,
+donated Pywacket kids' theater space, family district around kids.
+
+**The end:** Fire sale. City turned on him. Everyone did. Daughter Mia fighting
+cancer — he was at the hospital, relied on other people to keep it going, didn't
+work out.
+
+**NEVER MENTION:** Jay Schober.
 
 Worth talking about: **his role**, not just what happened. What the buildings
 were before he touched them. What the neighbourhood looked like going in. What
