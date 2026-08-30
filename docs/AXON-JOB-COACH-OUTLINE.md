@@ -1,10 +1,25 @@
 # Axon Job Coach — build outline
 
-**Status:** planning doc. Nothing here is live code yet.
+**Status:** planning doc. **Do not build until Marty's interactive resume is finished.**
 
-**Why this exists:** Marty dictating about Jay Schober surfaced the real product
-gap. People need a place to say the angry, true version — and a separate brain
-that turns it into something an employer can hear without lying.
+---
+
+## Sequencing (Marty's call)
+
+1. **Finish the interactive resume** in this repo (`liveai-email`, `/cv2/`, capture
+   file, voice brain, pages). Keep dictating. Blab into `MARTY-CAREER-CAPTURE.md`.
+2. **When the CV is done**, write a **complete outline** from the finished work —
+   structure, guardrails, voice rules, difficult-topic patterns, what worked, what
+   was a bad habit to leave behind.
+3. **Start a whole new repo** for Axon Job Coach. Teach it from that outline. Clean
+   sheet. No anger in the new repo. Some habits may carry over — that's OK — but
+   the CV codebase is not the Job Coach codebase.
+
+Nothing in this file is a reason to split focus before step 1 is done.
+
+**Why Job Coach exists:** people need a vault for the furious true version and a
+separate product that turns it into something an employer can hear without lying.
+That product is built *after* the CV proof is done.
 
 ---
 
@@ -115,27 +130,12 @@ the anger, draft three tiers, read them back, **nothing goes live until approved
 
 ## Should Marty keep adding to the current brain?
 
-**Yes to capture file. No to dumping raw into CV brain.**
+**While the CV is in progress: yes to the capture file only.** Blab. Ramble.
+`MARTY-CAREER-CAPTURE.md` is the vault — anger OK there, nothing auto-goes live.
+When a chunk is ready, distill into `marty-cv.js` and the pages.
 
-- Keep dictating into `MARTY-CAREER-CAPTURE.md` — that is the vault.
-- When a chunk is ready, we **distill** it into `marty-cv.js` (public + if-asked).
-- Job Coach patterns get extracted into `AXON-JOB-COACH-OUTLINE.md` and eventually
-  `axon-job-coach.js` — not into the live CV.
-
-You are training the **product** by being client zero. You are not training one
-file that does everything.
-
----
-
-## Who builds it
-
-- **Now:** Marty dictates; this agent distills into capture → CV brain → outline.
-- **Next:** Hand interview to a human (or voice session) using capture as script.
-- **Then:** New `axon-job-coach.js` fresh — copy voice rules from CV, different
-  mission (coach not brochure).
-
-Do not wait for a perfect fresh start to keep capturing. The fresh start is a
-**new file and new route**, not throwing away what Marty already said.
+**No Job Coach repo yet.** When the interactive resume is finished, we write the
+full outline from it and start fresh. Do not train Job Coach inside this repo.
 
 ---
 
