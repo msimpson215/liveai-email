@@ -4,8 +4,9 @@
   --navy-3: #1a3d63;
   --ink: #122033;
   --muted: #5d6b7c;
-  /* Used only on his name and the talk buttons — everything else stays dark. */
+  /* Button fill — and the darker same-blue for names on white. */
   --accent: #1668d8;
+  --accent-text: #1257b8;
   --line: #e4eaf1;
   --bg: #f6f8fb;
   --white: #ffffff;
@@ -35,25 +36,32 @@ button { font-family: inherit; }
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(255,255,255,.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
+  background: #fff;
+  border-bottom: 2px solid var(--line);
 }
 .header-inner {
   width: min(1360px, calc(100% - 36px));
   margin: 0 auto;
-  padding: 16px 0 14px;
+  padding: 22px 0 16px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   grid-template-areas:
-    "brand talk menu"
-    "nav nav nav";
+    "brand ribbon talk menu"
+    "nav nav nav nav";
   align-items: center;
   column-gap: 18px;
-  row-gap: 8px;
+  row-gap: 14px;
 }
 .brand { grid-area: brand; text-decoration: none; color: var(--navy); min-width: 0; }
-.brand strong {
+.brand-name {
+  display: block;
+  font-size: clamp(22px, 2.5vw, 34px);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.1;
+  color: var(--accent-text);
+}
+.brand strong:not(.brand-name) {
   display: block;
   font-size: clamp(18px, 1.8vw, 24px);
   font-weight: 800;
@@ -62,11 +70,27 @@ button { font-family: inherit; }
 }
 .brand span {
   display: block;
-  margin-top: 4px;
+  margin-top: 5px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: .01em;
+}
+/* Old-resume ribbon — sits in the header band, not the hero. */
+.resume-ribbon {
+  grid-area: ribbon;
+  margin: 0;
+  padding: 0;
+  font-size: clamp(13px, 1.35vw, 17px);
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  transform: rotate(-18deg);
+  white-space: nowrap;
+  align-self: center;
+  justify-self: center;
+  user-select: none;
 }
 .header-talk { grid-area: talk; }
 .menu-btn { grid-area: menu; }
@@ -76,7 +100,10 @@ button { font-family: inherit; }
   align-items: center;
   gap: 6px 20px;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin-top: 2px;
 }
 .top-nav a:not(.btn-talk) {
   color: var(--navy-2);
@@ -138,27 +165,18 @@ button { font-family: inherit; }
   font-weight: 750;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 14px;
 }
 .hero-promise {
   margin: 0 0 18px;
-  font-size: clamp(30px, 4.8vw, 54px);
+  font-size: clamp(28px, 4.2vw, 46px);
   font-weight: 800;
-  line-height: 1.06;
-  letter-spacing: -.04em;
+  line-height: 1.1;
+  letter-spacing: -.035em;
   color: var(--navy);
-  max-width: 14ch;
+  max-width: 16ch;
 }
-.hero-name,
-.hero h1.hero-name {
-  font-size: clamp(38px, 5.4vw, 68px);
-  line-height: 1.02;
-  letter-spacing: -.045em;
-  font-weight: 800;
-  color: var(--accent);
-}
-.hero h1 span { display: block; }
 .lede {
   margin-top: 22px;
   font-size: clamp(17px, 1.7vw, 21px);
@@ -205,7 +223,7 @@ button { font-family: inherit; }
   font-size: 17px;
   font-weight: 750;
   letter-spacing: -.01em;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 14px;
 }
 .asks { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; }
@@ -226,7 +244,7 @@ button { font-family: inherit; }
 .asks a::after { content: "”"; }
 .asks a:hover {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--accent-text);
   box-shadow: 0 4px 14px rgba(22,104,216,.14);
 }
 
@@ -304,7 +322,7 @@ body.axon-error .axon-orb-status { opacity: 1; }
   font-weight: 800;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-bottom: 10px;
 }
 .featured-story h2 {
@@ -457,7 +475,7 @@ body.axon-error .axon-orb-status { opacity: 1; }
 .toc .btn-talk { width: 100%; justify-content: center; margin-top: 16px; font-size: 13px; padding: 12px 12px; }
 
 .article h2 { color: var(--navy); letter-spacing: -.03em; }
-.article h1 { color: var(--accent); letter-spacing: -.03em; }
+.article h1 { color: var(--navy); letter-spacing: -.02em; }
 .article .eyebrow {
   font-size: 12px;
   font-weight: 800;
@@ -466,7 +484,7 @@ body.axon-error .axon-orb-status { opacity: 1; }
   color: var(--navy-3);
   margin-bottom: 10px;
 }
-.article h1 { font-size: clamp(44px, 5.8vw, 74px); line-height: 1.02; letter-spacing: -.04em; margin-bottom: 20px; }
+.article h1 { font-size: clamp(28px, 3.2vw, 38px); line-height: 1.12; letter-spacing: -.02em; margin-bottom: 16px; font-weight: 800; }
 .article h2 { font-size: clamp(22px, 2.4vw, 30px); margin: 36px 0 12px; }
 .article p, .article li { font-size: 18px; color: #33475b; }
 .article p + p { margin-top: 16px; }
@@ -547,9 +565,12 @@ footer a:hover { color: var(--navy); }
   .metrics-grid { grid-template-columns: repeat(2, 1fr); }
   .header-inner {
     grid-template-columns: minmax(0, 1fr) auto auto;
-    grid-template-areas: "brand talk menu";
+    grid-template-areas:
+      "brand talk menu"
+      "nav nav nav";
   }
-  .top-nav { display: none; }
+  .resume-ribbon { display: none; }
+  .top-nav { display: none; justify-content: flex-start; }
   .menu-btn { display: inline-block; margin-left: 0; }
   .header-talk { font-size: 12.5px; padding: 10px 13px; }
   body.nav-open .header-inner {
@@ -583,9 +604,7 @@ footer a:hover { color: var(--navy); }
     min-height: 0;
   }
   .hero-copy { padding-top: 34px; padding-bottom: 34px; }
-  .hero-promise { font-size: clamp(26px, 4.2vw, 46px); max-width: none; }
-  .hero-name,
-  .hero h1.hero-name { font-size: clamp(34px, 4.6vw, 56px); }
+  .hero-promise { font-size: clamp(24px, 3.8vw, 40px); max-width: none; }
   .lede { margin-top: 18px; font-size: 17.5px; line-height: 1.45; }
   .hero-actions { margin-top: 26px; }
   .btn-talk.xl { font-size: 16.5px; padding: 15px 22px; }
