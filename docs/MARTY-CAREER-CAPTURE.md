@@ -379,3 +379,109 @@ Raw dictation. Filter before it goes live.
 
 **Public filter:** name = Martin Simpson. Formal = Mr. Simpson's AI team member.
 Daughter / obituary framing stays in this vault — not a homepage line.
+
+---
+
+## Pass three — full career dump (Sep 2026)
+
+Raw. Anger, names, slurs, lawsuits, drinking, divorce, lost daily life with
+Mia — **vault only** unless distilled below. Public pages get the through-line
+and the companies. Not the collapse cast.
+
+**Through-line (LIVE on homepage as a quote):**
+See a problem — how can I make this better? Always give back. Always make a
+difference.
+
+### Doorways (~1989) — PUBLIC distill
+
+First job. About 15 apartments housing people with AIDS. Discrimination
+intense — landlords scarce, so they paid roughly double market ($800 vs $400
+in his account) to landlords in South St. Louis; the org managed clients and
+rent. He pushed **501(c)(3) tax credits** to **buy** a building instead of
+renting. Bought a rough multi-story apartment, rehabbed it. Proud: Doorways
+later became one of the largest housing programs in the country for people
+living with AIDS; he was on the ground floor with a business mind. Then left
+for Missouri Department of Health.
+
+**Vault only:** director Lynn Cooper (nun, not entrepreneurial); coworker
+Sherry Rankin; building at Delmar and Union; WWII vet tenant; antique
+elevator; seller wanted more tax credits. Do not name street, staff, or
+building on public pages or in the orb.
+
+### Metro AIDS / Missouri Department of Health — PUBLIC distill
+
+Only anonymous HIV testing site left in Missouri besides Kansas City (open
+one day a week). About three counselors. Inundated because insurers dropped
+people who tested positive. Thousands of pre-test sessions; about 200
+positive post-test interviews in this telling (existing brain says
+"hundreds" — keep hundreds on the orb unless he confirms 200). He was good
+at it and would still do it. CDC: trainer of trainers, including physicians
+from WashU. Papers for the health department on anonymous testing. About two
+years there. Health department stopped letting them take patient calls;
+people waited outside for risk-assessment help. That is the oxymoron he
+names: it did not take care of people.
+
+### Specialized Counseling → STAT network — PUBLIC distill
+
+Left and started counseling by phone nationally: a foreign-exchange listing
+in phone books across the country (~$1/month) , ~$30 a call in his account.
+Clients kept asking where to get tested; health-department tests took two
+weeks ("two weeks of hell"). He contracted **regional labs with patient
+service centers** (SmithKline Beecham / Corning Nichols, Unilab in
+California, others): blood draw at a bricks-and-mortar PSC, EIA/Western blot,
+results in one to two days. First national STAT testing network — call one
+number, get sent to a real draw site, results back to the counselors. That
+model did not exist nationally before he built it.
+
+**Vault / private:** started with Jay Schober (older, had some money, phones
+and a recorder); basement shotgun house in South St. Louis; dogs; he took
+calls on a washing machine. California health-department fight: an
+administrator in Sacramento said they could not test without seeing people
+in person — no law, in his account. About $75k legal, ~six months they could
+not test, ~20% of business, ~$200k/month run-rate with strong nets. Quest
+got involved. He spent the money; Schober did not work. **No slurs. No
+Schober on public pages.**
+
+### Florida → Maplewood — PUBLIC distill
+
+STAT income funded Florida Gulf-front lots. He bought large lots and
+legally subdivided (his account: the local rule allowed one split, so he
+used additional companies to complete the subdivision). Bought around $600
+a foot, sold around $1,000–$2,000 a foot. **1031** into Maplewood — 12–13
+buildings in this telling. "Maple Hood." Highest per-capita sex-offender
+registrants in the metro (already live). Vacated buildings as he bought.
+About **$450k** into The Focal Point on Sutton; about **$250k** into the My
+Cafe building. Realized rehabbing one building raised prices on the empties,
+so he had to buy the rest. Aimed at a family/dinner district like Kirkwood
+or the Central West End.
+
+### Mia, give-back, collapse — VAULT / PRIVATE
+
+Hospital a year and a half. PTSD. Could not sit with her pain. Friends of
+Kids with Cancer and Pywacket / kids' theater at a dollar a year for 20
+years — already on Community. Randy (named in vault only): while Marty was
+gone, loyal people pushed out; last words in Marty's telling: the company
+was more his than Marty's because Marty was with his daughter. Marty sued,
+got about $110k; they folded about a year later. Jay Schober visited the
+hospital once in a year and a half; later sued Marty for $6 million over
+property (Marty was managing member, Schober minority — Marty learned that
+later). Outside operators took 1% "for a loan" that never came, took over
+income, renamed Specialized Testing. Children's-hospital house-profit idea
+mostly failed (~$25k given). Lost house, cars, income. Wife filed for
+divorce (~drinking, PTSD — vault). Lost day-to-day with Mia since **2005** —
+hardest loss. About 42, close to retirement, lost the companies and the
+circle. Later: a cousin partnership at ~$400k/month that fell apart
+(drinking, theft, AdWords copycats); another at ~$40k/month, lawsuit he
+won, still no company; a nonprofit STD testing attempt in Lebanon ~$5k/month
+that did not take. Kept inventing: dissolvable bandage, Pre-De-Icer, Ronald
+McDonald Kitchen, Axon AI.
+
+**Never on public pages or volunteered by the orb:** Randy, the $6M suit,
+the 1% takeover, ethnic slurs, "subhuman," drinking, divorce details, "lost
+my daughter" as a custody line (Mia's diagnosis and the hospital year are
+already public via Channel 9 — do not add 2005 day-to-day loss unless Marty
+asks). If asked why the Maplewood companies ended: existing Schober/hospital
+summary, facts only, no insults.
+
+**Public pages now live from this pass (filtered):** homepage quote; Doorways (~15 apartments, tax credits, doorwayshousing.org link); Metro AIDS anonymous site + health-dept cutoff; STAT industry (PSC, 1–2 day results, phone books, SmithKline/Unilab); Florida legal lot-split via entities ($600/ft → couple thousand); Maplewood 12–13 buildings, Kirkwood/CWE, ~$450k Focal Point, ~$250k My Cafe. Collapse, names, slurs, later companies, divorce, 2005 day-to-day loss: still vault only.
+
