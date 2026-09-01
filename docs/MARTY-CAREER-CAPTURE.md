@@ -342,3 +342,40 @@ nothing to defend.
 
 If the clipping itself is wanted as an image, that requires written permission
 from the publication. Worth asking for; not worth assuming.
+
+---
+
+## Pass three — homepage (Sep 2026)
+
+Raw dictation. Filter before it goes live.
+
+> Hello are you there. Let's hope you work better than Gmail microphone.
+> Get rid of the D — just Martin Simpson. That'll look better.
+>
+> I'm gonna run through for the third time some very troubling stuff. If you
+> want to ask about some of the more detailed things you can. It's almost like
+> an obituary for my daughter — she'll be able to find out at least what her
+> dad's career was.
+>
+> Overview looking great. Talk with **Mr. Simpson's** AI team member — keep it
+> very formal.
+>
+> Background: make those career-arc lines clickable (public health, restaurant /
+> hospitality, etc.).
+>
+> Don't need both tabs and table of contents. **Get rid of the nav tabs.** Keep
+> TOC exactly as it is. Less like a website.
+>
+> Redundancy: Background, then companies / property / patents / education cards
+> underneath. Drop that. Under the name: a bar of about **four highlights** of
+> the portfolio, then Try asking.
+>
+> $1.4M etc. — he gestured at overall money / equity and patents. **Do not
+> invent a combined net-worth number.** Keep labeled figures only.
+>
+> "Outside coverage" is unclear. Change to **example of media coverage**. Channel
+> 9 was his favorite; there were many more he no longer has. Put Business Journal
+> underneath. He will try to photograph the clipping.
+
+**Public filter:** name = Martin Simpson. Formal = Mr. Simpson's AI team member.
+Daughter / obituary framing stays in this vault — not a homepage line.
