@@ -91,6 +91,22 @@ async function hit(pathName, { ip = '1.1.1.1', cookie = '', method = 'GET', body
 try {
   await waitForServer()
 
+  const hostCoreDenied = await hit('/session?gate=1&src=hostcore', { ip: '9.9.9.9' })
+  check('Host core session is closed without the host key', hostCoreDenied.res.status === 403, `status ${hostCoreDenied.res.status}`)
+
+  const hostCorePage = await hit(`/marty/core?key=${ADMIN}`, { ip: '9.9.9.9' })
+  check('Host core desk opens for Marty', hostCorePage.res.status === 200 && /hostcore/.test(hostCorePage.text), `status ${hostCorePage.res.status}`)
+
+  const hostCoreGuest = await hit('/marty/core', { ip: '8.8.8.8' })
+  check('Host core desk stays closed to everyone else', hostCoreGuest.res.status === 401, `status ${hostCoreGuest.res.status}`)
+
+  const hostCoreSession = await hit('/session?gate=1&src=hostcore', { ip: '9.9.9.9', headers: { 'x-joe-admin': ADMIN } })
+  check(
+    'Host key is the only way to mint a core session',
+    hostCoreSession.res.status === 503 && /OPENAI_API_KEY/i.test(hostCoreSession.text + JSON.stringify(hostCoreSession.data || {})),
+    `status ${hostCoreSession.res.status}`
+  )
+
   const tim = await hit('/tim', { ip: '9.9.9.9' })
   check('Tim’s link stays open', tim.res.status === 200 && /Ira|Tim|Axon/i.test(tim.text), `status ${tim.res.status}`)
 

@@ -375,7 +375,17 @@ async function connectVoice(){
   let tier='moderate';
   try{tier=localStorage.getItem('axon.tier')||'moderate'}catch(e){}
 
-  const r=await fetch('/session?gate=1&src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
+  const r=await fetch('/session?gate=1&src='+encodeURIComponent(PRESET.src||'axon')+'&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{
+    cache:'no-store',
+    headers: (function(){
+      const h={};
+      if(PRESET.hostKeyFromQuery){
+        const k=QUERY.get('key');
+        if(k)h['x-joe-admin']=k;
+      }
+      return h;
+    })()
+  });
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));

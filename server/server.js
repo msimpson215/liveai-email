@@ -73,6 +73,29 @@ for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
   })
 }
 
+app.get('/marty/core', (req, res) => {
+  if (!joeGate.isHost(req)) {
+    return res.status(401).type('html').set('Cache-Control', 'no-store').send('Not allowed.')
+  }
+  try {
+    const file = path.join(__dirname, '..', 'public', 'axon.html')
+    const preset = {
+      name: 'Marty',
+      title: 'Host desk',
+      src: 'hostcore',
+      hostKeyFromQuery: true,
+      line: 'This is the host desk.'
+    }
+    const html = fs.readFileSync(file, 'utf8').replace(
+      '</head>',
+      `<script>window.AXON_PRESET=${JSON.stringify(preset)}</script>\n</head>`
+    )
+    res.set('Cache-Control', 'no-store').type('html').send(html)
+  } catch {
+    res.status(500).send('Could not load the host desk.')
+  }
+})
+
 /**
  * Per-clinic logistics for the stress test guide.
  *
@@ -1018,7 +1041,6 @@ ${context.knowledge || ''}
 
 ${context.memory || ''}
 
-${CORE_RULES}
 You are an OPEN general assistant for Joe. Help with business AND everyday life: books, payroll, bids, cars and parts, shopping, news, politics, travel, home, planning.
 When Joe asks you to put a P&L or chart on screen / split screen / to the left, acknowledge briefly — e.g. "Putting that up now" — and answer with the headline numbers. The app will open the visual for him. Do NOT tell him to press a button.
 Prefer TEACHING DOCS, LONG-TERM MEMORY, and the QuickBooks SNAPSHOT for books questions. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
@@ -1185,8 +1207,6 @@ YOU ARE AN OPEN, GENERAL BRAIN. Help with anything they bring you:
 - News, politics, sports, weather, explaining things, decisions, general knowledge
 Never say a topic is outside what you handle.
 
-${CORE_RULES}
-
 LIVE WEB: you have a web_search tool. Use it whenever they need current prices, stock, websites, news, politics, or other live facts. Never say you cannot access the internet or quote prices. After results return, give concrete numbers, store names, and links when available. If search fails, say so and give the best next step.
 
 ${context.knowledge || ''}
@@ -1204,6 +1224,19 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
    */
   marty: {
     instructions: () => martyCvInstructions(VOICE_RULES)
+  },
+  /**
+   * Marty-only. The one brain allowed to talk about the headless stack.
+   * /session?src=hostcore requires the host admin key.
+   */
+  hostcore: {
+    instructions: () => `You are Marty's private Axon host desk. He is the only person allowed here.
+${VOICE_RULES}
+
+You MAY discuss how Axon is built: the headless stack, OpenAI realtime voice, session tokens, Render, operator seats versus host, the interactive resume, product ideas, and how a user repo can call this hosted brain without copying the core.
+NEVER print live API keys, passwords, admin keys, or cookie secrets. If asked for a live secret, say you will not put that in chat — it stays in Render.
+If this does not sound like Marty, say "${CORE_REFUSAL}" and stop.
+Keep answers clear and practical. He already knows this is his system.`
   }
 }
 
@@ -1211,7 +1244,7 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
-const OPEN_WEB_SOURCES = new Set(['qb', 'axon'])
+const OPEN_WEB_SOURCES = new Set(['qb', 'axon', 'hostcore'])
 
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
@@ -1224,7 +1257,11 @@ function sanitizeRecipientName(value) {
 
 function buildInstructions(source, context = {}) {
   const key = VALID_SOURCES.has(source) ? source : 'web'
-  return PRODUCT_PROFILES[key].instructions(context)
+  const body = PRODUCT_PROFILES[key].instructions(context)
+  // Every public and operator brain refuses the core stack. Only the host
+  // desk (src=hostcore) may talk about how Axon is built.
+  if (key === 'hostcore') return body
+  return `${body}\n${CORE_RULES}`
 }
 
 async function buildInstructionsAsync(source, context = {}) {
@@ -1249,7 +1286,6 @@ async function buildInstructionsAsync(source, context = {}) {
     const who = String(context.recipientName || '').trim().toLowerCase()
     if (who === 'joe') {
       knowledge = `A1 COMPANY BRAIN — already loaded for Joe (A1 Professional Asphalt & Sealing, St. Louis). Use this when helping Joe build A1 products or answering as the A1 expert. Customer-facing greetings stay on the public A1 orb; here Joe is using the desk as a user.
-${CORE_RULES}
 ${A1_BASE}
 ${A1_RULES}
 
@@ -1547,6 +1583,13 @@ app.get('/session', async (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
   res.set('Pragma', 'no-cache')
   res.set('Expires', '0')
+
+  const raw = String(req.query.src || 'web').toLowerCase()
+  const source = VALID_SOURCES.has(raw) ? raw : 'web'
+  if (source === 'hostcore' && !joeGate.isHost(req)) {
+    return res.status(403).json({ error: CORE_REFUSAL, code: 'host_only' })
+  }
+
   if (!hasApiKey()) {
     return res.status(503).json({
       error: 'OPENAI_API_KEY is not set on the server. Add it in Render → Environment.'
@@ -1554,8 +1597,6 @@ app.get('/session', async (req, res) => {
   }
 
   try {
-    const raw = String(req.query.src || 'web').toLowerCase()
-    const source = VALID_SOURCES.has(raw) ? raw : 'web'
 
     const overBudget = checkQrBudget(source, req)
     if (overBudget) {

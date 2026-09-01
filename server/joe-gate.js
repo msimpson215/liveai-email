@@ -613,6 +613,7 @@ td,th{border-bottom:1px solid #eee;text-align:left;padding:.4rem .3rem;vertical-
 <body><main>
 <h1>You are the host</h1>
 <p class="lead">Same idea as Google Places. This Axon desk stays on your account. Joe is a manager — he can use it to help build. He cannot copy the brain, share the login, or take the desk with him. You can remove him anytime and you still own it.</p>
+<p><a href="/marty/core?key=${k}">Open the host core desk</a> — the only place that can talk about how Axon is built. Interactive resume, Joe’s seat, A1, and every other orb will say they are not authorized.</p>
 <div class="card">
   <div class="row"><span>Host</span><b>Martin Simpson / Axon AI</b></div>
   <div class="row"><span>Operator</span><b>Joe — manager, not owner</b></div>
