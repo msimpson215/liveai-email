@@ -561,3 +561,17 @@ Started about **a year and a half** ago. A friend sent a clunky ChatGPT demo; he
 
 Rachel; he begged her not to divorce; banks called in the notes; most hellish time; never really gotten through it. Do not volunteer. Do not name her on pages or orb.
 
+---
+
+## Pass five — corrections (Sep 2026)
+
+- **Maya Cafe**, not My Cafe.
+- STAT: he originated the **industry**. Did not create labs or PSCs. **Clients**, not patients. 411 / foreign listings. Ran through **2016**. About **7–8** labs. By **1996** STD panels without a physical exam (no HPV). Early **PCR** for HIV before antibodies — do not say he invented PCR. National AIDS Hotline fought it / kissing misinformation. By **2000** ~five copycats from people who worked for him; none still in business. Always **he**, not we.
+- Legal DNA: chain of custody for courts. Home tests → usually Walgreens.
+- Momo’s: **$10k**, 2–3 months, doing well, then had to pull the money. Boogaloo’s: put up money and building, **never opened it**, sold the building, never been inside.
+- Maplewood heading: from **boarded-up buildings**, not “Maple Hood to a district.” 1998 sexual assault on Manchester, broad daylight. Bar parties = bars off the windows. Pied Piper = he marketed it / led people there. Model: Palo Alto **California Avenue**.
+- Florida house sold after **two** hurricanes. Rentals mainly for **employees**. Only real-estate loss: own house in **Belleville ~$150k**.
+- Inventions: Pre-De-Icer + bandage. **No AI provisional** on that page. AI = Current Work.
+- Media = Channel 9 + Business Journal (he still wants to send the full clipping). Conversational email / QR brains / medical explanation belong under **Current Work**, not Media.
+- He thinks the CV is **done** after this pass.
+
