@@ -18,11 +18,15 @@ import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
+import * as joeGate from './joe-gate.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+joeGate.mount(app)
+app.use(joeGate.middleware)
 app.use(express.static('public', {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store')
@@ -37,7 +41,7 @@ const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/launch.html'
  * Each name also gets its own private memory bank (see joe-memory.js).
  */
 const AXON_PEOPLE = {
-  joe: { name: 'Joe' },
+  joe: { name: 'Joe' }, // /joe is IP-locked — see server/joe-gate.js
   tim: { name: 'Tim' },
   ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' },
   mia: {
@@ -1238,6 +1242,14 @@ async function buildInstructionsAsync(source, context = {}) {
     // Each named link reads only its own bank, so Rachel's talks never
     // surface in Tim's session.
     try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
+    const who = String(context.recipientName || '').trim().toLowerCase()
+    if (who === 'joe') {
+      knowledge = `A1 COMPANY BRAIN — already loaded for Joe (A1 Professional Asphalt & Sealing, St. Louis). Use this when helping Joe build A1 products or answering as the A1 expert. Customer-facing greetings stay on the public A1 orb; here Joe is the operator.
+${A1_BASE}
+${A1_RULES}
+
+${knowledge}`
+    }
     return buildInstructions(source, { ...context, knowledge, memory })
   }
   // Whichever set of instructions the code on the box points at.
@@ -1835,15 +1847,20 @@ app.get('/api/brain/status', (req, res) => {
   res.set('Cache-Control', 'no-store')
   let docs = []
   let memory = { count: 0, latestAt: null }
-  try { docs = joeKnowledge.listDocs() } catch { docs = [] }
   try { memory = joeMemory.status(req.query.person || req.query.name) } catch { /* ignore */ }
-  res.json({
+  const payload = {
     ok: true,
-    ...quickbooks.status(),
     openai: hasApiKey(),
-    memory,
-    docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
-  })
+    memory
+  }
+  // Doc names and live books stay on Joe’s gated desk, not on /tim and friends.
+  if (joeGate.isAuthed(req)) {
+    try { docs = joeKnowledge.listDocs() } catch { docs = [] }
+    Object.assign(payload, quickbooks.status(), {
+      docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
+    })
+  }
+  res.json(payload)
 })
 
 app.get('/api/brain/memory', (req, res) => {
@@ -2721,6 +2738,10 @@ app.post('/api/brain/chat', async (req, res) => {
               {
                 type: 'input_text',
                 text: `You are Joe's Professional Assistant (powered by Axon AI) — an open general brain like ChatGPT. Use live web search for current prices, stock, product pages, news, and politics. Prefer teaching docs, long-term memory, and the books snapshot for company books questions — do not invent dollar amounts that are not in those sources. Answer briefly and helpfully.
+
+A1 COMPANY BRAIN — already loaded for Joe (A1 Professional Asphalt & Sealing, St. Louis). Use this when helping Joe build A1 products or answering as the A1 expert. Customer-facing greetings stay on the public A1 orb; here Joe is the operator.
+${A1_BASE}
+${A1_RULES}
 
 ${qbSnapshot}
 

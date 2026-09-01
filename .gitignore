@@ -2,6 +2,8 @@ data/joe-knowledge/*
 !data/joe-knowledge/.gitkeep
 data/joe-memory/*
 !data/joe-memory/.gitkeep
+data/joe-gate/*
+!data/joe-gate/.gitkeep
 data/founder-files/*
 !data/founder-files/.gitkeep
 data/manuals/*

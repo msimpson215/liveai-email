@@ -21,6 +21,12 @@ Render service **liveai-email** should track repo **liveai-email** branch **main
 | `QUICKBOOKS_REFRESH_TOKEN` | Optional — from Intuit OAuth |
 | `QUICKBOOKS_REALM_ID` | Optional — Joe’s company id |
 | `QUICKBOOKS_ENV` | Optional — `sandbox` or `production` |
+| `JOE_GATE_USER` | Optional — Joe’s desk login name (default `joe`) |
+| `JOE_GATE_PASSWORD` | Required to open `/joe` — Joe’s desk password. Do not commit. |
+| `JOE_GATE_ADMIN` | Required to read `/joe/log` and POST `/joe/unlock` |
+| `JOE_ALLOWED_IPS` | Optional comma list of Joe’s IPs. If empty, the first successful login binds one IP. A login from anywhere else shuts the desk off. |
+
+Joe’s gated Axon desk: `/joe` (login + IP lock). Audit log: `/joe/log?key=` + `JOE_GATE_ADMIN`. Books/teach pages (`/axon-brain.html`, `/mockup2.html`) sit behind the same login. Do not log in as Joe from Marty’s own connection — that would bind the wrong IP and lock Joe out.
 
 Axon AI Brain (yellow orb + QuickBooks): `/axon-brain.html` — see `docs/AXON-QB-BRAIN.md`.
 
