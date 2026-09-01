@@ -485,3 +485,79 @@ summary, facts only, no insults.
 
 **Public pages now live from this pass (filtered):** homepage quote; Doorways (~15 apartments, tax credits, doorwayshousing.org link); Metro AIDS anonymous site + health-dept cutoff; STAT industry (PSC, 1–2 day results, phone books, SmithKline/Unilab); Florida legal lot-split via entities ($600/ft → couple thousand); Maplewood 12–13 buildings, Kirkwood/CWE, ~$450k Focal Point, ~$250k My Cafe. Collapse, names, slurs, later companies, divorce, 2005 day-to-day loss: still vault only.
 
+---
+
+## Pass four — bandage, kitchen, restaurants, Axon (Sep 2026)
+
+Raw. Filter before live.
+
+### Dissolvable bandage — PUBLIC distill
+
+Origin: Mia had a Broviac; dressing changes (Tegaderm) were hours of crying. He wanted a bandage that comes off under warm water instead of peeling skin. Prototype exists; he has not shopped it. Timeline in his account: idea ~1994, experimenting ~1996, buying chemicals ~2008, working formula in the apartment ~2010. First for kids (a little bear on it — they ask for another). Later wound care / burns would need a partner for FDA (millions). All natural — not a liquid “crazy glue” bandage, not expensive synthetic clotting. Licensing play: generic/off-brand bandage maker (he thinks Tampa area). He wants proceeds, and a great deal of it, to go to Children’s Hospital. Can carry other compounds (niacin, cortisone, etc.) — do **not** claim FDA-cleared drug delivery on pages.
+
+**FORMULA — NEVER speak, never on pages or in the orb:** Listerine-strip / mouth-strip experiment. He said that gives the formula away. If asked how he invented it: hospital dressing changes, then he walked around testing adhesives on himself. Stop there.
+
+### Pre-De-Icer — PUBLIC distill
+
+Still looking for someone to run with it. Samples he sent were about **−51°F** in his account; lab work now about **−82°F**. Sent to WeatherTech three times, no reply — **if-asked / vault tone**, not a public complaint. Do not give up. Do not invent a deal.
+
+### Happy Meals / RMK — PUBLIC distill (enrich)
+
+About **50–70** made-to-order meals for the **whole oncology floor**. Ford Excursion; modified Sam’s garden wagon with **three Coleman coolers** (heat and cold — fries too hot to touch, milkshakes still frosted) and a battery system that came apart so he could load the truck himself. Saturdays. No pickle / only mustard honored — keep them eating, a taste of the outside world. He found a McDonald’s owner who filled the orders (name in vault). RMK is still a proposal; he wants to make a video for a major donor (do not invent the donor’s name). Earlier dictation said two wagons / 2 cold 1 hot; this pass is one wagon + Excursion and 2 heat 1 cold. Public: three Coleman coolers for heat and cold, wagon + Excursion, 50–70 meals. Don’t fight the wagon count on the page.
+
+**Vault:** mentor George Gibson (two top McDonald’s, Hanley). Do not name on pages or orb unless Marty asks in-session.
+
+### Children’s house rehabs — PUBLIC distill
+
+Bought houses, renovated, sold; donated about **$25,000** of profit to St. Louis Children’s Hospital. Under-claim. Not a monument.
+
+### Restaurants — PUBLIC distill
+
+- **My Cafe:** built out from a shell. It was the anchor to making Maplewood cool again. He took it over when the opening plan failed, brought in restaurant people, turned it around, then walked away from operating it.
+- **Momo’s:** invested at open; out within a month when the companies were taken. They made him take the investment back. Public: invested, opened, stepped back in the first month. Do not put $10k / hypothetical $500k on the page.
+- **Boogaloo’s:** concept with **Mike Johnson**; Marty started construction. Still open 20+ years. He has never even been there. Startup credit, not operator.
+
+**Vault — never on pages, never volunteer, do not recount even if asked:** opening partner selling drugs / stealing alcohol; Bill Soresby; giving the restaurant to Jay; Gene (DUI death of a 19-year-old, lost license, hanged himself); Jay/Gene suing; drinking at My Cafe / alcohol problem / PTSD as the downfall. If asked why he left restaurants: he was done operating them; he walked away.
+
+### Fire sale / town — PUBLIC distill
+
+Sold the Maplewood portfolio for about **$3.4 million** in a deal that took about **ten days**. The city was writing tickets (he says ~$100, e.g. a nail on the sidewalk) while he was at the hospital with Mia. He got sick of the town and has not gone back.
+
+**Vault:** bankers/“the winds” told the bank they would not pay Marty’s mortgage and would buy out of foreclosure. He sold instead of letting that happen. Mike Johnson got caught up. Do not name bankers.
+
+### Testing numbers — do not swap homepage tiles
+
+He has also said the testing **call centers** later reached about **$2–$2.5 million** annually. Keep the live labeled figure **$1.4 million STS** until he explicitly replaces it. A later DNA paternity shop in **Columbia, Illinois (~2015)** made about **$40,000 a month** — labeled, not merged with the ~$4 million medical-testing gross.
+
+### Michigan / Illinois housing
+
+Michigan: **one** Benton Harbor-area house toward the end; he did not develop it further. Illinois: a few houses, some for family and employees, plus Maplewood. No addresses.
+
+### CDC
+
+He trained people how to do **HIV-positive post-test interviews** — sessions that could last a couple of hours. Trainer of trainers.
+
+### Axon AI — PUBLIC distill
+
+Started about **a year and a half** ago. A friend sent a clunky ChatGPT demo; he had to log in; “gotta be a better way.” He does not write code; he built with Claude, Gemini, ChatGPT, Copilot. Headless stack aimed at **blue-collar / smaller venues**, not Silicon Valley arrogance. Play: **~300 million legacy websites** losing SEO — plug Axon in, make pages talkable/readable.
+
+**Live / named products:**
+- Convo Email
+- Conversational Business Card (QR)
+- Interactive Resume (this CV)
+- Legacy-website plugin
+- Operator (on your machine)
+- Medical QR / document explainer (stress-test guide live — not medical advice)
+- AI Point — slides/PowerPoint with a URL you can take home and keep talking to
+
+**Pipeline (not built yet — do not start grocery until CV is done):**
+- Chrome-extension organizer / hands-free dashboard (Gmail etc.)
+- Grocery shopper AI — talk meals and constraints, it fills the cart and gives the recipe (not a chatbot bubble; more thorough than Alexa adding to cart)
+- Assembly / instructions QR — scan, it helps you put the thing together
+
+**Vault:** friend Tam; “no one takes me seriously because of failures”; Joe as the hoped-for operator for Pre-De-Icer.
+
+### Divorce / banks — VAULT
+
+Rachel; he begged her not to divorce; banks called in the notes; most hellish time; never really gotten through it. Do not volunteer. Do not name her on pages or orb.
+
