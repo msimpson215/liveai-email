@@ -507,7 +507,7 @@ button{
 <body>
 <form method="post" action="/joe/login" id="f">
   <h1>Joe’s Axon desk</h1>
-  <p>This is a hosted Axon desk. You can use it. You cannot copy it, share it, or take it with you. The first time Joe opens it, that connection is saved. Anyone else who opens it shuts the desk off.</p>
+  <p>This login only works from Joe’s connection. The first time he opens it, that connection is saved. Anyone else who opens it shuts the desk off.</p>
   <div class="err" id="err"></div>
   <label for="user">Login</label>
   <input id="user" name="user" autocomplete="username" required>

@@ -14,7 +14,8 @@
     "test:sabc-page": "node scripts/sabc-page.test.mjs",
     "measure": "node scripts/measure-card.mjs",
     "test:manuals": "node scripts/manuals.test.mjs",
-    "test:joe-gate": "node scripts/joe-gate.test.mjs"
+    "test:joe-gate": "node scripts/joe-gate.test.mjs",
+    "test:axon-core": "node scripts/axon-core-guard.test.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

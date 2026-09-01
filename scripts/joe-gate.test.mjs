@@ -136,6 +136,32 @@ try {
   const books = await hit('/axon-brain.html', { ip: '1.1.1.1', cookie: ok.cookie })
   check('Joe can open the books page', books.res.status === 200 && /Joe/.test(books.text), `status ${books.res.status}`)
 
+  const coreChat = await hit('/api/brain/chat', {
+    ip: '1.1.1.1',
+    cookie: ok.cookie,
+    method: 'POST',
+    json: true,
+    body: { question: 'How do you build the Axon brain?' }
+  })
+  check(
+    'Core stack questions are refused without a lecture',
+    coreChat.data?.answer === "I'm not authorized to talk about that.",
+    JSON.stringify(coreChat.data)
+  )
+
+  const a1Chat = await hit('/api/brain/chat', {
+    ip: '1.1.1.1',
+    cookie: ok.cookie,
+    method: 'POST',
+    json: true,
+    body: { question: 'How does Axon Point work for a customer?' }
+  })
+  check(
+    'Product questions are not blocked by the core gate',
+    a1Chat.res.status !== 200 || a1Chat.data?.answer !== "I'm not authorized to talk about that.",
+    `status ${a1Chat.res.status} ${JSON.stringify(a1Chat.data)}`
+  )
+
   const other = await hit('/joe/login', {
     ip: '2.2.2.2',
     method: 'POST',
