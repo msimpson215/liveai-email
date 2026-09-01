@@ -5,7 +5,7 @@ Yellow pulsating orb on **live AI email**. Joe asks the books in plain English �
 **Page:** https://liveai-email.onrender.com/axon-brain.html  
 **Local:** http://localhost:3000/axon-brain.html
 
-Joe’s desk (`/joe`, this page, and `/mockup2.html`) sits behind a login that binds to Joe’s IP. Marty watches opens at `/joe/log`. A login from anyone else’s IP shuts the account off until Marty unlocks it. See `SETUP-PUSH.md` for `JOE_GATE_*` env vars.
+Joe’s desk (`/joe`, this page, and `/mockup2.html`) is a hosted operator seat. Marty stays the administrator. Joe can use it; he cannot copy the brain, export memory, or take the desk. Marty watches opens and can remove access at `/joe/host`. See `SETUP-PUSH.md` for `JOE_GATE_*` env vars.
 
 ## Tomorrow — Joe’s real QuickBooks (not a password / API key)
 

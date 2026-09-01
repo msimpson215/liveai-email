@@ -170,6 +170,45 @@ try {
     body: { user: 'joe', password: PASS }
   })
   check('After unlock, Joe’s next login rebinds', again.res.status === 200 && again.data?.boundIp === '3.3.3.3', JSON.stringify(again.data))
+
+  const mem = await hit('/api/brain/memory', { ip: '3.3.3.3', cookie: again.cookie })
+  check('Joe cannot download the memory bank', mem.res.status === 403 && mem.data?.code === 'host_only', JSON.stringify(mem.data))
+
+  const wipe = await hit('/api/brain/docs/nope.txt', { ip: '3.3.3.3', cookie: again.cookie, method: 'DELETE' })
+  check('Joe cannot delete teaching docs', wipe.res.status === 403 && wipe.data?.code === 'host_only', JSON.stringify(wipe.data))
+
+  const hostMem = await hit('/api/brain/memory', { ip: '9.9.9.9', headers: { 'x-joe-admin': ADMIN } })
+  check('Host can open the memory bank', hostMem.res.status === 200 && hostMem.data?.ok === true, `status ${hostMem.res.status}`)
+
+  const hostPage = await hit(`/joe/host?key=${ADMIN}`, { ip: '9.9.9.9' })
+  check('Host console names Marty as host', hostPage.res.status === 200 && /You are the host/.test(hostPage.text) && /manager/.test(hostPage.text), `status ${hostPage.res.status}`)
+
+  const revoke = await hit('/joe/revoke', {
+    ip: '9.9.9.9',
+    method: 'POST',
+    json: true,
+    body: { key: ADMIN }
+  })
+  check('Host can remove Joe’s access', revoke.data?.ok === true, JSON.stringify(revoke.data))
+
+  const blocked = await hit('/joe', { ip: '3.3.3.3', cookie: again.cookie })
+  check('Revoked operator cannot open the desk', blocked.res.status === 403 && /host/i.test(blocked.text), `status ${blocked.res.status}`)
+
+  const restore = await hit('/joe/restore', {
+    ip: '9.9.9.9',
+    method: 'POST',
+    json: true,
+    body: { key: ADMIN }
+  })
+  check('Host can give Joe access again', restore.data?.ok === true, JSON.stringify(restore.data))
+
+  const back = await hit('/joe/login', {
+    ip: '3.3.3.3',
+    method: 'POST',
+    json: true,
+    body: { user: 'joe', password: PASS }
+  })
+  check('Restored operator can sign in on the bound connection', back.res.status === 200 && back.data?.boundIp === '3.3.3.3', JSON.stringify(back.data))
 } catch (error) {
   check('ran without throwing', false, error.message)
 } finally {

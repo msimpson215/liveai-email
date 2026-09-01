@@ -244,6 +244,7 @@ body.listening .orb-hint,body.speaking .orb-hint{opacity:.45}
   <div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="sheet">
       <h2 id="sheetTitle">Axon Partner</h2>
+      <p class="memline" id="hostLine" hidden>Hosted by Axon — you can use this desk, you don’t own it.</p>
       <p class="memline" id="memLine">Checking memory…</p>
       <a href="/mockup2.html">Books &amp; charts <span class="chev">›</span></a>
       <a href="/axon-brain.html">Teach it something <span class="chev">›</span></a>
@@ -281,6 +282,8 @@ if(PRESET.title)document.title=PRESET.title;
 if(String(PRESET.name||'').toLowerCase()==='joe'){
   const out=document.getElementById('joeLogout');
   if(out)out.hidden=false;
+  const host=document.getElementById('hostLine');
+  if(host)host.hidden=false;
 }
 
 /* ---------- greeting ---------- */

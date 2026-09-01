@@ -26,7 +26,7 @@ Render service **liveai-email** should track repo **liveai-email** branch **main
 | `JOE_GATE_ADMIN` | Required to read `/joe/log` and POST `/joe/unlock` |
 | `JOE_ALLOWED_IPS` | Optional comma list of Joe’s IPs. If empty, the first successful login binds one IP. A login from anywhere else shuts the desk off. |
 
-Joe’s gated Axon desk: `/joe` (login + IP lock). Audit log: `/joe/log?key=` + `JOE_GATE_ADMIN`. Books/teach pages (`/axon-brain.html`, `/mockup2.html`) sit behind the same login. Do not log in as Joe from Marty’s own connection — that would bind the wrong IP and lock Joe out.
+Joe’s gated Axon desk: `/joe` (operator login + IP lock). You stay the host. Host console: `/joe/host?key=` + `JOE_GATE_ADMIN` (also `/joe/log`). Books/teach pages sit behind Joe’s login. Joe cannot download the memory bank, import a ChatGPT dump, or delete teaching docs — those stay host-only. Do not log in as Joe from Marty’s own connection.
 
 Axon AI Brain (yellow orb + QuickBooks): `/axon-brain.html` — see `docs/AXON-QB-BRAIN.md`.
 

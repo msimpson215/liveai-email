@@ -1,10 +1,10 @@
 /**
- * Joe's Axon desk — login, IP bind, audit log, and a kill switch.
+ * Joe's Axon desk — Marty is the host, Joe is a manager seat.
  *
- * First successful login from an IP locks the account to that address.
- * A later login (or a live session) from anywhere else shuts the desk off
- * until Marty unlocks it. Marty reads the log with a separate admin key so
- * his own IP never binds as Joe.
+ * Same idea as Google Places: the desk stays on Marty's account. Joe can use
+ * it. He cannot copy the brain, export memory, or take ownership. First
+ * successful login binds Joe's IP. A later open from anywhere else shuts the
+ * desk off. Marty can also remove operator access anytime from /joe/host.
  *
  * Env (Render → Environment — do not commit values):
  *   JOE_GATE_USER       login name, default "joe"
@@ -30,7 +30,10 @@ const OPEN_PATHS = new Set([
   '/joe/login',
   '/joe/logout',
   '/joe/log',
+  '/joe/host',
   '/joe/unlock',
+  '/joe/revoke',
+  '/joe/restore',
   '/joe-login.html',
   '/joe-locked.html'
 ])
@@ -69,7 +72,8 @@ function emptyState() {
     lockedReason: '',
     sessions: {},
     log: [],
-    lastOpen: {}
+    lastOpen: {},
+    enabled: true
   }
 }
 
@@ -79,7 +83,14 @@ function readState() {
   if (!fs.existsSync(file)) return emptyState()
   try {
     const raw = JSON.parse(fs.readFileSync(file, 'utf8'))
-    return { ...emptyState(), ...raw, sessions: raw.sessions || {}, log: raw.log || [], lastOpen: raw.lastOpen || {} }
+    return {
+      ...emptyState(),
+      ...raw,
+      sessions: raw.sessions || {},
+      log: raw.log || [],
+      lastOpen: raw.lastOpen || {},
+      enabled: raw.enabled !== false
+    }
   } catch {
     return emptyState()
   }
@@ -106,6 +117,31 @@ function expectedPassword() {
 
 function expectedAdmin() {
   return String(process.env.JOE_GATE_ADMIN || '')
+}
+
+function adminKeyFrom(req) {
+  return (
+    req.query?.key ||
+    req.body?.key ||
+    req.headers?.['x-joe-admin'] ||
+    req.get?.('x-joe-admin') ||
+    ''
+  )
+}
+
+export function isHost(req) {
+  return Boolean(expectedAdmin()) && secretsEqual(adminKeyFrom(req), expectedAdmin())
+}
+
+/** Bulk copy / wipe / import — host only, never the operator. */
+export function isOwnerApi(req) {
+  const pathName = String(req.path || '').split('?')[0]
+  const method = String(req.method || 'GET').toUpperCase()
+  if (pathName === '/api/brain/memory' && method === 'GET') return true
+  if (pathName === '/api/brain/memory/import') return true
+  if (pathName === '/api/brain/memory/rollup') return true
+  if (method === 'DELETE' && pathName.startsWith('/api/brain/docs/')) return true
+  return false
 }
 
 function secretsEqual(given, expected) {
@@ -270,6 +306,9 @@ export function authorize(req) {
   }
   const state = readState()
   const ip = clientIp(req)
+  if (state.enabled === false) {
+    return { ok: false, status: 403, code: 'revoked', message: 'The host removed operator access to this desk.' }
+  }
   if (state.locked) {
     return { ok: false, status: 403, code: 'locked', message: 'This account was shut off because someone opened it from a different location. Contact Marty.' }
   }
@@ -314,6 +353,11 @@ export function login(req, { user, password }) {
   }
   const state = readState()
   const ip = clientIp(req)
+  if (state.enabled === false) {
+    pushLog(state, 'login_blocked', req, 'host revoked operator access')
+    writeState(state)
+    return { ok: false, status: 403, code: 'revoked', message: 'The host removed operator access to this desk.' }
+  }
   if (state.locked) {
     pushLog(state, 'login_blocked', req, 'account locked')
     writeState(state)
@@ -379,6 +423,32 @@ export function unlock(req, key) {
   return { ok: true }
 }
 
+export function revoke(req, key) {
+  if (!expectedAdmin() || !secretsEqual(key, expectedAdmin())) {
+    return { ok: false, status: 401, message: 'Admin key did not match.' }
+  }
+  const state = readState()
+  state.enabled = false
+  state.sessions = {}
+  pushLog(state, 'revoke', req, 'host removed operator access — desk stays with Marty')
+  writeState(state)
+  return { ok: true }
+}
+
+export function restore(req, key) {
+  if (!expectedAdmin() || !secretsEqual(key, expectedAdmin())) {
+    return { ok: false, status: 401, message: 'Admin key did not match.' }
+  }
+  const state = readState()
+  state.enabled = true
+  state.locked = false
+  state.lockedAt = null
+  state.lockedReason = ''
+  pushLog(state, 'restore', req, 'host restored operator access')
+  writeState(state)
+  return { ok: true }
+}
+
 export function readLog(key) {
   if (!expectedAdmin() || !secretsEqual(key, expectedAdmin())) {
     return { ok: false, status: 401, message: 'Admin key did not match.' }
@@ -391,6 +461,9 @@ export function readLog(key) {
     lockedReason: state.lockedReason,
     boundIp: state.boundIp,
     boundAt: state.boundAt,
+    enabled: state.enabled !== false,
+    host: 'Martin Simpson / Axon AI',
+    operator: 'Joe — manager seat, not owner',
     sessions: Object.keys(state.sessions || {}).length,
     log: state.log
   }
@@ -434,7 +507,7 @@ button{
 <body>
 <form method="post" action="/joe/login" id="f">
   <h1>Joe’s Axon desk</h1>
-  <p>This login only works from Joe’s connection. The first time he opens it, that address is saved. Anyone else who opens it shuts the desk off.</p>
+  <p>This is a hosted Axon desk. You can use it. You cannot copy it, share it, or take it with you. The first time Joe opens it, that connection is saved. Anyone else who opens it shuts the desk off.</p>
   <div class="err" id="err"></div>
   <label for="user">Login</label>
   <input id="user" name="user" autocomplete="username" required>
@@ -446,6 +519,7 @@ button{
 const q=new URLSearchParams(location.search);
 if(q.get('err')==='1')document.getElementById('err').textContent='That login did not work.';
 if(q.get('locked')==='1')document.getElementById('err').textContent='This account was shut off. Contact Marty.';
+if(q.get('revoked')==='1')document.getElementById('err').textContent='The host removed access to this desk.';
 </script>
 </body>
 </html>`
@@ -470,10 +544,104 @@ p{margin:0;color:#f3d6de}
 <body>
 <div>
   <h1>This desk is shut off</h1>
-  <p>Someone opened Joe’s Axon account from a different location. It will stay closed until Marty unlocks it.</p>
+  <p>Someone opened Joe’s Axon account from a different location. It will stay closed until the host unlocks it.</p>
 </div>
 </body>
 </html>`
+}
+
+function revokedPage() {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Access removed</title>
+<style>
+body{margin:0;min-height:100dvh;display:grid;place-items:center;font-family:system-ui,sans-serif;
+background:#061c56;color:#fff;padding:1.5rem}
+div{max-width:28rem;line-height:1.5}
+h1{font-size:1.3rem;margin:0 0 .5rem}
+p{margin:0;color:#d6ebff}
+</style>
+</head>
+<body>
+<div>
+  <h1>Access removed</h1>
+  <p>The host still owns this Axon desk. Operator access was taken off, the same way a Google Places manager can be removed without giving them the business.</p>
+</div>
+</body>
+</html>`
+}
+
+function hostPage(data, key) {
+  const k = escapeHtml(key || '')
+  const rows = (data.log || []).map(e => `<tr>
+    <td>${escapeHtml(e.at || '')}</td>
+    <td>${escapeHtml(e.event || '')}</td>
+    <td>${escapeHtml(e.ip || '')}</td>
+    <td>${escapeHtml(e.detail || '')}</td>
+  </tr>`).join('')
+  const status = data.enabled === false
+    ? '<p class="bad">Joe’s operator access is <b>off</b>. You still own the desk.</p>'
+    : data.locked
+      ? `<p class="bad">Shut off — someone else opened it. ${escapeHtml(data.lockedReason || '')}</p>`
+      : '<p class="ok">Joe can use the desk. He does not own it.</p>'
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<title>Axon host — Joe’s desk</title>
+<style>
+body{font:16px/1.45 system-ui,sans-serif;margin:0;color:#111;background:#f6f7fb}
+main{max-width:42rem;margin:0 auto;padding:1.3rem 1.1rem 2.5rem}
+h1{font-size:1.35rem;letter-spacing:-.03em;margin:0 0 .35rem}
+.lead{color:#444;margin:0 0 1.1rem}
+.card{background:#fff;border:1px solid #e6e8ef;border-radius:14px;padding:1rem 1.05rem;margin:0 0 1rem}
+.row{display:flex;justify-content:space-between;gap:1rem;padding:.45rem 0;border-bottom:1px solid #f0f1f5}
+.row:last-child{border:0}
+.ok{color:#0a7} .bad{color:#b00}
+form{display:inline}
+button{margin:.35rem .4rem .15rem 0;padding:.65rem .9rem;border:0;border-radius:10px;font:700 .92rem system-ui;cursor:pointer}
+.rev{background:#b00;color:#fff}
+.go{background:#0a7;color:#fff}
+.rebind{background:#eee;color:#222}
+table{border-collapse:collapse;width:100%;margin-top:.7rem;font-size:13px}
+td,th{border-bottom:1px solid #eee;text-align:left;padding:.4rem .3rem;vertical-align:top}
+</style></head>
+<body><main>
+<h1>You are the host</h1>
+<p class="lead">Same idea as Google Places. This Axon desk stays on your account. Joe is a manager — he can use it to help build. He cannot copy the brain, share the login, or take the desk with him. You can remove him anytime and you still own it.</p>
+<div class="card">
+  <div class="row"><span>Host</span><b>Martin Simpson / Axon AI</b></div>
+  <div class="row"><span>Operator</span><b>Joe — manager, not owner</b></div>
+  <div class="row"><span>Joe’s saved connection</span><b>${escapeHtml(data.boundIp || 'not bound yet')}</b></div>
+  <div class="row"><span>Live sessions</span><b>${data.sessions || 0}</b></div>
+</div>
+${status}
+<div class="card">
+  <form method="post" action="/joe/revoke">
+    <input type="hidden" name="key" value="${k}">
+    <button class="rev" type="submit">Remove Joe’s access</button>
+  </form>
+  <form method="post" action="/joe/restore">
+    <input type="hidden" name="key" value="${k}">
+    <button class="go" type="submit">Give Joe access again</button>
+  </form>
+  <form method="post" action="/joe/unlock">
+    <input type="hidden" name="key" value="${k}">
+    <button class="rebind" type="submit">Turn it back on and let Joe’s next login save a new connection</button>
+  </form>
+</div>
+<div class="card">
+  <b>Who opened it</b>
+  <table>
+    <thead><tr><th>When</th><th>What</th><th>From</th><th>Detail</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="4">No opens yet.</td></tr>'}</tbody>
+  </table>
+</div>
+</main></body></html>`
 }
 
 function logPage(data) {
@@ -533,6 +701,10 @@ function deny(req, res, verdict) {
     res.status(403).type('html').set('Cache-Control', 'no-store').send(lockedPage())
     return
   }
+  if (verdict.code === 'revoked' && wantsHtml(req)) {
+    res.status(403).type('html').set('Cache-Control', 'no-store').send(revokedPage())
+    return
+  }
   if (verdict.code === 'login' && wantsHtml(req)) {
     res.status(200).type('html').set('Cache-Control', 'no-store').send(loginPage())
     return
@@ -552,6 +724,14 @@ function nextPath(req) {
 }
 
 export function middleware(req, res, next) {
+  if (isOwnerApi(req)) {
+    if (isHost(req)) return next()
+    return res.status(403).set('Cache-Control', 'no-store').json({
+      ok: false,
+      code: 'host_only',
+      error: 'Only the host can copy, export, or wipe this desk.'
+    })
+  }
   if (!pathNeedsGate(req)) return next()
   const verdict = authorize(req)
   if (verdict.ok) return next()
@@ -572,7 +752,7 @@ export function mount(app) {
       req.is?.('application/json')
     if (!result.ok) {
       if (wants) return res.status(result.status).json({ ok: false, error: result.message, code: result.code })
-      const q = result.code === 'locked' ? 'locked=1' : 'err=1'
+      const q = result.code === 'locked' ? 'locked=1' : result.code === 'revoked' ? 'revoked=1' : 'err=1'
       return res.redirect(303, `/joe/login?${q}`)
     }
     res.setHeader('Set-Cookie', result.cookie)
@@ -601,13 +781,36 @@ export function mount(app) {
     if (req.query.format === 'json') {
       return res.set('Cache-Control', 'no-store').json(result)
     }
-    res.set('Cache-Control', 'no-store').type('html').send(logPage(result))
+    res.set('Cache-Control', 'no-store').type('html').send(hostPage(result, req.query.key))
   })
+
+  app.get('/joe/host', (req, res) => {
+    const result = readLog(req.query.key)
+    if (!result.ok) return res.status(result.status).type('html').send('Not allowed.')
+    res.set('Cache-Control', 'no-store').type('html').send(hostPage(result, req.query.key))
+  })
+
+  function hostRedirect(req, res, result, message) {
+    if (!result.ok) return res.status(result.status).json({ ok: false, error: result.message })
+    const wants = String(req.headers.accept || '').includes('application/json') ||
+      req.is?.('application/json')
+    if (wants) return res.json({ ok: true, message })
+    const key = encodeURIComponent(req.body?.key || req.query.key || '')
+    res.redirect(303, `/joe/host?key=${key}`)
+  }
 
   app.post('/joe/unlock', (req, res) => {
     const key = req.body?.key || req.query.key
-    const result = unlock(req, key)
-    if (!result.ok) return res.status(result.status).json({ ok: false, error: result.message })
-    res.json({ ok: true, message: 'Unlocked. Joe’s next login binds a new IP.' })
+    hostRedirect(req, res, unlock(req, key), 'Unlocked. Joe’s next login binds a new IP.')
+  })
+
+  app.post('/joe/revoke', (req, res) => {
+    const key = req.body?.key || req.query.key
+    hostRedirect(req, res, revoke(req, key), 'Joe’s operator access is off. You still own the desk.')
+  })
+
+  app.post('/joe/restore', (req, res) => {
+    const key = req.body?.key || req.query.key
+    hostRedirect(req, res, restore(req, key), 'Joe can use the desk again. He still does not own it.')
   })
 }
