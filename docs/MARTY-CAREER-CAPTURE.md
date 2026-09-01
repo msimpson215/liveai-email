@@ -379,3 +379,199 @@ Raw dictation. Filter before it goes live.
 
 **Public filter:** name = Martin Simpson. Formal = Mr. Simpson's AI team member.
 Daughter / obituary framing stays in this vault — not a homepage line.
+
+---
+
+## Pass three — full career dump (Sep 2026)
+
+Raw. Anger, names, slurs, lawsuits, drinking, divorce, lost daily life with
+Mia — **vault only** unless distilled below. Public pages get the through-line
+and the companies. Not the collapse cast.
+
+**Through-line (LIVE on homepage as a quote):**
+See a problem — how can I make this better? Always give back. Always make a
+difference.
+
+### Doorways (~1989) — PUBLIC distill
+
+First job. About 15 apartments housing people with AIDS. Discrimination
+intense — landlords scarce, so they paid roughly double market ($800 vs $400
+in his account) to landlords in South St. Louis; the org managed clients and
+rent. He pushed **501(c)(3) tax credits** to **buy** a building instead of
+renting. Bought a rough multi-story apartment, rehabbed it. Proud: Doorways
+later became one of the largest housing programs in the country for people
+living with AIDS; he was on the ground floor with a business mind. Then left
+for Missouri Department of Health.
+
+**Vault only:** director Lynn Cooper (nun, not entrepreneurial); coworker
+Sherry Rankin; building at Delmar and Union; WWII vet tenant; antique
+elevator; seller wanted more tax credits. Do not name street, staff, or
+building on public pages or in the orb.
+
+### Metro AIDS / Missouri Department of Health — PUBLIC distill
+
+Only anonymous HIV testing site left in Missouri besides Kansas City (open
+one day a week). About three counselors. Inundated because insurers dropped
+people who tested positive. Thousands of pre-test sessions; about 200
+positive post-test interviews in this telling (existing brain says
+"hundreds" — keep hundreds on the orb unless he confirms 200). He was good
+at it and would still do it. CDC: trainer of trainers, including physicians
+from WashU. Papers for the health department on anonymous testing. About two
+years there. Health department stopped letting them take patient calls;
+people waited outside for risk-assessment help. That is the oxymoron he
+names: it did not take care of people.
+
+### Specialized Counseling → STAT network — PUBLIC distill
+
+Left and started counseling by phone nationally: a foreign-exchange listing
+in phone books across the country (~$1/month) , ~$30 a call in his account.
+Clients kept asking where to get tested; health-department tests took two
+weeks ("two weeks of hell"). He contracted **regional labs with patient
+service centers** (SmithKline Beecham / Corning Nichols, Unilab in
+California, others): blood draw at a bricks-and-mortar PSC, EIA/Western blot,
+results in one to two days. First national STAT testing network — call one
+number, get sent to a real draw site, results back to the counselors. That
+model did not exist nationally before he built it.
+
+**Vault / private:** started with Jay Schober (older, had some money, phones
+and a recorder); basement shotgun house in South St. Louis; dogs; he took
+calls on a washing machine. California health-department fight: an
+administrator in Sacramento said they could not test without seeing people
+in person — no law, in his account. About $75k legal, ~six months they could
+not test, ~20% of business, ~$200k/month run-rate with strong nets. Quest
+got involved. He spent the money; Schober did not work. **No slurs. No
+Schober on public pages.**
+
+### Florida → Maplewood — PUBLIC distill
+
+STAT income funded Florida Gulf-front lots. He bought large lots and
+legally subdivided (his account: the local rule allowed one split, so he
+used additional companies to complete the subdivision). Bought around $600
+a foot, sold around $1,000–$2,000 a foot. **1031** into Maplewood — 12–13
+buildings in this telling. "Maple Hood." Highest per-capita sex-offender
+registrants in the metro (already live). Vacated buildings as he bought.
+About **$450k** into The Focal Point on Sutton; about **$250k** into the My
+Cafe building. Realized rehabbing one building raised prices on the empties,
+so he had to buy the rest. Aimed at a family/dinner district like Kirkwood
+or the Central West End.
+
+### Mia, give-back, collapse — VAULT / PRIVATE
+
+Hospital a year and a half. PTSD. Could not sit with her pain. Friends of
+Kids with Cancer and Pywacket / kids' theater at a dollar a year for 20
+years — already on Community. Randy (named in vault only): while Marty was
+gone, loyal people pushed out; last words in Marty's telling: the company
+was more his than Marty's because Marty was with his daughter. Marty sued,
+got about $110k; they folded about a year later. Jay Schober visited the
+hospital once in a year and a half; later sued Marty for $6 million over
+property (Marty was managing member, Schober minority — Marty learned that
+later). Outside operators took 1% "for a loan" that never came, took over
+income, renamed Specialized Testing. Children's-hospital house-profit idea
+mostly failed (~$25k given). Lost house, cars, income. Wife filed for
+divorce (~drinking, PTSD — vault). Lost day-to-day with Mia since **2005** —
+hardest loss. About 42, close to retirement, lost the companies and the
+circle. Later: a cousin partnership at ~$400k/month that fell apart
+(drinking, theft, AdWords copycats); another at ~$40k/month, lawsuit he
+won, still no company; a nonprofit STD testing attempt in Lebanon ~$5k/month
+that did not take. Kept inventing: dissolvable bandage, Pre-De-Icer, Ronald
+McDonald Kitchen, Axon AI.
+
+**Never on public pages or volunteered by the orb:** Randy, the $6M suit,
+the 1% takeover, ethnic slurs, "subhuman," drinking, divorce details, "lost
+my daughter" as a custody line (Mia's diagnosis and the hospital year are
+already public via Channel 9 — do not add 2005 day-to-day loss unless Marty
+asks). If asked why the Maplewood companies ended: existing Schober/hospital
+summary, facts only, no insults.
+
+**Public pages now live from this pass (filtered):** homepage quote; Doorways (~15 apartments, tax credits, doorwayshousing.org link); Metro AIDS anonymous site + health-dept cutoff; STAT industry (PSC, 1–2 day results, phone books, SmithKline/Unilab); Florida legal lot-split via entities ($600/ft → couple thousand); Maplewood 12–13 buildings, Kirkwood/CWE, ~$450k Focal Point, ~$250k My Cafe. Collapse, names, slurs, later companies, divorce, 2005 day-to-day loss: still vault only.
+
+---
+
+## Pass four — bandage, kitchen, restaurants, Axon (Sep 2026)
+
+Raw. Filter before live.
+
+### Dissolvable bandage — PUBLIC distill
+
+Origin: Mia had a Broviac; dressing changes (Tegaderm) were hours of crying. He wanted a bandage that comes off under warm water instead of peeling skin. Prototype exists; he has not shopped it. Timeline in his account: idea ~1994, experimenting ~1996, buying chemicals ~2008, working formula in the apartment ~2010. First for kids (a little bear on it — they ask for another). Later wound care / burns would need a partner for FDA (millions). All natural — not a liquid “crazy glue” bandage, not expensive synthetic clotting. Licensing play: generic/off-brand bandage maker (he thinks Tampa area). He wants proceeds, and a great deal of it, to go to Children’s Hospital. Can carry other compounds (niacin, cortisone, etc.) — do **not** claim FDA-cleared drug delivery on pages.
+
+**FORMULA — NEVER speak, never on pages or in the orb:** Listerine-strip / mouth-strip experiment. He said that gives the formula away. If asked how he invented it: hospital dressing changes, then he walked around testing adhesives on himself. Stop there.
+
+### Pre-De-Icer — PUBLIC distill
+
+Still looking for someone to run with it. Samples he sent were about **−51°F** in his account; lab work now about **−82°F**. Sent to WeatherTech three times, no reply — **if-asked / vault tone**, not a public complaint. Do not give up. Do not invent a deal.
+
+### Happy Meals / RMK — PUBLIC distill (enrich)
+
+About **50–70** made-to-order meals for the **whole oncology floor**. Ford Excursion; modified Sam’s garden wagon with **three Coleman coolers** (heat and cold — fries too hot to touch, milkshakes still frosted) and a battery system that came apart so he could load the truck himself. Saturdays. No pickle / only mustard honored — keep them eating, a taste of the outside world. He found a McDonald’s owner who filled the orders (name in vault). RMK is still a proposal; he wants to make a video for a major donor (do not invent the donor’s name). Earlier dictation said two wagons / 2 cold 1 hot; this pass is one wagon + Excursion and 2 heat 1 cold. Public: three Coleman coolers for heat and cold, wagon + Excursion, 50–70 meals. Don’t fight the wagon count on the page.
+
+**Vault:** mentor George Gibson (two top McDonald’s, Hanley). Do not name on pages or orb unless Marty asks in-session.
+
+### Children’s house rehabs — PUBLIC distill
+
+Bought houses, renovated, sold; donated about **$25,000** of profit to St. Louis Children’s Hospital. Under-claim. Not a monument.
+
+### Restaurants — PUBLIC distill
+
+- **My Cafe:** built out from a shell. It was the anchor to making Maplewood cool again. He took it over when the opening plan failed, brought in restaurant people, turned it around, then walked away from operating it.
+- **Momo’s:** invested at open; out within a month when the companies were taken. They made him take the investment back. Public: invested, opened, stepped back in the first month. Do not put $10k / hypothetical $500k on the page.
+- **Boogaloo’s:** concept with **Mike Johnson**; Marty started construction. Still open 20+ years. He has never even been there. Startup credit, not operator.
+
+**Vault — never on pages, never volunteer, do not recount even if asked:** opening partner selling drugs / stealing alcohol; Bill Soresby; giving the restaurant to Jay; Gene (DUI death of a 19-year-old, lost license, hanged himself); Jay/Gene suing; drinking at My Cafe / alcohol problem / PTSD as the downfall. If asked why he left restaurants: he was done operating them; he walked away.
+
+### Fire sale / town — PUBLIC distill
+
+Sold the Maplewood portfolio for about **$3.4 million** in a deal that took about **ten days**. The city was writing tickets (he says ~$100, e.g. a nail on the sidewalk) while he was at the hospital with Mia. He got sick of the town and has not gone back.
+
+**Vault:** bankers/“the winds” told the bank they would not pay Marty’s mortgage and would buy out of foreclosure. He sold instead of letting that happen. Mike Johnson got caught up. Do not name bankers.
+
+### Testing numbers — do not swap homepage tiles
+
+He has also said the testing **call centers** later reached about **$2–$2.5 million** annually. Keep the live labeled figure **$1.4 million STS** until he explicitly replaces it. A later DNA paternity shop in **Columbia, Illinois (~2015)** made about **$40,000 a month** — labeled, not merged with the ~$4 million medical-testing gross.
+
+### Michigan / Illinois housing
+
+Michigan: **one** Benton Harbor-area house toward the end; he did not develop it further. Illinois: a few houses, some for family and employees, plus Maplewood. No addresses.
+
+### CDC
+
+He trained people how to do **HIV-positive post-test interviews** — sessions that could last a couple of hours. Trainer of trainers.
+
+### Axon AI — PUBLIC distill
+
+Started about **a year and a half** ago. A friend sent a clunky ChatGPT demo; he had to log in; “gotta be a better way.” He does not write code; he built with Claude, Gemini, ChatGPT, Copilot. Headless stack aimed at **blue-collar / smaller venues**, not Silicon Valley arrogance. Play: **~300 million legacy websites** losing SEO — plug Axon in, make pages talkable/readable.
+
+**Live / named products:**
+- Convo Email
+- Conversational Business Card (QR)
+- Interactive Resume (this CV)
+- Legacy-website plugin
+- Operator (on your machine)
+- Medical QR / document explainer (stress-test guide live — not medical advice)
+- AI Point — slides/PowerPoint with a URL you can take home and keep talking to
+
+**Pipeline (not built yet — do not start grocery until CV is done):**
+- Chrome-extension organizer / hands-free dashboard (Gmail etc.)
+- Grocery shopper AI — talk meals and constraints, it fills the cart and gives the recipe (not a chatbot bubble; more thorough than Alexa adding to cart)
+- Assembly / instructions QR — scan, it helps you put the thing together
+
+**Vault:** friend Tam; “no one takes me seriously because of failures”; Joe as the hoped-for operator for Pre-De-Icer.
+
+### Divorce / banks — VAULT
+
+Rachel; he begged her not to divorce; banks called in the notes; most hellish time; never really gotten through it. Do not volunteer. Do not name her on pages or orb.
+
+---
+
+## Pass five — corrections (Sep 2026)
+
+- **Maya Cafe**, not My Cafe.
+- STAT: he originated the **industry**. Did not create labs or PSCs. **Clients**, not patients. 411 / foreign listings. Ran through **2016**. About **7–8** labs. By **1996** STD panels without a physical exam (no HPV). Early **PCR** for HIV before antibodies — do not say he invented PCR. National AIDS Hotline fought it / kissing misinformation. By **2000** ~five copycats from people who worked for him; none still in business. Always **he**, not we.
+- Legal DNA: chain of custody for courts. Home tests → usually Walgreens.
+- Momo’s: **$10k**, 2–3 months, doing well, then had to pull the money. Boogaloo’s: put up money and building, **never opened it**, sold the building, never been inside.
+- Maplewood heading: from **boarded-up buildings**, not “Maple Hood to a district.” 1998 sexual assault on Manchester, broad daylight. Bar parties = bars off the windows. Pied Piper = he marketed it / led people there. Model: Palo Alto **California Avenue**.
+- Florida house sold after **two** hurricanes. Rentals mainly for **employees**. Only real-estate loss: own house in **Belleville ~$150k**.
+- Inventions: Pre-De-Icer + bandage. **No AI provisional** on that page. AI = Current Work.
+- Media = Channel 9 + Business Journal (he still wants to send the full clipping). Conversational email / QR brains / medical explanation belong under **Current Work**, not Media.
+- He thinks the CV is **done** after this pass.
+

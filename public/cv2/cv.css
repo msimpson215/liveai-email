@@ -219,12 +219,23 @@ button { font-family: inherit; }
   color: var(--muted);
 }
 .hero-summary {
-  margin: 0 0 22px;
+  margin: 0 0 16px;
   font-size: clamp(16px, 1.6vw, 19px);
   font-weight: 500;
   line-height: 1.55;
   color: #33475b;
   max-width: 34em;
+}
+.hero-quote {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+  font-size: clamp(16px, 1.55vw, 18px);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--navy);
+  max-width: 28em;
 }
 .highlight-bar {
   display: grid;
@@ -762,7 +773,8 @@ footer a:hover { color: var(--navy); }
   .hero-copy { background: #fff; }
   .hero-right { gap: 16px; padding-bottom: 0; }
   .hero-art { margin-left: 0; background-position: center center; }
-  .hero-asks { padding: 0 22px 4px; }
+  .highlight-bar { grid-template-columns: 1fr; }
+  .hero-asks { padding: 0; }
   .asks { flex-direction: row; flex-wrap: wrap; }
   .metrics { margin-top: 0; }
   .page-body { grid-template-columns: 1fr; gap: 22px; padding-top: 28px; }
