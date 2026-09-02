@@ -5,6 +5,8 @@ Yellow pulsating orb on **live AI email**. Joe asks the books in plain English �
 **Page:** https://liveai-email.onrender.com/axon-brain.html  
 **Local:** http://localhost:3000/axon-brain.html
 
+Joe’s desk (`/joe`, this page, and `/mockup2.html`) is a hosted operator seat. Marty stays the administrator. Joe can use it; he cannot copy the brain, export memory, or take the desk. Marty watches opens and can remove access at `/joe/host`. See `SETUP-PUSH.md` for `JOE_GATE_*` env vars.
+
 ## Tomorrow — Joe’s real QuickBooks (not a password / API key)
 
 **What you have now:** a **mock**. We did **not** log into Intuit. The numbers are sample A1 demo books so the UX works today.

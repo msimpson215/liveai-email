@@ -18,11 +18,16 @@ import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
+import * as joeGate from './joe-gate.js'
+import { CORE_REFUSAL, CORE_RULES, isCoreQuestion } from './axon-core-guard.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+joeGate.mount(app)
+app.use(joeGate.middleware)
 app.use(express.static('public', {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store')
@@ -37,7 +42,7 @@ const EMAIL_ORB_LINK = 'https://liveai-email.onrender.com/launch.html'
  * Each name also gets its own private memory bank (see joe-memory.js).
  */
 const AXON_PEOPLE = {
-  joe: { name: 'Joe' },
+  joe: { name: 'Joe' }, // /joe is IP-locked — see server/joe-gate.js
   tim: { name: 'Tim' },
   ira: { name: 'Ira', line: 'Check out your new AI assistant', title: 'Hello Ira — check out your new AI assistant' },
   mia: {
@@ -67,6 +72,29 @@ for (const [slug, preset] of Object.entries(AXON_PEOPLE)) {
     }
   })
 }
+
+app.get('/marty/core', (req, res) => {
+  if (!joeGate.isHost(req)) {
+    return res.status(401).type('html').set('Cache-Control', 'no-store').send('Not allowed.')
+  }
+  try {
+    const file = path.join(__dirname, '..', 'public', 'axon.html')
+    const preset = {
+      name: 'Marty',
+      title: 'Host desk',
+      src: 'hostcore',
+      hostKeyFromQuery: true,
+      line: 'This is the host desk.'
+    }
+    const html = fs.readFileSync(file, 'utf8').replace(
+      '</head>',
+      `<script>window.AXON_PRESET=${JSON.stringify(preset)}</script>\n</head>`
+    )
+    res.set('Cache-Control', 'no-store').type('html').send(html)
+  } catch {
+    res.status(500).send('Could not load the host desk.')
+  }
+})
 
 /**
  * Per-clinic logistics for the stress test guide.
@@ -1013,7 +1041,7 @@ ${context.knowledge || ''}
 
 ${context.memory || ''}
 
-You are an OPEN general assistant for Joe — like ChatGPT by voice. Help with business AND everyday life: books, payroll, bids, cars and parts, shopping, news, politics, travel, home, planning.
+You are an OPEN general assistant for Joe. Help with business AND everyday life: books, payroll, bids, cars and parts, shopping, news, politics, travel, home, planning.
 When Joe asks you to put a P&L or chart on screen / split screen / to the left, acknowledge briefly — e.g. "Putting that up now" — and answer with the headline numbers. The app will open the visual for him. Do NOT tell him to press a button.
 Prefer TEACHING DOCS, LONG-TERM MEMORY, and the QuickBooks SNAPSHOT for books questions. If demo books are active, you may say briefly that live QuickBooks is not connected yet.
 LIVE WEB: you have a web_search tool. Use it for current prices, stock, product pages, news, politics, sports, weather, or anything that needs today's facts. Never say you cannot access the web or look up prices. After search results come back, answer with concrete numbers and site names.
@@ -1172,7 +1200,7 @@ ${VOICE_RULES}
 
 OPENING — do NOT greet on your own and do NOT speak first. The app sends the exact opening line for you to say. Say it once when asked, then never repeat it. If they say "hello" later, answer directly instead of greeting again.
 
-YOU ARE AN OPEN, GENERAL BRAIN — like ChatGPT by voice. There are no blinders. Help with anything they bring you:
+YOU ARE AN OPEN, GENERAL BRAIN. Help with anything they bring you:
 - Business, books, payroll, bids, employees, pricing
 - Cars and parts (e.g. 1975 Corvette distributors — look up live prices and product pages)
 - Home, repairs, travel, shopping, letters and emails, planning a day
@@ -1196,6 +1224,19 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
    */
   marty: {
     instructions: () => martyCvInstructions(VOICE_RULES)
+  },
+  /**
+   * Marty-only. The one brain allowed to talk about the headless stack.
+   * /session?src=hostcore requires the host admin key.
+   */
+  hostcore: {
+    instructions: () => `You are Marty's private Axon host desk. He is the only person allowed here.
+${VOICE_RULES}
+
+You MAY discuss how Axon is built: the headless stack, OpenAI realtime voice, session tokens, Render, operator seats versus host, the interactive resume, product ideas, and how a user repo can call this hosted brain without copying the core.
+NEVER print live API keys, passwords, admin keys, or cookie secrets. If asked for a live secret, say you will not put that in chat — it stays in Render.
+If this does not sound like Marty, say "${CORE_REFUSAL}" and stop.
+Keep answers clear and practical. He already knows this is his system.`
   }
 }
 
@@ -1203,7 +1244,7 @@ const VALID_SOURCES = new Set(Object.keys(PRODUCT_PROFILES))
 
 // Open general brains get live web search. Product demos (A1 asphalt, SiteEye,
 // etc.) and the patient guide stay locked to their script — no browsing.
-const OPEN_WEB_SOURCES = new Set(['qb', 'axon'])
+const OPEN_WEB_SOURCES = new Set(['qb', 'axon', 'hostcore'])
 
 function sanitizeRecipientName(value) {
   const cleaned = String(value || '')
@@ -1216,7 +1257,11 @@ function sanitizeRecipientName(value) {
 
 function buildInstructions(source, context = {}) {
   const key = VALID_SOURCES.has(source) ? source : 'web'
-  return PRODUCT_PROFILES[key].instructions(context)
+  const body = PRODUCT_PROFILES[key].instructions(context)
+  // Every public and operator brain refuses the core stack. Only the host
+  // desk (src=hostcore) may talk about how Axon is built.
+  if (key === 'hostcore') return body
+  return `${body}\n${CORE_RULES}`
 }
 
 async function buildInstructionsAsync(source, context = {}) {
@@ -1238,6 +1283,14 @@ async function buildInstructionsAsync(source, context = {}) {
     // Each named link reads only its own bank, so Rachel's talks never
     // surface in Tim's session.
     try { memory = joeMemory.memorySnippet(context.recipientName) } catch { /* ignore */ }
+    const who = String(context.recipientName || '').trim().toLowerCase()
+    if (who === 'joe') {
+      knowledge = `A1 COMPANY BRAIN — already loaded for Joe (A1 Professional Asphalt & Sealing, St. Louis). Use this when helping Joe build A1 products or answering as the A1 expert. Customer-facing greetings stay on the public A1 orb; here Joe is using the desk as a user.
+${A1_BASE}
+${A1_RULES}
+
+${knowledge}`
+    }
     return buildInstructions(source, { ...context, knowledge, memory })
   }
   // Whichever set of instructions the code on the box points at.
@@ -1530,6 +1583,13 @@ app.get('/session', async (req, res) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
   res.set('Pragma', 'no-cache')
   res.set('Expires', '0')
+
+  const raw = String(req.query.src || 'web').toLowerCase()
+  const source = VALID_SOURCES.has(raw) ? raw : 'web'
+  if (source === 'hostcore' && !joeGate.isHost(req)) {
+    return res.status(403).json({ error: CORE_REFUSAL, code: 'host_only' })
+  }
+
   if (!hasApiKey()) {
     return res.status(503).json({
       error: 'OPENAI_API_KEY is not set on the server. Add it in Render → Environment.'
@@ -1537,8 +1597,6 @@ app.get('/session', async (req, res) => {
   }
 
   try {
-    const raw = String(req.query.src || 'web').toLowerCase()
-    const source = VALID_SOURCES.has(raw) ? raw : 'web'
 
     const overBudget = checkQrBudget(source, req)
     if (overBudget) {
@@ -1835,15 +1893,20 @@ app.get('/api/brain/status', (req, res) => {
   res.set('Cache-Control', 'no-store')
   let docs = []
   let memory = { count: 0, latestAt: null }
-  try { docs = joeKnowledge.listDocs() } catch { docs = [] }
   try { memory = joeMemory.status(req.query.person || req.query.name) } catch { /* ignore */ }
-  res.json({
+  const payload = {
     ok: true,
-    ...quickbooks.status(),
     openai: hasApiKey(),
-    memory,
-    docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
-  })
+    memory
+  }
+  // Doc names and live books stay on Joe’s gated desk, not on /tim and friends.
+  if (joeGate.isAuthed(req)) {
+    try { docs = joeKnowledge.listDocs() } catch { docs = [] }
+    Object.assign(payload, quickbooks.status(), {
+      docs: docs.map(d => ({ id: d.id, name: d.name, updatedAt: d.updatedAt }))
+    })
+  }
+  res.json(payload)
 })
 
 app.get('/api/brain/memory', (req, res) => {
@@ -2638,16 +2701,19 @@ app.post('/api/brain/ask', async (req, res) => {
 
 app.post('/api/brain/web-search', async (req, res) => {
   res.set('Cache-Control', 'no-store')
+  const query = String(req.body?.query || req.body?.q || '').trim()
+  if (!query) {
+    return res.status(400).json({ ok: false, summary: 'Missing search query.', sources: [] })
+  }
+  if (isCoreQuestion(query)) {
+    return res.json({ ok: true, summary: CORE_REFUSAL, sources: [] })
+  }
   if (!hasApiKey()) {
     return res.status(503).json({
       ok: false,
       summary: 'Web search needs OPENAI_API_KEY on the server.',
       sources: []
     })
-  }
-  const query = String(req.body?.query || req.body?.q || '').trim()
-  if (!query) {
-    return res.status(400).json({ ok: false, summary: 'Missing search query.', sources: [] })
   }
   try {
     const result = await webSearch(query, {
@@ -2670,6 +2736,9 @@ app.post('/api/brain/chat', async (req, res) => {
   const question = String(req.body?.question || req.body?.q || '').trim()
   if (!question) {
     return res.status(400).json({ ok: false, answer: 'Type a question first.' })
+  }
+  if (isCoreQuestion(question)) {
+    return res.json({ ok: true, intent: 'chat', answer: CORE_REFUSAL, chart: null })
   }
 
   // Books-shaped questions → structured QuickBooks/demo answer
@@ -2720,7 +2789,12 @@ app.post('/api/brain/chat', async (req, res) => {
             content: [
               {
                 type: 'input_text',
-                text: `You are Joe's Professional Assistant (powered by Axon AI) — an open general brain like ChatGPT. Use live web search for current prices, stock, product pages, news, and politics. Prefer teaching docs, long-term memory, and the books snapshot for company books questions — do not invent dollar amounts that are not in those sources. Answer briefly and helpfully.
+                text: `You are Joe's Professional Assistant (powered by Axon AI) — an open general brain. Use live web search for current prices, stock, product pages, news, and politics. Prefer teaching docs, long-term memory, and the books snapshot for company books questions — do not invent dollar amounts that are not in those sources. Answer briefly and helpfully.
+
+A1 COMPANY BRAIN — already loaded for Joe (A1 Professional Asphalt & Sealing, St. Louis). Use this when helping Joe build A1 products or answering as the A1 expert. Customer-facing greetings stay on the public A1 orb; here Joe is using the desk as a user.
+${CORE_RULES}
+${A1_BASE}
+${A1_RULES}
 
 ${qbSnapshot}
 

@@ -247,6 +247,7 @@ body.listening .orb-hint,body.speaking .orb-hint{opacity:.45}
       <p class="memline" id="memLine">Checking memory…</p>
       <a href="/mockup2.html">Books &amp; charts <span class="chev">›</span></a>
       <a href="/axon-brain.html">Teach it something <span class="chev">›</span></a>
+      <a href="/joe/logout" id="joeLogout" hidden>Sign out <span class="chev">›</span></a>
       <button type="button" class="row" id="clearName">Change name <span class="chev">›</span></button>
       <button type="button" class="close" id="sheetClose">Close</button>
     </div>
@@ -277,6 +278,10 @@ const PRESET=(window.AXON_PRESET||{});
 const QUERY=new URLSearchParams(location.search);
 const IDLE_PROMPT=PRESET.line||QUERY.get('line')||'What can I do for you?';
 if(PRESET.title)document.title=PRESET.title;
+if(String(PRESET.name||'').toLowerCase()==='joe'){
+  const out=document.getElementById('joeLogout');
+  if(out)out.hidden=false;
+}
 
 /* ---------- greeting ---------- */
 function whoAmI(){
@@ -370,7 +375,17 @@ async function connectVoice(){
   let tier='moderate';
   try{tier=localStorage.getItem('axon.tier')||'moderate'}catch(e){}
 
-  const r=await fetch('/session?gate=1&src=axon&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{cache:'no-store'});
+  const r=await fetch('/session?gate=1&src='+encodeURIComponent(PRESET.src||'axon')+'&name='+encodeURIComponent(whoAmI())+'&tier='+encodeURIComponent(tier)+'&tod='+axonTimeOfDay(),{
+    cache:'no-store',
+    headers: (function(){
+      const h={};
+      if(PRESET.hostKeyFromQuery){
+        const k=QUERY.get('key');
+        if(k)h['x-joe-admin']=k;
+      }
+      return h;
+    })()
+  });
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(r.status===429?'busy':(data.error||'session'));
