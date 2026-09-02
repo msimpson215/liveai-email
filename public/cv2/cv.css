@@ -956,7 +956,7 @@ body.home .hero-summary { margin-bottom: 0; }
   font-size: clamp(24px, 2.8vw, 32px);
   font-weight: 750;
   letter-spacing: -.03em;
-  color: var(--accent-text);
+  color: var(--navy);
   margin: 0 0 28px;
 }
 .home-h--left { text-align: left; margin-bottom: 22px; }
@@ -986,7 +986,8 @@ body.home .hero-summary { margin-bottom: 0; }
 .hl-card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 10px;
   padding: 22px 20px 24px;
   text-decoration: none;
@@ -1026,22 +1027,30 @@ body.home .hero-summary { margin-bottom: 0; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
-.legacy-card { padding: 0 0 18px; overflow: hidden; }
+.legacy-card { padding: 16px 0 18px; overflow: hidden; display: flex; flex-direction: column; }
 .legacy-media {
   display: block;
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #eef2f6;
+  background: #e8edf3;
+  margin: 0 0 12px;
 }
 .legacy-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
+  object-position: center top;
 }
-.legacy-card:nth-child(2) .legacy-media img { object-position: 20% 8%; object-fit: cover; }
-.legacy-card:nth-child(3) .legacy-media img { object-position: center 8%; }
+.legacy-card:nth-child(2) .legacy-media img { object-position: center top; }
+.legacy-card:nth-child(3) .legacy-media {
+  background: #f4efe6;
+}
+.legacy-card:nth-child(3) .legacy-media img {
+  object-fit: contain;
+  object-position: center;
+  background: #f4efe6;
+}
 .legacy-play {
   position: absolute;
   inset: 0;
@@ -1062,14 +1071,14 @@ body.home .hero-summary { margin-bottom: 0; }
   border-color: transparent transparent transparent #fff;
 }
 .legacy-kicker {
-  margin: 14px 18px 2px;
+  margin: 0 18px 2px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--accent-text);
+  color: var(--muted);
 }
-.legacy-card h3 { margin: 0 18px 8px; }
+.legacy-card h3 { margin: 0 18px 10px; color: var(--navy); }
 .legacy-card p { margin: 0 18px 12px; }
 .legacy-link {
   margin: 0 18px;
@@ -1088,11 +1097,22 @@ body.home .hero-summary { margin-bottom: 0; }
 .comm-item {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 14px;
+  gap: 16px;
   align-items: start;
   text-decoration: none;
   color: inherit;
   padding: 8px 4px;
+}
+.comm-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+}
+.comm-item > div {
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
 }
 
 .ai-banner {
@@ -1110,6 +1130,13 @@ body.home .hero-summary { margin-bottom: 0; }
   gap: 16px;
   min-width: 0;
 }
+.ai-banner-icon {
+  width: 52px;
+  height: 52px;
+  background: var(--navy);
+  color: #fff;
+}
+.ai-banner-icon svg { width: 26px; height: 26px; }
 .ai-banner h2 {
   margin: 0 0 4px;
   font-size: clamp(18px, 2vw, 24px);
