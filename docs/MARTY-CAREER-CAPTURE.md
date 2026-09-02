@@ -55,7 +55,7 @@ something the AI will state out loud, with confidence, to a stranger.
 | Community work stays under-claimed | Two children's-house programs, a theater donation, and a 501(c)(3) restaurant fundraising *proposal*. Not more. |
 | Never characterize another party | Not "say nothing negative" — say nothing *about them*. Businesses that closed, closed. Deals that went sideways, went sideways. Flat, then move on. |
 | **Jay Schober — private only** | Facts in capture + AI brain for direct questions only. Never on public pages. No slurs, no insults out loud. |
-| Published work gets cited, not reproduced | Business Journal "Pied Piper of Maplewood" (Oct 26, 2003) is now cited on the Media page with headline, byline, and date — no scan, no reproduced text. |
+| Published work gets cited, not reproduced | Business Journal "Pied Piper of Maplewood" (Oct 24–30, 2003 paper; some databases Oct 26) is shown as a photograph of Martin's original newspaper, plus citation — not a full reprint, not an AI reconstruction. |
 
 ---
 
@@ -187,14 +187,29 @@ Do not claim McDonald's partnership is signed. Do not give Mia's current medical
 
 The Business Journal piece, and anything else in print or on air.
 
-**Channel 9 (KSDK) — LIVE:** https://www.youtube.com/watch?v=o_LuKiM_pTw
+**KETC Channel 9 — "Living in St. Louis" — LIVE:** https://www.youtube.com/watch?v=o_LuKiM_pTw
 Maplewood development, Mia, Pywacket Children's Theater, Friends of Kids with
-Cancer, family entertainment district.
+Cancer, family entertainment district. **Not KSDK.** Original CV called this
+KETC Channel 9.
 
-**St. Louis Business Journal — LIVE (cited, not reproduced):**
-"Pied Piper of Maplewood," by **Margaret Jackson**, **October 26, 2003**.
-Opening line preserved online: *"Marty Simpson plans to transform Sutton
-Boulevard in Maplewood into a children's entertainment district."*
+**St. Louis Business Journal — LIVE (original newspaper photograph + citation):**
+"Pied Piper of Maplewood," by **Margaret Jackson**. Martin's paper is the
+**October 24–30, 2003** issue (Vol. 24, No. 7). Some databases date the article
+October 26, 2003. Same piece. Front-page photo of Martin; continues p. 68.
+Homepage and Media page show a photograph of the original newsprint — cropped and
+exposure-adjusted, not reconstructed.
+
+Opening line: *"Marty Simpson plans to transform Sutton Boulevard in Maplewood
+into a children's entertainment district."*
+
+**From the editor — LIVE (original clipping + approved excerpt):**
+"Magic in Maplewood," **Patricia Miller**, Editor. Approved excerpt only:
+*"You focus on what's real, what's life, and it's all about kids."*
+Do not reprint the full editorial on the public page.
+
+**Do not feature** St. Louis Magazine "Maplewood: What Went Right?" as an
+endorsement. Later coverage; not the primary record. Do not invent
+Post-Dispatch or Webster-Kirkwood scans until an original is in hand.
 
 What the article establishes:
 
