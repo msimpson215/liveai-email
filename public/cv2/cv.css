@@ -563,6 +563,9 @@ body.axon-error .axon-orb-status { opacity: 1; }
 .press-clip--editorial-page {
   max-width: 420px;
 }
+.article .press-clip {
+  max-width: 520px;
+}
 .press-actions {
   display: flex;
   flex-wrap: wrap;
