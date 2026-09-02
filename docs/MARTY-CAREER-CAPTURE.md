@@ -257,8 +257,13 @@ scanning.
 
 ## Current work
 
-Axon AI · conversational email · the QR brains · medical explanation · AI Point
-· the voice-to-voice work this site is built on · Axon Operator.
+**Dictated Sep 2, 2026:** Martin created Axon AI — a new artificial brain with
+longer-term memory. Fluent in conversation, sense of humor; he sometimes calls
+it an artificial person. Originally conceived to live inside a legacy website.
+New applications keep landing almost weekly. This interactive resume is one of
+them. Named applications still include conversational email, QR business card,
+Axon Operator, legacy-website plugin, medical explanation by QR, and AI Point
+— list those only if asked; the brain is the product.
 
 Worth talking about: what's shipped, what's a work in progress. Being honest
 about the difference is more persuasive than claiming everything is finished.

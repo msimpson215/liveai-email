@@ -148,9 +148,14 @@ chip beside it. All-caps thin letterforms read like a cosmetics brand — avoid.
 
 **Say:** remembers, knows you, every day, your day, ask it anything.
 
-**Avoid:** assistant (worn out), second brain (nerdy), artificial person
-(unsettles people), revolutionary / cutting-edge / powered by advanced AI
-(nobody believes it).
+**Avoid (Joe / consumer app):** assistant (worn out), second brain (nerdy),
+revolutionary / cutting-edge / powered by advanced AI (nobody believes it).
+
+On Martin’s public CV, keep his own wording: he created Axon AI as a new
+artificial brain with longer-term memory, fluent in conversation, with a sense
+of humor. He sometimes calls it an artificial person. Originally conceived for
+a legacy website; new applications keep landing almost weekly. Do not use
+anatomical brain imagery.
 
 Sample home greeting: "Good morning, Joe. Yesterday we went over the May P&L."
 

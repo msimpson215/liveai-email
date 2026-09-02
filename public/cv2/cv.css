@@ -1219,13 +1219,70 @@ body.home .hero-summary { margin-bottom: 0; }
 .focus-card .hl-icon { margin-bottom: 12px; }
 
 .home-current { text-align: center; }
-.home-current p {
-  max-width: 42em;
-  margin: 0 auto 22px;
+.home-current-lead {
+  max-width: 46em;
+  margin: 0 auto 28px;
   color: var(--muted);
   font-size: 17px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
+.clip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0 0 28px;
+  text-align: left;
+}
+.clip-card { margin: 0; }
+.clip-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #0b2340;
+  box-shadow: var(--shadow);
+}
+.clip-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0b2340;
+}
+.clip-wait {
+  display: none;
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  place-items: center;
+  place-content: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 650;
+  padding: 24px;
+  text-align: center;
+  gap: 14px;
+}
+.clip-wait::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 14px 0 14px 24px;
+  border-color: transparent transparent transparent #fff;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25));
+}
+.clip-frame.is-waiting .clip-wait { display: grid; }
+.clip-frame.is-waiting .clip-player { visibility: hidden; }
+.clip-card figcaption {
+  margin-top: 10px;
+  font-size: 14.5px;
+  font-weight: 750;
+  color: var(--navy);
+}
+.home-current .btn-outline { margin-top: 4px; }
 .btn-outline {
   display: inline-flex;
   align-items: center;
@@ -1247,7 +1304,7 @@ body.home .hero-summary { margin-bottom: 0; }
 @media (max-width: 860px) {
   body.home .hero-home-grid { grid-template-columns: 1fr; }
   body.home .hero-copy { padding: 8px 0 4px; }
-  .legacy-grid, .comm-grid { grid-template-columns: 1fr; }
+  .legacy-grid, .comm-grid, .clip-grid { grid-template-columns: 1fr; }
   .ai-banner { flex-direction: column; align-items: stretch; }
   .ai-banner .btn-talk { justify-content: center; white-space: normal; }
 }
