@@ -65,7 +65,8 @@ Specialized Testing Services · Medical Testing Center · the restaurants
 (My Cafe, Momo's, Boogaloo's) · the national STAT testing model · DNA paternity
 testing at national scale.
 
-**First national patient service center network (~1993):** [already live — see above]
+**First national lab network for HIV/STIs (~1993):** [already live — see above]
+This is the HIV/STI chapter. Clients, not patients.
 
 **Quest:** Later tried to do the same national PSC play and couldn't pull it off
 the way he did. He knew what he was doing — counselling, labs, and phone as one
@@ -82,18 +83,27 @@ system.
 Maplewood (the $3.4M portfolio sale, but fire sale at the end) · Florida ·
 Michigan · rental houses.
 
-**Maple Hood:** Complete dump when he started. He used to call it Maple Hood.
-Highest concentration of registered sex offenders in the St. Louis metro — by his
-account. Got rid of a lot of that. **Do not explain why they left** — he doesn't
-care and doesn't want the AI speculating.
+**Maplewood public story (dictated Sep 2, 2026):** He wrote the entire downtown
+of how it was going to work — he could see it. Laid out with a fellow
+restaurateur friend. **Maya Cafe** and **The Focal Point** were the first two.
+The vision was **California Avenue** in Palo Alto, where he grew up. He left in
+**2005** to spend more time with his daughter and other ventures. Today it is
+still thriving as a family entertainment district that is respected highly.
+Use Maya Cafe, not My Cafe. Always Martin on public pages.
+
+**Maple Hood / corridor (private — do not put on public pages, do not volunteer):**
+He used to call it Maple Hood. A reported fact — not his account of the district
+— is that the corridor carried a very high concentration of registered sex
+offenders in St. Louis. Do not tell the story as "from Maple Hood to a district."
+**Do not explain why they left** — he doesn't want the AI speculating.
 
 **The district plan:** Bought building after building. Had to hold them — the
-moment he rehabbed one (My Cafe / Maya Cafe on Sutton), prices on the rest shot
-up. Had it all plotted on a map from friend **Mike Johnson** (now owns Sugarfire
-and Highpoint). Planned restaurant work together — Marty did Momo's, got out first
+moment he rehabbed one (Maya Cafe on Sutton), prices on the rest shot
+up. Had it all plotted with friend **Mike Johnson** (now owns Sugarfire
+and Highpoint) — name only in the vault / if asked. Planned restaurant work together — Martin did Momo's, got out first
 month open ("the winds took the money" — clarify later). Boogaloo's in Maplewood.
 
-**What he built from his company:** My Cafe, Momo's, Boogaloo's, **The Focal Point**
+**What he built from his company:** Maya Cafe, Momo's, Boogaloo's, **The Focal Point**
 (corrected — earlier dictation transcribed as "Folk Point"; the Business Journal
 confirms The Focal Point, the Maplewood music venue), donated Pywacket kids'
 theater space, family district around kids.
@@ -257,13 +267,17 @@ scanning.
 
 ## Current work
 
-**Dictated Sep 2, 2026:** Martin created Axon AI — a new artificial brain with
-longer-term memory. Fluent in conversation, sense of humor; he sometimes calls
-it an artificial person. Originally conceived to live inside a legacy website.
-New applications keep landing almost weekly. This interactive resume is one of
-them. Named applications still include conversational email, QR business card,
-Axon Operator, legacy-website plugin, medical explanation by QR, and AI Point
-— list those only if asked; the brain is the product.
+**Dictated Sep 2, 2026 (second pass):** Martin created Axon AI — an artificial
+brain with more memory than most other AIs. Fluent in conversation. He jokes
+that it has such a good sense of humor. He has called it an artificial person;
+**do not lead with that on the public site** — the public may not be ready.
+It came about because old legacy websites were lacking AI. Build a brain you
+can insert into a legacy website, modernize it, help its SEO. Because the brain
+is so powerful, almost weekly a new application is rolled out. List them. The
+key is Axon AI. This interactive resume portfolio is built with it. He also
+builds custom websites with AI integrated (director or sales agent). Hypothetical
+Ronald McDonald Kitchen proposed site — trademark-safe, not affiliated, would
+never infringe. Bandage proposed website — not up yet.
 
 Worth talking about: what's shipped, what's a work in progress. Being honest
 about the difference is more persuasive than claiming everything is finished.
@@ -286,11 +300,14 @@ because it makes the company name earned rather than decorative.
   WashU degree path (confirm exact scholarship name if needed).
 - Grew up in the **Palo Alto school district** — Palo Alto High, near Peterson
   (street/area TBC). Silicon Valley was starting: bike rides on **Page Mill**,
-  IBM and Hewlett-Packard in the air, watching the industry form. Still in
-  touch with friends who went huge in the dot-com years.
-- Prefers where he lives now — small town, polite; Silicon Valley got too fast.
-- Also: Missouri Department of Health, and the CDC training — professional
-  foundation after college, not a degree line.
+  IBM and Hewlett-Packard in the air, watching the industry form. Still keeps
+  close relationships with friends from that time. California Avenue was the
+  feel he wanted for Maplewood.
+- Prefers where he lives now — a small town. Do not put down Palo Alto or say
+  the valley got too fast.
+- Also: Missouri Department of Health, and **trainer of trainers** — not
+  “CDC training” as the public label. Professional foundation after college,
+  not a degree line.
 
 Worth talking about: degrees and dates, exactly. Anything not completed gets
 described as what it was.

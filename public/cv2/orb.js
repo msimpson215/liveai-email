@@ -11,16 +11,16 @@
   var sessionUrl = '/session?gate=1&src=' + encodeURIComponent(SRC) + (tier ? '&tier=' + encodeURIComponent(tier) : '');
 
   var STATUS = {
-    idle: 'Tap to talk with Marty’s AI team member',
+    idle: 'Tap to talk with Mr. Simpson’s AI team member',
     connecting: 'Connecting…',
-    active: 'Listening — ask about Marty',
+    active: 'Listening — ask about Martin',
     error: 'That didn’t connect. Tap to try again.'
   };
 
   var host = document.createElement('div');
   host.className = 'axon-orb-dock';
   host.innerHTML =
-    '<button id="axonOrb" type="button" aria-label="Talk with Marty’s AI team member">' +
+    '<button id="axonOrb" type="button" aria-label="Talk with Mr. Simpson’s AI team member">' +
       '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
         '<path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/>' +
         '<path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +

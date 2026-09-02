@@ -151,11 +151,12 @@ chip beside it. All-caps thin letterforms read like a cosmetics brand — avoid.
 **Avoid (Joe / consumer app):** assistant (worn out), second brain (nerdy),
 revolutionary / cutting-edge / powered by advanced AI (nobody believes it).
 
-On Martin’s public CV, keep his own wording: he created Axon AI as a new
-artificial brain with longer-term memory, fluent in conversation, with a sense
-of humor. He sometimes calls it an artificial person. Originally conceived for
-a legacy website; new applications keep landing almost weekly. Do not use
-anatomical brain imagery.
+On Martin’s public CV: he created Axon AI, an artificial brain with more
+memory than most other AIs, fluent in conversation. He jokes that it has
+such a good sense of humor. He built it to insert into a legacy website —
+modernize the site and help its SEO. New applications roll out almost weekly.
+This interactive resume is one of them. Do not lead with “artificial person”;
+the public may not be ready. Do not use anatomical brain imagery.
 
 Sample home greeting: "Good morning, Joe. Yesterday we went over the May P&L."
 
