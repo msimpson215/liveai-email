@@ -12,7 +12,22 @@ import {
 } from './shop-engine.js'
 
 const CART_KEY = 'axon-grocery-cart'
+const PHOTOS = {
+  'PRODUCE-BANANA-001': '/grocery/images/photo-bananas.jpg',
+  'PRODUCE-APPLE-RED-001': '/grocery/images/photo-apples-red.jpg',
+  'PRODUCE-APPLE-GREEN-001': '/grocery/images/photo-apples-green.jpg',
+  'DEMO-MILK-WHOLE-001': '/grocery/images/photo-milk.jpg',
+  'DEMO-EGGS-DOZEN-001': '/grocery/images/photo-eggs.jpg',
+  'DEMO-BREAD-WHITE-001': '/grocery/images/photo-bread.jpg',
+  'DEMO-CHEDDAR-001': '/grocery/images/photo-cheddar.jpg',
+  'DEMO-CHEDDAR-002': '/grocery/images/photo-cheddar.jpg',
+  'DEMO-CHEDDAR-003': '/grocery/images/photo-cheddar.jpg'
+}
 const $ = (id) => document.getElementById(id)
+
+function photoFor(item) {
+  return PHOTOS[item?.sku] || item?.imageUrl || '/grocery/images/photo-cheddar.jpg'
+}
 
 let catalog = []
 let session = createSession()
@@ -47,18 +62,23 @@ function renderCartButton() {
 }
 
 function renderReply() {
+  const talk = $('talk')
+  const said = $('said')
   const el = $('reply')
   if (!session.started) {
-    el.hidden = true
+    talk.hidden = true
     return
   }
+  talk.hidden = false
+  said.hidden = !session.lastUserRequest
+  said.textContent = session.lastUserRequest || ''
   el.hidden = !session.reply
   el.textContent = session.reply || ''
 }
 
 function productCard(p) {
   const brand = p.brand ? `<div class="meta">${p.brand}</div>` : ''
-  const img = p.imageUrl || '/grocery/images/cheddar.svg'
+  const img = photoFor(p)
   return `<article class="card" data-sku="${p.sku}">
     <img src="${img}" alt="" data-fly="${p.sku}"/>
     <div class="name">${p.name}</div>
@@ -89,7 +109,7 @@ function renderCartPanel(force) {
   }
   el.hidden = false
   const lines = cart.map((i) => {
-    const img = i.imageUrl || '/grocery/images/cheddar.svg'
+    const img = photoFor(i)
     return `<div class="line">
       <img src="${img}" alt=""/>
       <div>
@@ -118,12 +138,12 @@ function renderCheckout() {
   }
   el.hidden = false
   if (session.view === 'complete') {
-    el.innerHTML = `<div class="done">Demo order complete.<br/><span class="meta">Thanks for shopping with Axon.</span>
+    el.innerHTML = `<div class="done"><div class="ok"></div>Demo order complete!<br/><span class="meta">Thanks for shopping with Axon. What do you need next?</span>
       <button class="place" id="newOrder" type="button" style="margin-top:1rem;background:#fff;color:var(--ink);border:1px solid var(--border)">Start a New Order</button></div>`
     return
   }
   const lines = cart.map((i) => `<div class="line">
-    <img src="${i.imageUrl || '/grocery/images/cheddar.svg'}" alt=""/>
+    <img src="${photoFor(i)}" alt=""/>
     <div><div class="name">${i.name}</div><div class="meta">${i.quantity} × ${formatMoney(i.priceCents)}</div></div>
     <strong>${formatMoney(i.priceCents * i.quantity)}</strong>
   </div>`).join('')
@@ -208,7 +228,7 @@ function renderSpecials() {
     const p = getProductBySku(catalog, s.sku)
     if (!p) return ''
     return `<button class="deal" type="button" data-special="${p.sku}">
-      <img src="${p.imageUrl}" alt=""/>
+      <img src="${photoFor(p)}" alt=""/>
       <div class="kicker">${s.kicker}</div>
       <div class="name">${p.name}</div>
       <div><span class="was">${formatMoney(s.wasCents)}</span><span class="now">${formatMoney(p.priceCents)}</span></div>
