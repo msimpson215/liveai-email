@@ -52,13 +52,14 @@ function setOrb(state) {
 
 function renderCartButton() {
   const btn = $('cartBtn')
-  if (!session.started) {
+  if (!session.started || session.view === 'complete') {
     btn.hidden = true
     return
   }
   btn.hidden = false
   const n = cartCount(cart)
-  $('cartMeta').textContent = `${n} item${n === 1 ? '' : 's'} · ${formatMoney(getCartTotal(cart))}`
+  $('cartCountLabel').textContent = `${n} item${n === 1 ? '' : 's'}`
+  $('cartMeta').textContent = formatMoney(getCartTotal(cart))
 }
 
 function renderReply() {
@@ -102,6 +103,10 @@ function renderResults() {
 
 function renderCartPanel(force) {
   const el = $('cartPanel')
+  if (session.view === 'checkout' || session.view === 'complete') {
+    el.hidden = true
+    return
+  }
   const show = force || (session.started && !session.currentResults?.length && session.view === 'shop' && cart.length)
   if (!show) {
     el.hidden = true
@@ -119,13 +124,14 @@ function renderCartPanel(force) {
           <button type="button" data-qty="${i.sku}" data-d="-1">−</button>
           <span>${i.quantity}</span>
           <button type="button" data-qty="${i.sku}" data-d="1">+</button>
-          <button type="button" data-remove="${i.sku}">Remove</button>
+          <button class="x" type="button" data-remove="${i.sku}" aria-label="Remove">×</button>
         </div>
       </div>
       <strong>${formatMoney(i.priceCents * i.quantity)}</strong>
     </div>`
   }).join('')
-  el.innerHTML = `${lines}<div class="total"><span>Total</span><span>${formatMoney(getCartTotal(cart))}</span></div>
+  el.innerHTML = `<div class="panel-head"><h2>Your Cart</h2><button class="x" id="closeCart" type="button" aria-label="Close cart">×</button></div>
+    ${lines}<div class="total"><span>Subtotal</span><span>${formatMoney(getCartTotal(cart))}</span></div>
     <button class="place" id="toCheckout" type="button">Proceed to Checkout</button>`
 }
 
@@ -138,8 +144,8 @@ function renderCheckout() {
   }
   el.hidden = false
   if (session.view === 'complete') {
-    el.innerHTML = `<div class="done"><div class="ok"></div>Demo order complete!<br/><span class="meta">Thanks for shopping with Axon. What do you need next?</span>
-      <button class="place" id="newOrder" type="button" style="margin-top:1rem;background:#fff;color:var(--ink);border:1px solid var(--border)">Start a New Order</button></div>`
+    el.innerHTML = `<div class="done"><div class="ok"></div>Demo order complete!<span class="meta">Thanks for shopping with Axon. What do you need next?</span>
+      <button class="place ghost" id="newOrder" type="button">Start a New Order</button></div>`
     return
   }
   const lines = cart.map((i) => `<div class="line">
@@ -147,14 +153,18 @@ function renderCheckout() {
     <div><div class="name">${i.name}</div><div class="meta">${i.quantity} × ${formatMoney(i.priceCents)}</div></div>
     <strong>${formatMoney(i.priceCents * i.quantity)}</strong>
   </div>`).join('')
-  el.innerHTML = `${lines || '<p>Your cart is empty.</p>'}
+  el.innerHTML = `<div class="panel-head"><h2>Checkout (Demo)</h2></div>
+    ${lines || '<p>Your cart is empty.</p>'}
     <div class="total"><span>Subtotal</span><span>${formatMoney(getCartTotal(cart))}</span></div>
-    <div class="total"><span>Total</span><span>${formatMoney(getCartTotal(cart))}</span></div>
-    ${cart.length ? '<button class="place" id="place" type="button">Place Demo Order</button><p class="note">This is a demo. No payment will be processed.</p>' : ''}`
+    ${cart.length ? '<button class="place" id="place" type="button">Place Demo Order</button><p class="note"><svg class="lock" width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#3F7D4A" stroke-width="2"/><path d="M8 11V8a4 4 0 018 0v3" stroke="#3F7D4A" stroke-width="2"/></svg>This is a demo. No payment will be processed.</p>' : ''}`
 }
 
 function paint(opts = {}) {
-  document.body.classList.toggle('shopping', session.started)
+  document.body.classList.toggle('shopping', session.started && session.view !== 'complete')
+  document.body.classList.toggle('complete', session.view === 'complete')
+  const veil = $('veil')
+  const modalOpen = Boolean(opts.showCart) || session.view === 'checkout' || session.view === 'complete'
+  if (veil) veil.hidden = !modalOpen
   renderCartButton()
   renderReply()
   renderResults()
@@ -166,6 +176,7 @@ function flyToCart(sku) {
   const img = document.querySelector(`[data-fly="${sku}"]`)
   const cartBtn = $('cartBtn')
   if (!img || !cartBtn) return
+  img.closest('.card')?.classList.add('picked')
   const from = img.getBoundingClientRect()
   const to = cartBtn.getBoundingClientRect()
   const flyer = img.cloneNode(true)
@@ -299,6 +310,11 @@ document.addEventListener('click', (e) => {
   }
   if (e.target.id === 'toCheckout') {
     thinkThen(() => applyResult(handleUtterance('Checkout.', session, catalog, cart)))
+    return
+  }
+  if (e.target.id === 'veil' || e.target.id === 'closeCart') {
+    if (session.view === 'checkout' || session.view === 'complete') return
+    paint({ showCart: false })
     return
   }
   if (e.target.id === 'newOrder') {
