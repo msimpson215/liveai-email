@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Sharp cheddar cheese">
+  <rect width="160" height="160" rx="24" fill="#F3EEE3"/>
+  <path d="M40 100l52-44 32 18v42H40z" fill="#E6A83A"/>
+  <path d="M92 56l32 18v42H92z" fill="#D4922A"/>
+  <circle cx="62" cy="96" r="5" fill="#F0C56A"/>
+  <circle cx="78" cy="108" r="4" fill="#F0C56A"/>
+  <circle cx="70" cy="84" r="3.5" fill="#F0C56A"/>
+  <ellipse cx="80" cy="128" rx="34" ry="7" fill="#D9D1C3"/>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="White bread">
+  <rect width="160" height="160" rx="24" fill="#F3EEE3"/>
+  <path d="M44 78c0-18 16-32 36-32s36 14 36 32v34H44V78z" fill="#F3E1B8"/>
+  <path d="M48 76c4-14 16-24 32-24s28 10 32 24" fill="#E7C98A"/>
+  <ellipse cx="80" cy="128" rx="32" ry="7" fill="#D9D1C3"/>
+</svg>

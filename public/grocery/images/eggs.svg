@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Eggs dozen">
+  <rect width="160" height="160" rx="24" fill="#F3EEE3"/>
+  <rect x="36" y="48" width="88" height="64" rx="10" fill="#EFE6D6" stroke="#D2C4AE" stroke-width="3"/>
+  <ellipse cx="58" cy="80" rx="11" ry="14" fill="#FBF6EA"/>
+  <ellipse cx="80" cy="80" rx="11" ry="14" fill="#FBF6EA"/>
+  <ellipse cx="102" cy="80" rx="11" ry="14" fill="#FBF6EA"/>
+  <ellipse cx="80" cy="128" rx="30" ry="7" fill="#D9D1C3"/>
+</svg>
