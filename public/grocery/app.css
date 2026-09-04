@@ -38,6 +38,7 @@ body.shopping::after{
   background:linear-gradient(180deg, rgba(247,244,237,.55) 0%, rgba(247,244,237,.82) 100%);
 }
 body > *{position:relative;z-index:1}
+[hidden]{display:none !important}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 
 .top{
