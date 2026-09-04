@@ -27,7 +27,10 @@ body{
   display:flex;align-items:flex-start;justify-content:space-between;
   padding:1.1rem 1.25rem 0;
   min-height:4.5rem;
+  position:relative;
+  z-index:6;
 }
+body.shopping .top{min-height:5.6rem}
 .wordmark{
   font-family:"Space Grotesk",system-ui,sans-serif;
   font-weight:700;font-size:1.35rem;letter-spacing:-.03em;line-height:1;
@@ -36,14 +39,14 @@ body{
 }
 .sub{margin-top:.15rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
 .orb-float{
-  position:fixed;z-index:5;pointer-events:none;
-  top:22vh;left:50%;width:min(58vw,220px);aspect-ratio:1;
+  position:fixed;z-index:4;
+  top:18vh;left:50%;width:min(58vw,220px);aspect-ratio:1;
   transform:translateX(-50%);
-  transition:top .52s cubic-bezier(.22,.61,.36,1), left .52s cubic-bezier(.22,.61,.36,1), width .52s cubic-bezier(.22,.61,.36,1), transform .52s cubic-bezier(.22,.61,.36,1);
+  transition:top .55s cubic-bezier(.22,.61,.36,1), left .55s cubic-bezier(.22,.61,.36,1), width .55s cubic-bezier(.22,.61,.36,1), transform .55s cubic-bezier(.22,.61,.36,1);
   display:grid;place-items:center;
 }
 body.shopping .orb-float{
-  top:3.55rem;left:1.25rem;width:36px;transform:none;
+  top:4.35rem;left:1.3rem;width:42px;transform:none;
 }
 
 .cart-btn{
@@ -55,9 +58,40 @@ body.shopping .orb-float{
 .cart-label{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .cart-meta{display:block;font-weight:600;font-size:.92rem;margin-top:.1rem}
 
+.welcome{
+  width:min(100%,920px);
+  margin-top:min(38vh, 280px);
+  text-align:center;
+}
+body.shopping .welcome{display:none}
+.ask{font-size:1.35rem;font-weight:600;letter-spacing:-.03em;margin:0 0 .85rem}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;margin-bottom:1.4rem}
+.chips button{
+  appearance:none;border:1px solid var(--border);background:#fff;color:var(--ink);
+  border-radius:999px;padding:.45rem .85rem;font:500 .88rem/1 "Outfit",system-ui,sans-serif;cursor:pointer;
+}
+.mailer{
+  text-align:left;background:#fff;border:1px solid var(--border);border-radius:20px;
+  padding:1rem 1rem 1.1rem;box-shadow:0 14px 30px rgba(32,37,42,.05);
+}
+.mailer-head{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.8rem}
+.mailer-kicker{
+  font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700;
+}
+.mailer h2{margin:0;font-size:1.15rem;letter-spacing:-.03em}
+.mailer-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem}
+.deal{
+  border:1px solid var(--border);border-radius:14px;padding:.65rem;background:var(--cream);
+  cursor:pointer;text-align:left;
+}
+.deal img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:#fff}
+.deal .kicker{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:700}
+.deal .name{font-weight:650;font-size:.92rem;margin:.15rem 0}
+.deal .was{color:var(--soft);text-decoration:line-through;font-size:.8rem;margin-right:.35rem}
+.deal .now{font-weight:800;color:var(--green);font-size:1.05rem}
+
 .stage{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 1.25rem 7.5rem}
-.welcome{min-height:28vh}
-body.shopping .welcome{min-height:0;height:0;overflow:hidden}
+body.shopping .stage{padding-top:.4rem}
 
 .orb-bloom{
   position:absolute;inset:-40%;border-radius:50%;pointer-events:none;
@@ -73,6 +107,7 @@ body.thinking .hero-breathe, body.thinking .orb{animation-duration:1.6s}
 body.ready .orb{filter:brightness(1.08)}
 .orb{
   position:relative;
+  appearance:none;border:0;padding:0;cursor:pointer;
   width:100%;aspect-ratio:1;border-radius:50%;
   background:
     radial-gradient(circle at 50% 54%,
@@ -134,6 +169,7 @@ body.ready .orb{filter:brightness(1.08)}
   background:var(--green);color:#fff;font:650 1rem/1 "Outfit",system-ui,sans-serif;cursor:pointer;
 }
 .done{text-align:center;padding:1.4rem .4rem;font-size:1.15rem;font-weight:600}
+.note{text-align:center;color:var(--soft);font-size:.8rem;margin:.65rem 0 0}
 
 .composer{
   position:sticky;bottom:0;display:flex;gap:.5rem;align-items:center;

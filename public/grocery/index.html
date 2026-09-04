@@ -23,12 +23,27 @@
   </header>
 
   <main class="stage" id="stage">
-    <div class="orb-float" id="orbFloat" aria-hidden="true">
+    <div class="orb-float" id="orbFloat">
       <div class="orb-bloom"></div>
       <div class="orb-ring"></div>
-      <div class="orb" id="heroOrb"></div>
+      <button class="orb" id="heroOrb" type="button" aria-label="Ask Axon what you need"></button>
     </div>
-    <section class="welcome" id="welcome"></section>
+    <section class="welcome" id="welcome">
+      <p class="ask">What do you need?</p>
+      <div class="chips" id="chips">
+        <button type="button" data-say="Apples">Apples</button>
+        <button type="button" data-say="Bananas">Bananas</button>
+        <button type="button" data-say="Milk">Milk</button>
+        <button type="button" data-say="sharp cheddar cheese">Cheese</button>
+      </div>
+      <section class="mailer" id="mailer">
+        <div class="mailer-head">
+          <span class="mailer-kicker">This week</span>
+          <h2>Sunday specials</h2>
+        </div>
+        <div class="mailer-row" id="specials"></div>
+      </section>
+    </section>
 
     <p class="reply" id="reply" hidden></p>
     <section class="results" id="results" hidden></section>

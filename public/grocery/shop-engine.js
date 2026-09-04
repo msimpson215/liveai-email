@@ -122,6 +122,40 @@ export function createSession() {
   }
 }
 
+export const WEEKLY_SPECIALS = [
+  { sku: 'PRODUCE-BANANA-001', wasCents: 89, kicker: 'Produce' },
+  { sku: 'PRODUCE-APPLE-RED-001', wasCents: 229, kicker: 'Produce' },
+  { sku: 'DEMO-MILK-WHOLE-001', wasCents: 429, kicker: 'Dairy' },
+  { sku: 'DEMO-CHEDDAR-001', wasCents: 399, kicker: 'Cheese' },
+  { sku: 'DEMO-BREAD-WHITE-001', wasCents: 329, kicker: 'Bakery' }
+]
+
+const STAPLE_MATCHES = [
+  { keys: ['banana'], sku: 'PRODUCE-BANANA-001' },
+  { keys: ['milk'], sku: 'DEMO-MILK-WHOLE-001' },
+  { keys: ['egg'], sku: 'DEMO-EGGS-DOZEN-001' },
+  { keys: ['bread', 'loaf'], sku: 'DEMO-BREAD-WHITE-001' }
+]
+
+function mergeResults(existing, incoming) {
+  const out = [...(existing || [])]
+  for (const p of incoming) {
+    if (p && !out.some((x) => x.sku === p.sku)) out.push(p)
+  }
+  return out
+}
+
+function findStaplesInText(n, catalog) {
+  const found = []
+  for (const row of STAPLE_MATCHES) {
+    if (row.keys.some((k) => n.includes(k))) {
+      const p = getProductBySku(catalog, row.sku)
+      if (p) found.push(p)
+    }
+  }
+  return found
+}
+
 const ADD_PHRASES = [
   'add it',
   'add that',
@@ -208,13 +242,36 @@ export function handleUtterance(raw, session, catalog, cart) {
 
   if (isAdd(n) && next.currentProduct) {
     next.started = true
-    nextCart = addToCart(nextCart, next.currentProduct)
-    next.reply = `Added ${next.currentProduct.name}.`
+    const those = /\b(those|them|all)\b/.test(n)
+    const batch = those && next.currentResults?.length ? next.currentResults : [next.currentProduct]
+    let flew = null
+    for (const p of batch) {
+      if (!p) continue
+      nextCart = addToCart(nextCart, p)
+      flew = p.sku
+    }
+    next.reply = batch.length > 1 ? `Added ${batch.length} items.` : `Added ${batch[0]?.name || 'it'}.`
+    next.view = 'shop'
+    return { session: next, cart: nextCart, flewSku: flew }
+  }
+
+  const staples = findStaplesInText(n, catalog)
+  const appleAsk = (n.includes('apple') || n.includes('apples')) && !n.includes('pineapple')
+
+  if (staples.length) {
+    next.started = true
+    next.pendingQuestion = appleAsk ? 'apple_color' : next.pendingQuestion
+    next.currentResults = mergeResults(next.currentResults, staples)
+    next.currentProduct = staples[staples.length - 1]
+    for (const p of staples) nextCart = addToCart(nextCart, p)
+    next.reply = appleAsk
+      ? `Putting those in. Red or green apples?`
+      : `Putting ${staples.map((p) => p.name.toLowerCase()).join(', ')} in your cart.`
     next.view = 'shop'
     return { session: next, cart: nextCart, flewSku: next.currentProduct.sku }
   }
 
-  if ((n.includes('apple') || n.includes('apples')) && !n.includes('pineapple')) {
+  if (appleAsk) {
     next.started = true
     next.pendingQuestion = 'apple_color'
     next.currentProduct = null

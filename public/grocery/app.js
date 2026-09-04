@@ -7,7 +7,8 @@ import {
   getProductBySku,
   handleUtterance,
   removeFromCart,
-  updateQuantity
+  updateQuantity,
+  WEEKLY_SPECIALS
 } from './shop-engine.js'
 
 const CART_KEY = 'axon-grocery-cart'
@@ -104,7 +105,8 @@ function renderCartPanel(force) {
       <strong>${formatMoney(i.priceCents * i.quantity)}</strong>
     </div>`
   }).join('')
-  el.innerHTML = `${lines}<div class="total"><span>Total</span><span>${formatMoney(getCartTotal(cart))}</span></div>`
+  el.innerHTML = `${lines}<div class="total"><span>Total</span><span>${formatMoney(getCartTotal(cart))}</span></div>
+    <button class="place" id="toCheckout" type="button">Proceed to Checkout</button>`
 }
 
 function renderCheckout() {
@@ -116,7 +118,8 @@ function renderCheckout() {
   }
   el.hidden = false
   if (session.view === 'complete') {
-    el.innerHTML = `<div class="done">Demo order complete.</div>`
+    el.innerHTML = `<div class="done">Demo order complete.<br/><span class="meta">Thanks for shopping with Axon.</span>
+      <button class="place" id="newOrder" type="button" style="margin-top:1rem;background:#fff;color:var(--ink);border:1px solid var(--border)">Start a New Order</button></div>`
     return
   }
   const lines = cart.map((i) => `<div class="line">
@@ -127,7 +130,7 @@ function renderCheckout() {
   el.innerHTML = `${lines || '<p>Your cart is empty.</p>'}
     <div class="total"><span>Subtotal</span><span>${formatMoney(getCartTotal(cart))}</span></div>
     <div class="total"><span>Total</span><span>${formatMoney(getCartTotal(cart))}</span></div>
-    ${cart.length ? '<button class="place" id="place" type="button">Place Demo Order</button>' : ''}`
+    ${cart.length ? '<button class="place" id="place" type="button">Place Demo Order</button><p class="note">This is a demo. No payment will be processed.</p>' : ''}`
 }
 
 function paint(opts = {}) {
@@ -194,6 +197,40 @@ function addSku(sku) {
   applyResult(result)
 }
 
+function say(text) {
+  thinkThen(() => applyResult(handleUtterance(text, session, catalog, cart)))
+}
+
+function renderSpecials() {
+  const el = $('specials')
+  if (!el) return
+  el.innerHTML = WEEKLY_SPECIALS.map((s) => {
+    const p = getProductBySku(catalog, s.sku)
+    if (!p) return ''
+    return `<button class="deal" type="button" data-special="${p.sku}">
+      <img src="${p.imageUrl}" alt=""/>
+      <div class="kicker">${s.kicker}</div>
+      <div class="name">${p.name}</div>
+      <div><span class="was">${formatMoney(s.wasCents)}</span><span class="now">${formatMoney(p.priceCents)}</span></div>
+    </button>`
+  }).join('')
+}
+
+function openSpecial(sku) {
+  const product = getProductBySku(catalog, sku)
+  if (!product) return
+  session = {
+    ...session,
+    started: true,
+    view: 'shop',
+    pendingQuestion: null,
+    currentProduct: product,
+    currentResults: [product],
+    reply: `${product.name} is on special this week.`
+  }
+  paint()
+}
+
 $('form').addEventListener('submit', (e) => {
   e.preventDefault()
   const input = $('q')
@@ -204,6 +241,16 @@ $('form').addEventListener('submit', (e) => {
 })
 
 document.addEventListener('click', (e) => {
+  const chip = e.target.closest('[data-say]')
+  if (chip) {
+    say(chip.dataset.say)
+    return
+  }
+  const special = e.target.closest('[data-special]')
+  if (special) {
+    openSpecial(special.dataset.special)
+    return
+  }
   const add = e.target.closest('[data-add]')
   if (add) {
     addSku(add.dataset.add)
@@ -230,13 +277,41 @@ document.addEventListener('click', (e) => {
     paint()
     return
   }
+  if (e.target.id === 'toCheckout') {
+    thinkThen(() => applyResult(handleUtterance('Checkout.', session, catalog, cart)))
+    return
+  }
+  if (e.target.id === 'newOrder') {
+    cart = []
+    saveCart()
+    session = createSession()
+    paint()
+    return
+  }
+  if (e.target.closest('#heroOrb') || e.target.closest('#orbFloat')) {
+    $('q').focus()
+    setOrb('listening')
+    setTimeout(() => setOrb(''), 700)
+    return
+  }
   if (e.target.closest('#cartBtn')) {
     paint({ showCart: true })
   }
 })
 
-const res = await fetch('/grocery/catalog.json', { cache: 'no-store' })
-catalog = await res.json()
+try {
+  const res = await fetch('/grocery/catalog.json', { cache: 'no-store' })
+  if (!res.ok) throw new Error(`catalog ${res.status}`)
+  catalog = await res.json()
+  renderSpecials()
+} catch (err) {
+  console.error(err)
+  const reply = $('reply')
+  if (reply) {
+    reply.hidden = false
+    reply.textContent = 'The grocery list is still loading. Try Send again in a moment.'
+  }
+}
 if (cart.length) {
   session.started = true
   paint({ showCart: false })
