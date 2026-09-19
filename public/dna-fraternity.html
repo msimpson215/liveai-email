@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<title>DNA Fraternity — Home DNA Test</title>
+<meta name="description" content="DNA Fraternity homepage. Private home DNA testing with an AI team member."/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f4f7fb; }
+  body { font-family: Arial, Helvetica, sans-serif; }
+  .page { width: min(100%, 1100px); margin: 0 auto; position: relative; background: #fff; }
+  .page img { display: block; width: 100%; height: auto; }
+  .hot {
+    position: absolute;
+    display: block;
+    z-index: 2;
+    border-radius: 999px;
+  }
+  .hot:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+  .nav-talk { left: 82.5%; top: 1.6%; width: 12.2%; height: 3.2%; }
+  .hero-talk { left: 3.6%; top: 29.2%; width: 20.5%; height: 4.1%; }
+  .hero-order { left: 25.2%; top: 29.2%; width: 16.5%; height: 4.1%; }
+  .ai-circle { left: 69.5%; top: 11.6%; width: 26.5%; height: 18.5%; }
+  .bar {
+    position: sticky; bottom: 0; z-index: 5;
+    display: flex; justify-content: center; gap: 10px;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+    background: rgba(10, 36, 102, .94);
+  }
+  .bar a {
+    color: #fff; background: #1a73e8; text-decoration: none;
+    font-weight: 800; font-size: 15px;
+    padding: 12px 18px; border-radius: 999px;
+  }
+  .bar a.ghost { background: transparent; border: 2px solid #fff; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <img src="/dna-fraternity-home.png" width="1600" height="2200" alt="DNA Fraternity homepage — home DNA paternity test with AI team member"/>
+    <a class="hot nav-talk" href="/dna" aria-label="Talk to our AI"></a>
+    <a class="hot hero-talk" href="/dna" aria-label="Talk to our AI — let our AI set everything up"></a>
+    <a class="hot hero-order" href="/dna" aria-label="Order now"></a>
+    <a class="hot ai-circle" href="/dna" aria-label="Start chat with our AI"></a>
+  </div>
+  <div class="bar">
+    <a href="/dna">Talk to our AI</a>
+    <a class="ghost" href="mailto:?subject=DNA%20Fraternity%20homepage&body=https://liveai-email.onrender.com/dna-fraternity">Email this page</a>
+  </div>
+</body>
+</html>
