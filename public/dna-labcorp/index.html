@@ -12,12 +12,12 @@ a{text-decoration:none;color:inherit}.wrap{width:min(1180px,92%);margin:auto}
 header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid #e8eef5}
 .nav{height:74px;display:flex;align-items:center;gap:28px}.brand{font-family:Georgia,serif;font-size:33px;font-weight:700;color:var(--navy);margin-right:auto}.brand:before{content:"🧬";font-family:Arial;margin-right:10px}
 .nav a{font-weight:700;font-size:14px}.cta{background:var(--blue);color:#fff!important;padding:13px 22px;border-radius:14px}
-.hero{background:linear-gradient(90deg,#f7fbff 0%,#edf7ff 55%,#dfeef9 100%);overflow:hidden}
+.hero{position:relative;background:linear-gradient(90deg,#f7fbff 0%,#edf7ff 58%,#e7f2fb 100%);overflow:hidden}.hero:before{content:"";position:absolute;top:0;right:0;bottom:0;width:58%;background:url('/dna-labcorp/hero-family.jpg') 62% 42%/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.05) 7%,rgba(0,0,0,.18) 16%,rgba(0,0,0,.38) 28%,rgba(0,0,0,.63) 40%,rgba(0,0,0,.82) 51%,#000 64%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.05) 7%,rgba(0,0,0,.18) 16%,rgba(0,0,0,.38) 28%,rgba(0,0,0,.63) 40%,rgba(0,0,0,.82) 51%,#000 64%);pointer-events:none;z-index:0}.hero-grid{position:relative;z-index:1}
 .hero-grid{min-height:470px;display:grid;grid-template-columns:1.08fr 1fr;align-items:center;gap:0}
 .eyebrow{letter-spacing:.28em;font-size:11px;font-weight:800;color:#315f91;margin-bottom:20px}
 h1{font-family:Georgia,serif;color:#0d2d59;font-size:clamp(48px,6vw,78px);line-height:.92;margin:0 0 22px}
 .hero p{font-size:20px;line-height:1.55;color:#51657b;max-width:650px}
-.hero-photo{height:470px;position:relative;overflow:hidden;margin-left:-95px;border-radius:0;box-shadow:none}.hero-photo:after{content:"";position:absolute;inset:0;background:url('/dna-labcorp/hero-family.jpg') 66% 42%/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.08) 8%,rgba(0,0,0,.28) 18%,rgba(0,0,0,.58) 32%,rgba(0,0,0,.82) 46%,#000 60%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.08) 8%,rgba(0,0,0,.28) 18%,rgba(0,0,0,.58) 32%,rgba(0,0,0,.82) 46%,#000 60%);pointer-events:none}
+.hero-photo{height:470px;position:relative}
 .cards{margin-top:-64px;position:relative;z-index:5;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
 .card{background:#fff;border:1px solid #dfeaf4;border-radius:24px;padding:30px;box-shadow:0 18px 40px rgba(25,65,110,.10);min-height:310px;height:100%;display:flex;flex-direction:column}
 .card:nth-child(1){background:linear-gradient(135deg,#f8fcff,#eef7ff)}.card:nth-child(2){background:linear-gradient(135deg,#fbffff,#effaf7)}.card:nth-child(3){background:linear-gradient(135deg,#fffaff,#f9f0fb)}
