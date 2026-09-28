@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#2b7dff"/>
+<meta name="description" content="Marty Simpson portfolio walkthrough for Tim — Axon AI, Pre-De-Icer family, SiteEye, bandage, Ronald McDonald Kitchen."/>
+<title>Marty → Tim — Walkthrough Outline</title>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0d2a5c;--blue:#2b7dff;--blue-deep:#1a4fa8;
+  --sky:#eef6ff;--soft:#f7fbff;--ink:#1a3358;--muted:#5c7396;--line:#d7e6f8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue-deep)}
+a:hover{text-decoration:underline}
+.wrap{width:min(820px,92%);margin:0 auto}
+
+header{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+.nav{height:64px;display:flex;align-items:center;gap:.75rem}
+.brand{display:flex;align-items:center;gap:.5rem;font-weight:800;color:var(--navy);text-decoration:none;margin-right:auto}
+.brand img{width:26px;height:26px}
+.nav .cta{
+  background:var(--blue);color:#fff!important;text-decoration:none;
+  font-weight:700;font-size:.82rem;padding:.55rem .95rem;border-radius:999px;
+}
+
+.hero{
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(43,125,255,.13) 0%, transparent 70%),
+    linear-gradient(180deg,var(--soft),#fff);
+  padding:2.6rem 0 2rem;border-bottom:1px solid var(--line);
+}
+.eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:.7rem}
+.hero h1{font-size:clamp(1.7rem,4.8vw,2.4rem);font-weight:800;letter-spacing:-.03em;color:var(--navy);line-height:1.15}
+.lede{margin-top:.85rem;font-size:1.02rem;line-height:1.55;color:var(--muted);max-width:40rem}
+.urlchip{margin-top:1rem;font-size:.8rem;color:var(--muted);word-break:break-all}
+.urlchip b{color:var(--navy)}
+
+.axon-box{
+  margin:1.6rem 0 0;padding:1.25rem 1.3rem;border-radius:16px;
+  background:#fff;border:1px solid var(--line);
+  box-shadow:0 10px 28px rgba(30,90,170,.06);
+}
+.axon-box h2{font-size:1.15rem;font-weight:800;color:var(--navy);margin-bottom:.55rem}
+.axon-box p{font-size:.95rem;line-height:1.55;color:var(--muted)}
+.axon-box p + p{margin-top:.55rem}
+
+section{padding:2.1rem 0 0}
+section > h2{
+  font-size:1.2rem;font-weight:800;color:var(--navy);
+  letter-spacing:-.02em;margin-bottom:.35rem;
+}
+.sec-lede{font-size:.9rem;line-height:1.5;color:var(--muted);margin-bottom:1rem}
+
+ol.steps{list-style:none;counter-reset:s;display:grid;gap:.7rem}
+ol.steps > li{
+  counter-increment:s;position:relative;
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:1rem 1.05rem 1rem 3.1rem;
+}
+ol.steps > li::before{
+  content:counter(s);position:absolute;left:.85rem;top:1rem;
+  width:1.55rem;height:1.55rem;border-radius:50%;
+  background:var(--blue);color:#fff;font-size:.75rem;font-weight:800;
+  display:grid;place-items:center;
+}
+ol.steps h3{font-size:.98rem;font-weight:800;color:var(--navy);margin-bottom:.25rem}
+ol.steps p{font-size:.88rem;line-height:1.45;color:var(--muted)}
+ol.steps .links{margin-top:.45rem;display:flex;flex-wrap:wrap;gap:.4rem .85rem}
+ol.steps .links a{font-size:.8rem;font-weight:700;text-decoration:none}
+ol.steps .links a:hover{text-decoration:underline}
+.tag{
+  display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.04em;
+  text-transform:uppercase;background:var(--sky);color:var(--blue-deep);
+  padding:.15rem .4rem;border-radius:5px;margin-left:.35rem;vertical-align:middle;
+}
+.note{
+  margin-top:1.5rem;padding:1rem 1.1rem;border-radius:14px;
+  background:var(--sky);border:1px solid var(--line);
+  font-size:.88rem;line-height:1.5;color:var(--ink);
+}
+footer{
+  margin-top:2.6rem;padding:1.8rem 0 2.4rem;border-top:1px solid var(--line);
+  text-align:center;font-size:.78rem;line-height:1.5;color:var(--muted);
+}
+footer b{color:var(--navy)}
+@media print{
+  header{position:static}
+  .nav .cta{display:none}
+  ol.steps > li{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="/tim-outline/">
+      <img src="/icons/axon-blue-192.png" alt=""/>
+      Marty → Tim
+    </a>
+    <a class="cta" href="/axon-platform/">Full catalog</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Walkthrough outline</div>
+    <h1>Two years of AI work — plus the earlier inventions — boom, boom, boom.</h1>
+    <p class="lede">
+      Sit with Tim and click down this list. Each item opens the live Axon example.
+      We’ll plug in fuller website demos as we build them. Blue and white = Axon.
+      A1 black/yellow stays on A1 only.
+    </p>
+    <p class="urlchip"><b>This page:</b> https://liveai-email.onrender.com/tim-outline/</p>
+
+    <div class="axon-box">
+      <h2>Axon AI — what it is</h2>
+      <p>
+        <b>Axon AI</b> is a conversational AI brain that can run on any mainstream AI model
+        (or a combination of them) with smart routing. It makes websites, emails, cards,
+        pamphlets, résumés, instructions — almost any material — <b>talkable</b>.
+      </p>
+      <p>
+        Each deployment is customized to one product or company, with <b>guardrails</b>
+        so it only talks about that subject. It can act as a salesperson, customer service,
+        an informative guide, or simply a team member.
+      </p>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section id="axon">
+    <h2>1. Axon AI — examples (AI websites)</h2>
+    <p class="sec-lede">Show Axon on screen first. Then click each live AI version — no traditional-site detour.</p>
+    <ol class="steps">
+      <li>
+        <h3>Axon AI on a legacy website <span class="tag">Live</span></h3>
+        <p>Put a conversational team member into an existing site without rebuilding it.</p>
+        <div class="links"><a href="https://a1-test-fyjq.onrender.com" target="_blank" rel="noopener">Legacy example →</a></div>
+      </li>
+      <li>
+        <h3>A1 Professional Asphalt <span class="tag">Live</span></h3>
+        <p>Conversational email / AI team member for paving and sealing (Joe’s live product).</p>
+        <div class="links">
+          <a href="/talk.html">Email orb →</a>
+          <a href="/a1/card">Business card →</a>
+        </div>
+      </li>
+      <li>
+        <h3>STD Testing Center + Axon <span class="tag">Live</span></h3>
+        <p>AI version — confidential STD/STI testing. Tap to talk, options, next steps.</p>
+        <div class="links">
+          <a href="/std/">Axon home →</a>
+          <a href="/std-testing/">Full site →</a>
+        </div>
+      </li>
+      <li>
+        <h3>DNA Answers / DNA Fraternity + Axon <span class="tag">Live</span></h3>
+        <p>AI salesperson for legal, home, prenatal, and other DNA relationship testing.</p>
+        <div class="links">
+          <a href="/dna-answers/">Axon home →</a>
+          <a href="/dna">DNA Answers →</a>
+          <a href="/dna-fraternity.html">Home / fraternity →</a>
+        </div>
+      </li>
+      <li>
+        <h3>ConvoMail — Conversational Email <span class="tag">Live</span></h3>
+        <p>Static email becomes something the recipient can talk to.</p>
+        <div class="links"><a href="/talk.html">ConvoMail demo →</a></div>
+      </li>
+      <li>
+        <h3>Conversational Business Card <span class="tag">Live</span></h3>
+        <p>Scan the card / QR — talk to the company’s AI team member.</p>
+        <div class="links">
+          <a href="/cards/">Cards hub →</a>
+          <a href="/a1/card">A1 card →</a>
+        </div>
+      </li>
+      <li>
+        <h3>Conversational Pamphlet <span class="tag">Live</span></h3>
+        <p>QR on a pamphlet → ask the AI anything (nuclear stress-test example).</p>
+        <div class="links"><a href="/ask/stress-test">Stress-test pamphlet →</a></div>
+      </li>
+      <li>
+        <h3>AI Point — PowerPoint companion <span class="tag">Live</span></h3>
+        <p>Audience keeps asking questions after the slides stop.</p>
+        <div class="links"><a href="/demo.html?src=aipoint">AI Point demo →</a></div>
+      </li>
+      <li>
+        <h3>Shopping / Grocery Teammate <span class="tag">Live</span></h3>
+        <p>Tell it what you want — groceries, parts, products — it finds and explains.</p>
+        <div class="links"><a href="/grocery">Grocery teammate →</a></div>
+      </li>
+      <li>
+        <h3>Custom Personal Assistant <span class="tag">Live</span></h3>
+        <p>Named AI that stays with one person or business (not a throwaway chat window).</p>
+        <div class="links">
+          <a href="/joe">Joe →</a>
+          <a href="/axon-brain.html">Axon brain →</a>
+        </div>
+      </li>
+      <li>
+        <h3>Interactive Résumé <span class="tag">Live</span></h3>
+        <p>Employer can talk to the CV and ask questions.</p>
+        <div class="links"><a href="/cv2/">Marty’s CV →</a></div>
+      </li>
+      <li>
+        <h3>SCORE + StartABusiness <span class="tag">Live</span></h3>
+        <p>AI business mentor / Tim’s conversational business consultant — powered by Axon.</p>
+        <div class="links">
+          <a href="/mentor">SCORE mentor →</a>
+          <a href="/start">StartABusiness →</a>
+        </div>
+      </li>
+      <li>
+        <h3>Operator Bridge / Total Operator <span class="tag">Live</span></h3>
+        <p>Hands-free operator across tools — bridge panel brings it together.</p>
+        <div class="links"><a href="https://siteeye-live.onrender.com/bridge/" target="_blank" rel="noopener">Bridge →</a></div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="predeicer">
+    <h2>2. Pre-De-Icer product family</h2>
+    <p class="sec-lede">Same Axon blue presentation style, separate product line. Invented by Marty — preventive, not just reactive.</p>
+    <ol class="steps">
+      <li>
+        <h3>Pre-De-Icer <span class="tag">Live</span></h3>
+        <p>
+          Eco-friendly deicing agent you put on <b>before</b> the storm so frost, snow, and ice
+          don’t bond. Works down to <b>–82°F</b>. Original idea: windshields. Now expanded to
+          lots more surfaces and markets.
+        </p>
+        <div class="links"><a href="/predeicer/">Pre-De-Icer page →</a></div>
+      </li>
+      <li>
+        <h3>Traction De-Icer (granulated)</h3>
+        <p>
+          Granulated formula with calcium / magnesium for ice control <b>plus traction</b>
+          underfoot and under tires.
+        </p>
+      </li>
+      <li>
+        <h3>Commercial / Industrial (thicker)</h3>
+        <p>
+          Heavier, thicker product for roads, bridges, parking areas, and commercial vehicles
+          like trucks — danger-zone and fleet use.
+        </p>
+      </li>
+      <li>
+        <h3>Pre-EmberGuard</h3>
+        <p>
+          Subcategory of the Pre-De-Icer chemistry idea: temporary fire-retardant gel for
+          roofs, walls, eaves, fences. Spray on with a power sprayer or bug sprayer before
+          ember threat. To remove: spray with water.
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="siteeye">
+    <h2>3. SiteEye 360 Live + Axon</h2>
+    <p class="sec-lede">Before the bandage — portable live job-site / work-site monitoring with an AI team member.</p>
+    <ol class="steps">
+      <li>
+        <h3>SiteEye / WorkSite I 360 <span class="tag">Live</span></h3>
+        <p>
+          Telescoping 360° camera + safety beacon for mobilized jobs (crew in, crew out).
+          Office sees the site live; Axon can talk about it.
+        </p>
+        <div class="links">
+          <a href="https://siteeye-live.onrender.com" target="_blank" rel="noopener">SiteEye Live →</a>
+          <a href="/demo.html?src=siteeye">Voice demo →</a>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="bandage">
+    <h2>4. Dissolvable Bandage — No More Boo-Boos</h2>
+    <ol class="steps">
+      <li>
+        <h3>Children’s dissolvable bandage <span class="tag">Live</span></h3>
+        <p>
+          Starts with kids: dissolves in warm water instead of painfully peeling adhesive.
+          Broader wound-care and burn-care applications possible later — those need FDA pathways.
+        </p>
+        <div class="links"><a href="/demo.html?src=bandage">Bandage demo →</a></div>
+      </li>
+    </ol>
+  </section>
+
+  <section id="rmk">
+    <h2>5. Ronald McDonald Kitchen</h2>
+    <ol class="steps">
+      <li>
+        <h3>Nonprofit concept</h3>
+        <p>
+          Food, meals, kitchen resources, comfort, and practical help for families dealing
+          with seriously ill children. Concept / materials in the portfolio — live demo site next.
+        </p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="note">
+    <b>Next step with Tim:</b> walk this URL top to bottom. Where a link says Live, click it.
+    Where something’s missing a full Axon website, we build that example next and plug it in here.
+    Full catalog (same blue/white): <a href="/axon-platform/">/axon-platform/</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>Marty Simpson</b> · Axon AI + inventions portfolio · for Tim<br/>
+    https://liveai-email.onrender.com/tim-outline/
+  </div>
+</footer>
+</body>
+</html>
