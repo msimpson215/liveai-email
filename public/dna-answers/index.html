@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#1e6fd9"/>
+<meta name="description" content="DNA Answers — Powered by Axon AI. Ask our AI paternity team member anything."/>
+<title>DNA Answers — Just talk to us</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:#0d2a5c;
+  background:#fff;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.hero{
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  padding:2.4rem 1.25rem 2.8rem;
+  background:
+    radial-gradient(ellipse 55% 70% at 50% 42%, rgba(80,160,255,.18) 0%, transparent 70%),
+    linear-gradient(180deg,#f7fbff 0%,#eef6ff 45%,#ffffff 100%);
+}
+.hero::before{
+  content:"";
+  position:absolute;left:0;top:10%;bottom:16%;width:min(34vw,320px);
+  background:
+    radial-gradient(circle at 50% 60%, rgba(40,120,240,.12) 0%, transparent 70%),
+    url('/dna-labcorp/hero-family.jpg') left 40% center / cover no-repeat;
+  mask-image:linear-gradient(90deg,#000 0%,#000 40%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 40%,transparent 100%);
+  opacity:.5;
+  pointer-events:none;
+}
+.hero::after{
+  content:"";
+  position:absolute;right:-6%;top:6%;bottom:18%;width:min(38vw,360px);
+  background:
+    radial-gradient(circle at 45% 45%, rgba(70,150,255,.4) 0%, transparent 52%),
+    radial-gradient(circle at 70% 35%, rgba(140,200,255,.28) 0%, transparent 48%);
+  pointer-events:none;
+}
+.brand{position:relative;z-index:1;margin-bottom:1.1rem}
+.brand h1{font-size:clamp(1.35rem,4vw,1.85rem);font-weight:800;color:#1a4fa8;letter-spacing:-.02em}
+.brand p{font-size:.82rem;color:#6b86b0;font-weight:600;margin-top:.2rem}
+.headline{
+  position:relative;z-index:1;
+  font-size:clamp(1.55rem,5.2vw,2.45rem);
+  font-weight:800;letter-spacing:-.03em;line-height:1.18;
+  color:#0d2a5c;max-width:24ch;margin:0 auto;
+}
+.headline em{font-style:normal;color:#2b7dff}
+.lede{
+  position:relative;z-index:1;
+  margin:1rem auto 0;max-width:34rem;
+  font-size:1.02rem;line-height:1.5;color:#4a648a;font-weight:500;
+}
+.orb-wrap{position:relative;z-index:2;margin:1.7rem auto 0;width:min(52vw,200px)}
+#orb{
+  display:block;width:100%;aspect-ratio:1;border:0;padding:0;cursor:pointer;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 28%, #f4f9ff 0%, #9ec8ff 24%, #3b8ef5 58%, #1656c4 100%);
+  box-shadow:
+    0 0 0 18px rgba(70,150,255,.08),
+    0 0 60px 10px rgba(60,140,255,.35),
+    0 18px 40px rgba(20,70,160,.28),
+    inset 0 -14px 30px rgba(10,40,100,.4),
+    inset 0 12px 26px rgba(255,255,255,.55);
+  animation:breathe 4.5s ease-in-out infinite;
+}
+#orb:active{transform:scale(.96)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+body[data-state="connecting"] #orb,
+body[data-state="speaking"] #orb{animation:pulse 1.3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.07);filter:brightness(1.15)}}
+.mic{
+  position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+  width:28%;pointer-events:none;opacity:.92;
+}
+.hint{position:relative;z-index:1;margin-top:.85rem;font-size:1.05rem;font-weight:700;color:#1a4fa8;min-height:1.4em}
+.note{position:relative;z-index:1;margin:.55rem auto 0;max-width:28rem;font-size:.88rem;line-height:1.45;color:#6b86b0}
+
+.below{width:min(920px,92%);margin:0 auto;padding:1.4rem 0 2.8rem}
+.below h2{text-align:center;font-size:1.15rem;font-weight:700;color:#0d2a5c;margin-bottom:1.1rem}
+.below h2 span{color:#2b7dff}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+.card{
+  display:flex;align-items:flex-start;gap:.75rem;
+  background:#fff;border:1px solid #dce8f8;border-radius:16px;
+  padding:1.05rem 1rem;text-decoration:none;color:inherit;
+  box-shadow:0 8px 22px rgba(30,90,170,.06);
+  transition:border-color .15s,box-shadow .15s;
+}
+.card:hover{border-color:#8eb8f5;box-shadow:0 10px 28px rgba(30,90,170,.12)}
+.card .ico{
+  flex:0 0 42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;font-size:1.25rem;
+  background:#eaf3ff;
+}
+.card:nth-child(2) .ico{background:#e8f8f1}
+.card:nth-child(3) .ico{background:#f0eaff}
+.card b{display:block;font-size:.95rem;margin-bottom:.2rem;color:#0d2a5c}
+.card span{font-size:.8rem;line-height:1.4;color:#5c7396}
+.footer-cta{text-align:center;margin-top:1.75rem}
+.footer-cta p{font-size:.92rem;line-height:1.5;color:#5c7396;max-width:36rem;margin:0 auto 1rem}
+.rep{
+  display:inline-flex;align-items:center;gap:.45rem;
+  border:2px solid #2b7dff;color:#1a4fa8;background:#fff;
+  font-weight:700;font-size:.95rem;padding:.7rem 1.25rem;border-radius:999px;
+  text-decoration:none;
+}
+.rep:hover{background:#f0f7ff}
+.legal{margin-top:1.6rem;text-align:center;font-size:.75rem;line-height:1.5;color:#8a9db8}
+
+@media(max-width:760px){
+  .hero::before,.hero::after{opacity:.32;width:min(48vw,200px)}
+  .cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-state="idle">
+
+  <section class="hero">
+    <div class="brand">
+      <h1>DNA Answers</h1>
+      <p>Powered by Axon AI</p>
+    </div>
+    <p class="headline">Questions about a paternity test?<br/><em>Just talk to us.</em></p>
+    <p class="lede">This is a conversational website. Instead of hunting through pages, just ask our AI paternity team member anything.</p>
+
+    <div class="orb-wrap">
+      <button type="button" id="orb" aria-label="Tap to talk"></button>
+      <svg class="mic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3Z" fill="#fff"/>
+        <path d="M19 11a7 7 0 0 1-14 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 18v3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <p class="hint" id="hint">Tap to talk</p>
+    <p class="note">Not a chatbot. Real conversational AI that can explain your options, how testing works, pricing, and what happens next.</p>
+  </section>
+
+  <div class="below">
+    <h2>Prefer to read first? <span>Start here:</span></h2>
+    <div class="cards">
+      <a class="card" href="/dna.html">
+        <div class="ico">🏛</div>
+        <div><b>Legal DNA Paternity Test</b><span>Court-admissible testing for child support, custody, immigration, and other legal matters.</span></div>
+      </a>
+      <a class="card" href="/dna.html">
+        <div class="ico">🏠</div>
+        <div><b>Home DNA Test</b><span>Private peace-of-mind testing with simple at-home collection.</span></div>
+      </a>
+      <a class="card" href="/dna.html">
+        <div class="ico">🧬</div>
+        <div><b>Non-Invasive Prenatal</b><span>A safe prenatal option using a blood sample from mom and a cheek swab from the alleged father.</span></div>
+      </a>
+    </div>
+
+    <div class="footer-cta">
+      <p>You can still skip all of this and simply talk to our AI paternity team member. It can explain the differences between tests, help you understand what you need, and guide you to the next step.</p>
+      <a class="rep" href="/dna.html">Talk with a representative →</a>
+    </div>
+
+    <p class="legal">
+      <b>DNA Answers</b> · Powered by Axon AI<br/>
+      An AI guide, not a person. It won't predict or interpret anyone's result,
+      and it doesn't give legal or medical advice. A human confirms pricing and schedules your collection.
+    </p>
+  </div>
+
+<script>
+const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+let pc=null,localStream=null,starting=false,audioEl=null;
+
+function setState(s,msg){
+  document.body.dataset.state=s||'idle';
+  if(msg!==undefined)hint.textContent=msg;
+}
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;audioEl.playsInline=true;
+    document.body.appendChild(audioEl);
+  }
+  return audioEl;
+}
+async function stopVoice(){
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  starting=false;
+  setState('idle','Tap to talk');
+}
+async function connectVoice(){
+  const r=await fetch('/session?src=dna',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error){
+    const err=new Error(data.error||'session');
+    err.status=r.status;err.detail=data.error;throw err;
+  }
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();
+  pc.ontrack=e=>{
+    if(audio.srcObject!==e.streams[0]){
+      audio.srcObject=e.streams[0];
+      audio.play().catch(()=>{});
+    }
+  };
+  localStream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
+  });
+  const micTrack=localStream.getTracks()[0];
+  micTrack.enabled=false;
+  pc.addTrack(micTrack);
+
+  const dc=pc.createDataChannel('oai-events');
+  let greeted=false,micOpened=false;
+  function openMic(){
+    if(micOpened)return;
+    micOpened=true;
+    try{micTrack.enabled=true}catch(e){}
+  }
+  dc.addEventListener('open',()=>{
+    if(greeted)return;
+    greeted=true;
+    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+  });
+  dc.addEventListener('message',ev=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.type==='response.created')setState('speaking','Speaking…');
+      if(msg.type==='response.done'){
+        openMic();
+        setState('listening','Listening — go ahead');
+      }
+    }catch(e){}
+  });
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  const sdpResp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(data.model||'gpt-realtime'),{
+    method:'POST',
+    body:offer.sdp,
+    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  });
+  if(!sdpResp.ok)throw new Error('sdp');
+  const answer={type:'answer',sdp:await sdpResp.text()};
+  await pc.setRemoteDescription(answer);
+  setState('connecting','Connecting…');
+}
+async function start(){
+  if(starting)return;
+  starting=true;
+  setState('connecting','Connecting…');
+  try{await connectVoice()}
+  catch(e){
+    console.error(e);
+    await stopVoice();
+    setState('idle',e.status===503?'AI not configured yet':'Could not connect — tap to retry');
+  }
+}
+orb.addEventListener('click',()=>{
+  if(document.body.dataset.state==='idle')start();
+  else stopVoice();
+});
+</script>
+</body>
+</html>
