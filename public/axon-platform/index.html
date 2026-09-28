@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#2b7dff"/>
+<meta name="description" content="Axon AI — the conversational platform behind legacy websites, shopping teammates, ConvoMail, DNA Answers, STD testing, SCORE, and more."/>
+<title>Axon AI — The Core Platform</title>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<link rel="apple-touch-icon" href="/icons/axon-blue-180.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0d2a5c;
+  --blue:#2b7dff;
+  --blue-deep:#1a4fa8;
+  --sky:#eef6ff;
+  --soft:#f7fbff;
+  --ink:#1a3358;
+  --muted:#5c7396;
+  --line:#d7e6f8;
+  --card:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:#fff;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue-deep);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{width:min(980px,92%);margin:0 auto}
+
+header{
+  position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.92);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+.nav{
+  height:68px;display:flex;align-items:center;gap:1rem;
+}
+.brand{
+  display:flex;align-items:center;gap:.55rem;
+  font-weight:800;font-size:1.05rem;color:var(--navy);margin-right:auto;
+  text-decoration:none;
+}
+.brand img{width:28px;height:28px}
+.nav a.jump{font-size:.82rem;font-weight:700;color:var(--muted)}
+.nav .cta{
+  background:var(--blue);color:#fff!important;text-decoration:none;
+  font-weight:700;font-size:.85rem;padding:.65rem 1rem;border-radius:999px;
+}
+
+.hero{
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, rgba(43,125,255,.14) 0%, transparent 70%),
+    linear-gradient(180deg,var(--soft) 0%,#fff 100%);
+  padding:3.2rem 0 2.6rem;text-align:center;border-bottom:1px solid var(--line);
+}
+.eyebrow{
+  display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--blue);margin-bottom:.85rem;
+}
+.hero h1{
+  font-size:clamp(2rem,5.5vw,3rem);font-weight:800;letter-spacing:-.03em;
+  color:var(--navy);line-height:1.12;
+}
+.hero h1 span{color:var(--blue)}
+.lede{
+  margin:1rem auto 0;max-width:42rem;
+  font-size:1.08rem;line-height:1.55;color:var(--muted);font-weight:500;
+}
+.share{
+  margin-top:1.35rem;display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;
+}
+.share a,.share button{
+  border:1.5px solid var(--line);background:#fff;color:var(--navy);
+  font:inherit;font-weight:700;font-size:.85rem;padding:.55rem 1rem;border-radius:999px;
+  cursor:pointer;text-decoration:none;
+}
+.share a:hover,.share button:hover{border-color:var(--blue);color:var(--blue-deep)}
+.share .primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.share .primary:hover{color:#fff;filter:brightness(1.05)}
+.urlchip{
+  margin-top:1rem;font-size:.78rem;color:var(--muted);
+  word-break:break-all;
+}
+.urlchip b{color:var(--navy)}
+
+section{padding:2.6rem 0 0}
+section > h2{
+  font-size:1.35rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;
+  margin-bottom:.35rem;
+}
+.sec-lede{font-size:.95rem;line-height:1.5;color:var(--muted);margin-bottom:1.15rem;max-width:40rem}
+
+.grid{display:grid;gap:.85rem}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:1.15rem 1.2rem;box-shadow:0 8px 24px rgba(30,90,170,.05);
+}
+.card h3{
+  font-size:1.02rem;font-weight:800;color:var(--navy);margin-bottom:.35rem;
+  display:flex;align-items:flex-start;gap:.5rem;flex-wrap:wrap;
+}
+.card h3 .tag{
+  font-size:.65rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--sky);color:var(--blue-deep);padding:.2rem .45rem;border-radius:6px;
+}
+.card p{font-size:.9rem;line-height:1.5;color:var(--muted)}
+.card .links{margin-top:.55rem;display:flex;flex-wrap:wrap;gap:.55rem .9rem}
+.card .links a{font-size:.82rem;font-weight:700}
+
+.family{display:grid;gap:.85rem}
+@media(min-width:720px){
+  .grid.two{grid-template-columns:1fr 1fr}
+  .family{grid-template-columns:1fr 1fr}
+}
+
+.note{
+  margin-top:1.4rem;padding:1rem 1.1rem;border-radius:14px;
+  background:var(--sky);border:1px solid var(--line);
+  font-size:.88rem;line-height:1.5;color:var(--ink);
+}
+
+footer{
+  margin-top:3rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
+  text-align:center;font-size:.8rem;line-height:1.55;color:var(--muted);
+}
+footer b{color:var(--navy)}
+
+@media(max-width:640px){
+  .nav .jump{display:none}
+  .hero{padding:2.4rem 0 2rem}
+}
+@media print{
+  header{position:static}
+  .share,.nav .cta{display:none}
+  .card{break-inside:avoid;box-shadow:none}
+  body{font-size:12pt}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="/axon-platform/">
+      <img src="/icons/axon-blue-192.png" alt=""/>
+      Axon AI
+    </a>
+    <a class="jump" href="#platform">Platform</a>
+    <a class="jump" href="#predeicer">Pre-De-Icer</a>
+    <a class="jump" href="#other">Other</a>
+    <a class="cta" href="#share">Share with Tim</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">The core platform</div>
+    <h1>Axon AI is the conversational<br/><span>brain behind the products.</span></h1>
+    <p class="lede">
+      Originally built to put a live AI team member into existing legacy websites —
+      then expanded into shopping teammates, ConvoMail, personal operators,
+      résumés you can talk to, DNA and STD sales assistants, and more.
+    </p>
+    <div class="share" id="share">
+      <button type="button" class="primary" id="copyBtn">Copy this link</button>
+      <a href="mailto:?subject=Axon%20AI%20%E2%80%94%20The%20Core%20Platform&body=Tim%20%E2%80%94%20open%20this%20on%20the%20plane%3A%0A%0Ahttps%3A%2F%2Fliveai-email.onrender.com%2Faxon-platform%2F">Email to Tim</a>
+      <a href="/axon-platform/" target="_blank" rel="noopener">Open full page</a>
+    </div>
+    <p class="urlchip"><b>Live URL:</b> https://liveai-email.onrender.com/axon-platform/</p>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <section id="platform">
+    <h2>Axon AI — platform products</h2>
+    <p class="sec-lede">Blue-and-white Axon products. Each one is a different face of the same conversational platform.</p>
+    <div class="grid two">
+
+      <article class="card">
+        <h3>Axon AI for Legacy Websites <span class="tag">Live</span></h3>
+        <p>Put a conversational AI team member into virtually any existing website without forcing a rebuild.</p>
+        <div class="links"><a href="https://a1-test-fyjq.onrender.com" target="_blank" rel="noopener">Working example →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>Axon AI for Online Businesses</h3>
+        <p>An AI team member that answers questions, explains products, guides customers, and helps turn visitors into customers.</p>
+      </article>
+
+      <article class="card">
+        <h3>Shopping / Grocery Teammate <span class="tag">Live</span></h3>
+        <p>Tell the AI what you’re looking for — groceries, Corvette parts, guitars, auto products — and let it find, compare, and explain.</p>
+        <div class="links"><a href="/grocery">Open grocery teammate →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>Total Operator</h3>
+        <p>Hands-free personal AI operator across browsers and platforms — email, websites, documents, files, and more, by talking.</p>
+      </article>
+
+      <article class="card">
+        <h3>Custom Personal Assistant <span class="tag">Live</span></h3>
+        <p>A named AI assistant customized around one person or business — stays with them instead of a temporary shared chat window.</p>
+        <div class="links">
+          <a href="/joe">Joe →</a>
+          <a href="/axon-brain.html">Axon brain →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Operator Bridge <span class="tag">Live</span></h3>
+        <p>Central control panel that brings Operator, personal assistant, tools, and connected functions together.</p>
+        <div class="links"><a href="https://siteeye-live.onrender.com/bridge/" target="_blank" rel="noopener">Open bridge →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>AI Point <span class="tag">Live</span></h3>
+        <p>AI companion to PowerPoint — the audience can keep asking questions instead of being stuck with static slides.</p>
+        <div class="links"><a href="/demo.html?src=aipoint">Open demo →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>Conversational Pamphlet <span class="tag">Live</span></h3>
+        <p>Turn a static pamphlet into something people can talk to by scanning a QR code. Nuclear stress-test is one example.</p>
+        <div class="links"><a href="/ask/stress-test">Stress-test pamphlet →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>Conversational Product Instructions</h3>
+        <p>Replace complicated written instructions with an AI customers can ask: “What do I do next?” or “How do I put this together?”</p>
+      </article>
+
+      <article class="card">
+        <h3>Conversational Email / ConvoMail <span class="tag">Live</span></h3>
+        <p>Turn ordinary static email into an interactive experience — the recipient talks with the AI tied to the message.</p>
+        <div class="links"><a href="/talk.html">Email orb demo →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>Conversational Business Card <span class="tag">Live</span></h3>
+        <p>Scan a physical card or QR and immediately talk with the person or company’s AI team member.</p>
+        <div class="links">
+          <a href="/cards/">Cards hub →</a>
+          <a href="/a1/card">A1 card →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Interactive Résumé <span class="tag">Live</span></h3>
+        <p>A professional résumé and career portfolio an employer can actually talk to and question.</p>
+        <div class="links"><a href="/cv2/">Open CV →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>SiteEye 360 Live + Axon <span class="tag">Live</span></h3>
+        <p>Portable live job-site monitoring with an AI team member — see the job and interact with the information around it.</p>
+        <div class="links"><a href="https://siteeye-live.onrender.com" target="_blank" rel="noopener">SiteEye Live →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>DNA Answers + Axon Salesperson <span class="tag">Live</span></h3>
+        <p>Legal, home, prenatal, sibling, and other DNA relationship testing — AI explains options and guides toward ordering.</p>
+        <div class="links">
+          <a href="/dna-answers/">Axon home →</a>
+          <a href="/dna">DNA Answers →</a>
+          <a href="/dna-fraternity.html">Home testing →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Confidential STD/STI Testing + Axon <span class="tag">Live</span></h3>
+        <p>National confidential testing via labs and patient-service centers — AI helps customers understand options and next steps.</p>
+        <div class="links">
+          <a href="/std/">Axon home →</a>
+          <a href="/std-testing/">Regular site →</a>
+          <a href="/demo.html?src=std">Voice demo →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>SCORE AI Powered by Axon <span class="tag">Live</span></h3>
+        <p>Axon embedded into SCORE so entrepreneurs can talk with an AI business mentor instead of hunting through manuals.</p>
+        <div class="links"><a href="/mentor">Open mentor →</a></div>
+      </article>
+
+      <article class="card">
+        <h3>StartABusiness.Center <span class="tag">Live</span></h3>
+        <p>Tim’s conversational AI business consultant, powered by the Axon platform.</p>
+        <div class="links"><a href="/start">Open StartABusiness →</a></div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="predeicer">
+    <h2>Pre-De-Icer product family</h2>
+    <p class="sec-lede">Preventive winter and fire-protection products — separate from Axon, same inventor portfolio.</p>
+    <div class="family">
+      <article class="card">
+        <h3>Pre-De-Icer <span class="tag">Live</span></h3>
+        <p>Apply before winter weather so frost, snow, and ice don’t bond firmly to the treated surface.</p>
+        <div class="links"><a href="/predeicer/">Open page →</a></div>
+      </article>
+      <article class="card">
+        <h3>TractionDeIcer</h3>
+        <p>Commercial de-icing that addresses ice and helps maintain or improve traction on treated surfaces.</p>
+      </article>
+      <article class="card">
+        <h3>Pre-De-Icer Commercial / Industrial</h3>
+        <p>Heavier commercial version for trucks, equipment, parking areas, bridges, overpasses, and infrastructure.</p>
+      </article>
+      <article class="card">
+        <h3>Pre-EmberGuard</h3>
+        <p>Temporary protective gel barrier for roofs, walls, eaves, and fences before a wildfire threat — helps against flying embers.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="other">
+    <h2>Other product &amp; nonprofit</h2>
+    <div class="grid two">
+      <article class="card">
+        <h3>No More Boo-Boos — Dissolvable Bandage <span class="tag">Live</span></h3>
+        <p>Children’s bandage that dissolves in warm water instead of painfully pulling adhesive — with additional medical potential.</p>
+        <div class="links"><a href="/demo.html?src=bandage">Open demo →</a></div>
+      </article>
+      <article class="card">
+        <h3>Ronald McDonald Kitchen</h3>
+        <p>Nonprofit concept: food, meals, kitchen resources, comfort, and practical help for families dealing with seriously ill children.</p>
+      </article>
+    </div>
+
+    <div class="note">
+      <b>For Tim on the plane:</b> bookmark
+      <a href="https://liveai-email.onrender.com/axon-platform/">liveai-email.onrender.com/axon-platform/</a>
+      — or tap <b>Copy this link</b> / <b>Email to Tim</b> above. This page also prints cleanly (blue/white, no dark A1 yellow).
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>Axon AI</b> — conversational platform · blue &amp; white brand<br/>
+    Built for Marty · shareable overview for Tim and partners
+  </div>
+</footer>
+
+<script>
+const btn=document.getElementById('copyBtn');
+const url='https://liveai-email.onrender.com/axon-platform/';
+btn.addEventListener('click',async()=>{
+  try{
+    await navigator.clipboard.writeText(url);
+    btn.textContent='Copied — send to Tim';
+    setTimeout(()=>btn.textContent='Copy this link',2200);
+  }catch(e){
+    prompt('Copy this link for Tim:',url);
+  }
+});
+</script>
+</body>
+</html>
