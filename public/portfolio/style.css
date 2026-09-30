@@ -20,3 +20,20 @@ video{width:100%;max-width:850px;border-radius:18px;box-shadow:0 16px 40px rgba(
 footer{padding:30px 0 46px;color:#8aa0ba;font-size:13px;text-align:center}
 @media(max-width:900px){.nav{gap:14px;overflow:auto}.nav a{white-space:nowrap}.brand{font-size:18px}.hero-grid,.flagship-card{grid-template-columns:1fr}.orb{width:240px;height:240px}.venture-grid,.cards{grid-template-columns:1fr 1fr}.group ul{columns:1}}
 @media(max-width:620px){.venture-grid,.cards{grid-template-columns:1fr}.hero{padding-top:42px}.hero h1{font-size:46px}.page-hero h1{font-size:40px}}
+
+.section-intro{margin-bottom:24px}
+.contact-strip{border-top:1px solid var(--line);padding:24px 0;background:#f8fbff}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center}
+.contact-center{text-align:center;display:flex;flex-direction:column;gap:5px;color:var(--navy)}
+.contact-center a{color:var(--blue);font-weight:700}
+.powered{justify-self:end;text-align:right;color:#6b809b;font-size:12px}
+.powered strong{display:flex;align-items:center;justify-content:flex-end;gap:7px;color:var(--navy);font-size:17px;margin-top:4px}
+.tri.small{transform:scale(.52);transform-origin:center;display:inline-block}
+.portfolio-showcase{display:grid;gap:32px}
+.showcase-group{border-top:1px solid var(--line);padding-top:26px}
+.showcase-group:first-child{border-top:0;padding-top:0}
+.showcase-group h2{font-size:30px;margin-bottom:16px}
+.showcase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.showcase-item{min-height:95px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#fff,#f4f9ff);display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;font-weight:800;color:var(--navy);box-shadow:0 8px 22px rgba(28,73,119,.05)}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr;gap:16px}.powered{justify-self:center;text-align:center}.powered strong{justify-content:center}.showcase-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.showcase-grid{grid-template-columns:1fr}}
