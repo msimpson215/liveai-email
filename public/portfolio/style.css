@@ -56,3 +56,23 @@ footer{padding:30px 0 46px;color:#8aa0ba;font-size:13px;text-align:center}
 .wall-tile{transition:.15s transform,.15s box-shadow}.wall-tile:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(31,76,124,.15)}
 @media(max-width:1100px){.power-grid{grid-template-columns:repeat(6,1fr)}.axon-concept-grid{grid-template-columns:repeat(3,1fr)}.axon-top-grid{grid-template-columns:1fr}.axon-summary{display:grid;grid-template-columns:1fr 1fr}.showcase-orb-zone{grid-template-columns:1fr}.orb-facts{grid-template-columns:1fr 1fr}.project-card-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.showcase-hero-grid,.qr-grid{grid-template-columns:1fr}.showcase-copy h1,.axon-intro h1{font-size:52px}.power-grid{grid-template-columns:repeat(2,1fr)}.project-card-grid,.mentor-cards{grid-template-columns:1fr}.axon-concept-grid{grid-template-columns:1fr 1fr}.qr-big{grid-template-columns:1fr}.orb-facts{grid-template-columns:1fr}}
+
+/* Artwork pass — real supplied images */
+.orb-art{width:min(100%,280px);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 18px 40px rgba(20,90,180,.25))}
+.showcase-orb-zone{align-items:center}
+.hero-photo-panel{border-radius:18px;overflow:hidden;background:#eef7ff;min-height:280px;box-shadow:0 16px 40px rgba(20,70,130,.12)}
+.hero-photo-panel img{display:block;width:100%;height:100%;min-height:280px;object-fit:cover}
+.hero-photo-panel.soft-cream{background:#fff5df}
+.commercial-box{padding:40px 0}
+.commercial-box h2{color:var(--navy);margin:8px 0 10px}
+.commercial-box p{color:var(--muted);margin:0 0 18px}
+.next-box{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:28px;border-radius:20px;background:linear-gradient(135deg,#071a46,#0d4fa5);color:#fff}
+.next-box h2{margin:6px 0 8px;color:#fff}
+.next-box p{color:#d9e9ff;margin:0}
+.wall-tile.art-tile{position:relative;overflow:hidden;padding:0;justify-content:flex-end;min-height:170px}
+.wall-tile.art-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.wall-tile.art-tile span,.wall-tile.art-tile strong{position:relative;z-index:2;padding:0 18px}
+.wall-tile.art-tile span{padding-top:18px}
+.wall-tile.art-tile strong{padding-bottom:18px;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.wall-tile.art-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(7,27,75,.85) 100%);z-index:1}
+.tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--blue);margin-bottom:8px}
