@@ -2,323 +2,340 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="DNA Answers"/>
-<meta name="theme-color" content="#0a2466"/>
-<meta name="cache-control" content="no-store"/>
-<meta name="description" content="DNA Answers — talk to someone about paternity testing, day or night. Private, no judgment, no waiting on hold."/>
-<link rel="apple-touch-icon" href="/icons/axon-blue-180.png"/>
-<link rel="icon" href="/icons/axon-blue-192.png"/>
-<title>DNA Answers — Ask anything about paternity testing</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0b4f8a"/>
+<meta name="description" content="DNA Answers provides legal paternity testing, non-invasive prenatal paternity testing, and private home DNA testing with AI-guided and human support."/>
+<title>DNA Answers | Paternity Testing with AI + Human Support</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{
-  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
-  color:#0d1b3e;
-  background:#f5f9ff;
-  -webkit-font-smoothing:antialiased;
+:root{
+  --navy:#12385f;--blue:#156cad;--blue2:#278bd0;--sky:#eff8ff;--ink:#17324d;
+  --muted:#60758a;--line:#dce8f2;--green:#14805e;--soft:#f7fbfe;--white:#fff;
 }
-.wrap{width:min(100%,560px);margin:0 auto;padding:0 1.15rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff}
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+.wrap{width:min(1180px,92%);margin:auto}
 
-/* ---------- hero ---------- */
-.hero{
-  background:
-    radial-gradient(90% 60% at 50% 0%, #2f6fe0 0%, #123a8c 45%, #061a4e 100%);
-  color:#fff;
-  padding:2.4rem 0 2.6rem;
-  text-align:center;
-  border-radius:0 0 28px 28px;
-}
-.brand{
-  display:inline-flex;align-items:center;gap:.5rem;
-  font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:#bfd6ff;margin-bottom:1.1rem;
-}
-.brand .dot{width:7px;height:7px;border-radius:50%;background:#7fb0ff;box-shadow:0 0 10px #7fb0ff}
-h1{
-  font-size:clamp(1.75rem,7vw,2.35rem);
-  font-weight:800;letter-spacing:-.03em;line-height:1.12;
-}
-.hero p{
-  margin-top:.85rem;font-size:1.05rem;line-height:1.5;color:#d3e2ff;
-  max-width:23rem;margin-left:auto;margin-right:auto;
-}
-#orb{
-  margin:1.6rem auto .9rem;display:block;
-  width:min(46vw,168px);aspect-ratio:1;border:0;padding:0;cursor:pointer;border-radius:50%;
-  background:radial-gradient(circle at 36% 30%, #f2f8ff 0%, #a9ccff 26%, #4b90f7 58%, #1b4bb8 100%);
-  box-shadow:0 16px 44px rgba(0,0,0,.35),
-    inset 0 -12px 28px rgba(6,26,78,.45),
-    inset 0 10px 24px rgba(255,255,255,.5);
-  transition:transform .18s ease;animation:breathe 4.5s ease-in-out infinite;
-}
-#orb:active{transform:scale(.96)}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-body[data-state="connecting"] #orb,
-body[data-state="speaking"] #orb{animation:pulse 1.3s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.07);filter:brightness(1.15)}}
-.hint{font-size:1rem;font-weight:600;color:#eaf2ff;min-height:1.5em}
-.subhint{margin-top:.35rem;font-size:.82rem;color:#9dbcf0}
+.topbar{background:#0f355b;color:#eaf5ff;font-size:13px}
+.topbar .wrap{min-height:38px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.topbar strong{color:#fff}
 
-/* ---------- sections ---------- */
-section{padding:1.9rem 0 .4rem}
-h2{
-  font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:#5b7bc4;margin-bottom:.9rem;
-}
-.tests{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
-.t{
-  background:#fff;border:1px solid rgba(30,64,175,.13);border-radius:13px;
-  padding:.75rem .8rem;
-}
-.t b{display:block;font-size:.9rem;margin-bottom:.15rem}
-.t span{font-size:.76rem;line-height:1.35;color:#5b6b8c}
-.t.wide{grid-column:1 / -1}
-.t.hi{background:linear-gradient(160deg,#eef4ff,#fff);border-color:rgba(30,64,175,.28)}
-.t.hi b{color:#1e40af}
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #e3edf5;box-shadow:0 3px 18px rgba(25,60,90,.05)}
+.nav{height:76px;display:flex;align-items:center;gap:27px}
+.brand{font-family:Georgia,serif;font-size:34px;font-weight:700;color:var(--navy);margin-right:auto;white-space:nowrap}
+.brand:before{content:"🧬";font-family:Arial;font-size:27px;margin-right:10px;vertical-align:-2px}
+.nav>a:not(.brand){font-size:14px;font-weight:700;color:#31526f}
+.nav .ai-nav{color:#fff!important;background:var(--blue);padding:12px 18px;border-radius:10px;box-shadow:0 8px 20px rgba(21,108,173,.18)}
 
-table.price{
-  width:100%;border-collapse:collapse;background:#fff;
-  border:1px solid rgba(30,64,175,.13);border-radius:13px;overflow:hidden;
-  font-size:.87rem;
+.hero{position:relative;overflow:hidden;background:linear-gradient(90deg,#f8fcff 0%,#edf8ff 56%,#e9f4fb 100%)}
+.hero:after{
+  content:"";position:absolute;inset:0 0 0 auto;width:55%;
+  background:url('/dna-labcorp/hero-family.jpg') center 42%/cover no-repeat;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 14%,#000 34%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 14%,#000 34%);
 }
-table.price th,table.price td{padding:.6rem .7rem;text-align:left}
-table.price thead th{
-  background:#eef4ff;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
-  color:#5b7bc4;font-weight:800;
-}
-table.price tbody tr+tr{border-top:1px solid rgba(30,64,175,.1)}
-table.price td:first-child{font-weight:600}
-tr.us td{background:#f0f7ff;color:#12377f;font-weight:700}
-.fineprint{margin-top:.55rem;font-size:.75rem;color:#7385a8;line-height:1.45}
+.hero-inner{position:relative;z-index:2;min-height:525px;display:flex;align-items:center}
+.hero-copy{width:min(650px,60%);padding:62px 0}
+.eyebrow{font-size:12px;letter-spacing:.18em;font-weight:800;color:#2c6da4;margin-bottom:15px}
+h1{font-family:Georgia,serif;color:#12385f;font-size:clamp(48px,5.6vw,76px);line-height:.98;margin:0 0 20px;letter-spacing:-.025em}
+.hero-lede{font-size:20px;line-height:1.55;color:#3f617d;max-width:620px;margin:0 0 25px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:none;border-radius:11px;padding:15px 22px;font-weight:800;cursor:pointer}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(21,108,173,.22)}
+.btn-secondary{background:#fff;color:var(--navy);border:1px solid #bfd4e5}
+.ai-offer{display:flex;align-items:center;gap:10px;margin-top:17px;font-size:14px;color:#426784}
+.ai-offer b{color:var(--green)}
+.offer-pill{background:#e9f8f2;border:1px solid #b9e4d4;border-radius:999px;padding:6px 10px;color:#0c6e50;font-weight:800}
 
-ol.steps{list-style:none;counter-reset:s;margin-top:.2rem}
-ol.steps li{
-  counter-increment:s;position:relative;padding-left:2.05rem;margin-bottom:.7rem;
-  font-size:.94rem;line-height:1.45;color:#28395f;
-}
-ol.steps li:last-child{margin-bottom:0}
-ol.steps li::before{
-  content:counter(s);position:absolute;left:0;top:-.05rem;
-  width:1.45rem;height:1.45rem;border-radius:50%;
-  background:#1e40af;color:#fff;font-size:.75rem;font-weight:700;
-  display:grid;place-items:center;
-}
+.trustbar{border-bottom:1px solid var(--line);background:#fff}
+.trustgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+.trustgrid div{padding:18px;text-align:center;border-right:1px solid var(--line);font-size:14px;color:#5e7285}
+.trustgrid div:last-child{border-right:0}
+.trustgrid b{display:block;color:var(--navy);margin-bottom:4px}
 
-.privacy{
-  background:#0d1b3e;color:#cfe0ff;border-radius:16px;
-  padding:1.1rem 1.15rem;margin-top:1.4rem;font-size:.9rem;line-height:1.55;
-}
-.privacy b{color:#fff}
+.section{padding:72px 0}
+.section.alt{background:var(--soft)}
+.section-title{text-align:center;max-width:760px;margin:0 auto 34px}
+.section-title .kicker{font-size:12px;letter-spacing:.16em;font-weight:800;color:#2a74ad;margin-bottom:8px}
+.section-title h2{font-family:Georgia,serif;font-size:42px;color:var(--navy);margin:0 0 12px}
+.section-title p{font-size:18px;line-height:1.6;color:var(--muted);margin:0}
 
-.cta{
-  display:block;text-align:center;text-decoration:none;margin-top:1.5rem;
-  background:linear-gradient(180deg,#3b82f6,#1e40af);color:#fff;
-  font-weight:700;font-size:1.05rem;padding:1.05rem;border-radius:14px;
-  box-shadow:0 12px 28px rgba(30,64,175,.28);
-}
-.cta span{display:block;font-weight:500;font-size:.8rem;opacity:.87;margin-top:.2rem}
+.tests{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.test-card{border:1px solid var(--line);border-radius:22px;background:#fff;padding:28px;box-shadow:0 13px 34px rgba(26,69,104,.07);display:flex;flex-direction:column}
+.test-card .icon{font-size:30px;width:58px;height:58px;border-radius:16px;background:#eaf5ff;display:grid;place-items:center;margin-bottom:18px}
+.test-card:nth-child(2) .icon{background:#f5ecfb}
+.test-card:nth-child(3) .icon{background:#edf8f2}
+.test-card h3{font-family:Georgia,serif;font-size:29px;line-height:1.08;color:var(--navy);margin:0 0 10px}
+.test-card .tag{font-size:13px;font-weight:800;color:#2b76ad;margin-bottom:14px}
+.test-card p{color:#64778a;line-height:1.55;margin:0 0 15px}
+.test-card ul{margin:0 0 22px;padding-left:20px;color:#536b80;line-height:1.55}
+.test-card li{margin:6px 0}
+.test-card .learn{margin-top:auto;color:#1265a5;font-weight:800}
 
-footer{
-  text-align:center;padding:1.6rem 0 2.4rem;
-  font-size:.76rem;line-height:1.55;color:#7385a8;
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.step{padding:23px;border-radius:17px;border:1px solid var(--line);background:#fff}
+.num{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:14px}
+.step b{display:block;color:var(--navy);font-size:18px;margin-bottom:8px}
+.step p{margin:0;color:#667b8e;line-height:1.5;font-size:15px}
+
+.ai-band{background:linear-gradient(120deg,#0c365e,#126da9);color:#fff;border-radius:28px;padding:42px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;box-shadow:0 20px 50px rgba(12,54,94,.18)}
+.ai-band .mini{font-size:12px;letter-spacing:.18em;font-weight:800;color:#a9dcff}
+.ai-band h2{font-family:Georgia,serif;font-size:42px;line-height:1.03;margin:9px 0 16px}
+.ai-band p{color:#d8edfb;line-height:1.6;font-size:17px}
+.ai-band .btn-primary{background:#fff;color:#0d4e7f;box-shadow:none}
+.ai-band .btn-secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.ai-points{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:24px}
+.ai-points div{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+.ai-points div:last-child{border-bottom:0}
+.ai-points b{display:block;margin-bottom:3px}
+.ai-points span{font-size:14px;color:#c8e3f7}
+
+.human-grid{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start}
+.human-copy h2{font-family:Georgia,serif;color:var(--navy);font-size:42px;margin:0 0 15px}
+.human-copy p{color:#60758a;font-size:17px;line-height:1.65}
+.human-copy .note{border-left:4px solid var(--blue);padding:12px 15px;background:#f1f8fd;color:#49677f;margin-top:20px;border-radius:0 10px 10px 0}
+.callback-card{border:1px solid var(--line);border-radius:22px;background:#fff;padding:28px;box-shadow:0 13px 34px rgba(26,69,104,.08)}
+.callback-card h3{font-size:24px;color:var(--navy);margin:0 0 7px}
+.callback-card p{font-size:14px;color:#677d90;line-height:1.5;margin:0 0 18px}
+.form-row{display:grid;grid-template-columns:1fr 1.25fr;gap:10px}
+.callback-card label{display:block;font-size:12px;font-weight:800;color:#49677f;margin-bottom:6px}
+.callback-card input{width:100%;border:1px solid #bfd0df;border-radius:10px;padding:13px 12px;color:#17324d;background:#fff}
+.callback-card input:focus{outline:3px solid rgba(39,139,208,.15);border-color:#278bd0}
+.callback-card .submit{width:100%;margin-top:12px;background:var(--blue);color:#fff;border:0;border-radius:11px;padding:14px;font-weight:800;cursor:pointer}
+.consent{font-size:11px!important;color:#8091a0!important;margin-top:10px!important}
+.status{display:none;margin-top:12px;padding:11px 13px;border-radius:9px;font-size:13px}
+.status.ok{display:block;background:#ebf8f2;color:#0b694d}
+.status.err{display:block;background:#fff0f0;color:#9a2d2d}
+
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.faq details{border:1px solid var(--line);border-radius:14px;padding:17px 18px;background:#fff}
+.faq summary{font-weight:800;color:var(--navy);cursor:pointer}
+.faq p{color:#63788c;line-height:1.55;font-size:15px}
+
+footer{background:#10385e;color:#d7e8f6;padding:42px 0 28px}
+.foot{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:28px}
+.foot .brand{color:#fff;font-size:29px}
+.foot h4{color:#fff;margin:5px 0 12px}
+.foot a{display:block;color:#c5dcec;margin:8px 0;font-size:14px}
+.disclaimer{border-top:1px solid rgba(255,255,255,.14);margin-top:28px;padding-top:18px;color:#afc8dc;font-size:12px;line-height:1.55}
+
+@media(max-width:900px){
+  .nav>a:not(.brand):not(.ai-nav){display:none}
+  .hero:after{opacity:.3;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.25) 55%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.25) 55%,#000 100%)}
+  .hero-copy{width:75%}
+  .tests,.steps{grid-template-columns:1fr 1fr}
+  .ai-band,.human-grid{grid-template-columns:1fr}
+  .trustgrid{grid-template-columns:1fr 1fr}
+  .foot{grid-template-columns:1fr 1fr}
 }
-footer b{color:#1e40af}
+@media(max-width:620px){
+  .topbar .wrap{justify-content:center;text-align:center}.topbar span:last-child{display:none}
+  .nav{height:68px}.brand{font-size:27px}.nav .ai-nav{font-size:12px;padding:10px 12px}
+  .hero-inner{min-height:auto}.hero-copy{width:100%;padding:45px 0 50px}.hero:after{opacity:.16}
+  h1{font-size:48px}.hero-lede{font-size:17px}.hero-actions .btn{width:100%}
+  .trustgrid,.tests,.steps,.faq,.form-row{grid-template-columns:1fr}
+  .section{padding:54px 0}.section-title h2,.human-copy h2,.ai-band h2{font-size:34px}
+  .ai-band{padding:28px 23px;border-radius:22px}.foot{grid-template-columns:1fr}
+}
 </style>
 </head>
-<body data-state="idle">
+<body>
+<div class="topbar"><div class="wrap">
+  <span><strong>Private. Professional. Nationwide.</strong> DNA testing support for families across the U.S.</span>
+  <span>AI assistance + real human support</span>
+</div></div>
 
-  <div class="hero">
-    <div class="wrap">
-      <div class="brand"><span class="dot"></span>DNA Answers</div>
-      <h1>Questions about a paternity test?</h1>
-      <p>Tap and just talk. No hold music, no forms, no judgment — any hour of the day.</p>
-      <button type="button" id="orb" aria-label="Tap to talk"></button>
-      <p class="hint" id="hint">Tap to talk</p>
-      <p class="subhint">Ask what it costs, how it works, or which test you need</p>
-    </div>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">DNA Answers</a>
+    <a href="#tests">Testing Options</a>
+    <a href="#how">How It Works</a>
+    <a href="#ai-help">AI Assistance</a>
+    <a href="#faq">FAQs</a>
+    <a href="#human-help">Human Help</a>
+    <a class="ai-nav" href="/dna-answers/">Talk with DNA AI</a>
   </div>
+</header>
 
-  <div class="wrap">
-
-    <section>
-      <h2>Every test, one place</h2>
-      <div class="tests">
-        <div class="t hi"><b>Legal</b><span>Court-admissible for support, custody, birth certificate</span></div>
-        <div class="t hi"><b>Informational</b><span>Peace of mind. Same accuracy, private</span></div>
-        <div class="t wide"><b>Prenatal — before the baby is born</b><span>A blood draw from mom and a cheek swab from dad. Nothing touches the baby. From about seven weeks.</span></div>
-        <div class="t"><b>Grandparent</b><span>When the father isn't available</span></div>
-        <div class="t"><b>Aunt / Uncle</b><span>Another route to the same answer</span></div>
-        <div class="t"><b>Siblings</b><span>Full or half</span></div>
-        <div class="t"><b>Immigration</b><span>For USCIS petitions</span></div>
-        <div class="t"><b>Maternity</b><span>Establishing the mother</span></div>
-        <div class="t"><b>Twins</b><span>Identical or fraternal</span></div>
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">DNA PATERNITY TESTING, MADE CLEAR</div>
+      <h1>Answers you can trust. Support you can choose.</h1>
+      <p class="hero-lede">Legal paternity testing, non-invasive prenatal testing, and private home testing — with a traditional human-support option or our new AI-guided experience.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/dna-answers/">💬 Talk with Our DNA AI</a>
+        <a class="btn btn-secondary" href="#human-help">☎ Request a Human Callback</a>
       </div>
-    </section>
-
-    <section>
-      <h2>What people pay elsewhere</h2>
-      <table class="price">
-        <thead><tr><th>Where</th><th>Legal</th><th>Informational</th></tr></thead>
-        <tbody>
-          <tr><td>Big lab, direct</td><td>~$525</td><td>~$210</td></tr>
-          <tr><td>Walk-in chains</td><td>~$340</td><td>~$220</td></tr>
-          <tr class="us"><td>Through us</td><td colspan="2">Typically well below both</td></tr>
-        </tbody>
-      </table>
-      <p class="fineprint">Same laboratory, same science, same 99.99% accuracy — we just handle the arranging. Your exact price depends on the test and how many people are tested, and we confirm it before anything is scheduled. Competitor figures are approximate and change.</p>
-    </section>
-
-    <section>
-      <h2>How it works</h2>
-      <ol class="steps">
-        <li>Tell us what you're trying to find out. We'll say which test actually fits.</li>
-        <li>We schedule the collection at a lab near you — over a thousand locations nationwide.</li>
-        <li>A painless cheek swab. No needles. You don't all have to go together or even be in the same state.</li>
-        <li>Results in about three to five business days once the lab has the samples.</li>
-      </ol>
-    </section>
-
-    <div class="privacy">
-      <b>This is more common than you think.</b> Over six million children in this country
-      have unknown paternity. Nobody here is going to be surprised by your situation, and
-      nobody is going to judge you. Ask whatever you need to ask.
+      <div class="ai-offer"><span class="offer-pill">INTRODUCTORY OFFER</span><span><b>Save 20%</b> off our standard testing price when your order is completed through the AI-guided intake.</span></div>
     </div>
-
-    <a class="cta" href="/ask/paternity-test">
-      Start talking now
-      <span>Answers questions, explains options, no pressure</span>
-    </a>
-
-    <footer>
-      <b>DNA Answers</b> · Powered by Axon AI<br/>
-      An AI guide, not a person. It won't predict or interpret anyone's result,
-      and it doesn't give legal or medical advice. A human confirms pricing and
-      schedules your collection.
-    </footer>
-
   </div>
+</section>
+
+<div class="trustbar"><div class="wrap trustgrid">
+  <div><b>🔒 Confidential</b>Your information is handled privately.</div>
+  <div><b>📍 Nationwide Support</b>Collection options across the U.S.</div>
+  <div><b>🧬 Three Core Tests</b>Legal, prenatal, and home.</div>
+  <div><b>👤 Human Help Available</b>AI is optional — not a barrier.</div>
+</div></div>
+
+<section class="section" id="tests">
+  <div class="wrap">
+    <div class="section-title">
+      <div class="kicker">CHOOSE THE RIGHT TEST</div>
+      <h2>Three ways to get the answer you need</h2>
+      <p>Start with the reason you need testing. We will guide you to the correct process before anything is scheduled or shipped.</p>
+    </div>
+    <div class="tests">
+      <article class="test-card">
+        <div class="icon">⚖️</div>
+        <h3>Legal DNA Paternity Test</h3>
+        <div class="tag">FOR COURT OR OFFICIAL USE</div>
+        <p>A documented chain-of-custody test when results may be needed for legal or official purposes.</p>
+        <ul><li>Professional collection</li><li>Identity verification</li><li>Participants may test in different locations</li><li>Appropriate for court-related needs</li></ul>
+        <a class="learn" href="/dna-answers/">Ask our DNA AI about legal testing →</a>
+      </article>
+
+      <article class="test-card">
+        <div class="icon">🤰</div>
+        <h3>Non-Invasive Prenatal Paternity</h3>
+        <div class="tag">TESTING DURING PREGNANCY</div>
+        <p>A prenatal option using a maternal blood draw and a cheek swab from the alleged father.</p>
+        <ul><li>Non-invasive collection</li><li>No sample taken from the baby</li><li>Specialty laboratory process</li><li>Eligibility confirmed before scheduling</li></ul>
+        <a class="learn" href="/dna-answers/">Ask our DNA AI about prenatal testing →</a>
+      </article>
+
+      <article class="test-card">
+        <div class="icon">🏠</div>
+        <h3>Home DNA Paternity Test</h3>
+        <div class="tag">FOR PERSONAL KNOWLEDGE</div>
+        <p>A convenient home collection option for people who want a private answer and do not need a court-admissible result.</p>
+        <ul><li>Kit shipped to you</li><li>Simple cheek-swab collection</li><li>Private and convenient</li><li>Not intended for legal use</li></ul>
+        <a class="learn" href="/dna-answers/">Ask our DNA AI about home testing →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="how">
+  <div class="wrap">
+    <div class="section-title">
+      <div class="kicker">HOW IT WORKS</div>
+      <h2>Simple from the first question to the result</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><b>Choose how to start</b><p>Use the website, talk with our AI team member, or request a call from a human counselor.</p></div>
+      <div class="step"><div class="num">2</div><b>Confirm the right test</b><p>We determine whether your situation calls for legal, prenatal, or home testing.</p></div>
+      <div class="step"><div class="num">3</div><b>Complete collection</b><p>We arrange the correct collection process or ship the appropriate home kit.</p></div>
+      <div class="step"><div class="num">4</div><b>Receive your results</b><p>Your laboratory testing is completed and results are provided through the appropriate secure process.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ai-help">
+  <div class="wrap">
+    <div class="ai-band">
+      <div>
+        <div class="mini">NEW — AI-GUIDED DNA TESTING SUPPORT</div>
+        <h2>Use AI when you want speed. Ask for a human whenever you want one.</h2>
+        <p>Our DNA AI team member can explain the differences between tests, answer routine questions, and guide you through the first steps. It does not replace the laboratory and it does not replace our human team.</p>
+        <p><strong>Introductory savings:</strong> complete your order through the AI-guided intake and receive 20% off our standard testing price. Final pricing is confirmed before your order is completed.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/dna-answers/">Start with DNA AI</a>
+          <a class="btn btn-secondary" href="#human-help">Have a Human Call Me</a>
+        </div>
+      </div>
+      <div class="ai-points">
+        <div><b>Ask in plain English</b><span>“Do I need a legal test?” “Can Dad test in another state?” “How does prenatal testing work?”</span></div>
+        <div><b>No pressure to stay with AI</b><span>At any point, use the human callback option and leave just your first name and phone number.</span></div>
+        <div><b>Your choice</b><span>The AI is a convenience option. Traditional human assistance remains available.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="human-help">
+  <div class="wrap human-grid">
+    <div class="human-copy">
+      <div class="eyebrow">PREFER A PERSON?</div>
+      <h2>Request a call from a human counselor.</h2>
+      <p>You do not have to explain your situation in a form. Leave your first name and the best number to reach you. A team member can call you back to discuss the test and next steps.</p>
+      <div class="note"><strong>AI is optional.</strong> We use it to make routine ordering easier and lower our operating costs — not to make it harder to reach a person.</div>
+    </div>
+    <form class="callback-card" id="callbackForm">
+      <h3>Have a human call me</h3>
+      <p>Only the information needed for a return call.</p>
+      <div class="form-row">
+        <div><label for="cbName">First name</label><input id="cbName" name="name" autocomplete="given-name" maxlength="60" required/></div>
+        <div><label for="cbPhone">Phone number</label><input id="cbPhone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="(555) 555-5555" required/></div>
+      </div>
+      <button class="submit" type="submit">Request My Callback</button>
+      <p class="consent">By submitting, you are asking DNA Answers to contact you at the number provided regarding DNA testing. Do not include medical, genetic, or payment information in this form.</p>
+      <div class="status" id="callbackStatus" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="section-title">
+      <div class="kicker">COMMON QUESTIONS</div>
+      <h2>Start with the basics</h2>
+    </div>
+    <div class="faq">
+      <details><summary>What is the difference between a legal and home paternity test?</summary><p>A legal test uses documented identity verification and chain of custody so the result can be used for appropriate official purposes. A home test is for personal knowledge and does not use that legal collection process.</p></details>
+      <details><summary>Can people test in different states?</summary><p>For many legal cases, participants can be collected at different approved locations. The exact arrangement is confirmed when the case is set up.</p></details>
+      <details><summary>Does prenatal testing require a sample from the baby?</summary><p>No sample is taken directly from the baby. The process uses a maternal blood sample together with a DNA sample from the alleged father.</p></details>
+      <details><summary>What if I start with AI and decide I want a person?</summary><p>Use the human callback option at any time. AI is simply another way to begin the process.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div><div class="brand">DNA Answers</div><p>Clear DNA testing options with technology when you want it and people when you need them.</p></div>
+      <div><h4>Testing</h4><a href="#tests">Legal Paternity</a><a href="#tests">Prenatal Paternity</a><a href="#tests">Home Paternity</a></div>
+      <div><h4>Get Help</h4><a href="/dna-answers/">Talk with DNA AI</a><a href="#human-help">Human Callback</a><a href="#faq">FAQs</a></div>
+      <div><h4>Information</h4><a href="#how">How It Works</a><a href="#human-help">Contact</a></div>
+    </div>
+    <div class="disclaimer">DNA Answers is a testing coordination and customer-support service. The AI guide provides general information and intake assistance; it does not diagnose, provide legal advice, or interpret an individual's DNA result. Laboratory partner, accreditation, final pricing, collection requirements, privacy language, and turnaround details will be confirmed before public launch. © 2026 DNA Answers.</div>
+  </div>
+</footer>
 
 <script>
-const orb=document.getElementById('orb');
-const hint=document.getElementById('hint');
-let pc=null,localStream=null,starting=false,audioEl=null;
-
-function setState(s,msg){
-  document.body.dataset.state=s||'idle';
-  if(msg!==undefined)hint.textContent=msg;
-}
-function ensureAudio(){
-  if(!audioEl){
-    audioEl=document.createElement('audio');
-    audioEl.autoplay=true;audioEl.playsInline=true;
-    document.body.appendChild(audioEl);
-  }
-  return audioEl;
-}
-async function stopVoice(){
-  if(pc){try{pc.close()}catch(e){}pc=null}
-  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
-  starting=false;
-  setState('idle','Tap to talk');
-}
-async function connectVoice(){
-  const r=await fetch('/session?src=ask&t=paternity-test',{cache:'no-store'});
-  const data=await r.json();
-  if(!r.ok||data.error){
-    const err=new Error(data.error||'session');
-    err.status=r.status;err.detail=data.error;throw err;
-  }
-  const key=data.value||(data.client_secret&&data.client_secret.value);
-  if(!key)throw new Error('no token');
-
-  pc=new RTCPeerConnection();
-  const audio=ensureAudio();
-  pc.ontrack=e=>{
-    if(audio.srcObject!==e.streams[0]){
-      audio.srcObject=e.streams[0];
-      audio.play().catch(()=>{});
-    }
-  };
-  localStream=await navigator.mediaDevices.getUserMedia({
-    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
-  });
-  const micTrack=localStream.getTracks()[0];
-  // Closed through the opening line so the speaker cannot feed back into the
-  // mic and trigger a second, overlapping answer.
-  micTrack.enabled=false;
-  pc.addTrack(micTrack);
-
-  const dc=pc.createDataChannel('oai-events');
-  let greeted=false,micOpened=false;
-  function openMic(){
-    if(micOpened)return;
-    micOpened=true;
-    try{micTrack.enabled=true}catch(e){}
-  }
-  dc.addEventListener('open',()=>{
-    if(greeted)return;
-    greeted=true;
-    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
-  });
-  dc.addEventListener('message',ev=>{
-    try{
-      const msg=JSON.parse(ev.data);
-      if(msg.type==='response.created')setState('speaking','Speaking…');
-      if(msg.type==='response.done'){
-        openMic();
-        setState('listening','Listening — go ahead');
-      }
-    }catch(e){}
-  });
-
-  const offer=await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
-    method:'POST',body:offer.sdp,
-    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
-  });
-  if(!sdp.ok){
-    let detail='';
-    try{detail=await sdp.text()}catch(e){}
-    const outOfCredit=/insufficient_quota|exceeded your current quota|billing/i.test(detail);
-    const err=new Error(outOfCredit?'quota':(sdp.status===429?'busy':'sdp'));
-    err.status=sdp.status;throw err;
-  }
-  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  setState('listening','Listening — go ahead');
-}
-async function toggleVoice(){
-  if(starting)return;
-  if(pc){await stopVoice();return}
-  starting=true;
-  setState('connecting','One moment…');
+const form=document.getElementById('callbackForm');
+const statusBox=document.getElementById('callbackStatus');
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  statusBox.className='status';
+  statusBox.textContent='';
+  const name=document.getElementById('cbName').value.trim();
+  const phone=document.getElementById('cbPhone').value.trim();
+  const button=form.querySelector('button[type="submit"]');
+  button.disabled=true;button.textContent='Sending…';
   try{
-    await connectVoice();
-  }catch(e){
-    console.error(e);
-    starting=false;
-    await stopVoice();
-    if(e&&e.status===429&&e.detail){setState('idle',e.detail);return}
-    const why=e&&e.message;
-    setState('idle',
-      why==='quota'?'Temporarily unavailable. Please try again later.':
-      why==='busy'?'Busy right now. Try again in a minute.':
-      'That didn\u2019t connect. Tap to try again.');
-    return;
+    const r=await fetch('/api/dna-callback',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,phone,source:'dna-website'})
+    });
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(data.error||'Could not submit request.');
+    statusBox.className='status ok';
+    statusBox.textContent='Thank you. Your callback request has been sent to our human team.';
+    form.reset();
+  }catch(err){
+    statusBox.className='status err';
+    statusBox.textContent=err.message||'We could not send the request. Please try again.';
+  }finally{
+    button.disabled=false;button.textContent='Request My Callback';
   }
-  starting=false;
-}
-orb.addEventListener('click',toggleVoice);
-document.addEventListener('visibilitychange',()=>{
-  if(document.hidden&&(pc||starting))stopVoice();
 });
-window.addEventListener('pagehide',()=>{if(pc||starting)stopVoice()});
 </script>
 </body>
 </html>
