@@ -1697,6 +1697,56 @@ app.get('/api/mail-ready', (_req, res) => {
   res.json({ ok: hasMailer() })
 })
 
+app.post('/api/dna-callback', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+
+  const name = String(req.body?.name || '').trim().replace(/[\r\n]/g, ' ').slice(0, 60)
+  const phone = String(req.body?.phone || '').trim().replace(/[\r\n]/g, ' ').slice(0, 30)
+  const source = String(req.body?.source || 'dna-website').trim().replace(/[\r\n]/g, ' ').slice(0, 50)
+  const digits = phone.replace(/\D/g, '')
+
+  if (!name) return res.status(400).json({ error: 'Please enter your first name.' })
+  if (digits.length < 7 || digits.length > 15) {
+    return res.status(400).json({ error: 'Please enter a valid phone number.' })
+  }
+  if (!hasMailer()) {
+    return res.status(503).json({
+      error: 'The callback line is not configured yet. Please use the regular contact option.'
+    })
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+      }
+    })
+
+    const to = String(process.env.DNA_CALLBACK_TO || process.env.GMAIL_USER).trim()
+    await transporter.sendMail({
+      from: `"DNA Answers Website" <${process.env.GMAIL_USER}>`,
+      to,
+      subject: `DNA callback request — ${name}`,
+      text: [
+        'New DNA Answers callback request',
+        '',
+        `First name: ${name}`,
+        `Phone: ${phone}`,
+        `Source: ${source}`,
+        `Received: ${new Date().toISOString()}`,
+        '',
+        'The visitor asked for a human callback about DNA testing.'
+      ].join('\n')
+    })
+
+    res.json({ ok: true })
+  } catch (error) {
+    res.status(500).json({ error: 'Could not send the callback request. Please try again.' })
+  }
+})
+
 app.post('/api/send-orb', async (req, res) => {
   const to = String(req.body?.email || '').trim()
   if (!to || !to.includes('@')) {
