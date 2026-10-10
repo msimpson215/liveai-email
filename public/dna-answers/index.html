@@ -165,13 +165,13 @@ body[data-state="speaking"] #orb{animation:pulse 1.3s ease-in-out infinite}
 
     <div class="footer-cta">
       <p>You can still skip all of this and simply talk to our AI paternity team member. It can explain the differences between tests, help you understand what you need, and guide you to the next step.</p>
-      <a class="rep" href="/dna.html">Talk with a representative →</a>
+      <a class="rep" href="/dna#human-help">Request a human callback →</a>
     </div>
 
     <p class="legal">
       <b>DNA Answers</b> · Powered by Axon AI<br/>
       An AI guide, not a person. It won't predict or interpret anyone's result,
-      and it doesn't give legal or medical advice. A human confirms pricing and schedules your collection.
+      and it doesn't give legal or medical advice. A human can take over whenever you prefer.
     </p>
   </div>
 
@@ -199,7 +199,7 @@ async function stopVoice(){
   setState('idle','Tap to talk');
 }
 async function connectVoice(){
-  const r=await fetch('/session?src=dna',{cache:'no-store'});
+  const r=await fetch('/session?gate=1&src=dna',{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error){
     const err=new Error(data.error||'session');
@@ -248,7 +248,7 @@ async function connectVoice(){
 
   const offer=await pc.createOffer();
   await pc.setLocalDescription(offer);
-  const sdpResp=await fetch('https://api.openai.com/v1/realtime?model='+encodeURIComponent(data.model||'gpt-realtime'),{
+  const sdpResp=await fetch('https://api.openai.com/v1/realtime/calls',{
     method:'POST',
     body:offer.sdp,
     headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
