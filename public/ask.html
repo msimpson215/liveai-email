@@ -33,17 +33,41 @@ h1{font-size:clamp(1.5rem,6vw,2rem);font-weight:700;letter-spacing:-.02em;line-h
 .sub{margin-top:.7rem;font-size:1.02rem;line-height:1.5;color:#3c4d75;max-width:24rem}
 .orb-wrap{margin:auto 0;padding:2rem 0 1rem;display:flex;flex-direction:column;align-items:center}
 #orb{
+  position:relative;overflow:hidden;isolation:isolate;
   width:min(58vw,220px);aspect-ratio:1;border:0;padding:0;cursor:pointer;border-radius:50%;
-  background:radial-gradient(circle at 36% 30%, #eaf3ff 0%, #93c5fd 26%, #3b82f6 58%, #1e40af 100%);
-  box-shadow:0 18px 50px rgba(30,64,175,.32),
-    inset 0 -14px 34px rgba(10,36,102,.35),
-    inset 0 12px 28px rgba(255,255,255,.45);
-  transition:transform .18s ease;animation:breathe 4.5s ease-in-out infinite;
+  background:
+    radial-gradient(circle at 31% 25%, rgba(255,255,255,.95) 0 5%, rgba(255,255,255,0) 20%),
+    radial-gradient(circle at 50% 112%, rgba(125,211,252,.85) 0%, rgba(125,211,252,0) 52%),
+    radial-gradient(circle at 50% 42%, #4f8ff7 0%, #1d4ed8 46%, #0a1f5c 100%);
+  box-shadow:
+    0 0 0 10px rgba(59,130,246,.07),
+    0 0 0 24px rgba(59,130,246,.04),
+    0 22px 60px rgba(29,78,216,.34),
+    inset 0 -20px 42px rgba(4,14,48,.55),
+    inset 0 10px 28px rgba(255,255,255,.32);
+  transition:transform .18s ease, box-shadow .3s ease;animation:breathe 4.5s ease-in-out infinite;
+}
+#orb::before{
+  content:"";position:absolute;inset:-10%;border-radius:50%;z-index:-1;
+  background:conic-gradient(from 0deg, transparent 0 58%, rgba(186,230,253,.55) 74%, transparent 88%);
+  mix-blend-mode:screen;animation:sweep 7s linear infinite;
+}
+#orb::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  background-image:radial-gradient(rgba(255,255,255,.75) 1px, transparent 1.6px);
+  background-size:15px 15px;opacity:.22;
+  -webkit-mask:radial-gradient(circle at 50% 45%, #000 50%, transparent 72%);
+          mask:radial-gradient(circle at 50% 45%, #000 50%, transparent 72%);
 }
 #orb:active{transform:scale(.96)}
 @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes sweep{to{transform:rotate(360deg)}}
 body[data-state="connecting"] #orb{animation:pulse .9s ease-in-out infinite}
-body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite}
+body[data-state="connecting"] #orb::before{animation-duration:2.2s}
+body[data-state="speaking"] #orb{animation:pulse 1.6s ease-in-out infinite;
+  box-shadow:0 0 0 12px rgba(59,130,246,.12),0 0 0 28px rgba(59,130,246,.06),0 22px 70px rgba(29,78,216,.45),
+    inset 0 -20px 42px rgba(4,14,48,.5),inset 0 10px 28px rgba(255,255,255,.36)}
+body[data-state="speaking"] #orb::before{animation-duration:3s}
 @keyframes pulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.06);filter:brightness(1.12)}}
 .hint{margin-top:1.4rem;font-size:1.06rem;font-weight:600;color:#1e40af;min-height:1.6em}
 .examples{margin-top:1.2rem;display:flex;flex-direction:column;gap:.5rem;width:100%}

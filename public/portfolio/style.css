@@ -76,3 +76,28 @@ footer{padding:30px 0 46px;color:#8aa0ba;font-size:13px;text-align:center}
 .wall-tile.art-tile strong{padding-bottom:18px;text-shadow:0 2px 10px rgba(0,0,0,.45)}
 .wall-tile.art-tile:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(7,27,75,.85) 100%);z-index:1}
 .tag{display:inline-block;font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--blue);margin-bottom:8px}
+
+/* CALM PASS: portfolio first, Axon as one project */
+.calm-hero{padding:46px 0 26px;background:linear-gradient(180deg,#f5f9ff,#fff);border-bottom:1px solid #e6eef7}
+.calm-hero h1{font-size:44px;line-height:1.05;color:var(--navy);margin:8px 0 10px;letter-spacing:-.02em}
+.calm-hero p{font-size:17px;line-height:1.55;color:var(--muted);max-width:720px;margin:0}
+.calm-section{padding:30px 0 10px}
+.project-card-grid.five{grid-template-columns:repeat(5,1fr)}
+.project-btn+.project-btn{margin-top:6px}
+.project-btn.plain{border-color:#c9dbf0;color:#4d6c92}
+.example-list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.ex-row{display:grid;grid-template-columns:240px 1fr auto;gap:18px;align-items:center;padding:14px 18px;border-top:1px solid #edf2f8}
+.ex-row:first-child{border-top:0}
+.ex-row h3{margin:0;font-size:16px;color:var(--navy)}
+.ex-row p{margin:0;font-size:14px;line-height:1.45;color:var(--muted)}
+.ex-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ex-links a{border:1px solid #1680ff;color:#0f6eea;border-radius:6px;padding:7px 11px;font-size:12px;font-weight:800;white-space:nowrap}
+.ex-tag{display:inline-block;margin-top:5px;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5f7da3}
+.ex-tag.soon{color:#b7791f}
+.ex-soon{font-size:12px;font-weight:800;color:#b7791f;white-space:nowrap}
+.calm-note{font-size:13px;color:#7489a1;margin:10px 2px 0}
+.axon-top-grid.two{grid-template-columns:.9fr 1.3fr}
+.wall-tile.soon{background:linear-gradient(145deg,#56657a,#8a9bb2);cursor:default}
+@media(max-width:1100px){.project-card-grid.five{grid-template-columns:repeat(3,1fr)}.axon-top-grid.two{grid-template-columns:1fr}}
+@media(max-width:800px){.ex-row{grid-template-columns:1fr;gap:6px}.ex-links{justify-content:flex-start}.project-card-grid.five{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.project-card-grid.five{grid-template-columns:1fr}.calm-hero h1{font-size:34px}}
