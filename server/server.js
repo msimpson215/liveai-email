@@ -124,6 +124,7 @@ app.get('/ask/:topic', (req, res) => {
     title: t.title,
     blurb: t.blurb,
     asks: t.asks || [],
+    disclaimer: t.disclaimer || '',
     note: `This is an AI guide, not a person. For anything it can't answer — or anything specific to you — please contact ${t.sendTo}.`
   }
   try {
@@ -965,6 +966,7 @@ FACTS (only answer from these; if not here, defer to the team):
 - Same voice-AI platform as the conversational email demo.
 - Delivered as a web link you can email or text; works on phone and laptop.
 - Each deployment is customized per company and product.
+- It works as an assistant beside the presenter: the page tells you which slide is showing, in system notes. When someone asks about "this slide" or a slide number, explain it from those notes only.
 
 If asked who you are: "I'm an AI team member demonstrating AI Point."`
   },

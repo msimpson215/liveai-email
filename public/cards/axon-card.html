@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#061636">
+<meta name="robots" content="noindex">
+<title>Martin Simpson — Axon AI</title>
+<link rel="icon" href="/icons/axon-blue-192.png">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;
+    padding:32px 16px;background:#e9eef6;
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  .label{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#5d7090;margin:0 0 -18px}
+  .card{
+    width:min(100%,560px);aspect-ratio:3.5/2;border-radius:18px;overflow:hidden;position:relative;
+    box-shadow:0 24px 60px rgba(6,22,54,.28);
+  }
+  .front{
+    background:radial-gradient(60% 90% at 85% 50%,rgba(37,99,235,.55),transparent 70%),linear-gradient(135deg,#0a2150,#030b1f);
+    color:#fff;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;padding:7% 7%;
+  }
+  .brand{font-size:clamp(13px,2.6vw,16px);font-weight:800;letter-spacing:.2em;color:#93c5fd}
+  .name{margin:10px 0 2px;font-size:clamp(22px,5.4vw,34px);font-weight:800;letter-spacing:-.01em}
+  .role{margin:0 0 14px;font-size:clamp(12px,2.6vw,15px);color:#c9d8f5}
+  .row{margin:4px 0;font-size:clamp(11px,2.4vw,14px);color:#e3ecff}
+  .row a{color:inherit;text-decoration:none}
+  .orb{
+    justify-self:center;width:78%;aspect-ratio:1;border-radius:50%;
+    background:
+      radial-gradient(circle at 32% 26%,rgba(255,255,255,.9) 0 6%,transparent 22%),
+      radial-gradient(circle at 50% 42%,#4f8ff7 0%,#1d4ed8 48%,#0a1f5c 100%);
+    box-shadow:0 0 30px rgba(96,165,250,.7),0 0 70px rgba(37,99,235,.4),inset 0 -14px 30px rgba(4,14,48,.55);
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:clamp(14px,3.4vw,20px);text-shadow:0 1px 8px rgba(0,20,80,.6);
+  }
+  .back{background:#fff;display:grid;grid-template-columns:auto 1fr;gap:6%;align-items:center;padding:6% 7%;color:#0b285d}
+  .back img{height:min(64vw,250px);max-height:100%;aspect-ratio:1;display:block}
+  .back h2{margin:0 0 8px;font-size:clamp(18px,4.4vw,28px);line-height:1.15}
+  .back p{margin:0;font-size:clamp(11px,2.5vw,15px);line-height:1.45;color:#3d557a}
+  .back b{color:#1269ed}
+  .try{display:inline-block;margin-top:4px;padding:12px 20px;border-radius:10px;background:#1269ed;color:#fff;font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+  <p class="label">Front</p>
+  <div class="card front">
+    <div>
+      <div class="brand">AXON AI</div>
+      <h1 class="name">Martin Simpson</h1>
+      <p class="role">Founder &amp; Inventor</p>
+      <p class="row"><a href="mailto:msimpson215@gmail.com">msimpson215@gmail.com</a></p>
+      <p class="row">Lebanon, Illinois</p>
+    </div>
+    <div class="orb">Axon AI</div>
+  </div>
+
+  <p class="label">Back</p>
+  <div class="card back">
+    <img src="/qr/axon-marty.png" alt="QR code — scan to talk with Martin's AI">
+    <div>
+      <h2>Scan to talk with my AI</h2>
+      <p>Ask it anything about my work, inventions, and experience. <b>It answers out loud.</b></p>
+    </div>
+  </div>
+
+  <a class="try" href="/cv2/talk.html">Open the AI now</a>
+</body>
+</html>

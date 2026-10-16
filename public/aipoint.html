@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#061636"/>
+<link rel="icon" href="/icons/axon-blue-192.png"/>
+<title>AI Point — Presentation Assistant Example</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:#030b1f;color:#0b285d;-webkit-font-smoothing:antialiased}
+.deck{position:fixed;inset:0;display:grid;place-items:center;padding:3vh 3vw 9vh}
+.slide{
+  position:absolute;width:min(92vw,calc(78vh*16/9));aspect-ratio:16/9;background:#fff;border-radius:14px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);padding:5.5% 6.5%;display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transform:translateX(30px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;
+}
+.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide .kicker{font-size:clamp(10px,1.3vw,15px);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#1269ed}
+.slide h1{font-size:clamp(24px,4.6vw,62px);line-height:1.05;margin:.35em 0 .3em;letter-spacing:-.02em;color:#071b4b}
+.slide h2{font-size:clamp(20px,3.2vw,44px);line-height:1.1;margin:.3em 0 .5em;color:#071b4b}
+.slide p{font-size:clamp(13px,1.7vw,23px);line-height:1.5;color:#46607f;max-width:46em}
+.slide ul{margin-top:.4em;padding-left:1.1em}
+.slide li{font-size:clamp(13px,1.7vw,23px);line-height:1.5;color:#2b4568;margin:.25em 0}
+.slide .num{position:absolute;right:3%;bottom:4%;font-size:clamp(10px,1.1vw,14px);color:#9aabc4;font-weight:700}
+.slide .accent{position:absolute;left:0;top:0;bottom:0;width:1.2%;background:linear-gradient(#1269ed,#60a5fa);border-radius:14px 0 0 14px}
+.bar{position:fixed;left:0;right:0;bottom:0;height:8vh;min-height:52px;display:flex;align-items:center;justify-content:center;gap:14px;color:#c9d8f5;font-weight:700;font-size:14px}
+.bar button{border:1px solid rgba(147,197,253,.4);background:rgba(255,255,255,.06);color:#fff;border-radius:10px;padding:9px 16px;font:inherit;cursor:pointer}
+.bar button:disabled{opacity:.35;cursor:default}
+.assist{position:fixed;right:2.4vw;bottom:10vh;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5}
+#orb{
+  position:relative;width:96px;height:96px;border-radius:50%;cursor:pointer;border:3px solid rgba(147,197,253,.95);
+  background:radial-gradient(circle at 50% 40%,#123a85 0%,#0a2259 62%,#071a45 100%);
+  box-shadow:0 0 24px rgba(96,165,250,.7),0 0 60px rgba(37,99,235,.35);display:grid;place-items:center
+}
+#orb svg{width:50%;position:relative;z-index:1}
+#orb::before,#orb::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(147,197,253,.7);animation:ripple 2.6s ease-out infinite;pointer-events:none}
+#orb::after{animation-delay:1.3s}
+@keyframes ripple{0%{transform:scale(1);opacity:.85}100%{transform:scale(1.6);opacity:0}}
+body.connecting #orb::before,body.connecting #orb::after{animation-duration:1.2s}
+body.speaking #orb::before,body.speaking #orb::after{animation-duration:1.5s}
+body.speaking #orb{box-shadow:0 0 34px rgba(147,197,253,.95),0 0 80px rgba(37,99,235,.55)}
+#hint{font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.8);text-align:center;max-width:150px}
+.tag{position:fixed;left:2.4vw;top:2.2vh;font-size:12px;font-weight:800;letter-spacing:.16em;color:#93c5fd}
+.tag a{color:#93c5fd;text-decoration:none}
+@media(max-width:700px){.assist{bottom:9vh}#orb{width:72px;height:72px}}
+</style>
+</head>
+<body class="idle">
+<div class="tag"><a href="/portfolio/">AXON AI</a> · AI POINT EXAMPLE</div>
+
+<div class="deck" id="deck">
+  <section class="slide on" data-say="Slide 1, the title slide. AI Point: presentations with an AI assistant beside the presenter.">
+    <div class="accent"></div>
+    <div class="kicker">Axon AI</div>
+    <h1>AI Point</h1>
+    <p>Your slides, with an AI assistant standing beside you that can explain them and answer questions out loud.</p>
+    <span class="num">1 / 5</span>
+  </section>
+  <section class="slide" data-say="Slide 2, the problem. Presentations are one-way. Questions wait until the end or never get asked. A deck sent by email can't explain itself.">
+    <div class="accent"></div>
+    <div class="kicker">The problem</div>
+    <h2>Presentations only go one way.</h2>
+    <ul>
+      <li>Questions wait until the end, or never get asked.</li>
+      <li>The presenter can't be in every room.</li>
+      <li>A deck sent by email can't explain itself.</li>
+    </ul>
+    <span class="num">2 / 5</span>
+  </section>
+  <section class="slide" data-say="Slide 3, how it works. Each page is a slide. The AI assistant in the corner knows which slide is showing, explains it, and answers questions by voice. It only answers from the company's approved information.">
+    <div class="accent"></div>
+    <div class="kicker">How it works</div>
+    <h2>Click through the slides. Tap the orb to ask.</h2>
+    <ul>
+      <li>Each page is a slide, on a phone or a laptop.</li>
+      <li>The assistant knows which slide is showing and can explain it.</li>
+      <li>It answers by voice, from the company's approved information only.</li>
+    </ul>
+    <span class="num">3 / 5</span>
+  </section>
+  <section class="slide" data-say="Slide 4, where it fits. Sales pitches, investor decks, training, and client briefs sent as one link by text or email.">
+    <div class="accent"></div>
+    <div class="kicker">Where it fits</div>
+    <h2>Anywhere a deck has to do the talking.</h2>
+    <ul>
+      <li>Sales pitches and investor decks</li>
+      <li>Employee training and onboarding</li>
+      <li>Client briefs sent as one link by text or email</li>
+    </ul>
+    <span class="num">4 / 5</span>
+  </section>
+  <section class="slide" data-say="Slide 5, the last slide. Try it: tap the orb and ask anything about this presentation.">
+    <div class="accent"></div>
+    <div class="kicker">Try it</div>
+    <h2>Tap the orb and ask anything about this presentation.</h2>
+    <p>Try: "What happens on slide three?" or "Who would use this?"</p>
+    <span class="num">5 / 5</span>
+  </section>
+</div>
+
+<div class="bar">
+  <button type="button" id="prev">← Back</button>
+  <span id="count">1 / 5</span>
+  <button type="button" id="next">Next →</button>
+</div>
+
+<div class="assist">
+  <div id="orb" role="button" tabindex="0" aria-label="Tap to talk with the presentation assistant">
+    <svg viewBox="0 0 120 100" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" aria-hidden="true">
+      <rect x="47" y="12" width="26" height="46" rx="13" fill="#fff" stroke="none"/>
+      <path d="M37 46c0 13 10 23 23 23s23-10 23-23"/><path d="M60 69v14M47 86h26"/>
+    </svg>
+  </div>
+  <div id="hint">Tap to ask the assistant</div>
+</div>
+
+<script src="/axon-voice.js"></script>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next'),count=document.getElementById('count');
+let cur=0,dc=null;
+function tellSlide(){
+  if(!dc||dc.readyState!=='open')return;
+  try{dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'system',
+    content:[{type:'input_text',text:'The presenter is now showing '+slides[cur].dataset.say+' If asked about the current slide, explain this one.'}]}}))}catch(e){}
+}
+function show(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,n)=>s.classList.toggle('on',n===cur));
+  count.textContent=(cur+1)+' / '+slides.length;
+  prevBtn.disabled=cur===0;nextBtn.disabled=cur===slides.length-1;
+  tellSlide();
+}
+prevBtn.onclick=()=>show(cur-1);nextBtn.onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown')show(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);
+  if(e.key==='Escape')stop();
+});
+show(0);
+
+const orb=document.getElementById('orb'),hint=document.getElementById('hint');
+let pc=null,localStream=null,starting=false,audioEl=null,voice=null;
+function setState(s,msg){document.body.className=s;if(msg!==undefined)hint.textContent=msg;}
+function ensureAudio(){if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;document.body.appendChild(audioEl);}return audioEl;}
+async function stop(){
+  if(voice){voice.detach();voice=null}
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  dc=null;starting=false;setState('idle','Tap to ask the assistant');
+}
+let reconnecting=false,reconnectTries=0;
+async function handleLost(){
+  if(reconnecting)return;reconnecting=true;
+  try{if(voice){voice.detach();voice=null}}catch(e){}
+  try{if(pc){pc.close()}}catch(e){}
+  pc=null;
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop())}catch(e){}localStream=null}
+  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
+  setTimeout(async()=>{try{await connectVoice();reconnectTries=0;}catch(e){if(reconnectTries<5)handleLost();}finally{reconnecting=false;}},wait);
+}
+async function connectVoice(){
+  const r=await fetch('/session?gate=1&src=aipoint',{cache:'no-store'});
+  const data=await r.json();
+  if(!r.ok||data.error)throw new Error(data.error||'session');
+  const key=data.value||(data.client_secret&&data.client_secret.value);
+  if(!key)throw new Error('no token');
+  pc=new RTCPeerConnection();
+  const audio=ensureAudio();let remoteStream=null;
+  pc.ontrack=e=>{remoteStream=e.streams[0];if(audio.srcObject!==e.streams[0]){audio.srcObject=e.streams[0];audio.play().catch(()=>{});}};
+  localStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  const micTrack=localStream.getTracks()[0];micTrack.enabled=false;pc.addTrack(micTrack);
+  dc=pc.createDataChannel('oai-events');
+  dc.addEventListener('open',()=>{tellSlide();if(AxonVoice.hasHistory())return;try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}});
+  dc.addEventListener('message',ev=>{try{const m=JSON.parse(ev.data);
+    if(m.type==='response.created')setState('speaking','Speaking…');
+    if(m.type==='response.done')setState('listening','Listening — go ahead');}catch(e){}});
+  const offer=await pc.createOffer();await pc.setLocalDescription(offer);
+  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{method:'POST',body:offer.sdp,headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}});
+  if(!sdp.ok)throw new Error('sdp');
+  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
+  voice=AxonVoice.attach({dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,voice:data.voice,pc:pc,onLost:handleLost});
+  setState('listening','Listening — go ahead');
+}
+async function toggle(){
+  if(starting)return;
+  if(pc){await stop();return}
+  starting=true;setState('connecting','One moment…');
+  try{await connectVoice();}catch(e){console.error(e);await stop();setState('idle','That didn\u2019t connect. Tap to try again.');}
+  starting=false;
+}
+orb.addEventListener('click',toggle);
+orb.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+window.addEventListener('pagehide',()=>{if(pc||starting)stop();});
+</script>
+</body>
+</html>

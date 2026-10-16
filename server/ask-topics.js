@@ -17,8 +17,9 @@
 
 export const ASK_TOPICS = {
   'stress-test': {
-    title: 'Your nuclear stress test',
-    blurb: 'Ask anything about the test — before it, after it, or weeks from now.',
+    title: 'Nuclear Stress Test',
+    blurb: 'Our AI assistant can help you understand the test — before it, after it, or weeks from now.',
+    disclaimer: 'General information only, not medical advice. Please talk with your physician or the clinic about anything specific to you.',
     opening:
       "Hi there. I'm here to talk about the nuclear stress test — before it, after it, whenever. What would you like to know?",
     role: 'a calm, friendly guide who explains what a nuclear stress test is and what to expect',
