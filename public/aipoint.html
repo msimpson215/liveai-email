@@ -13,13 +13,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:#030b1f;color:#0b285d;-webkit-font-smoothing:antialiased}
-.deck{position:fixed;inset:0;display:grid;place-items:center;padding:3vh 3vw 9vh}
+.deck{position:fixed;left:0;right:0;top:0;bottom:8vh}
 .slide{
-  position:absolute;width:min(92vw,calc(78vh*16/9));aspect-ratio:16/9;background:#fff;border-radius:14px;
-  box-shadow:0 30px 80px rgba(0,0,0,.45);padding:5.5% 6.5%;display:flex;flex-direction:column;justify-content:center;
-  opacity:0;transform:translateX(30px);transition:opacity .35s ease,transform .35s ease;pointer-events:none;
+  position:absolute;left:50%;top:50%;width:min(88vw,calc(76vh*16/9));aspect-ratio:16/9;background:#fff;border-radius:14px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);padding:5% 6.5%;display:flex;flex-direction:column;justify-content:center;
+  opacity:0;transform:translate(calc(-50% + 30px),-50%);transition:opacity .35s ease,transform .35s ease;pointer-events:none;
 }
-.slide.on{opacity:1;transform:none;pointer-events:auto}
+.slide.on{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
 .slide .kicker{font-size:clamp(10px,1.3vw,15px);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#1269ed}
 .slide h1{font-size:clamp(24px,4.6vw,62px);line-height:1.05;margin:.35em 0 .3em;letter-spacing:-.02em;color:#071b4b}
 .slide h2{font-size:clamp(20px,3.2vw,44px);line-height:1.1;margin:.3em 0 .5em;color:#071b4b}
