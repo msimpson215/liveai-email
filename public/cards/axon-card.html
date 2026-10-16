@@ -17,12 +17,13 @@
   }
   .label{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#5d7090;margin:0 0 -18px}
   .card{
-    width:min(100%,560px);aspect-ratio:3.5/2;border-radius:18px;overflow:hidden;position:relative;container-type:inline-size;flex:none;
+    width:100%;aspect-ratio:3.5/2;border-radius:18px;overflow:hidden;position:relative;
     box-shadow:0 24px 60px rgba(6,22,54,.28);
   }
+  .wrap{width:min(100%,560px);container-type:inline-size;flex:none}
   .front{
     background:radial-gradient(60% 90% at 85% 50%,rgba(37,99,235,.55),transparent 70%),linear-gradient(135deg,#0a2150,#030b1f);
-    color:#fff;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;padding:0 7%;
+    color:#fff;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;padding:0 7cqw;
   }
   .brand{font-size:2.6cqw;font-weight:800;letter-spacing:.2em;color:#93c5fd}
   .name{margin:1.6cqw 0 .4cqw;font-size:6cqw;line-height:1.05;font-weight:800;letter-spacing:-.01em}
@@ -37,7 +38,7 @@
     box-shadow:0 0 30px rgba(96,165,250,.7),0 0 70px rgba(37,99,235,.4),inset 0 -14px 30px rgba(4,14,48,.55);
     display:grid;place-items:center;color:#fff;font-weight:800;font-size:3.4cqw;text-shadow:0 1px 8px rgba(0,20,80,.6);
   }
-  .back{background:#fff;display:grid;grid-template-columns:auto 1fr;gap:5cqw;align-items:center;padding:0 7%;color:#0b285d}
+  .back{background:#fff;display:grid;grid-template-columns:auto 1fr;gap:5cqw;align-items:center;padding:0 7cqw;color:#0b285d}
   .back img{width:40cqw;height:40cqw;display:block}
   .back h2{margin:0 0 1.6cqw;font-size:5cqw;line-height:1.15}
   .back p{margin:0;font-size:2.7cqw;line-height:1.45;color:#3d557a}
@@ -47,7 +48,7 @@
 </head>
 <body>
   <p class="label">Front</p>
-  <div class="card front">
+  <div class="wrap"><div class="card front">
     <div>
       <div class="brand">AXON AI</div>
       <h1 class="name">Martin Simpson</h1>
@@ -56,16 +57,16 @@
       <p class="row">Lebanon, Illinois</p>
     </div>
     <div class="orb">Axon AI</div>
-  </div>
+  </div></div>
 
   <p class="label">Back</p>
-  <div class="card back">
+  <div class="wrap"><div class="card back">
     <img src="/qr/axon-marty.png" alt="QR code — scan to talk with Martin's AI">
     <div>
       <h2>Scan to talk with my AI</h2>
       <p>Ask it anything about my work, inventions, and experience. <b>It answers out loud.</b></p>
     </div>
-  </div>
+  </div></div>
 
   <a class="try" href="/cv2/talk.html">Open the AI now</a>
 </body>
