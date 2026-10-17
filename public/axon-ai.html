@@ -18,7 +18,7 @@
   .mark{
     position:fixed;top:max(30px,env(safe-area-inset-top));left:0;right:0;
     text-align:center;z-index:3;
-    font-size:13px;font-weight:800;letter-spacing:.38em;color:#0f1b33;
+    font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:.08em;color:#0f1b33;
   }
   .stage{
     position:fixed;inset:0;
@@ -42,14 +42,18 @@
   @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
-  .whisper{
-    margin-top:18px;text-align:center;
-    font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.01em;color:#0f1b33;
-    min-height:1.3em;transition:opacity .5s ease;
+  .under{margin-top:20px;min-height:40px;display:flex;align-items:center;justify-content:center}
+  .hint{font-size:15px;font-weight:500;color:#3a4660;text-align:center}
+  .hint:empty{display:none}
+  .pause{
+    display:none;appearance:none;cursor:pointer;
+    border:1.5px solid #0f1b33;background:transparent;color:#0f1b33;border-radius:999px;
+    padding:8px 22px;font:700 13px/1 inherit;letter-spacing:.12em;text-transform:uppercase;
+    transition:background .2s ease,color .2s ease;
   }
-  .whisper small{display:block;margin-top:4px;font-size:clamp(14px,1.6vw,18px);font-weight:500;color:#3a4660;letter-spacing:0}
-  body[data-state="speaking"] .whisper,
-  body[data-state="listening"] .whisper{opacity:0}
+  .pause:hover{background:#0f1b33;color:#faf8f6}
+  body.live .pause,body.paused .pause{display:inline-block}
+  body.live .hint,body.paused .hint{display:none}
 
   /* Text panel — grows out of the orb */
   .text{
@@ -134,7 +138,10 @@
 
   <div class="stage">
     <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
-    <p class="whisper"><span id="hint">Tap the Orb</span><small>to talk with Axon AI</small></p>
+    <div class="under">
+      <p class="hint" id="hint"></p>
+      <button type="button" class="pause" id="pauseBtn">Pause</button>
+    </div>
   </div>
 
   <aside class="text" id="textPane" aria-label="Text with Axon">
@@ -155,7 +162,6 @@
   <nav class="dots" aria-label="More">
     <button type="button" class="dot" id="textDot" aria-label="Text"><span>Text</span></button>
     <button type="button" class="dot" id="fileDot" aria-label="Files"><span>Files</span></button>
-    <button type="button" class="dot wait" id="soonDot" aria-label="Coming" tabindex="-1"><span></span></button>
   </nav>
 
   <input id="file" type="file" accept=".pdf,.doc,.docx,.txt,.md,.csv,application/pdf,text/plain">
@@ -164,6 +170,7 @@
 <script>
 const orb=document.getElementById('orb');
 const hint=document.getElementById('hint');
+const pauseBtn=document.getElementById('pauseBtn');
 const logEl=document.getElementById('log');
 const docsEl=document.getElementById('docs');
 const drop=document.getElementById('drop');
@@ -172,11 +179,16 @@ const textDot=document.getElementById('textDot');
 const fileDot=document.getElementById('fileDot');
 
 let pc=null,localStream=null,starting=false,audioEl=null,voice=null,dc=null;
-let greeted=false,textOffered=false,curAI=null;
+let greeted=false,textOffered=false,curAI=null,audioReady=false,pendingGreet=false;
 
 function setState(s,msg){
   document.body.dataset.state=s||'idle';
   if(msg!==undefined)hint.textContent=msg;
+}
+function setLive(on){
+  document.body.classList.toggle('live',on);
+  if(on)document.body.classList.remove('paused');
+  pauseBtn.textContent=on?'Pause':'Resume';
 }
 function ensureAudio(){
   if(!audioEl){
@@ -215,8 +227,9 @@ async function stopVoice(){
   if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
-  dc=null;starting=false;
-  setState('idle','Tap the Orb');
+  dc=null;starting=false;audioReady=false;pendingGreet=false;
+  setLive(false);
+  setState('idle');
 }
 
 let reconnecting=false,reconnectTries=0;
@@ -252,7 +265,7 @@ async function connectVoice(){
     remoteStream=e.streams[0];
     if(audio.srcObject!==e.streams[0]){
       audio.srcObject=e.streams[0];
-      audio.play().catch(function(){});
+      audio.play().then(function(){audioReady=true}).catch(function(){audioReady=false});
     }
   };
   localStream=await navigator.mediaDevices.getUserMedia({
@@ -265,7 +278,17 @@ async function connectVoice(){
   dc=pc.createDataChannel('oai-events');
   dc.addEventListener('open',function(){
     if(AxonVoice.hasHistory())return;
-    try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
+    let waited=0;
+    const check=setInterval(function(){
+      waited+=150;
+      if(audioReady){clearInterval(check);greet();}
+      else if(waited>=1500){
+        clearInterval(check);
+        pendingGreet=true;
+        setLive(false);
+        setState('idle','Tap the orb to hear Axon');
+      }
+    },150);
   });
   dc.addEventListener('message',function(ev){
     try{
@@ -307,18 +330,31 @@ async function connectVoice(){
     dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,
     voice:data.voice,pc:pc,onLost:handleLost
   });
+  setLive(true);
   setState('listening');
+}
+
+function greet(){
+  pendingGreet=false;
+  setLive(true);
+  try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
 }
 
 async function toggle(){
   if(starting)return;
-  if(pc){await stopVoice();return;}
+  if(pc&&pendingGreet){
+    audioEl.play().then(function(){audioReady=true;greet();}).catch(function(){});
+    return;
+  }
+  if(pc){await stopVoice();document.body.classList.add('paused');return;}
   starting=true;
-  setState('connecting','…');
+  setState('connecting','');
   try{await connectVoice();}
   catch(e){
+    const wasPaused=document.body.classList.contains('paused');
     await stopVoice();
-    setState('idle',e.status===429?'Busy — tap again':'Tap the Orb');
+    if(wasPaused)document.body.classList.add('paused');
+    setState('idle',e.status===429?'Busy right now. Tap the orb to try again.':'Tap the orb to talk with Axon');
   }
   starting=false;
 }
@@ -376,6 +412,7 @@ async function readFile(file){
 }
 
 orb.addEventListener('click',toggle);
+pauseBtn.addEventListener('click',toggle);
 textDot.addEventListener('click',toggleText);
 fileDot.addEventListener('click',toggleFiles);
 drop.addEventListener('click',function(){fileInput.click()});
@@ -395,6 +432,7 @@ document.getElementById('textForm').addEventListener('submit',function(e){
   sendText(document.getElementById('q').value);
 });
 window.addEventListener('pagehide',function(){if(pc||starting)stopVoice()});
+setTimeout(toggle,400);
 </script>
 </body>
 </html>
