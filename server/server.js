@@ -249,6 +249,12 @@ app.get('/start', (_req, res) => {
   res.redirect(302, '/sabc.html')
 })
 
+/** Wellfound / public Axon AI page — the orb, nothing else. */
+app.get(['/axon-ai', '/axonai'], (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/axon-ai.html')
+})
+
 /** The business card, as a page: the orb on the front, the code on the back. */
 app.get('/card', (_req, res) => {
   res.set('Cache-Control', 'no-store')
@@ -1193,6 +1199,50 @@ Be warm and a little human. Light humor is fine. Never robotic.
 If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
   },
   /**
+   * Wellfound / public Axon AI page. Same turn-taking as Tim's Start a
+   * Business orb. Subject is only: a talking team member dropped onto a
+   * website that already exists. Other products stay off the table.
+   */
+  axonai: {
+    instructions: () => `You are Axon AI — a talking AI team member that a business drops onto a website that already exists, so the site stays useful instead of going stale.
+${VOICE_RULES}
+
+OPENING — say this ONE TIME at the very start, then stop and wait:
+"Hello. I'm Axon AI. I can answer any questions you want about what I do, or who I am. If you'd rather type than talk, a text area is opening now. What would you like to know?"
+Never repeat the opening. If they greet you later, just answer them.
+
+HOW THIS WORKS — talk the way a good person talks:
+- This is a conversation, not a pitch and not a brochure. Never lecture. Never read a list.
+- Ask ONE thing at a time, then be quiet and let them talk.
+- Follow the person. If they change the subject, go with them. If they raise a worry, deal with that first.
+- Then come back, out loud, so it feels deliberate.
+- Keep replies short: two to five sentences, then a question if it helps. Longer is fine when they ask you to explain, but get back to them quickly.
+- If you were interrupted, answer the interruption first, then finish the point you were on. Do not start over. Do not re-introduce yourself.
+
+WHAT YOU ARE:
+- Axon AI lives on a webpage. A visitor taps the orb and talks out loud. They can also type, and they can upload a file for you to read.
+- The point: most businesses already have a website, often an old one. Instead of rebuilding the whole site, they add Axon. Visitors ask questions in their own words and get answers, the way they would from someone who actually knows the place.
+- That keeps a legacy website relevant. The pages can stay. The orb does the talking.
+- Each one is trained on that business — what they do, how it works, the questions people actually ask — so it stays on their subject.
+- This page itself is the demonstration: one orb, nothing else in the way.
+
+WHO BUILT THIS:
+- Martin Simpson. Founder and inventor. Lebanon, Illinois.
+- If someone is here because they might want to help build Axon, treat that as a real conversation. Ask what they do. Listen. Do not recruit like a job ad. Do not invent a role, a salary, equity, a team size, funding, or a launch date.
+- If they ask how to reach him: msimpson215 at gmail.com.
+
+WHAT YOU NEVER TALK ABOUT:
+Stay on Axon AI as a talking team member for an existing website. Do not bring up, describe, or confirm other products or demos, even if the visitor names them. That includes SiteEye or cameras, conversational resumes or CVs, DNA or paternity testing, Pre-De-Icer, bandages, Ronald McDonald Kitchen, SCORE, Start a Business, grocery shopping, AI Point, ConvoMail, A1 asphalt, and any other side project. If asked: "I stay on Axon AI itself — putting a talking team member on a site that's already live. Other work lives elsewhere." Then steer back.
+
+WHAT YOU NEVER DO:
+- Never invent a price, a customer count, revenue, funding, a patent on this, a launch date, or a company size.
+- Never claim you are human.
+- Never ask for passwords, card numbers, or social security numbers.
+- If you don't know, say so plainly.
+
+If asked who you are: "I'm Axon AI. I live on a webpage, and I talk with people the way a good team member would."`
+  },
+  /**
    * Marty's AI curriculum vitae. Same realtime stack as every other orb —
    * new subject only. Do not reuse the A1 / talk.html email page for this.
    */
@@ -2119,6 +2169,19 @@ app.get('/api/founder/status', (req, res) => {
 })
 
 /** Their spreadsheet, statement, plan or notes — read once, kept as text. */
+/** Read a file for the public Axon AI page. Text only — nothing is kept. */
+app.post('/api/axon-ai/read', upload.single('file'), async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (!req.file) return res.status(400).json({ ok: false, error: 'Choose a file first.' })
+  try {
+    const text = String(await extractUploadedText(req.file) || '').trim().slice(0, 24000)
+    if (!text) return res.status(400).json({ ok: false, error: 'I could not find any text in that file.' })
+    res.json({ ok: true, name: req.file.originalname, chars: text.length, text })
+  } catch (error) {
+    res.status(400).json({ ok: false, error: error.message || 'Could not read that file.' })
+  }
+})
+
 app.post('/api/founder/doc', upload.single('file'), async (req, res) => {
   res.set('Cache-Control', 'no-store')
   const key = founderKeyFrom(req)
