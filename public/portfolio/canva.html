@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4f7fc">
+<title>Martin Simpson — Entire Portfolio</title>
+<link rel="icon" href="/icons/axon-blue-192.png">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#f4f7fc}
+  .stage{position:relative;width:100%;max-width:1024px;margin:0 auto;line-height:0}
+  .art{display:block;width:100%;height:auto}
+  .hot{position:absolute;display:block;border-radius:12px;-webkit-tap-highlight-color:transparent}
+  .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+  body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img class="art" src="/portfolio/assets/canva-dashboard.png" width="1024" height="1536"
+       alt="Martin Simpson — Entire Portfolio. Projects, products, and AI applications, powered by Axon AI.">
+</div>
+<script>
+/* Click areas over the Canva artwork, in pixels of a 683 x 1024 view of it.
+   Add ?tune=1 to the URL to outline them after a new export. */
+var W=683,H=1024;
+var SPOTS=[
+  [463,8,512,34,'/portfolio/','Portfolio'],
+  [536,8,576,34,'/cv2/','About'],
+  [597,8,645,34,'mailto:msimpson215@gmail.com','Contact'],
+
+  [27,217,146,383,'/axon-ai','Axon AI'],
+  [155,217,273,383,'/cv2/','AI Interactive Résumé'],
+  [283,217,401,383,'/ask/stress-test','Conversational Pamphlets'],
+  [411,217,529,383,'/talk.html','Convo Email'],
+  [539,217,657,383,'https://a1-test-fyjq.onrender.com','Website AI'],
+
+  [27,435,178,605,'/portfolio/predeicer.html','Pre-De-Icer'],
+  [188,435,337,605,'/portfolio/siteeye.html','SiteEye 360'],
+  [347,435,497,605,'/portfolio/bandage.html','No More Boo-Boos'],
+  [508,435,657,605,'/portfolio/rmk.html','Ronald McDonald Kitchen'],
+
+  [27,657,233,803,'/dna-fraternity.html','Home DNA Paternity Test'],
+  [243,657,443,803,'/dna','Axon DNA Brain'],
+
+  [27,854,178,970,'/grocery','Grocery Shopper'],
+  [189,854,336,970,'/aipoint.html','AI Point'],
+  [347,854,497,970,'/mentor','SCORE AI'],
+  [508,854,657,970,'/start','Start a Business'],
+
+  [272,992,412,1014,'mailto:msimpson215@gmail.com','Email Martin']
+];
+var stage=document.getElementById('stage');
+SPOTS.forEach(function(s){
+  var a=document.createElement('a');
+  a.className='hot';
+  a.href=s[4];
+  a.setAttribute('aria-label',s[5]);
+  if(/^https?:/.test(s[4]))a.target='_blank',a.rel='noopener';
+  a.style.left=(s[0]/W*100)+'%';
+  a.style.top=(s[1]/H*100)+'%';
+  a.style.width=((s[2]-s[0])/W*100)+'%';
+  a.style.height=((s[3]-s[1])/H*100)+'%';
+  stage.appendChild(a);
+});
+if(/[?&]tune=1/.test(location.search))document.body.classList.add('tune');
+</script>
+</body>
+</html>
