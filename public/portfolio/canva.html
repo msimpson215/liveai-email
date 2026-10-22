@@ -207,11 +207,132 @@ footer{
   .body{min-height:96px}
 }
 </style>
+
+<style id="approved-reference-v3">
+/* SOURCE OF TRUTH: uploaded approved 4x4 portfolio reference. */
+html,body{background:#fff!important}
+body{min-width:0}
+.wrap{width:min(1472px,96vw)!important;margin:0 auto!important}
+
+/* wide, low hero exactly like the approved composition */
+.hero{
+  height:180px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  position:relative!important;
+  border-bottom:0!important;
+  background:linear-gradient(180deg,#edf7ff 0%,#f8fbff 74%,#fff 100%)!important;
+}
+.hero:before,.hero:after{
+  content:""!important;position:absolute!important;z-index:0!important;bottom:-2px!important;
+  width:43%!important;height:118px!important;opacity:.55!important;
+  background:linear-gradient(180deg,#b9d9f4,#e7f3fc)!important;
+  clip-path:polygon(0 88%,10% 59%,19% 72%,33% 32%,47% 66%,59% 41%,72% 72%,86% 47%,100% 86%,100% 100%,0 100%)!important;
+}
+.hero:before{left:0!important}
+.hero:after{right:0!important;transform:scaleX(-1)!important}
+.hero-grid{
+  height:180px!important;padding:0!important;position:relative!important;z-index:2!important;
+  display:grid!important;grid-template-columns:300px 1fr 300px!important;gap:0!important;align-items:end!important;
+}
+.person{
+  height:180px!important;position:relative!important;overflow:hidden!important;
+  display:flex!important;align-items:flex-end!important;justify-content:center!important;text-align:center!important;
+}
+.person img{
+  border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;
+  transition:.18s transform,.18s filter!important;
+}
+.person:not(.martin) img{
+  width:236px!important;height:178px!important;object-fit:cover!important;object-position:center 15%!important;
+  -webkit-mask-image:radial-gradient(ellipse 62% 92% at 50% 50%,#000 67%,transparent 78%)!important;
+  mask-image:radial-gradient(ellipse 62% 92% at 50% 50%,#000 67%,transparent 78%)!important;
+}
+.person.martin img{
+  position:absolute!important;width:700px!important;height:auto!important;max-width:none!important;
+  left:-104px!important;top:-440px!important;object-fit:initial!important;
+  -webkit-mask-image:radial-gradient(ellipse 17% 23% at 38% 53%,#000 55%,transparent 69%)!important;
+  mask-image:radial-gradient(ellipse 17% 23% at 38% 53%,#000 55%,transparent 69%)!important;
+}
+.person:hover img{transform:translateY(-2px) scale(1.01)!important;filter:brightness(1.03)!important}
+.person b,.person small{display:none!important}
+
+.title{height:180px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+.title h1{
+  order:1!important;margin:0!important;color:#092858!important;font-size:clamp(50px,5vw,76px)!important;
+  line-height:.9!important;letter-spacing:-.045em!important;font-weight:900!important;white-space:nowrap!important
+}
+.title h1 span{color:#176be8!important}
+.title p{
+  order:2!important;margin:15px 0 0!important;color:#142e59!important;font-size:15px!important;
+  line-height:1!important;letter-spacing:.25em!important;text-transform:uppercase!important
+}
+.title .eyebrow{
+  order:3!important;margin-top:16px!important;color:#102b55!important;font-size:12px!important;
+  line-height:1!important;letter-spacing:.22em!important;font-weight:800!important
+}
+.title .hint{display:none!important}
+
+/* 4 columns × 4 rows, tight but not crowded */
+.grid{
+  width:100%!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px 16px!important;padding:14px 0 18px!important
+}
+.card{
+  border:1px solid #dfe7f0!important;border-radius:7px!important;background:#fff!important;
+  overflow:hidden!important;box-shadow:0 4px 12px rgba(20,54,94,.07)!important;
+  min-width:0!important;transform:none!important;
+  transition:.16s transform,.16s box-shadow,.16s border-color!important
+}
+.card:hover{transform:translateY(-2px)!important;box-shadow:0 9px 20px rgba(20,54,94,.13)!important;border-color:#a9c9ef!important}
+.pic{height:108px!important;background:#edf5ff!important;overflow:hidden!important}
+.pic img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
+.pic .art{
+  width:100%!important;height:100%!important;padding:12px!important;display:grid!important;place-items:center!important;
+  font-size:29px!important;font-weight:900!important;letter-spacing:.05em!important;color:#fff!important;
+  background:linear-gradient(145deg,#0a3475,#2f7bd8)!important
+}
+.body{height:80px!important;padding:7px 12px 9px!important;position:relative!important;overflow:hidden!important}
+.body h2{font-size:16px!important;line-height:1.08!important;margin:0 0 4px!important;color:#092858!important;font-weight:800!important}
+.body p{
+  font-size:12.5px!important;line-height:1.2!important;margin:0 54px 0 0!important;color:#5c6e87!important;
+  min-height:0!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;overflow:hidden!important
+}
+.body span{
+  position:absolute!important;right:10px!important;bottom:8px!important;margin:0!important;color:#176be8!important;
+  font-size:10px!important;line-height:1!important;font-weight:700!important
+}
+
+/* exact discreet power line; no explanatory Axon block */
+.power-footer{
+  width:min(1080px,72vw)!important;margin:0 auto 14px!important;display:grid!important;
+  grid-template-columns:1fr auto 1fr!important;align-items:center!important;gap:26px!important;color:#17355d!important
+}
+.power-footer span{height:1px!important;background:#7695bb!important}
+.power-footer b{font-size:11px!important;letter-spacing:.18em!important;white-space:nowrap!important}
+.axon-note,footer{display:none!important}
+
+@media(max-width:1050px){
+  .hero{height:auto!important}.hero-grid{height:auto!important;grid-template-columns:180px 1fr 180px!important}
+  .person{height:150px!important}.person:not(.martin) img{width:175px!important;height:148px!important}
+  .person.martin img{width:580px!important;left:-90px!important;top:-365px!important}
+  .title{height:150px!important}.title h1{font-size:50px!important}
+  .grid{grid-template-columns:repeat(2,1fr)!important}.pic{height:150px!important}.body{height:92px!important}
+}
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr 1fr!important}.title{grid-column:1/-1!important;grid-row:1!important;height:145px!important}
+  .person{grid-row:2!important;height:125px!important}.title h1{font-size:39px!important}.title p{font-size:11px!important}
+  .person:not(.martin) img{width:145px!important;height:124px!important}
+  .person.martin img{width:500px!important;left:-88px!important;top:-315px!important}
+  .grid{grid-template-columns:1fr!important}.pic{height:205px!important}.body{height:98px!important}
+  .power-footer{width:90vw!important;gap:12px!important}.power-footer b{font-size:9px!important}
+}
+</style>
 </head><body>
 <header class="hero"><div class="wrap hero-grid">
   <div class="person"><img src="data:image/jpeg;base64,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" alt="Joe Schanz"><b>Joe Schanz</b><small>Business operations & execution</small></div>
   <div class="title"><div class="eyebrow">Joe Schanz & Martin D. Simpson</div><h1>PROJECT <span>PORTFOLIO</span></h1><p>AI applications &nbsp;|&nbsp; products &nbsp;|&nbsp; inventions</p><div class="hint">Click any project to learn more.</div></div>
-  <a class="person" href="/cv2/" aria-label="Open Martin D. Simpson résumé"><img src="data:image/jpeg;base64,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" alt="Martin D. Simpson from St. Louis Business Journal"><b>Martin D. Simpson</b><small>Open résumé →</small></a>
+  <a class="person martin" href="/cv2/" aria-label="Open Martin D. Simpson résumé"><img src="/cv2/images/media/slbj-2003-pied-piper.jpg" alt="Martin D. Simpson from St. Louis Business Journal"><b>Martin D. Simpson</b><small>Open résumé →</small></a>
 </div></header>
 <main class="wrap"><section class="grid"><a class="card" href="/portfolio/projects/axon-websites.html">
   <div class="pic"><img src="/portfolio/assets/mock-axon-website.jpg" alt="Axon AI for Websites"></div>
@@ -219,11 +340,11 @@ footer{
 </a>
 <a class="card" href="/portfolio/projects/conversational-resume.html">
   <div class="pic"><div class="art">RÉSUMÉ</div></div>
-  <div class="body"><h2>Axon AI Conversational Résumé</h2><p>A résumé employers can talk to and use almost like a pre-interview.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Conversational Résumé</h2><p>A résumé you can talk to and learn all about the candidate before you interview.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/conversational-email.html">
   <div class="pic"><div class="art">E-MAIL</div></div>
-  <div class="body"><h2>Axon AI Conversational Email</h2><p>An email the recipient can actually have a conversation with.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Conversational Email</h2><p>Turn ordinary email into a conversation with your company's AI.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/ai-point.html">
   <div class="pic"><div class="art">AI POINT</div></div>
@@ -231,52 +352,51 @@ footer{
 </a>
 <a class="card" href="/portfolio/projects/patient-education.html">
   <div class="pic"><img src="/portfolio/assets/mock-stress-test.jpg" alt="Axon AI Patient Education"></div>
-  <div class="body"><h2>Axon AI Patient Education</h2><p>Scan a QR code and talk with an AI trained around one medical brochure, test or procedure.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Patient Education QR</h2><p>A HIPAA-compliant AI brain that explains medical brochures and procedures using a simple QR code.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/product-instructions.html">
   <div class="pic"><div class="art">HOW DO I…?</div></div>
-  <div class="body"><h2>Axon AI Product Instructions</h2><p>Replace a confusing instruction sheet with an AI that knows the product.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Product Instruction QR</h2><p>Scan a QR code on the instructions for step-by-step help from an AI that knows your product.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/personal-axon.html">
   <div class="pic"><div class="art">PERSONAL AXON</div></div>
-  <div class="body"><h2>Personal Axon AI</h2><p>One continuous personal AI for work, home, planning, relationships and everyday life.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Personal Axon</h2><p>Your personal AI assistant for work, home, relationships and everyday life.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/grocery-shopping.html">
   <div class="pic"><img src="/grocery/images/kitchen-hero.jpg" alt="Axon AI Grocery Shopping Teammate"></div>
-  <div class="body"><h2>Axon AI Grocery Shopping Teammate</h2><p>Shop hands-free by talking to a knowledgeable AI store teammate.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Grocery Shopping Teammate</h2><p>Tell it what you need and let it help find products, compare options, and suggest recipes.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/score-ai.html">
   <div class="pic"><div class="art">SCORE AI</div></div>
-  <div class="body"><h2>SCORE AI</h2><p>A demonstration of a conversational SCORE guide built with Axon AI.</p><span>Learn more →</span></div>
+  <div class="body"><h2>SCORE AI</h2><p>An AI business mentor that can answer your questions about SCORE anytime.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/start-business-ai.html">
   <div class="pic"><div class="art">START A BUSINESS</div></div>
-  <div class="body"><h2>Start a Business with AI</h2><p>A conversational business-startup guide customized around Tim Donahue’s program.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Start a Business with AI</h2><p>A step-by-step AI business consultant to help you plan, launch, and grow your business.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/dna-answers.html">
   <div class="pic"><img src="/portfolio/assets/mock-dna.jpg" alt="DNA Answers + Axon AI"></div>
-  <div class="body"><h2>DNA Answers + Axon AI</h2><p>DNA testing with an AI guide that explains the options and helps the customer get started.</p><span>Learn more →</span></div>
+  <div class="body"><h2>DNA Answers</h2><p>Legal, home, prenatal, sibling and other DNA testing with an AI that explains your options.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/std-sti-testing.html">
   <div class="pic"><img src="/std-testing/hero-couple-live.jpg" alt="Confidential STD/STI Testing + Axon AI"></div>
-  <div class="body"><h2>Confidential STD/STI Testing + Axon AI</h2><p>A confidential testing experience with an AI guide that explains options and next steps.</p><span>Learn more →</span></div>
+  <div class="body"><h2>STD / STI Testing</h2><p>Confidential testing with an AI that explains options and helps you take the next step.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/pre-de-icer.html">
   <div class="pic"><img src="/portfolio/assets/card-predeicer.png" alt="Pre-De-Icer"></div>
-  <div class="body"><h2>Pre-De-Icer</h2><p>Apply it before winter weather so frost, snow and ice do not bond firmly to the treated surface.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Pre-De-Icer</h2><p>Apply before winter weather so frost, snow and ice do not bond to the surface.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/siteeye-360.html">
   <div class="pic"><img src="/portfolio/assets/card-siteeye.png" alt="SiteEye 360 Live"></div>
-  <div class="body"><h2>SiteEye 360 Live</h2><p>Temporary remote viewing that arrives with the crew, streams all day and leaves when the job is done.</p><span>Learn more →</span></div>
+  <div class="body"><h2>SiteEye 360 Live</h2><p>Portable, temporary job-site monitoring with live viewing and AI support.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/no-more-boo-boos.html">
   <div class="pic"><img src="/portfolio/assets/mock-bandage.jpg" alt="No More Boo-Boos"></div>
-  <div class="body"><h2>No More Boo-Boos</h2><p>A children’s bandage designed to dissolve in warm water instead of being painfully pulled off.</p><span>Learn more →</span></div>
+  <div class="body"><h2>No More Boo-Boos</h2><p>A dissolvable bandage designed for children, with additional medical applications.</p><span>Learn more →</span></div>
 </a>
 <a class="card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
   <div class="pic"><img src="/portfolio/assets/rmk-art.png" alt="Ronald McDonald Kitchen"></div>
-  <div class="body"><h2>Ronald McDonald Kitchen</h2><p>A nonprofit concept centered on meals, comfort and practical help for families caring for seriously ill children.</p><span>Learn more →</span></div>
+  <div class="body"><h2>Ronald McDonald Kitchen</h2><p>A nonprofit concept to provide food, comfort and practical help for families with seriously ill children.</p><span>Learn more →</span></div>
 </a></section></main>
-<section class="axon-note"><div class="wrap inner"><div class="orb"></div><div><b>Powered by Axon AI</b><p>Axon AI is the customizable conversational brain behind many of the AI projects above. It can be built around a business, service, product or person, with dedicated knowledge and memory for the job it is designed to do.</p></div></div></section>
-<footer>Project Portfolio — Joe Schanz & Martin D. Simpson</footer>
+<div class="power-footer"><span></span><b>◈ &nbsp; POWERED BY AXON AI</b><span></span></div>
 </body></html>
