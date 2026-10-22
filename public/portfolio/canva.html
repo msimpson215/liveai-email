@@ -1,402 +1,110 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f6f9fd"><title>Project Portfolio — Joe Schanz & Martin D. Simpson</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project Portfolio — Joe Schanz & Martin D. Simpson</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#0b2048;background:#fff}a{text-decoration:none;color:inherit}
-.wrap{width:min(1180px,92%);margin:auto}
-.hero{background:linear-gradient(180deg,#eef6ff 0,#fff 100%);border-bottom:1px solid #e5edf6;padding:42px 0 32px}
-.hero-grid{display:grid;grid-template-columns:190px 1fr 190px;gap:34px;align-items:center}
-.person{text-align:center}.person img{width:126px;height:126px;border-radius:50%;object-fit:cover;border:5px solid #fff;box-shadow:0 8px 25px rgba(17,68,120,.16);transition:.18s transform,.18s box-shadow}.person:hover img{transform:translateY(-3px);box-shadow:0 13px 30px rgba(17,68,120,.22)}
-.person b{display:block;margin-top:9px;font-size:15px}.person small{display:block;color:#7488a2;font-size:11px;margin-top:3px}
-.title{text-align:center}.eyebrow{font-size:11px;font-weight:900;letter-spacing:.24em;color:#58759b;text-transform:uppercase}.title h1{font-size:62px;line-height:.96;margin:9px 0 10px;letter-spacing:-.04em}.title h1 span{color:#176be8}.title p{margin:0;color:#5c718f;font-size:17px}.title .hint{margin-top:12px;font-size:12px;color:#8495aa}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:42px 0 52px}
-.card{border:1px solid #dce7f3;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(24,64,105,.07);transition:.18s transform,.18s box-shadow,.18s border-color}.card:hover{transform:translateY(-5px);box-shadow:0 17px 38px rgba(24,64,105,.15);border-color:#b9d2f0}
-.pic{height:210px;background:#edf5ff;overflow:hidden;display:grid;place-items:center}.pic img{width:100%;height:100%;object-fit:cover;display:block}.pic .art{width:100%;height:100%;display:grid;place-items:center;text-align:center;padding:24px;background:linear-gradient(145deg,#071b4b,#267ee9);color:#fff;font-size:34px;font-weight:900;letter-spacing:.05em}
-.body{padding:18px 19px 17px}.body h2{font-size:21px;margin:0 0 8px}.body p{font-size:14px;line-height:1.48;color:#60738d;margin:0;min-height:62px}.body span{display:inline-block;margin-top:13px;color:#176be8;font-size:12px;font-weight:800}
-.axon-note{border-top:1px solid #e5edf6;background:#f8fbff;padding:27px 0}.axon-note .inner{display:grid;grid-template-columns:58px 1fr;gap:18px;align-items:center}.orb{width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e5f7ff,#4aa7ff 28%,#0c5bc7 62%,#07357e);box-shadow:0 0 24px rgba(30,122,235,.3)}.axon-note b{font-size:18px}.axon-note p{margin:5px 0 0;color:#61758e;font-size:14px;line-height:1.5}
-footer{text-align:center;color:#8a9aae;font-size:12px;padding:28px 0 40px}
-@media(max-width:900px){.hero-grid{grid-template-columns:130px 1fr 130px}.person img{width:100px;height:100px}.title h1{font-size:48px}.grid{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.hero-grid{grid-template-columns:1fr 1fr}.title{grid-column:1/-1;grid-row:1}.person{grid-row:2}.title h1{font-size:42px}.grid{grid-template-columns:1fr}.pic{height:230px}}
+*{box-sizing:border-box}html,body{margin:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#0a2452}
+body{overflow-x:hidden}
+.viewport{width:100%;position:relative;overflow:hidden;background:#fff}
+.stage{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;background:#fff}
+.hero{position:absolute;left:0;top:0;width:1536px;height:180px;overflow:hidden;background:linear-gradient(180deg,#eef8ff 0%,#f9fcff 78%,#fff 100%)}
+.hero:before,.hero:after{content:"";position:absolute;bottom:-7px;width:52%;height:125px;opacity:.68;background:linear-gradient(180deg,#a9d0ef 0%,#ddecf8 70%,#fff 100%);clip-path:polygon(0 85%,9% 59%,17% 72%,29% 32%,39% 63%,51% 34%,64% 70%,75% 41%,88% 70%,100% 88%,100% 100%,0 100%)}
+.hero:before{left:0}.hero:after{right:0;transform:scaleX(-1)}
+.joe{position:absolute;left:165px;top:4px;width:230px;height:176px;overflow:hidden}
+.joe img{width:230px;height:176px;object-fit:cover;object-position:center 18%;-webkit-mask-image:radial-gradient(ellipse 66% 94% at 50% 50%,#000 68%,transparent 78%);mask-image:radial-gradient(ellipse 66% 94% at 50% 50%,#000 68%,transparent 78%)}
+.martin{position:absolute;right:150px;top:4px;width:250px;height:176px;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 63% 91% at 50% 50%,#000 68%,transparent 79%);mask-image:radial-gradient(ellipse 63% 91% at 50% 50%,#000 68%,transparent 79%)}
+.martin img{position:absolute;width:690px;height:auto;left:-177px;top:-420px}
+.title{position:absolute;left:430px;top:20px;width:676px;text-align:center;z-index:3}
+.title h1{margin:0;font-size:67px;line-height:.95;font-weight:900;letter-spacing:-3px;color:#0b2859}
+.title h1 b{color:#1470df}
+.title .types{margin-top:12px;font-size:15px;letter-spacing:6px;color:#18345e}
+.title .names{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:18px;font-size:13px;font-weight:800;letter-spacing:4px;color:#102a54}
+.title .names:before,.title .names:after{content:"";width:102px;height:1px;background:#6d88aa}
+.card{position:absolute;display:block;background:#fff;border:1px solid #e1e8f0;border-radius:7px;overflow:hidden;box-shadow:0 4px 12px rgba(23,58,95,.08);color:inherit;text-decoration:none;transition:transform .14s ease,box-shadow .14s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(23,58,95,.15)}
+.thumb{height:108px;overflow:hidden;background:#eaf3ff}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.copy{position:relative;height:calc(100% - 108px);padding:8px 17px 7px}
+.copy h2{margin:0 0 4px;font-size:17px;line-height:1.05;font-weight:800;color:#0a2452}
+.copy p{margin:0;padding-right:70px;font-size:12.5px;line-height:1.15;color:#425b7f}
+.copy span{position:absolute;right:16px;bottom:12px;font-size:10.5px;color:#1470df;white-space:nowrap}
+.power{position:absolute;left:226px;top:998px;width:1080px;height:22px;display:flex;align-items:center;gap:30px;color:#17345d}
+.power:before,.power:after{content:"";height:1px;background:#7190b7;flex:1}.power b{font-size:10px;letter-spacing:4px;white-space:nowrap}
 </style>
-<style id="approved-layout-restore">
-/* Restore approved portfolio composition. Functionality changes only; content stays intact. */
-:root{--navy:#0b2452;--blue:#176be8;--muted:#5f718a;--line:#dfe7f1}
-body{background:#fff}
-.wrap{width:min(1480px,96vw);margin:auto}
-
-/* Approved compact scenic header */
-.hero{
-  height:180px!important;
-  padding:0!important;
-  overflow:hidden;
-  position:relative;
-  background:
-    radial-gradient(ellipse at 12% 105%,rgba(101,160,222,.24) 0 30%,transparent 31%),
-    radial-gradient(ellipse at 88% 105%,rgba(101,160,222,.23) 0 30%,transparent 31%),
-    linear-gradient(180deg,#f5faff 0%,#edf6ff 48%,#ffffff 100%)!important;
-}
-.hero:before,.hero:after{
-  content:"";
-  position:absolute;
-  bottom:-8px;
-  width:47%;
-  height:92px;
-  background:linear-gradient(180deg,rgba(179,211,241,.55),rgba(219,235,250,.18));
-  clip-path:polygon(0 82%,13% 50%,27% 68%,43% 29%,57% 61%,72% 35%,100% 84%,100% 100%,0 100%);
-  pointer-events:none;
-}
-.hero:before{left:0}
-.hero:after{right:0;transform:scaleX(-1)}
-.hero-grid{
-  height:180px!important;
-  grid-template-columns:300px 1fr 300px!important;
-  gap:0!important;
-  align-items:center!important;
-  position:relative;
-  z-index:2;
-}
-.person{
-  height:180px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-.person img{
-  width:225px!important;
-  height:176px!important;
-  object-fit:cover!important;
-  object-position:center 18%!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  transition:.18s transform,.18s filter!important;
-  -webkit-mask-image:radial-gradient(ellipse 62% 82% at 50% 45%,#000 68%,transparent 76%);
-  mask-image:radial-gradient(ellipse 62% 82% at 50% 45%,#000 68%,transparent 76%);
-}
-.person:hover img{transform:translateY(-2px) scale(1.015)!important;filter:brightness(1.03)}
-.person b,.person small{display:none!important}
-
-.title{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:center!important;
-  justify-content:center!important;
-  text-align:center!important;
-  height:180px;
-}
-.title h1{
-  order:1;
-  margin:0!important;
-  font-size:clamp(50px,5.15vw,76px)!important;
-  line-height:.92!important;
-  letter-spacing:-.045em!important;
-  color:#0a2858!important;
-}
-.title h1 span{color:#176be8!important}
-.title p{
-  order:2;
-  margin:13px 0 0!important;
-  font-size:16px!important;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#1c3760!important;
-}
-.title .eyebrow{
-  order:3;
-  margin-top:14px;
-  font-size:12px!important;
-  letter-spacing:.24em!important;
-  color:#102a54!important;
-}
-.title .hint{display:none!important}
-
-/* Approved four-across project wall */
-.grid{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:14px 16px!important;
-  padding:14px 0 20px!important;
-}
-.card{
-  min-width:0;
-  border-radius:8px!important;
-  border:1px solid #dfe7f1!important;
-  box-shadow:0 5px 14px rgba(19,54,91,.07)!important;
-  overflow:hidden;
-  transform:none!important;
-  transition:.16s box-shadow,.16s border-color,.16s transform!important;
-}
-.card:hover{
-  transform:translateY(-2px)!important;
-  border-color:#9fc6f3!important;
-  box-shadow:0 10px 22px rgba(19,54,91,.13)!important;
-}
-.pic{
-  height:108px!important;
-  background:#eef5ff!important;
-}
-.pic img{
-  width:100%!important;
-  height:100%!important;
-  object-fit:cover!important;
-}
-.pic .art{
-  font-size:30px!important;
-  padding:12px!important;
-  background:linear-gradient(145deg,#0a3475,#2d78d7)!important;
-}
-.body{
-  padding:8px 12px 10px!important;
-  min-height:83px;
-  position:relative;
-}
-.body h2{
-  margin:0 0 4px!important;
-  font-size:16px!important;
-  line-height:1.05!important;
-  color:#0b2452!important;
-}
-.body p{
-  margin:0 58px 0 0!important;
-  min-height:0!important;
-  font-size:12.5px!important;
-  line-height:1.25!important;
-  color:#5f718a!important;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:3;
-  overflow:hidden;
-}
-.body span{
-  position:absolute;
-  right:11px;
-  bottom:9px;
-  margin:0!important;
-  font-size:10.5px!important;
-  font-weight:700!important;
-  color:#176be8!important;
-}
-.axon-note{display:none!important}
-footer{
-  border-top:1px solid #e5edf6;
-  padding:14px 0 18px!important;
-  font-size:11px!important;
-  color:#8a9aae!important;
-}
-
-/* Keep desktop composition calm; only collapse when actually needed */
-@media(max-width:1100px){
-  .hero{height:auto!important}
-  .hero-grid{height:auto!important;grid-template-columns:180px 1fr 180px!important;padding:10px 0}
-  .person{height:150px}.person img{width:170px!important;height:150px!important}
-  .title{height:auto;min-height:150px}.title h1{font-size:52px!important}
-  .grid{grid-template-columns:repeat(2,1fr)!important}
-  .pic{height:150px!important}
-}
-@media(max-width:650px){
-  .hero-grid{grid-template-columns:1fr 1fr!important}
-  .title{grid-column:1/-1;grid-row:1;padding:20px 0 4px}
-  .person{grid-row:2;height:130px}
-  .person img{width:145px!important;height:130px!important}
-  .title h1{font-size:42px!important}
-  .title p{font-size:12px!important}
-  .grid{grid-template-columns:1fr!important;padding-top:18px!important}
-  .pic{height:205px!important}
-  .body{min-height:96px}
-}
-</style>
-
-<style id="approved-reference-v3">
-/* SOURCE OF TRUTH: uploaded approved 4x4 portfolio reference. */
-html,body{background:#fff!important}
-body{min-width:0}
-.wrap{width:min(1472px,96vw)!important;margin:0 auto!important}
-
-/* wide, low hero exactly like the approved composition */
-.hero{
-  height:180px!important;
-  padding:0!important;
-  overflow:hidden!important;
-  position:relative!important;
-  border-bottom:0!important;
-  background:linear-gradient(180deg,#edf7ff 0%,#f8fbff 74%,#fff 100%)!important;
-}
-.hero:before,.hero:after{
-  content:""!important;position:absolute!important;z-index:0!important;bottom:-2px!important;
-  width:43%!important;height:118px!important;opacity:.55!important;
-  background:linear-gradient(180deg,#b9d9f4,#e7f3fc)!important;
-  clip-path:polygon(0 88%,10% 59%,19% 72%,33% 32%,47% 66%,59% 41%,72% 72%,86% 47%,100% 86%,100% 100%,0 100%)!important;
-}
-.hero:before{left:0!important}
-.hero:after{right:0!important;transform:scaleX(-1)!important}
-.hero-grid{
-  height:180px!important;padding:0!important;position:relative!important;z-index:2!important;
-  display:grid!important;grid-template-columns:300px 1fr 300px!important;gap:0!important;align-items:end!important;
-}
-.person{
-  height:180px!important;position:relative!important;overflow:hidden!important;
-  display:flex!important;align-items:flex-end!important;justify-content:center!important;text-align:center!important;
-}
-.person img{
-  border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;
-  transition:.18s transform,.18s filter!important;
-}
-.person:not(.martin) img{
-  width:236px!important;height:178px!important;object-fit:cover!important;object-position:center 15%!important;
-  -webkit-mask-image:radial-gradient(ellipse 62% 92% at 50% 50%,#000 67%,transparent 78%)!important;
-  mask-image:radial-gradient(ellipse 62% 92% at 50% 50%,#000 67%,transparent 78%)!important;
-}
-.person.martin img{
-  position:absolute!important;width:700px!important;height:auto!important;max-width:none!important;
-  left:-104px!important;top:-440px!important;object-fit:initial!important;
-  -webkit-mask-image:radial-gradient(ellipse 17% 23% at 38% 53%,#000 55%,transparent 69%)!important;
-  mask-image:radial-gradient(ellipse 17% 23% at 38% 53%,#000 55%,transparent 69%)!important;
-}
-.person:hover img{transform:translateY(-2px) scale(1.01)!important;filter:brightness(1.03)!important}
-.person b,.person small{display:none!important}
-
-.title{height:180px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}
-.title h1{
-  order:1!important;margin:0!important;color:#092858!important;font-size:clamp(50px,5vw,76px)!important;
-  line-height:.9!important;letter-spacing:-.045em!important;font-weight:900!important;white-space:nowrap!important
-}
-.title h1 span{color:#176be8!important}
-.title p{
-  order:2!important;margin:15px 0 0!important;color:#142e59!important;font-size:15px!important;
-  line-height:1!important;letter-spacing:.25em!important;text-transform:uppercase!important
-}
-.title .eyebrow{
-  order:3!important;margin-top:16px!important;color:#102b55!important;font-size:12px!important;
-  line-height:1!important;letter-spacing:.22em!important;font-weight:800!important
-}
-.title .hint{display:none!important}
-
-/* 4 columns × 4 rows, tight but not crowded */
-.grid{
-  width:100%!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:14px 16px!important;padding:14px 0 18px!important
-}
-.card{
-  border:1px solid #dfe7f0!important;border-radius:7px!important;background:#fff!important;
-  overflow:hidden!important;box-shadow:0 4px 12px rgba(20,54,94,.07)!important;
-  min-width:0!important;transform:none!important;
-  transition:.16s transform,.16s box-shadow,.16s border-color!important
-}
-.card:hover{transform:translateY(-2px)!important;box-shadow:0 9px 20px rgba(20,54,94,.13)!important;border-color:#a9c9ef!important}
-.pic{height:108px!important;background:#edf5ff!important;overflow:hidden!important}
-.pic img{width:100%!important;height:100%!important;object-fit:cover!important;display:block!important}
-.pic .art{
-  width:100%!important;height:100%!important;padding:12px!important;display:grid!important;place-items:center!important;
-  font-size:29px!important;font-weight:900!important;letter-spacing:.05em!important;color:#fff!important;
-  background:linear-gradient(145deg,#0a3475,#2f7bd8)!important
-}
-.body{height:80px!important;padding:7px 12px 9px!important;position:relative!important;overflow:hidden!important}
-.body h2{font-size:16px!important;line-height:1.08!important;margin:0 0 4px!important;color:#092858!important;font-weight:800!important}
-.body p{
-  font-size:12.5px!important;line-height:1.2!important;margin:0 54px 0 0!important;color:#5c6e87!important;
-  min-height:0!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;overflow:hidden!important
-}
-.body span{
-  position:absolute!important;right:10px!important;bottom:8px!important;margin:0!important;color:#176be8!important;
-  font-size:10px!important;line-height:1!important;font-weight:700!important
-}
-
-/* exact discreet power line; no explanatory Axon block */
-.power-footer{
-  width:min(1080px,72vw)!important;margin:0 auto 14px!important;display:grid!important;
-  grid-template-columns:1fr auto 1fr!important;align-items:center!important;gap:26px!important;color:#17355d!important
-}
-.power-footer span{height:1px!important;background:#7695bb!important}
-.power-footer b{font-size:11px!important;letter-spacing:.18em!important;white-space:nowrap!important}
-.axon-note,footer{display:none!important}
-
-@media(max-width:1050px){
-  .hero{height:auto!important}.hero-grid{height:auto!important;grid-template-columns:180px 1fr 180px!important}
-  .person{height:150px!important}.person:not(.martin) img{width:175px!important;height:148px!important}
-  .person.martin img{width:580px!important;left:-90px!important;top:-365px!important}
-  .title{height:150px!important}.title h1{font-size:50px!important}
-  .grid{grid-template-columns:repeat(2,1fr)!important}.pic{height:150px!important}.body{height:92px!important}
-}
-@media(max-width:640px){
-  .hero-grid{grid-template-columns:1fr 1fr!important}.title{grid-column:1/-1!important;grid-row:1!important;height:145px!important}
-  .person{grid-row:2!important;height:125px!important}.title h1{font-size:39px!important}.title p{font-size:11px!important}
-  .person:not(.martin) img{width:145px!important;height:124px!important}
-  .person.martin img{width:500px!important;left:-88px!important;top:-315px!important}
-  .grid{grid-template-columns:1fr!important}.pic{height:205px!important}.body{height:98px!important}
-  .power-footer{width:90vw!important;gap:12px!important}.power-footer b{font-size:9px!important}
-}
-</style>
-</head><body>
-<header class="hero"><div class="wrap hero-grid">
-  <div class="person"><img src="data:image/jpeg;base64,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" alt="Joe Schanz"><b>Joe Schanz</b><small>Business operations & execution</small></div>
-  <div class="title"><div class="eyebrow">Joe Schanz & Martin D. Simpson</div><h1>PROJECT <span>PORTFOLIO</span></h1><p>AI applications &nbsp;|&nbsp; products &nbsp;|&nbsp; inventions</p><div class="hint">Click any project to learn more.</div></div>
-  <a class="person martin" href="/cv2/" aria-label="Open Martin D. Simpson résumé"><img src="/cv2/images/media/slbj-2003-pied-piper.jpg" alt="Martin D. Simpson from St. Louis Business Journal"><b>Martin D. Simpson</b><small>Open résumé →</small></a>
-</div></header>
-<main class="wrap"><section class="grid"><a class="card" href="/portfolio/projects/axon-websites.html">
-  <div class="pic"><img src="/portfolio/assets/mock-axon-website.jpg" alt="Axon AI for Websites"></div>
-  <div class="body"><h2>Axon AI for Websites</h2><p>A customized AI brain for your business, inserted into your existing website.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/conversational-resume.html">
-  <div class="pic"><div class="art">RÉSUMÉ</div></div>
-  <div class="body"><h2>Conversational Résumé</h2><p>A résumé you can talk to and learn all about the candidate before you interview.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/conversational-email.html">
-  <div class="pic"><div class="art">E-MAIL</div></div>
-  <div class="body"><h2>Conversational Email</h2><p>Turn ordinary email into a conversation with your company's AI.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/ai-point.html">
-  <div class="pic"><div class="art">AI POINT</div></div>
-  <div class="body"><h2>Axon AI Point</h2><p>A PowerPoint AI assistant that stays with the presentation after the meeting.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/patient-education.html">
-  <div class="pic"><img src="/portfolio/assets/mock-stress-test.jpg" alt="Axon AI Patient Education"></div>
-  <div class="body"><h2>Patient Education QR</h2><p>A HIPAA-compliant AI brain that explains medical brochures and procedures using a simple QR code.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/product-instructions.html">
-  <div class="pic"><div class="art">HOW DO I…?</div></div>
-  <div class="body"><h2>Product Instruction QR</h2><p>Scan a QR code on the instructions for step-by-step help from an AI that knows your product.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/personal-axon.html">
-  <div class="pic"><div class="art">PERSONAL AXON</div></div>
-  <div class="body"><h2>Personal Axon</h2><p>Your personal AI assistant for work, home, relationships and everyday life.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/grocery-shopping.html">
-  <div class="pic"><img src="/grocery/images/kitchen-hero.jpg" alt="Axon AI Grocery Shopping Teammate"></div>
-  <div class="body"><h2>Grocery Shopping Teammate</h2><p>Tell it what you need and let it help find products, compare options, and suggest recipes.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/score-ai.html">
-  <div class="pic"><div class="art">SCORE AI</div></div>
-  <div class="body"><h2>SCORE AI</h2><p>An AI business mentor that can answer your questions about SCORE anytime.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/start-business-ai.html">
-  <div class="pic"><div class="art">START A BUSINESS</div></div>
-  <div class="body"><h2>Start a Business with AI</h2><p>A step-by-step AI business consultant to help you plan, launch, and grow your business.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/dna-answers.html">
-  <div class="pic"><img src="/portfolio/assets/mock-dna.jpg" alt="DNA Answers + Axon AI"></div>
-  <div class="body"><h2>DNA Answers</h2><p>Legal, home, prenatal, sibling and other DNA testing with an AI that explains your options.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/std-sti-testing.html">
-  <div class="pic"><img src="/std-testing/hero-couple-live.jpg" alt="Confidential STD/STI Testing + Axon AI"></div>
-  <div class="body"><h2>STD / STI Testing</h2><p>Confidential testing with an AI that explains options and helps you take the next step.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/pre-de-icer.html">
-  <div class="pic"><img src="/portfolio/assets/card-predeicer.png" alt="Pre-De-Icer"></div>
-  <div class="body"><h2>Pre-De-Icer</h2><p>Apply before winter weather so frost, snow and ice do not bond to the surface.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/siteeye-360.html">
-  <div class="pic"><img src="/portfolio/assets/card-siteeye.png" alt="SiteEye 360 Live"></div>
-  <div class="body"><h2>SiteEye 360 Live</h2><p>Portable, temporary job-site monitoring with live viewing and AI support.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/no-more-boo-boos.html">
-  <div class="pic"><img src="/portfolio/assets/mock-bandage.jpg" alt="No More Boo-Boos"></div>
-  <div class="body"><h2>No More Boo-Boos</h2><p>A dissolvable bandage designed for children, with additional medical applications.</p><span>Learn more →</span></div>
-</a>
-<a class="card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
-  <div class="pic"><img src="/portfolio/assets/rmk-art.png" alt="Ronald McDonald Kitchen"></div>
-  <div class="body"><h2>Ronald McDonald Kitchen</h2><p>A nonprofit concept to provide food, comfort and practical help for families with seriously ill children.</p><span>Learn more →</span></div>
-</a></section></main>
-<div class="power-footer"><span></span><b>◈ &nbsp; POWERED BY AXON AI</b><span></span></div>
+</head>
+<body>
+<div class="viewport" id="viewport"><main class="stage" id="stage">
+  <header class="hero">
+    <div class="joe"><img src="data:image/jpeg;base64,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" alt="Joe Schanz"></div>
+    <div class="martin"><img src="/cv2/images/media/slbj-2003-pied-piper.jpg" alt="Martin D. Simpson"></div>
+    <div class="title">
+      <h1>PROJECT <b>PORTFOLIO</b></h1>
+      <div class="types">AI APPLICATIONS &nbsp;|&nbsp; PRODUCTS &nbsp;|&nbsp; INVENTIONS</div>
+      <div class="names">JOE SCHANZ &nbsp;&amp;&nbsp; MARTIN D. SIMPSON</div>
+    </div>
+  </header>
+  <a class="card" href="/portfolio/projects/axon-websites.html" style="left:32px;top:194px;width:355px;height:194px" aria-label="Axon AI for Websites">
+    <div class="thumb"><img src="/portfolio/assets/mock-axon-website.jpg" alt=""></div>
+    <div class="copy"><h2>Axon AI for Websites</h2><p>A customized AI brain for your business, inserted into your existing website.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/conversational-resume.html" style="left:407px;top:194px;width:355px;height:194px" aria-label="Conversational Résumé">
+    <div class="thumb"><img src="/portfolio/assets/02_axon_ai.png" alt=""></div>
+    <div class="copy"><h2>Conversational Résumé</h2><p>A résumé you can talk to and learn all about the candidate before you interview.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/conversational-email.html" style="left:781px;top:194px;width:355px;height:194px" aria-label="Conversational Email">
+    <div class="thumb"><img src="/email/talk-bg-clean.png" alt=""></div>
+    <div class="copy"><h2>Conversational Email</h2><p>Turn ordinary email into a conversation with your company's AI.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/ai-point.html" style="left:1151px;top:194px;width:355px;height:194px" aria-label="Axon AI Point">
+    <div class="thumb"><img src="/demo/aipoint.png" alt=""></div>
+    <div class="copy"><h2>Axon AI Point</h2><p>An AI PowerPoint assistant that stays with your presentation so participants can ask questions anytime.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/patient-education.html" style="left:32px;top:402px;width:355px;height:190px" aria-label="Patient Education QR">
+    <div class="thumb"><img src="/portfolio/assets/mock-stress-test.jpg" alt=""></div>
+    <div class="copy"><h2>Patient Education QR</h2><p>A HIPAA-compliant AI brain that explains medical brochures and procedures using a simple QR code.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/product-instructions.html" style="left:407px;top:402px;width:355px;height:190px" aria-label="Product Instruction QR">
+    <div class="thumb"><img src="/portfolio/assets/mock-a1-qr.jpg" alt=""></div>
+    <div class="copy"><h2>Product Instruction QR</h2><p>Scan a QR code on the instructions for step-by-step help from an AI that knows your product.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/personal-axon.html" style="left:781px;top:402px;width:355px;height:190px" aria-label="Personal Axon">
+    <div class="thumb"><img src="/portfolio/assets/hero-axon.png" alt=""></div>
+    <div class="copy"><h2>Personal Axon</h2><p>Your personal AI assistant for work, home, relationships and everyday life.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/grocery-shopping.html" style="left:1151px;top:402px;width:355px;height:190px" aria-label="Grocery Shopping Teammate">
+    <div class="thumb"><img src="/grocery/images/kitchen-hero.jpg" alt=""></div>
+    <div class="copy"><h2>Grocery Shopping Teammate</h2><p>Tell it what you need and let it help find products, compare options, and suggest recipes.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/score-ai.html" style="left:32px;top:607px;width:355px;height:180px" aria-label="SCORE AI">
+    <div class="thumb"><img src="/art/score-orb.png" alt=""></div>
+    <div class="copy"><h2>SCORE AI</h2><p>An AI business mentor that can answer your questions about SCORE anytime.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/start-business-ai.html" style="left:407px;top:607px;width:355px;height:180px" aria-label="Start a Business with AI">
+    <div class="thumb"><img src="/qr/sabc-start-blue.png" alt=""></div>
+    <div class="copy"><h2>Start a Business with AI</h2><p>A step-by-step AI business consultant to help you plan, launch, and grow your business.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/dna-answers.html" style="left:781px;top:607px;width:355px;height:180px" aria-label="DNA Answers">
+    <div class="thumb"><img src="/portfolio/assets/mock-dna.jpg" alt=""></div>
+    <div class="copy"><h2>DNA Answers</h2><p>Legal, home, prenatal, sibling and other DNA testing with an AI that explains your options.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/std-sti-testing.html" style="left:1151px;top:607px;width:355px;height:180px" aria-label="STD / STI Testing">
+    <div class="thumb"><img src="/std-testing/hero-couple-live.jpg" alt=""></div>
+    <div class="copy"><h2>STD / STI Testing</h2><p>Confidential testing with an AI that explains options and helps you take the next step.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/pre-de-icer.html" style="left:32px;top:800px;width:355px;height:178px" aria-label="Pre-De-Icer">
+    <div class="thumb"><img src="/portfolio/assets/card-predeicer.png" alt=""></div>
+    <div class="copy"><h2>Pre-De-Icer</h2><p>Apply before winter weather so frost, snow and ice do not bond to the surface.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/siteeye-360.html" style="left:407px;top:800px;width:355px;height:178px" aria-label="SiteEye 360 Live">
+    <div class="thumb"><img src="/portfolio/assets/card-siteeye.png" alt=""></div>
+    <div class="copy"><h2>SiteEye 360 Live</h2><p>Portable, temporary job-site monitoring with live viewing and AI support.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/no-more-boo-boos.html" style="left:781px;top:800px;width:355px;height:178px" aria-label="No More Boo-Boos">
+    <div class="thumb"><img src="/portfolio/assets/mock-bandage.jpg" alt=""></div>
+    <div class="copy"><h2>No More Boo-Boos</h2><p>A dissolvable bandage designed for children, with additional medical applications.</p><span>Learn more →</span></div>
+  </a><a class="card" href="/portfolio/projects/ronald-mcdonald-kitchen.html" style="left:1151px;top:800px;width:355px;height:178px" aria-label="Ronald McDonald Kitchen">
+    <div class="thumb"><img src="/portfolio/assets/rmk-art.png" alt=""></div>
+    <div class="copy"><h2>Ronald McDonald Kitchen</h2><p>A nonprofit concept to provide food, comfort and practical help for families with seriously ill children.</p><span>Learn more →</span></div>
+  </a>
+  <div class="power"><b>◈ &nbsp; POWERED BY AXON AI</b></div>
+</main></div>
+<script>
+(function(){
+ const W=1536,H=1024,stage=document.getElementById('stage'),vp=document.getElementById('viewport');
+ function fit(){
+   const s=Math.min(window.innerWidth/W,1);
+   stage.style.transform='scale('+s+')';
+   vp.style.height=(H*s)+'px';
+ }
+ addEventListener('resize',fit);fit();
+})();
+</script>
 </body></html>
