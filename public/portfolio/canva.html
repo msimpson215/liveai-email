@@ -1,21 +1,30 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Project Portfolio</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;background:#fff}body{overflow-x:hidden}
-.viewport{position:relative;width:100%;overflow:hidden}
+*{box-sizing:border-box}html,body{margin:0;background:#fff}
+body{overflow-x:hidden}
+.viewport{position:relative;width:100%;max-width:1536px;margin:0 auto;overflow:hidden}
 .stage{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;background:#fff}
-.strip{position:absolute;left:0;width:1536px;height:256px;display:block}
-.s0{top:0}.s1{top:256px}.s2{top:512px}.s3{top:768px}
-.hot{position:absolute;display:block;z-index:5;background:transparent;cursor:pointer}
+.tile{position:absolute;width:768px;height:256px;display:block;border:0;margin:0;padding:0}
+.hot{position:absolute;display:block;z-index:10;background:transparent;cursor:pointer}
 .hot:focus-visible{outline:3px solid #1470df;outline-offset:-3px}
-</style></head><body>
-<div class="viewport" id="viewport"><div class="stage" id="stage">
-<img class="strip s0" src="data:image/webp;base64,@@R0@@" alt="">
-<img class="strip s1" src="data:image/webp;base64,@@R1@@" alt="">
-<img class="strip s2" src="data:image/webp;base64,@@R2@@" alt="">
-<img class="strip s3" src="data:image/webp;base64,@@R3@@" alt="">
+</style>
+</head>
+<body>
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
+<img class="tile" style="left:0;top:0" src="/portfolio/assets/exact/r0c0.webp" alt="">
+<img class="tile" style="left:768px;top:0" src="/portfolio/assets/exact/r0c1.webp" alt="">
+<img class="tile" style="left:0;top:256px" src="/portfolio/assets/exact/r1c0.webp" alt="">
+<img class="tile" style="left:768px;top:256px" src="/portfolio/assets/exact/r1c1.webp" alt="">
+<img class="tile" style="left:0;top:512px" src="/portfolio/assets/exact/r2c0.webp" alt="">
+<img class="tile" style="left:768px;top:512px" src="/portfolio/assets/exact/r2c1.webp" alt="">
+<img class="tile" style="left:0;top:768px" src="/portfolio/assets/exact/r3c0.webp" alt="">
+<img class="tile" style="left:768px;top:768px" src="/portfolio/assets/exact/r3c1.webp" alt="">
 <a class="hot" href="/portfolio/projects/axon-websites.html" aria-label="Axon AI for Websites" style="left:31px;top:194px;width:355px;height:195px"></a>
 <a class="hot" href="/portfolio/projects/conversational-resume.html" aria-label="Conversational Résumé" style="left:405px;top:194px;width:353px;height:195px"></a>
 <a class="hot" href="/portfolio/projects/conversational-email.html" aria-label="Conversational Email" style="left:778px;top:194px;width:353px;height:195px"></a>
@@ -33,9 +42,18 @@
 <a class="hot" href="/portfolio/projects/no-more-boo-boos.html" aria-label="No More Boo-Boos" style="left:778px;top:801px;width:353px;height:178px"></a>
 <a class="hot" href="/portfolio/projects/ronald-mcdonald-kitchen.html" aria-label="Ronald McDonald Kitchen" style="left:1150px;top:801px;width:355px;height:178px"></a>
 
-</div></div>
+</div>
+</div>
 <script>
-(function(){const W=1536,H=1024,s=document.getElementById('stage'),v=document.getElementById('viewport');
-function fit(){const z=Math.min(window.innerWidth/W,1);s.style.transform='scale('+z+')';v.style.height=(H*z)+'px'}
-addEventListener('resize',fit);fit()})();
-</script></body></html>
+(function(){
+  const W=1536,H=1024,s=document.getElementById('stage'),v=document.getElementById('viewport');
+  function fit(){
+    const z=Math.min(v.clientWidth/W,1);
+    s.style.transform='scale('+z+')';
+    v.style.height=(H*z)+'px';
+  }
+  addEventListener('resize',fit); fit();
+})();
+</script>
+</body>
+</html>
