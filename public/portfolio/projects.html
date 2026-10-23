@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Project Portfolio — Joe Schanze &amp; Martin Simpson</title>
+<link rel="icon" href="/icons/axon-blue-192.png">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#fff}
+  .stage{position:relative;width:100%;max-width:1536px;margin:0 auto;line-height:0}
+  .art{display:block;width:100%;height:auto}
+  .hot{position:absolute;display:block;border-radius:10px;-webkit-tap-highlight-color:transparent}
+  .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+  body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <img class="art" src="/portfolio/assets/project-portfolio.png" width="1536" height="1024"
+       alt="Project Portfolio — AI applications, products, and inventions. Joe Schanze and Martin Simpson.">
+</div>
+<script>
+/* Click areas over the Canva artwork, in pixels of a 1024 x 682 view of it.
+   Nothing is drawn on the artwork. Add ?tune=1 to outline the areas. */
+var W=1024,H=682;
+var COLS=[[20,257],[270,505],[519,754],[767,1003]];
+var ROWS=[[128,259],[267,391],[403,524],[533,652]];
+var SLUGS=[
+  ['axon-websites','Axon AI for Websites'],
+  ['conversational-resume','Conversational Résumé'],
+  ['conversational-email','Conversational Email'],
+  ['ai-point','Axon AI Point'],
+  ['patient-education','Patient Education QR'],
+  ['product-instructions','Product Instruction QR'],
+  ['personal-axon','Personal Axon'],
+  ['grocery-shopping','Grocery Shopping Teammate'],
+  ['score-ai','SCORE AI'],
+  ['start-business-ai','Start a Business with AI'],
+  ['dna-answers','DNA Answers'],
+  ['std-sti-testing','STD / STI Testing'],
+  ['pre-de-icer','Pre-De-Icer'],
+  ['siteeye-360','SiteEye 360 Live'],
+  ['no-more-boo-boos','No More Boo-Boos'],
+  ['ronald-mcdonald-kitchen','Ronald McDonald Kitchen']
+];
+var stage=document.getElementById('stage');
+SLUGS.forEach(function(s,i){
+  var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
+  var a=document.createElement('a');
+  a.className='hot';
+  a.href='/portfolio/projects/'+s[0]+'.html';
+  a.setAttribute('aria-label',s[1]);
+  a.style.left=(c[0]/W*100)+'%';
+  a.style.top=(r[0]/H*100)+'%';
+  a.style.width=((c[1]-c[0])/W*100)+'%';
+  a.style.height=((r[1]-r[0])/H*100)+'%';
+  stage.appendChild(a);
+});
+if(/[?&]tune=1/.test(location.search))document.body.classList.add('tune');
+</script>
+</body>
+</html>
