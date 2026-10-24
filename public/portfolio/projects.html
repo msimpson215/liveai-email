@@ -14,13 +14,17 @@
   .hot{position:absolute;display:block;border-radius:10px;-webkit-tap-highlight-color:transparent}
   .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
   body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
+  .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
+  .who a{color:#176be8;font-weight:800;text-decoration:none}
+  .who span{color:#8aa0b8}
 </style>
 </head>
 <body>
 <div class="stage" id="stage">
   <img class="art" src="/portfolio/assets/project-portfolio.png" width="1536" height="1024"
        alt="Project Portfolio — AI applications, products, and inventions. Joe Schanze and Martin Simpson.">
-</div>
+  </div>
+<p class="who"><a href="/cv2/">Martin Simpson — résumé</a><span>Joe Schanze — résumé coming</span></p>
 <script>
 /* Click areas over the Canva artwork, in pixels of a 1024 x 682 view of it.
    Nothing is drawn on the artwork. Add ?tune=1 to outline the areas. */
@@ -36,8 +40,8 @@ var SLUGS=[
   ['product-instructions','Product Instruction QR'],
   ['personal-axon','Personal Axon'],
   ['grocery-shopping','Grocery Shopping Teammate'],
-  ['score-ai','SCORE AI'],
-  ['start-business-ai','Start a Business with AI'],
+  null,
+  null,
   ['dna-answers','DNA Answers'],
   ['std-sti-testing','STD / STI Testing'],
   ['pre-de-icer','Pre-De-Icer'],
@@ -47,6 +51,7 @@ var SLUGS=[
 ];
 var stage=document.getElementById('stage');
 SLUGS.forEach(function(s,i){
+  if(!s) return;
   var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
   var a=document.createElement('a');
   a.className='hot';
@@ -56,6 +61,15 @@ SLUGS.forEach(function(s,i){
   a.style.top=(r[0]/H*100)+'%';
   a.style.width=((c[1]-c[0])/W*100)+'%';
   a.style.height=((r[1]-r[0])/H*100)+'%';
+  stage.appendChild(a);
+});
+/* Martin Simpson, top right of the artwork, opens his résumé. Joe's comes later. */
+[['Martin Simpson résumé','/cv2/','76%','1%','22%','16%']].forEach(function(h){
+  var a=document.createElement('a');
+  a.className='hot';
+  a.href=h[1];
+  a.setAttribute('aria-label',h[0]);
+  a.style.left=h[2]; a.style.top=h[3]; a.style.width=h[4]; a.style.height=h[5];
   stage.appendChild(a);
 });
 if(/[?&]tune=1/.test(location.search))document.body.classList.add('tune');
