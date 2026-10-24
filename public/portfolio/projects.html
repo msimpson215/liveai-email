@@ -14,6 +14,7 @@
   .hot{position:absolute;display:block;border-radius:10px;-webkit-tap-highlight-color:transparent}
   .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
   body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
+  .cover{position:absolute;background:#fff;z-index:2}
   .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
   .who a{color:#176be8;font-weight:800;text-decoration:none}
   .who span{color:#8aa0b8}
@@ -24,7 +25,7 @@
   <img class="art" src="/portfolio/assets/project-portfolio.png" width="1536" height="1024"
        alt="Project Portfolio — AI applications, products, and inventions. Joe Schanze and Martin Simpson.">
   </div>
-<p class="who"><a href="/cv2/">Martin Simpson — résumé</a><span>Joe Schanze — résumé coming</span></p>
+<p class="who"><a href="/cv2/">Martin Simpson</a><span>Joe Schanze — résumé coming</span></p>
 <script>
 /* Click areas over the Canva artwork, in pixels of a 1024 x 682 view of it.
    Nothing is drawn on the artwork. Add ?tune=1 to outline the areas. */
@@ -40,8 +41,8 @@ var SLUGS=[
   ['product-instructions','Product Instruction QR'],
   ['personal-axon','Personal Axon'],
   ['grocery-shopping','Grocery Shopping Teammate'],
-  null,
-  null,
+  ['cover','SCORE AI'],
+  ['cover','Start a Business with AI'],
   ['dna-answers','DNA Answers'],
   ['std-sti-testing','STD / STI Testing'],
   ['pre-de-icer','Pre-De-Icer'],
@@ -53,9 +54,9 @@ var stage=document.getElementById('stage');
 SLUGS.forEach(function(s,i){
   if(!s) return;
   var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
-  var a=document.createElement('a');
-  a.className='hot';
-  a.href='/portfolio/projects/'+s[0]+'.html';
+  var a=document.createElement(s[0]==='cover'?'div':'a');
+  a.className=s[0]==='cover'?'cover':'hot';
+  if(s[0]!=='cover'){a.href='/portfolio/projects/'+s[0]+'.html';}
   a.setAttribute('aria-label',s[1]);
   a.style.left=(c[0]/W*100)+'%';
   a.style.top=(r[0]/H*100)+'%';
@@ -63,8 +64,8 @@ SLUGS.forEach(function(s,i){
   a.style.height=((r[1]-r[0])/H*100)+'%';
   stage.appendChild(a);
 });
-/* Martin Simpson, top right of the artwork, opens his résumé. Joe's comes later. */
-[['Martin Simpson résumé','/cv2/','76%','1%','22%','16%']].forEach(function(h){
+/* His name in the header, and his photo, both open the résumé. */
+[['Martin Simpson','/cv2/','50.5%','13%','12%','4.5%'],['Martin Simpson','/cv2/','74%','0%','26%','17%']].forEach(function(h){
   var a=document.createElement('a');
   a.className='hot';
   a.href=h[1];
