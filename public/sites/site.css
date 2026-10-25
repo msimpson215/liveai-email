@@ -99,13 +99,25 @@ footer{padding:34px 0 46px;border-top:1px solid var(--line);color:var(--muted);f
 .memory b{color:var(--ink)}
 
 /* minimal white */
-.min h1,.min h2,.min h3{font-weight:300}
-.min h1{font-size:clamp(40px,6vw,72px);letter-spacing:-.02em}
-.min .eyebrow{color:var(--muted);letter-spacing:.32em;font-weight:600}
-.min .brand{font-weight:300;letter-spacing:.34em;text-transform:uppercase;font-size:16px}
-.min .brand b{font-weight:600}
-.min nav a{font-weight:500}
-.min .btn{font-weight:600}
+.min h1{font-weight:700;font-size:clamp(36px,5vw,60px);letter-spacing:-.02em}
+.min h2{font-weight:700;letter-spacing:-.01em}
+.min h3{font-weight:700}
+.min .lead{color:var(--muted);font-size:20px}
+.min .card p,.min .step p{color:#3c465a}
+.min .eyebrow{letter-spacing:.28em;font-weight:700}
+.min .brand{font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:17px}
+.min nav a{font-weight:600}
+.min .btn{font-weight:700}
+.orbhero{padding:0 0 70px;text-align:center}
+#commercial{scroll-margin-top:70px}
+.orbart{position:relative;max-width:1280px;margin:0 auto;-webkit-mask-image:radial-gradient(ellipse 52% 54% at 50% 46%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 52% 54% at 50% 46%,#000 70%,transparent 100%)}
+.orbart img{width:100%;display:block}
+.orbart .word{position:absolute;left:50%;top:42.5%;transform:translate(-50%,-50%);color:#fff;font-family:var(--head);font-weight:600;font-size:clamp(26px,5.4vw,68px);white-space:nowrap;text-shadow:0 0 28px rgba(110,170,255,.95),0 2px 12px rgba(0,25,90,.55)}
+.orbart.small{max-width:760px}
+.orbart.small .word{font-size:clamp(22px,3.4vw,40px)}
+.orbtext{margin-top:-10px}
+.orbtext .lead{margin:0 auto 28px;max-width:700px}
+.orbtext .btns{justify-content:center}
 .min section.block{border-top:0}
 .min .card{border:0;border-top:1px solid var(--line);border-radius:0;padding:26px 0;background:transparent}
 .min .card .ic{background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:50%;width:34px;height:34px;font-weight:500;font-size:13px}
