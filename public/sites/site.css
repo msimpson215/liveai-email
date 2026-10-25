@@ -112,6 +112,11 @@ footer{padding:34px 0 46px;border-top:1px solid var(--line);color:var(--muted);f
 #commercial{scroll-margin-top:70px}
 .orbart{position:relative;max-width:1280px;margin:0 auto;-webkit-mask-image:radial-gradient(ellipse 52% 54% at 50% 46%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 52% 54% at 50% 46%,#000 70%,transparent 100%)}
 .orbart img{width:100%;display:block}
+.orbart.logo{max-width:1100px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,#000 90%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}
+.orbart.logo+.orbtext{margin-top:18px}
+.btn.hello{padding:16px 38px;font-size:16px;box-shadow:0 12px 34px rgba(20,82,255,.35),0 0 0 6px rgba(20,82,255,.08);animation:hello 2.6s ease-in-out infinite}
+@keyframes hello{50%{box-shadow:0 12px 40px rgba(20,82,255,.5),0 0 0 12px rgba(20,82,255,.06)}}
+.min nav a:last-child::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#9fd6ff,#1452ff 70%);box-shadow:0 0 9px #4d8bff;margin-right:8px;vertical-align:0}
 .orbart .word{position:absolute;left:50%;top:42.5%;transform:translate(-50%,-50%);color:#fff;font-family:var(--head);font-weight:600;font-size:clamp(26px,5.4vw,68px);white-space:nowrap;text-shadow:0 0 28px rgba(110,170,255,.95),0 2px 12px rgba(0,25,90,.55)}
 .orbart.small{max-width:760px}
 .orbart.small .word{font-size:clamp(22px,3.4vw,40px)}
