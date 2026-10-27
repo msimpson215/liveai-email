@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#faf8f6">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="Axon AI — a talking team member for a website that already exists.">
 <title>Axon AI</title>
 <link rel="icon" href="/icons/axon-blue-192.png">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#faf8f6;color:#0f1b33}
+  html,body{height:100%;background:#fff;color:#0f1b33}
   body{
     font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     overflow:hidden;
@@ -30,7 +30,24 @@
     width:min(72vw,52vh,440px);aspect-ratio:1;border-radius:50%;
     -webkit-tap-highlight-color:transparent;
   }
+  #orb{position:relative;transform:scale(calc(1 + var(--lvl,0) * .05));transition:transform .08s linear}
+  #orb .halo{
+    position:absolute;inset:-18%;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle,rgba(50,120,255,.55) 0,rgba(50,120,255,.2) 42%,transparent 68%);
+    opacity:calc(.18 + var(--lvl,0) * 1.4);transform:scale(calc(.9 + var(--lvl,0) * .3));
+    transition:opacity .08s linear,transform .08s linear;
+  }
+  #orb .ring{
+    position:absolute;inset:-5%;border-radius:50%;pointer-events:none;z-index:0;opacity:0;
+    background:conic-gradient(from 0deg,transparent 0 62%,rgba(120,180,255,.9) 82%,transparent 100%);
+    -webkit-mask:radial-gradient(circle,transparent 64%,#000 65.5%,#000 68%,transparent 69.5%);
+    mask:radial-gradient(circle,transparent 64%,#000 65.5%,#000 68%,transparent 69.5%);
+    animation:spin 2.6s linear infinite;transition:opacity .5s ease;
+  }
+  body.live[data-state="listening"] #orb .ring{opacity:1}
+  @keyframes spin{to{transform:rotate(360deg)}}
   #orb img{
+    position:relative;z-index:1;
     display:block;width:100%;height:100%;
     -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 64%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 64%,transparent 71%);
     transition:transform .2s ease, filter .3s ease;
@@ -38,7 +55,7 @@
   }
   #orb:active img{transform:scale(.97)}
   body[data-state="connecting"] #orb img{animation:pulse .9s ease-in-out infinite}
-  body[data-state="speaking"] #orb img{animation:pulse 1.6s ease-in-out infinite;filter:brightness(1.1) saturate(1.1)}
+  body[data-state="speaking"] #orb img{filter:brightness(calc(1.04 + var(--lvl,0) * .3)) saturate(calc(1.05 + var(--lvl,0) * .3))}
   @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
@@ -51,7 +68,7 @@
     padding:8px 22px;font:700 13px/1 inherit;letter-spacing:.12em;text-transform:uppercase;
     transition:background .2s ease,color .2s ease;
   }
-  .pause:hover{background:#0f1b33;color:#faf8f6}
+  .pause:hover{background:#0f1b33;color:#fff}
   body.live .pause,body.paused .pause{display:inline-block}
   body.live .hint,body.paused .hint{display:none}
 
@@ -85,15 +102,18 @@
     font:700 13px/1 inherit;padding:0 18px;cursor:pointer;
   }
 
-  /* Files — from the right */
+  /* Files — grows out of the orb on the right */
   .files{
-    position:fixed;z-index:4;right:0;top:0;bottom:0;width:min(86vw,340px);
-    background:#fff;border-left:1px solid #e3e1dc;box-shadow:-20px 0 50px rgba(15,27,51,.08);
-    padding:88px 28px 32px;transform:translateX(105%);
-    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    position:fixed;z-index:4;width:min(30vw,340px);max-height:min(58vh,440px);overflow:auto;
+    right:max(24px,calc(50% - min(36vw,26vh,220px) - min(30vw,340px) - 40px));
+    top:50%;transform:translateY(-50%) scale(.86);transform-origin:left center;
+    opacity:0;pointer-events:none;
+    background:#fff;border:1px solid #e3e1dc;border-radius:16px;box-shadow:0 10px 30px rgba(15,27,51,.08);
+    padding:22px 22px 18px;
+    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
     display:flex;flex-direction:column;gap:14px;
   }
-  body.show-files .files{transform:none}
+  body.show-files .files{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
   .files h2{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#0f1b33}
   .drop{
     border:1.5px dashed #c9cfdb;border-radius:16px;padding:28px 18px;
@@ -150,6 +170,11 @@
       max-height:38vh;
     }
     body.show-text .text{transform:none}
+    .files{
+      left:16px;right:16px;width:auto;top:auto;bottom:70px;
+      transform:translateY(12px) scale(.96);transform-origin:center bottom;max-height:38vh;
+    }
+    body.show-files .files{transform:none}
   }
 </style>
 </head>
@@ -162,7 +187,7 @@
   <div class="mark">AXON AI</div>
 
   <div class="stage">
-    <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
+    <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
     <div class="under">
       <p class="hint" id="hint"></p>
       <button type="button" class="pause" id="pauseBtn">Pause</button>
@@ -223,6 +248,32 @@ function ensureAudio(){
   }
   return audioEl;
 }
+let lvlCtx=null,lvlRaf=0;
+function startLevel(stream){
+  try{
+    if(!lvlCtx)lvlCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(lvlCtx.resume)lvlCtx.resume();
+    const an=lvlCtx.createAnalyser();
+    an.fftSize=512;
+    lvlCtx.createMediaStreamSource(stream).connect(an);
+    const buf=new Uint8Array(an.fftSize);
+    let smooth=0;
+    cancelAnimationFrame(lvlRaf);
+    (function tick(){
+      an.getByteTimeDomainData(buf);
+      let sum=0;
+      for(let i=0;i<buf.length;i++){const v=(buf[i]-128)/128;sum+=v*v}
+      const target=Math.min(1,Math.sqrt(sum/buf.length)*4.5);
+      smooth+=(target-smooth)*(target>smooth?.45:.1);
+      orb.style.setProperty('--lvl',smooth.toFixed(3));
+      lvlRaf=requestAnimationFrame(tick);
+    })();
+  }catch(e){}
+}
+function stopLevel(){
+  cancelAnimationFrame(lvlRaf);
+  orb.style.setProperty('--lvl','0');
+}
 function line(role,text){
   const d=document.createElement('div');
   d.className=role;
@@ -232,6 +283,7 @@ function line(role,text){
   return d;
 }
 function showText(){
+  if(innerWidth<=860){document.body.classList.remove('show-files');fileDot.classList.remove('on');}
   document.body.classList.add('show-text');
   textDot.classList.add('on');
   setTimeout(function(){try{document.getElementById('q').focus()}catch(e){}},400);
@@ -244,6 +296,7 @@ function toggleText(){
 }
 function toggleFiles(){
   const on=!document.body.classList.contains('show-files');
+  if(on&&innerWidth<=860){document.body.classList.remove('show-text');textDot.classList.remove('on');}
   document.body.classList.toggle('show-files',on);
   fileDot.classList.toggle('on',on);
 }
@@ -253,6 +306,7 @@ async function stopVoice(){
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
   dc=null;starting=false;audioReady=false;pendingGreet=false;
+  stopLevel();
   setLive(false);
   setState('idle');
 }
@@ -291,6 +345,7 @@ async function connectVoice(){
     if(audio.srcObject!==e.streams[0]){
       audio.srcObject=e.streams[0];
       audio.play().then(function(){audioReady=true}).catch(function(){audioReady=false});
+      startLevel(e.streams[0]);
     }
   };
   localStream=await navigator.mediaDevices.getUserMedia({
@@ -460,6 +515,7 @@ window.addEventListener('pagehide',function(){if(pc||starting)stopVoice()});
 document.getElementById('hello').addEventListener('click',function(){
   document.body.classList.add('started');
   ensureAudio().play().catch(function(){});
+  try{lvlCtx=lvlCtx||new (window.AudioContext||window.webkitAudioContext)();lvlCtx.resume();}catch(e){}
   toggle();
 });
 </script>
