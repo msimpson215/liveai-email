@@ -69,6 +69,10 @@ section.alt{background:var(--alt)}
 .axonpage .btns{justify-content:center;margin-top:8px}
 .status{display:inline-block;margin-bottom:22px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--muted)}
 
+.jump{display:flex;flex-wrap:wrap;gap:6px 16px;padding:0 0 8px;font-size:13px;font-weight:700}
+.jump a{color:var(--muted)}
+.jump a:hover{color:var(--ink)}
+
 footer{padding:34px 0 46px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center}
 
 /* mockups drawn in HTML */
