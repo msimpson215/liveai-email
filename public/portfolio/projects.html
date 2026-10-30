@@ -15,20 +15,12 @@
   .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
   body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
   .cover{position:absolute;background:#fff;z-index:2}
-  .added{position:absolute;z-index:2;container-type:inline-size;display:flex;flex-direction:column;background:#fff;border-radius:3.5%/7%;overflow:hidden;text-decoration:none;color:#0a204a;font-family:Arial,Helvetica,sans-serif;line-height:1.2;box-shadow:0 0 0 2px #fff,0 6px 16px rgba(20,58,110,.1)}
-  .added img{display:block;width:100%;height:52%;object-fit:cover;flex:none}
-  .added .t{font-weight:700;font-size:5.4cqw;padding:2.6cqw 4.5cqw .6cqw}
-  .added .d{flex:1;font-size:3.9cqw;color:#3f5470;padding:0 4.5cqw;line-height:1.3}
-  .added .m{align-self:flex-end;font-size:3.2cqw;color:#176be8;padding:0 4.5cqw 2.6cqw}
-  .jump{max-width:1536px;margin:0 auto;padding:12px 22px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;display:flex;flex-wrap:wrap;gap:8px 18px;font-weight:800}
-  .jump a{color:#176be8;text-decoration:none}
   .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
   .who a{color:#176be8;font-weight:800;text-decoration:none}
   .who span{color:#8aa0b8}
 </style>
 </head>
 <body>
-<p class="jump"><a href="/portfolio/projects.html">Portfolio</a><a href="/portfolio/relay/">Axon Relay</a><a href="/cv2/">Résumé</a><a href="https://a1-test-fyjq.onrender.com">A1 Asphalt</a></p>
 <div class="stage" id="stage">
   <img class="art" src="/portfolio/assets/project-portfolio.png?v=4" width="1536" height="1024"
        alt="Project Portfolio — AI applications, products, and inventions. Joe Schanze and Martin Simpson.">
@@ -49,7 +41,7 @@ var SLUGS=[
   ['product-instructions','Product Instruction QR'],
   ['personal-axon','Personal Axon'],
   ['grocery-shopping','Grocery Shopping Teammate'],
-  ['added','ai-to-ai','Axon Relay'],
+  ['cover','SCORE AI'],
   ['cover','Start a Business with AI'],
   ['dna-answers','DNA Answers'],
   ['std-sti-testing','STD / STI Testing'],
@@ -62,16 +54,10 @@ var stage=document.getElementById('stage');
 SLUGS.forEach(function(s,i){
   if(!s) return;
   var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
-  var kind=s[0];
-  var slug=kind==='cover'||kind==='added'?s[1]:s[0];
-  var label=kind==='cover'||kind==='added'?s[s.length-1]:s[1];
-  var a=document.createElement(kind==='cover'?'div':'a');
-  a.className=kind==='cover'?'cover':kind==='added'?'added':'hot';
-  if(kind!=='cover'){a.href=kind==='added'?'/portfolio/relay/':'/portfolio/projects/'+s[0]+'.html';}
-  a.setAttribute('aria-label',label);
-  if(kind==='added'){
-    a.innerHTML='<img src="/portfolio/relay/relay-tile.jpg" alt=""><span class="t">Axon Relay</span><span class="d">Your AI calls people, or talks to their AI, so you never pick up the phone.</span><span class="m">Learn more →</span>';
-  }
+  var a=document.createElement(s[0]==='cover'?'div':'a');
+  a.className=s[0]==='cover'?'cover':'hot';
+  if(s[0]!=='cover'){a.href='/portfolio/projects/'+s[0]+'.html';}
+  a.setAttribute('aria-label',s[1]);
   a.style.left=(c[0]/W*100)+'%';
   a.style.top=(r[0]/H*100)+'%';
   a.style.width=((c[1]-c[0])/W*100)+'%';
