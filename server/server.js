@@ -250,6 +250,10 @@ app.get('/start', (_req, res) => {
 })
 
 /** Wellfound / public Axon AI page — the orb, nothing else. */
+app.get(['/relay', '/relay.html'], (_req, res) => {
+  res.redirect(302, '/portfolio/relay/')
+})
+
 app.get(['/axon-ai', '/axonai'], (_req, res) => {
   res.set('Cache-Control', 'no-store')
   res.redirect(302, '/axon-ai.html')

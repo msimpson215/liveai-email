@@ -15,11 +15,11 @@
   .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
   body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
   .cover{position:absolute;background:#fff;z-index:2}
-  .added{position:absolute;z-index:2;display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;text-decoration:none;color:#0a204a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;box-shadow:0 8px 22px rgba(20,58,110,.1)}
-  .added img{width:100%;height:48%;object-fit:cover;background:#071018}
-  .added .t{font-weight:800;font-size:clamp(13px,1.35vw,18px);padding:7px 10px 2px;letter-spacing:-.01em}
-  .added .d{flex:1;font-size:clamp(10px,1.05vw,13.5px);color:#5b6f8a;padding:0 10px;line-height:1.35}
-  .added .m{font-size:clamp(10px,1vw,13px);font-weight:800;color:#176be8;padding:4px 10px 8px}
+  .added{position:absolute;z-index:2;container-type:inline-size;display:flex;flex-direction:column;background:#fff;border-radius:3.5%/7%;overflow:hidden;text-decoration:none;color:#0a204a;font-family:Arial,Helvetica,sans-serif;line-height:1.2;box-shadow:0 0 0 2px #fff,0 6px 16px rgba(20,58,110,.1)}
+  .added img{width:100%;height:50%;object-fit:contain;background:#fff;flex:none}
+  .added .t{font-weight:700;font-size:5.4cqw;padding:3.4cqw 4.5cqw 1cqw}
+  .added .d{flex:1;font-size:3.9cqw;color:#3f5470;padding:0 4.5cqw;line-height:1.3}
+  .added .m{align-self:flex-end;font-size:3.2cqw;color:#176be8;padding:0 4.5cqw 3.4cqw}
   .jump{max-width:1536px;margin:0 auto;padding:12px 22px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;display:flex;flex-wrap:wrap;gap:8px 18px;font-weight:800}
   .jump a{color:#176be8;text-decoration:none}
   .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
@@ -28,7 +28,7 @@
 </style>
 </head>
 <body>
-<p class="jump"><a href="/portfolio/projects.html">Portfolio</a><a href="/sites/ai-to-ai/">Axon Relay</a><a href="/cv2/">Résumé</a><a href="https://a1-test-fyjq.onrender.com">A1 Asphalt</a></p>
+<p class="jump"><a href="/portfolio/projects.html">Portfolio</a><a href="/portfolio/relay/">Axon Relay</a><a href="/cv2/">Résumé</a><a href="https://a1-test-fyjq.onrender.com">A1 Asphalt</a></p>
 <div class="stage" id="stage">
   <img class="art" src="/portfolio/assets/project-portfolio.png?v=4" width="1536" height="1024"
        alt="Project Portfolio — AI applications, products, and inventions. Joe Schanze and Martin Simpson.">
