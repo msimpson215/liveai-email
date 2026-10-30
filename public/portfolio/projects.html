@@ -15,6 +15,11 @@
   .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
   body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
   .cover{position:absolute;background:#fff;z-index:2}
+  .added{position:absolute;z-index:2;display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;text-decoration:none;color:#0a204a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;box-shadow:0 8px 22px rgba(20,58,110,.1)}
+  .added img{width:100%;height:48%;object-fit:cover;background:#071018}
+  .added .t{font-weight:800;font-size:clamp(13px,1.35vw,18px);padding:7px 10px 2px;letter-spacing:-.01em}
+  .added .d{flex:1;font-size:clamp(10px,1.05vw,13.5px);color:#5b6f8a;padding:0 10px;line-height:1.35}
+  .added .m{font-size:clamp(10px,1vw,13px);font-weight:800;color:#176be8;padding:4px 10px 8px}
   .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
   .who a{color:#176be8;font-weight:800;text-decoration:none}
   .who span{color:#8aa0b8}
@@ -41,7 +46,7 @@ var SLUGS=[
   ['product-instructions','Product Instruction QR'],
   ['personal-axon','Personal Axon'],
   ['grocery-shopping','Grocery Shopping Teammate'],
-  ['cover','SCORE AI'],
+  ['added','ai-to-ai','Axon Relay'],
   ['cover','Start a Business with AI'],
   ['dna-answers','DNA Answers'],
   ['std-sti-testing','STD / STI Testing'],
@@ -54,10 +59,16 @@ var stage=document.getElementById('stage');
 SLUGS.forEach(function(s,i){
   if(!s) return;
   var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
-  var a=document.createElement(s[0]==='cover'?'div':'a');
-  a.className=s[0]==='cover'?'cover':'hot';
-  if(s[0]!=='cover'){a.href='/portfolio/projects/'+s[0]+'.html';}
-  a.setAttribute('aria-label',s[1]);
+  var kind=s[0];
+  var slug=kind==='cover'||kind==='added'?s[1]:s[0];
+  var label=kind==='cover'||kind==='added'?s[s.length-1]:s[1];
+  var a=document.createElement(kind==='cover'?'div':'a');
+  a.className=kind==='cover'?'cover':kind==='added'?'added':'hot';
+  if(kind!=='cover'){a.href='/portfolio/projects/'+(kind==='added'?slug:s[0])+'.html';}
+  a.setAttribute('aria-label',label);
+  if(kind==='added'){
+    a.innerHTML='<img src="/sites/assets/axon-logo-orb.jpg" alt=""><span class="t">Axon Relay</span><span class="d">Your AI calls people, or talks to their AI, so you never pick up the phone.</span><span class="m">Learn more →</span>';
+  }
   a.style.left=(c[0]/W*100)+'%';
   a.style.top=(r[0]/H*100)+'%';
   a.style.width=((c[1]-c[0])/W*100)+'%';
