@@ -14,16 +14,29 @@
   a{color:var(--brand)}
   .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
 
-  header{background:var(--brand);color:#fff}
-  header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:.2px}
+  header{position:relative;overflow:hidden;color:#fff;background:linear-gradient(115deg,#0b2a4a 0%,#123f7a 38%,#1f6fb8 68%,#13a3a8 100%)}
+  header .helix{position:absolute;left:0;right:0;bottom:4px;width:100%;height:96px;opacity:.7;pointer-events:none}
+  header .wrap{position:relative}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:.2px;color:#fff;text-decoration:none}
   .brand svg{flex:none}
-  .call-top{color:#fff;font-weight:800;text-decoration:none;white-space:nowrap;border:2px solid #fff;border-radius:999px;padding:7px 14px;font-size:15px}
+  .brand em{font-style:normal;color:#7fe3d6}
+  nav{display:flex;gap:4px;flex-wrap:wrap}
+  nav a{color:#e3f0ff;text-decoration:none;font-weight:700;font-size:15px;padding:7px 11px;border-radius:999px}
+  nav a:hover{background:rgba(255,255,255,.14);color:#fff}
+  .call-top{color:#0b2a4a;background:#fff;font-weight:800;text-decoration:none;white-space:nowrap;border-radius:999px;padding:8px 15px;font-size:15px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+  .hero-in{padding-top:18px;padding-bottom:112px}
+  h1{font-size:34px;line-height:1.12;margin:0 0 8px;text-shadow:0 2px 12px rgba(0,0,0,.25)}
+  .sub{margin:0;color:#d7e9ff;font-size:18px}
+
+  .appt{background:#fff6d6;border-bottom:1px solid #f1d98a;color:#5b4300}
+  .appt .wrap{display:flex;align-items:center;gap:12px;padding-top:12px;padding-bottom:12px;font-size:16px}
+  .appt svg{flex:none}
+  .appt strong{color:#3d2c00}
+  .appt a{color:#3d2c00;font-weight:800;white-space:nowrap}
 
   .hero{background:var(--soft);border-bottom:1px solid var(--line)}
-  .hero .wrap{padding-top:22px;padding-bottom:22px}
-  h1{font-size:28px;line-height:1.15;margin:0 0 6px}
-  .sub{margin:0;color:var(--muted);font-size:17px}
+  .hero .wrap{padding-top:4px;padding-bottom:22px}
 
   .facts{display:grid;grid-template-columns:1.1fr 1fr;gap:18px;margin-top:18px}
   .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
@@ -66,9 +79,13 @@
   footer a{color:#fff}
 
   @media (max-width:760px){
-    h1{font-size:24px}
+    h1{font-size:26px}
     .facts,.find-grid{grid-template-columns:1fr}
     .brand{font-size:16px}
+    nav{display:none}
+    .hero-in{padding-bottom:84px}
+    header .helix{height:70px}
+    .appt .wrap{align-items:flex-start;font-size:15px}
     .map iframe{height:260px}
   }
 </style>
@@ -76,23 +93,38 @@
 <body>
 
 <header>
-  <div class="wrap">
-    <div class="brand">
-      <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round">
-        <path d="M5 2c0 7 16 9 16 13S5 21 5 28"/><path d="M21 2c0 7-16 9-16 13s16 6 16 13"/>
-        <path d="M8 6h10M8 24h10M10 10.5h6M10 19.5h6" stroke-width="1.6"/>
+  <svg class="helix" id="helix" viewBox="0 0 1200 150" preserveAspectRatio="none" aria-hidden="true"></svg>
+  <div class="wrap bar">
+    <a class="brand" href="./">
+      <svg width="28" height="32" viewBox="0 0 26 30" aria-hidden="true" fill="none" stroke-linecap="round">
+        <path d="M5 2c0 7 16 9 16 13S5 21 5 28" stroke="#7fe3d6" stroke-width="2.4"/>
+        <path d="M21 2c0 7-16 9-16 13s16 6 16 13" stroke="#ff8fb1" stroke-width="2.4"/>
+        <path d="M8 6h10M8 24h10M10 10.5h6M10 19.5h6" stroke="#fff" stroke-width="1.6"/>
       </svg>
-      Affordable Paternity Testing
-    </div>
+      <span>Affordable <em>Paternity</em> Testing</span>
+    </a>
+    <nav aria-label="Page sections">
+      <a href="#hours">Hours</a>
+      <a href="#map">Map</a>
+      <a href="#find-us">Find us</a>
+    </nav>
     <a class="call-top" href="tel:+12095543800">Call 209-554-3800</a>
+  </div>
+  <div class="wrap hero-in">
+    <h1>Paternity testing in Modesto</h1>
+    <p class="sub">Fifteen24 Professional Center, Suite 455. Open 7 days a week.</p>
   </div>
 </header>
 
+<div class="appt" role="note">
+  <div class="wrap">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#a37400" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    <div><strong>Please call for an appointment.</strong> Walk-ins are not accepted at this time, but we can usually get you in the same day. <a href="tel:+12095543800">209-554-3800</a></div>
+  </div>
+</div>
+
 <div class="hero">
   <div class="wrap">
-    <h1>Paternity testing in Modesto</h1>
-    <p class="sub">Fifteen24 Professional Center, Suite 455. Open 7 days a week.</p>
-
     <div class="facts">
       <div class="card">
         <h2>Where we are</h2>
@@ -107,7 +139,7 @@
           <a class="phone" href="tel:+12096617211">209-661-7211</a></p>
       </div>
 
-      <div class="card">
+      <div class="card" id="hours">
         <h2>Hours</h2>
         <span class="status" id="status" hidden></span>
         <table class="hours" id="hours">
@@ -122,7 +154,7 @@
       </div>
     </div>
 
-    <div class="map">
+    <div class="map" id="map">
       <iframe title="Google Map to 1524 McHenry Ave, Modesto" referrerpolicy="no-referrer-when-downgrade"
         src="https://www.google.com/maps?q=1524+McHenry+Ave+Ste+455,+Modesto,+CA+95350&amp;z=17&amp;output=embed"></iframe>
       <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1524+McHenry+Ave+Ste+455,+Modesto,+CA+95350">Open in Google Maps</a>
@@ -160,6 +192,22 @@
 </footer>
 
 <script>
+(function(){
+  var svg=document.getElementById('helix'),W=1200,MID=75,AMP=42,STEP=24,P=300;
+  var COLORS=['#7fe3d6','#ff8fb1','#ffd166','#9ecbff'];
+  var y=function(x,ph){return MID+AMP*Math.sin(2*Math.PI*x/P+ph)};
+  var out='';
+  for(var x=6,i=0;x<W;x+=STEP,i++){
+    var a=y(x,0),b=y(x,Math.PI);
+    out+='<line x1="'+x+'" y1="'+a.toFixed(1)+'" x2="'+x+'" y2="'+b.toFixed(1)+'" stroke="'+COLORS[i%4]+'" stroke-width="4" stroke-linecap="round" opacity=".75"/>';
+  }
+  [[0,'#7fe3d6'],[Math.PI,'#ff8fb1']].forEach(function(s){
+    var d='M0 '+y(0,s[0]).toFixed(1);
+    for(var x=8;x<=W;x+=8)d+=' L'+x+' '+y(x,s[0]).toFixed(1);
+    out+='<path d="'+d+'" fill="none" stroke="'+s[1]+'" stroke-width="6" stroke-linecap="round"/>';
+  });
+  svg.innerHTML=out;
+})();
 /* Hours are Modesto time, whatever time zone the visitor's phone is in. */
 (function(){
   var OPEN={0:[12,19],1:[7,19],2:[7,19],3:[7,19],4:[7,19],5:[7,19],6:[12,19]};
