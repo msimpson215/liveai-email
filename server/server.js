@@ -23,6 +23,15 @@ dotenv.config()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 app.use(express.json())
+/** modestodna.com serves the Affordable Paternity Testing site at its root. /api stays shared. */
+const PATERNITY_HOSTS = new Set(['modestodna.com', 'www.modestodna.com'])
+app.use((req, _res, next) => {
+  if (PATERNITY_HOSTS.has((req.hostname || '').toLowerCase()) &&
+      !req.path.startsWith('/affordable-paternity') && !req.path.startsWith('/api/')) {
+    req.url = '/affordable-paternity' + req.url
+  }
+  next()
+})
 app.use(express.static('public', {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store')
