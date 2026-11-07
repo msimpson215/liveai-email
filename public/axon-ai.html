@@ -301,7 +301,26 @@ function toggleFiles(){
   fileDot.classList.toggle('on',on);
 }
 
+let fiveTimer=0,fiveDone=false;
+function armFive(){
+  if(fiveTimer||fiveDone)return;
+  fiveTimer=setTimeout(endFive,5*60*1000);
+}
+function endFive(){
+  if(fiveDone)return;
+  fiveDone=true;
+  clearTimeout(fiveTimer);
+  showText();
+  if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
+  if(dc&&dc.readyState==='open'){
+    try{
+      dc.send(JSON.stringify({type:'response.create',response:{instructions:"The five minutes are up. Say this once, warmly, then stop. Do not ask a question and do not add a pitch: If you have further questions, we're going to switch you over to text."}}));
+    }catch(e){}
+  }
+  setState('listening','Switched to text');
+}
 async function stopVoice(){
+  clearTimeout(fiveTimer);fiveTimer=0;
   if(voice){voice.detach();voice=null}
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
@@ -313,7 +332,7 @@ async function stopVoice(){
 
 let reconnecting=false,reconnectTries=0;
 async function handleLost(){
-  if(reconnecting)return;
+  if(fiveDone||reconnecting)return;
   reconnecting=true;
   try{if(voice){voice.detach();voice=null}}catch(e){}
   try{if(pc)pc.close()}catch(e){}
@@ -412,6 +431,7 @@ async function connectVoice(){
   });
   setLive(true);
   setState('listening');
+  armFive();
 }
 
 function greet(){
