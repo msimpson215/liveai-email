@@ -367,6 +367,8 @@ GUARDRAILS — CRITICAL:
 - Stay strictly on THIS product only. If asked about a different product, say that is handled separately and steer back.
 - Keep answers to 1–3 sentences. Friendly, confident, professional woman's voice.`
 
+const AXONAI_OPENING = `Hello. I'm Axon AI. I'm not a chat bubble, and I'm not a list of canned questions. I'm a real AI you can actually talk with, and I live inside a company's own website, as one of its tabs. Ask me anything, about the world or about what I do.`
+
 const A1_BASE = `You are an AI team member for A1 Professional Asphalt and Sealing serving the St. Louis area.`
 
 const A1_WEB_GREETING =
@@ -1217,7 +1219,7 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
 ${VOICE_RULES}
 
 OPENING — say this ONE TIME, then stop and wait:
-"Hello. I'm Axon AI. I'm not a chat bubble, and I'm not a list of canned questions. I'm a real AI you can actually talk with, and I live inside a company's own website, as one of its tabs. Ask me anything, about the world or about what I do."
+"${AXONAI_OPENING}"
 Never repeat the opening. If they greet you later, just answer them.
 
 HOW THIS WORKS:
@@ -1226,7 +1228,8 @@ HOW THIS WORKS:
 - Follow them. If they change the subject, go with them. News, world affairs, whatever they bring up is fair. Answer it.
 - If you were interrupted, or the audio is noisy, answer what you actually heard. Do not start over. Do not re-introduce yourself.
 - If your own sentence got cut off, finish that point in a sentence, after you answer them.
-- Keep replies short: two to five sentences. Longer only when they ask you to explain.
+- Keep replies short: one to three sentences, then stop and listen. Longer only when they ask you to explain, and even then, stop after a few sentences and check in.
+- The moment they start talking, stop talking and listen. Never talk over them.
 - When it fits, come back to what Axon does for a website that is already live. Do not force it into every answer.
 
 WHAT AXON DOES — this is the real show, say it when they ask what this is, what you do, or why a business would want it:
@@ -1549,7 +1552,7 @@ function hasApiKey() {
  * OpenAI account. Limit sessions per visitor and per day. In-memory is fine:
  * a restart resetting the counters is not a meaningful loss.
  */
-const PUBLIC_QR_SOURCES = new Set(['stresstest', 'ask'])
+const PUBLIC_QR_SOURCES = new Set(['stresstest', 'ask', 'axonai'])
 const QR_LIMITS = {
   perVisitorPerHour: Number(process.env.QR_SESSIONS_PER_VISITOR_HOUR) || 8,
   perDay: Number(process.env.QR_SESSIONS_PER_DAY) || 300
@@ -2203,6 +2206,107 @@ app.post('/api/axon-ai/read', upload.single('file'), async (req, res) => {
     res.json({ ok: true, name: req.file.originalname, chars: text.length, text })
   } catch (error) {
     res.status(400).json({ ok: false, error: error.message || 'Could not read that file.' })
+  }
+})
+
+/**
+ * The public Axon AI page talks on GPT-Live: it listens while it speaks, so a
+ * visitor can cut in at any moment. The browser sends its connection offer
+ * here and the API key never leaves the server.
+ */
+const LIVE_MODEL = process.env.OPENAI_LIVE_MODEL || 'gpt-live-1'
+const LIVE_VOICE = process.env.OPENAI_LIVE_VOICE || 'marin'
+const LIVE_BACKEND = process.env.OPENAI_LIVE_BACKEND || 'gpt-5.6-luna'
+
+app.post('/api/axon-ai/live', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (!hasApiKey()) return res.status(503).json({ error: 'The voice is not set up on the server.' })
+  const sdp = String((req.body && req.body.sdp) || '')
+  if (!sdp.trim() || sdp.length > 64 * 1024) return res.status(400).json({ error: 'Bad connection offer.' })
+  if (checkQrBudget('axonai', req)) return res.status(429).json({ error: 'Busy right now.' })
+  const past = (Array.isArray(req.body.history) ? req.body.history.slice(-12) : [])
+    .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
+    .map(m => ({
+      type: 'message',
+      role: m.role,
+      content: [{ type: m.role === 'user' ? 'input_text' : 'output_text', text: m.text.slice(0, 1500) }]
+    }))
+  const start = past.length
+    ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
+    : `Greet the visitor now in English. Say this once, warmly: "${AXONAI_OPENING}" Then pause and listen.`
+  try {
+    const response = await fetch('https://api.openai.com/v1/live/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        session: {
+          model: LIVE_MODEL,
+          instructions: buildInstructions('axonai'),
+          input: [...past, { type: 'message', role: 'developer', content: [{ type: 'input_text', text: start }] }],
+          delegation: {
+            type: 'responses',
+            responses: {
+              model: LIVE_BACKEND,
+              instructions: 'You are the research backend for Axon AI, talking with a visitor on a webpage. Answer in two or three short spoken sentences. Use web search when the question needs current facts about the world. Never invent prices, customers, revenue, or funding for Axon AI.',
+              reasoning: { effort: 'low' },
+              tools: [{ type: 'web_search' }],
+              tool_choice: 'auto'
+            }
+          },
+          audio: { output: { voice: LIVE_VOICE } }
+        },
+        transport: { type: 'webrtc', sdp }
+      })
+    })
+    const data = await response.json().catch(() => ({}))
+    if (!response.ok || !data.transport || !data.transport.sdp) {
+      console.error('Axon AI live session failed:', response.status, data && data.error && data.error.message)
+      return res.status(502).json({ error: 'The voice could not start.' })
+    }
+    res.status(201).json({ session: data.session, transport: data.transport, greet: past.length ? null : start })
+  } catch (error) {
+    console.error('Axon AI live session failed:', error.message)
+    res.status(502).json({ error: 'The voice could not start.' })
+  }
+})
+
+/** Typed questions on the Axon AI page. GPT-Live hears voice only. */
+app.post('/api/axon-ai/text', async (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (!hasApiKey()) return res.status(503).json({ error: 'Not set up on the server.' })
+  const turns = Array.isArray(req.body && req.body.messages) ? req.body.messages.slice(-20) : []
+  const messages = turns
+    .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
+    .map(m => ({ role: m.role, content: m.text.slice(0, 4000) }))
+  if (!messages.length || messages[messages.length - 1].role !== 'user') {
+    return res.status(400).json({ error: 'Type a question first.' })
+  }
+  const docs = String((req.body && req.body.docs) || '').slice(0, 24000)
+  const system = `${buildInstructions('axonai')}
+
+YOU ARE IN THE TEXT BOX NOW: the visitor is typing. Answer in writing, two to five sentences. Do not say the opening again and do not mention the five minutes.${docs ? `\n\nFILES THE VISITOR UPLOADED — use only this text when they ask about them:\n${docs}` : ''}`
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: TIERS.advanced.chat,
+        messages: [{ role: 'system', content: system }, ...messages],
+        max_tokens: 500
+      })
+    })
+    const data = await response.json().catch(() => ({}))
+    const reply = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
+    if (!response.ok || !reply) return res.status(502).json({ error: 'No answer just now. Try again.' })
+    res.json({ reply: reply.trim() })
+  } catch (error) {
+    res.status(502).json({ error: 'No answer just now. Try again.' })
   }
 })
 

@@ -216,7 +216,6 @@
 
   <input id="file" type="file" accept=".pdf,.doc,.docx,.txt,.md,.csv,application/pdf,text/plain">
 
-<script src="/axon-voice.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const hint=document.getElementById('hint');
@@ -228,8 +227,10 @@ const fileInput=document.getElementById('file');
 const textDot=document.getElementById('textDot');
 const fileDot=document.getElementById('fileDot');
 
-let pc=null,localStream=null,starting=false,audioEl=null,voice=null,dc=null;
-let greeted=false,textOffered=false,curAI=null,audioReady=false,pendingGreet=false;
+let pc=null,dc=null,localStream=null,audioEl=null;
+let starting=false,ready=false,closing=false,audioBlocked=false,textOffered=false;
+let curAI=null,curYou=null,aiQuiet=0,youQuiet=0;
+let history=[],docsText='',greet=null;
 
 function setState(s,msg){
   document.body.dataset.state=s||'idle';
@@ -277,10 +278,17 @@ function stopLevel(){
 function line(role,text){
   const d=document.createElement('div');
   d.className=role;
+  d._raw=text;
   d.textContent=(role==='you'?'You: ':'Axon: ')+text;
   logEl.appendChild(d);
   logEl.scrollTop=logEl.scrollHeight;
   return d;
+}
+function remember(role,text){
+  text=String(text||'').trim();
+  if(!text)return;
+  history.push({role:role,text:text});
+  if(history.length>40)history=history.slice(-40);
 }
 function showText(){
   if(innerWidth<=860){document.body.classList.remove('show-files');fileDot.classList.remove('on');}
@@ -301,6 +309,55 @@ function toggleFiles(){
   fileDot.classList.toggle('on',on);
 }
 
+function send(ev){
+  if(!dc||dc.readyState!=='open'||!ready)return false;
+  try{dc.send(JSON.stringify(ev));return true}catch(e){return false}
+}
+function endAI(){
+  clearTimeout(aiQuiet);
+  if(curAI){remember('assistant',curAI._raw);curAI=null}
+}
+function endYou(){
+  clearTimeout(youQuiet);
+  if(curYou){remember('user',curYou._raw);curYou=null}
+}
+
+function onEvent(m){
+  if(m.type==='session.started'){
+    ready=true;
+    setLive(true);
+    setState('listening');
+    if(greet){send({type:'session.commentary.append',event_id:'greeting_1',delegation_id:null,content:greet});greet=null}
+    armFive();
+    if(!textOffered){textOffered=true;setTimeout(showText,6500)}
+    return;
+  }
+  if(m.type==='session.output_transcript.delta'&&m.delta){
+    endYou();
+    if(!curAI)curAI=line('ai','');
+    curAI._raw+=m.delta;
+    curAI.textContent='Axon: '+curAI._raw;
+    logEl.scrollTop=logEl.scrollHeight;
+    setState('speaking');
+    clearTimeout(aiQuiet);
+    aiQuiet=setTimeout(function(){endAI();if(pc)setState('listening')},1200);
+    return;
+  }
+  if(m.type==='session.input_transcript.delta'&&m.delta){
+    endAI();
+    if(!curYou)curYou=line('you','');
+    curYou._raw+=m.delta;
+    curYou.textContent='You: '+curYou._raw;
+    logEl.scrollTop=logEl.scrollHeight;
+    setState('listening');
+    clearTimeout(youQuiet);
+    youQuiet=setTimeout(endYou,1500);
+    return;
+  }
+  if(m.type==='session.closed'){teardown();return}
+  if(m.type==='error')console.warn('Axon voice:',m.error&&m.error.message);
+}
+
 let fiveTimer=0,fiveDone=false;
 function armFive(){
   if(fiveTimer||fiveDone)return;
@@ -311,178 +368,151 @@ function endFive(){
   fiveDone=true;
   clearTimeout(fiveTimer);
   showText();
+  send({type:'session.input_audio.mute',event_id:'five_mute'});
   if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
-  if(dc&&dc.readyState==='open'){
-    try{
-      dc.send(JSON.stringify({type:'response.create',response:{instructions:"The five minutes are up. Say this once, warmly, then stop. Do not ask a question and do not add a pitch: If you have further questions, we're going to switch you over to text."}}));
-    }catch(e){}
-  }
-  setState('listening','Switched to text');
-}
-async function stopVoice(){
-  clearTimeout(fiveTimer);fiveTimer=0;
-  if(voice){voice.detach();voice=null}
-  if(pc){try{pc.close()}catch(e){}pc=null}
-  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
-  dc=null;starting=false;audioReady=false;pendingGreet=false;
-  stopLevel();
-  setLive(false);
-  setState('idle');
+  send({type:'session.instructions.append',event_id:'five_up',delegation_id:null,
+    content:"The five minutes are up. Right now, say this once, warmly, then stop. Do not ask a question and do not add a pitch: If you have further questions, we're going to switch you over to text."});
+  setTimeout(function(){stopVoice()},9000);
 }
 
-let reconnecting=false,reconnectTries=0;
-async function handleLost(){
-  if(fiveDone||reconnecting)return;
-  reconnecting=true;
-  try{if(voice){voice.detach();voice=null}}catch(e){}
-  try{if(pc)pc.close()}catch(e){}
-  pc=null;dc=null;
+function teardown(){
+  clearTimeout(fiveTimer);fiveTimer=0;
+  endAI();endYou();
+  if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
-  const wait=Math.min(8000,600*Math.pow(2,reconnectTries++));
-  setTimeout(async function(){
-    try{await connectVoice();reconnectTries=0;}
-    catch(e){if(reconnectTries<5)handleLost();}
-    finally{reconnecting=false;}
-  },wait);
+  if(audioEl){try{audioEl.pause();audioEl.srcObject=null}catch(e){}}
+  dc=null;ready=false;closing=false;audioBlocked=false;
+  stopLevel();
+  setLive(false);
+  setState('idle',fiveDone?'Switched to text':undefined);
+}
+function stopVoice(){
+  if(!pc)return;
+  if(audioEl){try{audioEl.pause();audioEl.srcObject=null}catch(e){}}
+  if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
+  stopLevel();
+  setLive(false);
+  if(closing)return;
+  closing=true;
+  if(!send({type:'session.close',event_id:'close_1'})){teardown();return}
+  setTimeout(function(){if(closing)teardown()},2500);
+}
+
+function waitForIce(conn){
+  if(conn.iceGatheringState==='complete')return Promise.resolve();
+  return new Promise(function(resolve){
+    const t=setTimeout(done,4000);
+    function done(){clearTimeout(t);conn.removeEventListener('icegatheringstatechange',check);resolve()}
+    function check(){if(conn.iceGatheringState==='complete')done()}
+    conn.addEventListener('icegatheringstatechange',check);
+  });
 }
 
 async function connectVoice(){
-  const r=await fetch('/session?gate=1&src=axonai',{cache:'no-store'});
-  const data=await r.json();
-  if(!r.ok||data.error){
-    const err=new Error(data.error||'session');
-    err.status=r.status;throw err;
-  }
-  const key=data.value||(data.client_secret&&data.client_secret.value);
-  if(!key)throw new Error('no token');
-
-  pc=new RTCPeerConnection();
+  const conn=new RTCPeerConnection();
+  pc=conn;
   const audio=ensureAudio();
-  let remoteStream=null;
-  pc.ontrack=function(e){
-    remoteStream=e.streams[0];
-    if(audio.srcObject!==e.streams[0]){
-      audio.srcObject=e.streams[0];
-      audio.play().then(function(){audioReady=true}).catch(function(){audioReady=false});
-      startLevel(e.streams[0]);
-    }
+  conn.ontrack=function(e){
+    const stream=e.streams[0]||new MediaStream([e.track]);
+    audio.srcObject=stream;
+    audio.play().then(function(){audioBlocked=false}).catch(function(){
+      audioBlocked=true;
+      setState('idle','Tap the orb to hear Axon');
+    });
+    startLevel(stream);
   };
+  conn.addEventListener('connectionstatechange',function(){
+    if(pc!==conn)return;
+    if(conn.connectionState==='failed'||(conn.connectionState==='disconnected'&&!closing)){
+      teardown();
+      if(!fiveDone)setState('idle','The line dropped. Tap the orb to keep talking.');
+    }
+  });
   localStream=await navigator.mediaDevices.getUserMedia({
     audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
   });
-  const micTrack=localStream.getAudioTracks()[0];
-  micTrack.enabled=false;
-  pc.addTrack(micTrack);
+  if(pc!==conn){localStream.getTracks().forEach(function(t){t.stop()});localStream=null;return}
+  localStream.getAudioTracks().forEach(function(t){conn.addTrack(t,localStream)});
 
-  dc=pc.createDataChannel('oai-events');
-  dc.addEventListener('open',function(){
-    if(AxonVoice.hasHistory())return;
-    let waited=0;
-    const check=setInterval(function(){
-      waited+=150;
-      if(audioReady){clearInterval(check);greet();}
-      else if(waited>=1500){
-        clearInterval(check);
-        pendingGreet=true;
-        setLive(false);
-        setState('idle','Tap the orb to hear Axon');
-      }
-    },150);
-  });
+  dc=conn.createDataChannel('oai-events');
   dc.addEventListener('message',function(ev){
-    try{
-      const m=JSON.parse(ev.data);
-      if(m.type==='response.created'){
-        setState('speaking');
-        if(!textOffered){
-          textOffered=true;
-          setTimeout(showText,6500);
-        }
-      }
-      if(m.type==='response.done')setState('listening');
-      if(m.type==='response.output_audio_transcript.delta'&&m.delta){
-        if(!curAI){curAI=line('ai','');curAI._raw='';}
-        curAI._raw=(curAI._raw||'')+m.delta;
-        curAI.textContent='Axon: '+curAI._raw;
-        logEl.scrollTop=logEl.scrollHeight;
-      }
-      if(m.type==='response.output_audio_transcript.done'||m.type==='response.audio_transcript.done'){
-        if(m.transcript){
-          if(!curAI)curAI=line('ai','');
-          curAI._raw=m.transcript;
-          curAI.textContent='Axon: '+m.transcript;
-        }
-        curAI=null;
-      }
-    }catch(e){}
+    try{onEvent(JSON.parse(ev.data))}catch(e){}
   });
+  dc.addEventListener('close',function(){if(pc===conn&&!fiveDone)teardown()});
 
-  const offer=await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  const sdp=await fetch('https://api.openai.com/v1/realtime/calls',{
-    method:'POST',body:offer.sdp,
-    headers:{Authorization:'Bearer '+key,'Content-Type':'application/sdp'}
+  const offer=await conn.createOffer();
+  await conn.setLocalDescription(offer);
+  await waitForIce(conn);
+  const r=await fetch('/api/axon-ai/live',{
+    method:'POST',cache:'no-store',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({sdp:conn.localDescription.sdp,history:history.slice(-12)})
   });
-  if(!sdp.ok)throw new Error('sdp');
-  await pc.setRemoteDescription({type:'answer',sdp:await sdp.text()});
-  voice=AxonVoice.attach({
-    dc:dc,micTrack:micTrack,localStream:localStream,remoteStream:remoteStream,
-    voice:data.voice,pc:pc,onLost:handleLost
+  if(!r.ok){const err=new Error('session');err.status=r.status;throw err}
+  const data=await r.json();
+  if(pc!==conn)return;
+  greet=data.greet||null;
+  await conn.setRemoteDescription({type:'answer',sdp:data.transport.sdp});
+  await new Promise(function(resolve,reject){
+    let waited=0;
+    const t=setInterval(function(){
+      waited+=100;
+      if(ready||pc!==conn){clearInterval(t);resolve()}
+      else if(waited>=15000){clearInterval(t);reject(new Error('timeout'))}
+    },100);
   });
-  setLive(true);
-  setState('listening');
-  armFive();
-}
-
-function greet(){
-  pendingGreet=false;
-  setLive(true);
-  try{dc.send(JSON.stringify({type:'response.create'}))}catch(e){}
 }
 
 async function toggle(){
   if(starting)return;
-  if(pc&&pendingGreet){
-    audioEl.play().then(function(){audioReady=true;greet();}).catch(function(){});
+  if(pc&&audioBlocked){
+    audioEl.play().then(function(){audioBlocked=false;setState('listening','')}).catch(function(){});
     return;
   }
-  if(pc){await stopVoice();document.body.classList.add('paused');return;}
+  if(pc){stopVoice();document.body.classList.add('paused');return}
+  if(fiveDone){showText();return}
   starting=true;
   setState('connecting','');
-  try{await connectVoice();}
+  try{await connectVoice()}
   catch(e){
     const wasPaused=document.body.classList.contains('paused');
-    await stopVoice();
+    teardown();
     if(wasPaused)document.body.classList.add('paused');
     setState('idle',e.status===429?'Busy right now. Tap the orb to try again.':'Tap the orb to talk with Axon');
   }
   starting=false;
 }
 
-function sendText(text){
+let typing=false;
+async function sendText(text){
   text=String(text||'').trim();
-  if(!text)return;
+  if(!text||typing)return;
+  typing=true;
+  endAI();endYou();
   line('you',text);
+  remember('user',text);
   document.getElementById('q').value='';
-  if(dc&&dc.readyState==='open'){
-    try{
-      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:text}]}}));
-      dc.send(JSON.stringify({type:'response.create'}));
-    }catch(e){}
-  }else{
-    toggle().then(function(){
-      const wait=setInterval(function(){
-        if(dc&&dc.readyState==='open'){
-          clearInterval(wait);
-          try{
-            dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:text}]}}));
-            dc.send(JSON.stringify({type:'response.create'}));
-          }catch(e){}
-        }
-      },200);
-      setTimeout(function(){clearInterval(wait)},8000);
+  const wait=line('ai','…');
+  try{
+    const r=await fetch('/api/axon-ai/text',{
+      method:'POST',cache:'no-store',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:history.slice(-20),docs:docsText})
     });
+    const d=await r.json().catch(function(){return{}});
+    const reply=d.reply||d.error||'No answer just now. Try again.';
+    wait._raw=reply;
+    wait.textContent='Axon: '+reply;
+    logEl.scrollTop=logEl.scrollHeight;
+    if(d.reply){
+      remember('assistant',d.reply);
+      send({type:'session.thinking.append',event_id:'typed_'+Date.now(),delegation_id:null,
+        content:('The visitor typed: "'+text+'". It was answered in the text box: "'+d.reply+'". Do not read it aloud. If they talk about it, you already know.').slice(0,1800)});
+    }
+  }catch(e){
+    wait.textContent='Axon: No answer just now. Try again.';
   }
+  typing=false;
 }
 
 async function readFile(file){
@@ -498,12 +528,14 @@ async function readFile(file){
     li.textContent=d.name;
     docsEl.appendChild(li);
     drop.textContent='Drop another file, or click to choose.';
-    const note='The visitor uploaded "'+d.name+'". Use only this text. If asked about the file, work from it. Contents:\n'+d.text;
-    if(dc&&dc.readyState==='open'){
-      dc.send(JSON.stringify({type:'conversation.item.create',item:{type:'message',role:'user',content:[{type:'input_text',text:note}]}}));
-      dc.send(JSON.stringify({type:'response.create',response:{instructions:'A file was just uploaded. Acknowledge it in one or two sentences and offer to talk from it. Do not read it aloud.'}}));
+    docsText=(docsText+'\n\n--- '+d.name+' ---\n'+d.text).slice(-24000);
+    const spoken=send({type:'session.thinking.append',event_id:'file_'+Date.now(),delegation_id:null,
+      content:('The visitor uploaded "'+d.name+'". The start of it reads: '+d.text).slice(0,1800)});
+    if(spoken){
+      send({type:'session.commentary.append',event_id:'filesay_'+Date.now(),delegation_id:null,
+        content:'A file named "'+d.name+'" was just uploaded. Acknowledge it in one sentence and offer to talk about it. Do not read it aloud.'});
     }else{
-      line('ai','I have '+d.name+'. Tap the orb and we can talk through it.');
+      line('ai','I have '+d.name+'. Ask me about it here, or tap the orb and we can talk it through.');
     }
   }catch(e){
     drop.textContent=e.message||'Could not read that file.';
@@ -531,7 +563,7 @@ document.getElementById('textForm').addEventListener('submit',function(e){
   e.preventDefault();
   sendText(document.getElementById('q').value);
 });
-window.addEventListener('pagehide',function(){if(pc||starting)stopVoice()});
+window.addEventListener('pagehide',function(){if(pc){send({type:'session.close'});teardown()}});
 document.getElementById('hello').addEventListener('click',function(){
   document.body.classList.add('started');
   ensureAudio().play().catch(function(){});
