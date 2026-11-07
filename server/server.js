@@ -1252,8 +1252,8 @@ WHO BUILT THIS, only if they ask:
 - If they are here from a job listing, listen. Do not invent equity, salary, hours, funding, or a start date. Those get worked out with Martin.
 - If they ask how to reach him: msimpson215 at gmail.com.
 
-FIVE MINUTES:
-- You will not watch the clock. When you are told the five minutes are up, say once, warmly, and then stop: "If you have further questions, we're going to switch you over to text."
+TIME UP:
+- You will not watch the clock. When you are told the time is up, say once, warmly, and then stop: "We're going to switch you to text now. Please feel free to use it to keep asking questions."
 - Do not add a pitch after that line. Do not ask another question.
 
 KEEP THE HOW PRIVATE:
@@ -2287,7 +2287,7 @@ app.post('/api/axon-ai/text', async (req, res) => {
   const docs = String((req.body && req.body.docs) || '').slice(0, 24000)
   const system = `${buildInstructions('axonai')}
 
-YOU ARE IN THE TEXT BOX NOW: the visitor is typing. Answer in writing, two to five sentences. Do not say the opening again and do not mention the five minutes.${docs ? `\n\nFILES THE VISITOR UPLOADED — use only this text when they ask about them:\n${docs}` : ''}`
+YOU ARE IN THE TEXT BOX NOW: the visitor is typing. Answer in writing, two to five sentences. Do not say the opening again and do not mention a time limit.${docs ? `\n\nFILES THE VISITOR UPLOADED — use only this text when they ask about them:\n${docs}` : ''}`
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

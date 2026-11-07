@@ -361,7 +361,7 @@ function onEvent(m){
 let fiveTimer=0,fiveDone=false;
 function armFive(){
   if(fiveTimer||fiveDone)return;
-  fiveTimer=setTimeout(endFive,5*60*1000);
+  fiveTimer=setTimeout(endFive,30*1000);
 }
 function endFive(){
   if(fiveDone)return;
@@ -371,7 +371,7 @@ function endFive(){
   send({type:'session.input_audio.mute',event_id:'five_mute'});
   if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
   send({type:'session.instructions.append',event_id:'five_up',delegation_id:null,
-    content:"The five minutes are up. Right now, say this once, warmly, then stop. Do not ask a question and do not add a pitch: If you have further questions, we're going to switch you over to text."});
+    content:"The time is up. Right now, say this once, warmly, then stop. Do not ask a question and do not add a pitch: We're going to switch you to text now. Please feel free to use it to keep asking questions."});
   setTimeout(function(){stopVoice()},9000);
 }
 
