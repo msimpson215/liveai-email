@@ -16,7 +16,8 @@
     overflow:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  .mark span{color:#1452ff}
+  .mark img{display:inline-block;height:clamp(30px,4.6vw,46px);width:auto;vertical-align:top}
+  .mark sup{display:inline-block;vertical-align:top;margin-left:3px;font-size:clamp(11px,1.2vw,14px);font-weight:700;letter-spacing:0;line-height:1;color:#0f1b33}
   .mark{
     position:fixed;top:max(30px,env(safe-area-inset-top));left:0;right:0;
     text-align:center;z-index:3;
@@ -187,7 +188,7 @@
     <button type="button" id="hello">Say hello</button>
     <small>Sound on. Talk, type, or upload a file.</small>
   </div>
-  <div class="mark">AXON <span>AI</span></div>
+  <div class="mark"><img src="/art/axon-wordmark.png" alt="Axon AI" width="374" height="79"><sup>&trade;</sup></div>
 
   <div class="stage">
     <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
