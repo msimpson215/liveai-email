@@ -67,7 +67,12 @@ section.alt{background:var(--alt)}
 .axonpage{text-align:center;padding:70px 0 80px}
 .axonpage p{color:var(--muted);font-size:17.5px;max-width:640px;margin:0 auto 24px}
 .axonpage .btns{justify-content:center;margin-top:8px}
+.axonpage button.btn{border:0;cursor:pointer;font-family:inherit}
 .status{display:inline-block;margin-bottom:22px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--muted)}
+body.voice-connecting .orb,body.voice-active .orb{animation:orbLive 1.15s ease-in-out infinite alternate;filter:brightness(1.18) drop-shadow(0 0 28px rgba(45,130,255,.55))}
+body.voice-active .status{border-color:var(--accent);color:var(--accent)}
+body.voice-error .status{border-color:#c93b3b;color:#c93b3b}
+@keyframes orbLive{from{transform:scale(1)}to{transform:scale(1.07)}}
 
 .jump{display:flex;flex-wrap:wrap;gap:6px 16px;padding:0 0 8px;font-size:13px;font-weight:700}
 .jump a{color:var(--muted)}

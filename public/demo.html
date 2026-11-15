@@ -71,6 +71,17 @@ body.no-bg::before{
 <script>
 const params=new URLSearchParams(location.search);
 const SRC=(params.get('src')||'siteeye').toLowerCase();
+const CLEAN_DESTINATIONS={
+  bandage:'/sites/no-more-boo-boos/axon.html',
+  predeicer:'/sites/pre-de-icer/axon.html',
+  std:'/sites/std-sti-testing/axon.html',
+  dna:'/dna',
+  aipoint:'/aipoint.html',
+  siteeye:'https://siteeye-live.onrender.com/'
+};
+if(!params.get('bg')&&CLEAN_DESTINATIONS[SRC]){
+  location.replace(CLEAN_DESTINATIONS[SRC]);
+}
 const DEFAULT_BACKGROUNDS={
   siteeye:'/images/canva-index.png',
   predeicer:'/demo/predeicer.png',

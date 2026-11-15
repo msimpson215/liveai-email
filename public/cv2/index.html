@@ -3,12 +3,131 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="Martin Simpson — professional resume and career portfolio. Creator of Axon AI: customized AI brains and AI team members for companies. Also public health, nationwide medical testing, business creation, real estate development, hospitality, and invention."/>
+<meta name="description" content="Martin Simpson — professional resume and career portfolio. Creator of Axon AI, developer of SiteEye 360 Live, U.S. patent holder (Pre-De-Icer), inventor of No More Boo-Boos and Pre-Ember Guard, and founder of nationwide medical testing and real estate ventures."/>
 <title>Martin Simpson — Professional Resume &amp; Career Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="/cv2/cv.css?v=pass4"/>
+<style>
+  .sec-lead {
+    max-width: 50em;
+    margin: -12px auto 30px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .clip-single {
+    max-width: 740px;
+    margin: 0 auto 36px;
+  }
+  .sub-h {
+    text-align: center;
+    font-size: clamp(19px, 2.1vw, 23px);
+    font-weight: 750;
+    letter-spacing: -.02em;
+    color: var(--navy);
+    margin: 8px 0 20px;
+  }
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .prod-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .prod-grid .work-card {
+    width: calc((100% - 40px) / 3);
+    padding: 0;
+    overflow: hidden;
+    gap: 0;
+  }
+  .prod-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+    background: #eef3f8;
+    border-bottom: 1px solid var(--line);
+  }
+  .prod-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 18px 20px 22px;
+    flex: 1;
+  }
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 8px;
+    padding: 20px 20px 22px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+    min-height: 100%;
+  }
+  .work-card:hover { border-color: #aac0da; }
+  .work-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+  .work-card h3 {
+    font-size: 16.5px;
+    font-weight: 750;
+    letter-spacing: -.02em;
+    color: var(--navy);
+    margin: 0;
+  }
+  .work-card p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.52;
+    color: var(--muted);
+    flex: 1;
+  }
+  .work-more {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--navy-2);
+    margin-top: 4px;
+  }
+  .clip-frame img.clip-still {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sec-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 28px;
+  }
+  @media (max-width: 980px) {
+    .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .prod-grid .work-card { width: calc((100% - 20px) / 2); }
+  }
+  @media (max-width: 620px) {
+    .app-grid { grid-template-columns: 1fr; }
+    .prod-grid .work-card { width: 100%; }
+  }
+</style>
 </head>
 <body class="home">
 <header class="site-header">
@@ -24,8 +143,8 @@
   <div class="wrap-wide hero-home-grid">
     <div class="hero-copy">
       <h1 class="hero-name">Martin Simpson</h1>
-      <p class="hero-titles">AI Brain Builder · Entrepreneur · Inventor</p>
-      <p class="hero-summary">Creator of Axon AI. Martin builds customized AI brains for companies: AI team members that know the business, talk with its customers, and do the work. Before AI, his career spanned public health, nationwide medical testing, business creation, real estate development, hospitality, and invention.</p>
+      <p class="hero-titles">AI Systems Creator · Product Inventor · Entrepreneur</p>
+      <p class="hero-summary">Creator of Axon AI — customized AI brains and conversational team members built for businesses. Developer of SiteEye 360 Live, U.S. patent holder in preventive anti-icing technology, product inventor, and founder of nationwide medical testing, real estate, and community ventures.</p>
     </div>
     <div class="hero-right">
       <div class="hero-art" role="img" aria-label="The St. Louis skyline and the Gateway Arch from across the Mississippi"></div>
@@ -35,56 +154,196 @@
 
 <section class="home-section home-section--soft home-current" id="current">
   <div class="wrap-wide">
-    <h2 class="home-h">Axon AI: Customized AI Brains for Companies</h2>
-    <p class="home-current-lead">Martin created Axon AI, an artificial brain with more memory than most other AIs. He built it because old legacy websites had no real AI in them. The idea was to insert a brain into a legacy site so it could be modernized and helped with SEO. The brain turned out to be powerful enough that almost every week a new application is rolled out. This interactive resume is one of them. Martin jokes that it has such a good sense of humor.</p>
-    <div class="clip-grid">
+    <h2 class="home-h">Artificial Intelligence — Axon AI</h2>
+    <p class="sec-lead">Martin created Axon AI to solve a practical problem: established companies had working websites with no intelligence behind them. Axon AI inserts a custom-trained artificial brain — loaded with a business’s documents, pricing, guardrails, and persistent memory — directly into an existing website without rebuilding it. That core platform now powers an expanding line of voice and conversational applications, including this interactive curriculum vitae.</p>
+
+    <div class="clip-single">
       <figure class="clip-card">
         <div class="clip-frame">
-          <video class="clip-player" controls playsinline preload="metadata" title="Axon AI">
+          <video class="clip-player" controls playsinline preload="metadata" title="Axon AI Commercial Overview">
             <source src="/cv2/videos/axon-ai.mp4" type="video/mp4"/>
           </video>
           <p class="clip-wait">Clip arriving — then hit play.</p>
         </div>
-        <figcaption>Axon AI</figcaption>
+        <figcaption>Axon AI — Commercial Overview</figcaption>
       </figure>
+    </div>
+
+    <h3 class="sub-h">Axon AI Applications</h3>
+    <div class="app-grid">
+      <a class="work-card" href="/portfolio/projects/axon-websites.html">
+        <span class="work-tag">Core Platform</span>
+        <h3>Axon AI for Websites</h3>
+        <p>A customized AI team member inserted directly into the website a business already owns.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/conversational-resume.html">
+        <span class="work-tag">Hiring &amp; Career</span>
+        <h3>Conversational Résumé</h3>
+        <p>A résumé a hiring manager can interview directly by voice — demonstrated live on this page.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/digital-twin/">
+        <span class="work-tag">Personal Agent</span>
+        <h3>Axon Digital Twin</h3>
+        <p>A private AI stand-in that places approved calls or speaks with another AI and reports back.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/conversational-email.html">
+        <span class="work-tag">Outreach</span>
+        <h3>Conversational Email</h3>
+        <p>An AI team member embedded inside an email; recipients click the orb and start talking.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/business-card.html">
+        <span class="work-tag">Print + Voice</span>
+        <h3>AI Business Card</h3>
+        <p>A printed QR business card that lets anyone scan and speak with an AI representative anytime.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/axon-operator.html">
+        <span class="work-tag">Voice Control</span>
+        <h3>Axon AI Operator</h3>
+        <p>Hands-free voice operator — no keyboard or mouse required to run tasks through your AI team member.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/ai-point.html">
+        <span class="work-tag">Presentations</span>
+        <h3>Axon AI Point</h3>
+        <p>An AI team member paired with live slide decks during a meeting and after everyone leaves.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/patient-education.html">
+        <span class="work-tag">Healthcare QR</span>
+        <h3>Patient Education</h3>
+        <p>Scan a clinic pamphlet QR code to walk through procedure preparation with an AI medical guide.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/product-instructions.html">
+        <span class="work-tag">Support QR</span>
+        <h3>Product Instructions</h3>
+        <p>Replace dense paper manuals with a QR code that talks customers step-by-step through setup.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/personal-axon.html">
+        <span class="work-tag">Private Brain</span>
+        <h3>Personal Axon AI</h3>
+        <p>One dedicated AI team member built around a single person’s work, company, and daily life.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/grocery-shopping.html">
+        <span class="work-tag">E-Commerce</span>
+        <h3>Grocery Shopping Teammate</h3>
+        <p>Conversational store assistant that compares options by voice, builds the cart, and checks out.</p>
+        <span class="work-more">View project →</span>
+      </a>
+      <a class="work-card" href="/portfolio/projects/dna-answers.html">
+        <span class="work-tag">Diagnostics + AI</span>
+        <h3>DNA &amp; STD Testing + Axon AI</h3>
+        <p>Private voice AI guides built for DNA Answers paternity testing and confidential STD/STI testing.</p>
+        <span class="work-more">View project →</span>
+      </a>
+    </div>
+
+    <div class="sec-actions">
+      <a class="btn-outline" href="/portfolio/projects.html">Open Full Project Portfolio →</a>
+      <a class="btn-outline" href="/cv2/current.html">Read Axon AI Overview →</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-section" id="products">
+  <div class="wrap-wide">
+    <h2 class="home-h">Products, Patented Inventions &amp; Initiatives</h2>
+    <p class="sec-lead">Alongside Axon AI, Martin develops job-site hardware, patented chemical formulations, pediatric wound-care devices, wildfire protection, and children’s hospital giving initiatives — each built around a specific real-world problem.</p>
+
+    <div class="clip-single">
       <figure class="clip-card">
         <div class="clip-frame">
-          <video class="clip-player" controls playsinline preload="metadata" title="Pre-De-Icer">
+          <video class="clip-player" controls playsinline preload="metadata" title="Pre-De-Icer — U.S. Patent #8,119,025">
             <source src="/cv2/videos/pre-de-icer.mp4" type="video/mp4"/>
           </video>
           <p class="clip-wait">Clip arriving — then hit play.</p>
         </div>
-        <figcaption>Pre-De-Icer</figcaption>
+        <figcaption>Pre-De-Icer™ Commercial — U.S. Utility Patent #8,119,025</figcaption>
       </figure>
     </div>
 
-    <h3 class="home-h">AI Applications He Has Built</h3>
-    <div class="hl-grid">
-      <a class="hl-card" href="/portfolio/projects/axon-websites.html"><h3>Axon AI for Websites</h3><p>A customized AI team member for a business, inserted into the website it already has.</p></a>
-      <a class="hl-card" href="/portfolio/projects/siteeye-360.html"><h3>SiteEye 360 Live</h3><p>A portable job-site camera that comes in on the truck, watches the job, and goes home at night.</p></a>
-      <a class="hl-card" href="/portfolio/projects/conversational-resume.html"><h3>Conversational Résumé</h3><p>A résumé a hiring manager can talk to, close to a pre-interview. This one is an example.</p></a>
-      <a class="hl-card" href="/portfolio/digital-twin/"><h3>Axon Digital Twin</h3><p>A private twin that makes the call, or talks to the other person’s AI, and reports back.</p></a>
-      <a class="hl-card" href="/portfolio/projects/conversational-email.html"><h3>Conversational Email</h3><p>The AI team member rides inside the email. Click the orb and the conversation starts.</p></a>
-      <a class="hl-card" href="/portfolio/projects/business-card.html"><h3>AI Conversational Business Card</h3><p>Scan the card and talk to the person behind it, even when they are not there.</p></a>
-      <a class="hl-card" href="/portfolio/projects/axon-operator.html"><h3>Axon AI Operator</h3><p>No hands, no typing, no mouse. Just talk, and the AI team member does the work.</p></a>
-      <a class="hl-card" href="/portfolio/projects/ai-point.html"><h3>Axon AI Point</h3><p>An AI team member that sits with the presentation, in the room and after everyone goes home.</p></a>
-      <a class="hl-card" href="/portfolio/projects/patient-education.html"><h3>Patient Education</h3><p>Scan the pamphlet’s QR code and talk to an AI medical team member about that procedure.</p></a>
-      <a class="hl-card" href="/portfolio/projects/product-instructions.html"><h3>Product Instructions</h3><p>Skip the instruction sheet. Scan the QR code and work through the product with an AI team member.</p></a>
-      <a class="hl-card" href="/portfolio/projects/personal-axon.html"><h3>Personal Axon AI</h3><p>One AI team member for one person: work, the company, and personal life.</p></a>
-      <a class="hl-card" href="/portfolio/projects/grocery-shopping.html"><h3>Grocery Shopping Teammate</h3><p>Tell it what you need. It talks you through the choices, fills the cart, and checks out.</p></a>
-      <a class="hl-card" href="/portfolio/projects/dna-answers.html"><h3>DNA Answers + Axon AI</h3><p>A DNA paternity company with an AI that answers the basic questions.</p></a>
-      <a class="hl-card" href="/portfolio/projects/std-sti-testing.html"><h3>STD/STI Testing + Axon AI</h3><p>Confidential testing, with an AI that explains the options and the next step.</p></a>
+    <div class="prod-grid">
+      <a class="work-card" href="/portfolio/projects/siteeye-360.html">
+        <img class="prod-thumb" src="/portfolio/assets/siteeye-job.png" alt="SiteEye 360 Live mounted on a crew truck watching an active paving site" loading="lazy"/>
+        <div class="prod-body">
+          <span class="work-tag">Job-Site Hardware + AI</span>
+          <h3>SiteEye 360 Live</h3>
+          <p>Portable live camera tool that arrives on the crew truck, mounts on a mast or truck hood, streams the job live to the office or phone, and pairs with an AI brain trained on the owner’s field know-how.</p>
+          <span class="work-more">View SiteEye 360 Live →</span>
+        </div>
+      </a>
+      <a class="work-card" href="/portfolio/projects/pre-de-icer.html">
+        <img class="prod-thumb" src="/portfolio/assets/hero-predeicer.png" alt="Pre-De-Icer bottle — Never Scrape Again, Apply Before the Storm" loading="lazy"/>
+        <div class="prod-body">
+          <span class="work-tag">U.S. Patent #8,119,025</span>
+          <h3>Pre-De-Icer™</h3>
+          <p>Patented salt-free preventive anti-icing formulation applied before winter storms so frost, snow, and ice cannot bond to windshields, equipment, or road surfaces.</p>
+          <span class="work-more">View Pre-De-Icer →</span>
+        </div>
+      </a>
+      <a class="work-card" href="/portfolio/projects/no-more-boo-boos.html">
+        <img class="prod-thumb" src="/portfolio/assets/bandage-blue.jpg" alt="No More Boo-Boos light-blue children's bandage with koala graphic" loading="lazy"/>
+        <div class="prod-body">
+          <span class="work-tag">Wound Care · Provisional Path</span>
+          <h3>No More Boo-Boos (Dissolvable Bandage)</h3>
+          <p>A pain-free bandage designed for children and fragile skin (intended FDA Class II pathway): peel off the top layer, hold under warm water, and the film dissolves cleanly without tearing skin.</p>
+          <span class="work-more">View No More Boo-Boos →</span>
+        </div>
+      </a>
+      <a class="work-card" href="/portfolio/projects/ember-guard.html">
+        <img class="prod-thumb" src="/portfolio/assets/ember-guard.jpg" alt="Applying Pre-Ember Guard protective gel spray to a roof ahead of wildfire embers" loading="lazy"/>
+        <div class="prod-body">
+          <span class="work-tag">Wildfire Protection</span>
+          <h3>Pre-Ember Guard</h3>
+          <p>Formulated all-natural protective gel sprayed onto wood and shake shingles ahead of wildfire danger to help keep wind-blown embers from igniting; rinses clean with water afterward.</p>
+          <span class="work-more">View Pre-Ember Guard →</span>
+        </div>
+      </a>
+      <a class="work-card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
+        <img class="prod-thumb" src="/sites/assets/kids-kitchen-table-tent.jpg" alt="Smiling child in hospital bed with meal tray card" loading="lazy"/>
+        <div class="prod-body">
+          <span class="work-tag">501(c)(3) Hospital Concept</span>
+          <h3>Ronald McDonald Kitchen</h3>
+          <p>Proposed restaurant-to-hospital giving model funding children’s hospitals and placing a short, familiar free menu in hospital cafeterias for families in treatment. Independent concept proposal; not affiliated with McDonald’s or RMHC.</p>
+          <span class="work-more">View Hospital Initiative →</span>
+        </div>
+      </a>
     </div>
-    <p style="text-align:center;margin:28px 0 0"><a class="btn-outline" href="/portfolio/projects.html">See the full project portfolio →</a> <a class="btn-outline" href="/cv2/current.html">Explore Current Work →</a></p>
+
+    <div class="sec-actions">
+      <a class="btn-outline" href="/cv2/inventions.html">Patents &amp; Inventions Detail →</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-section home-section--soft" id="talk">
+  <div class="wrap-wide">
+    <div class="ai-banner">
+      <div class="ai-banner-copy">
+        <span class="ai-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15.8V8.4A2 2 0 0 1 7 6.4h6.2L16.8 9.8v6A2 2 0 0 1 14.8 17.8H7A2 2 0 0 1 5 15.8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16.8 10.5h1.4A1.8 1.8 0 0 1 20 12.3v5.2A1.8 1.8 0 0 1 18.2 19.3h-7.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <div>
+          <h2>Talk with Mr. Simpson’s AI Team Member</h2>
+          <p>Ask directly about Axon AI, SiteEye 360 Live, his patents, businesses, or career history.</p>
+        </div>
+      </div>
+      <a class="btn-talk xl" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
+    </div>
   </div>
 </section>
 
 <section class="home-section" id="profile">
   <div class="wrap">
-    <h2 class="home-h">Professional Profile</h2>
+    <h2 class="home-h">Career Foundation &amp; Operating History</h2>
     <div class="home-profile">
-      <p>Today Martin’s work centers on Axon AI: customized AI brains and AI team members for companies, from websites and email to job-site cameras, résumés, and a digital twin that makes calls for you. He continues work in DNA testing, product development, and other ventures.</p>
-      <p>His professional career began in public health during the HIV/AIDS crisis and later moved into private medical testing and business creation. Over the following decades he created businesses, developed real estate, owned restaurants, invented products, and supported children’s charitable work. The written record is below. His AI team member can talk through any of it.</p>
+      <p>Before building Axon AI and SiteEye 360 Live, Martin spent three decades founding operating companies, organizing national laboratory testing networks, developing commercial real estate, running restaurants, and inventing patented products.</p>
+      <p>His career began in public health during the HIV/AIDS crisis at Doorways and the Missouri Department of Health, where seeing two-week wait times for test results led him to organize the first coast-to-coast rapid HIV/STI laboratory network in 1993 — followed by nationwide DNA paternity testing, the historic Maplewood family entertainment district, and children’s hospital philanthropy.</p>
     </div>
   </div>
 </section>
@@ -96,22 +355,22 @@
       <a class="hl-card" href="/cv2/current.html">
         <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="5" width="14" height="14" rx="2.2" stroke="currentColor" stroke-width="1.7"/><path d="M9 9.2h6M9 12h6M9 14.8h3.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><text x="12" y="18.2" text-anchor="middle" font-size="5.2" font-weight="700" fill="currentColor" stroke="none">AI</text></svg></span>
         <h3>Axon AI</h3>
-        <p>The artificial brain Martin created. More memory than most other AIs, and a sense of humor. Built to live inside a legacy website.</p>
+        <p>Custom-trained artificial brains with persistent memory, built for existing business websites and voice workflows.</p>
       </a>
       <a class="hl-card" href="/cv2/businesses.html">
         <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 4.5h5l.8 3H19v2.2h-1.2L16.5 20h-9L8.2 9.7H7V7.5h3.7L9.5 4.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 13.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <h3>Specialized Testing Services</h3>
-        <p>HIV/STIs and the national lab network, beginning around 1993.</p>
+        <p>Pioneered the national STAT HIV/STI lab-network model beginning around 1993.</p>
       </a>
       <a class="hl-card" href="/cv2/businesses.html">
         <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.5 19V9.2L12 4.5l3.5 4.7V19" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10.2 19v-4h3.6v4" stroke="currentColor" stroke-width="1.7"/><path d="M12 11.2v3.2M10.4 12.8h3.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <h3>Medical Testing Center</h3>
-        <p>Nationwide medical testing — call centers, regional labs, and DNA paternity at national scale.</p>
+        <p>Nationwide diagnostic call centers, regional laboratory partnerships, and DNA paternity at national scale.</p>
       </a>
       <a class="hl-card" href="/cv2/development.html">
         <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg></span>
         <h3>Historic Maplewood Development</h3>
-        <p>A family entertainment district on Sutton Boulevard — still thriving, and still respected.</p>
+        <p>Planned and acquired the Sutton Boulevard family entertainment district — still thriving today.</p>
       </a>
     </div>
   </div>
@@ -128,7 +387,7 @@
           <img src="https://i.ytimg.com/vi/o_LuKiM_pTw/hqdefault.jpg" alt="KETC Channel 9 — Living in St. Louis, Maplewood profile" width="480" height="360"/>
           <span class="legacy-play" aria-hidden="true"></span>
         </a>
-        <p>A television profile of Martin Simpson, his Maplewood development, his family, and the work involving children and community.</p>
+        <p>A television profile of Martin Simpson, his Maplewood development, his family, and his community work for children.</p>
         <a class="legacy-link" href="https://www.youtube.com/watch?v=o_LuKiM_pTw" rel="noopener">Watch Channel 9 feature →</a>
       </article>
       <article class="legacy-card">
@@ -137,7 +396,7 @@
         <a class="legacy-media" href="/cv2/images/media/slbj-2003-pied-piper.jpg">
           <img src="/cv2/images/media/slbj-2003-pied-piper-card.jpg" alt="St. Louis Business Journal clipping, Pied Piper of Maplewood, October 2003" width="416" height="540"/>
         </a>
-        <p>Margaret Jackson, October 24–30, 2003. The front page documents nearly $4 million spent acquiring Maplewood property for a children’s neighborhood.</p>
+        <p>Margaret Jackson, October 24–30, 2003. Front-page profile documenting nearly $4 million invested acquiring Maplewood property for a children’s neighborhood.</p>
         <a class="legacy-link" href="/cv2/images/media/slbj-2003-pied-piper.jpg">View original clipping →</a>
       </article>
       <article class="legacy-card">
@@ -160,44 +419,29 @@
       <a class="comm-item" href="/cv2/community.html">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 18c.7-2.6 2.2-3.9 4.3-3.9 1.3 0 2.3.5 3.2 1.4.9-.9 1.9-1.4 3.2-1.4 2.1 0 3.6 1.3 4.3 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
-          <h3>Support for Children</h3>
-          <p>Pywacket kids’ theater and Friends of Kids with Cancer — space and support, not a statue.</p>
+          <h3>Support for Children’s Organizations</h3>
+          <p>Provided dedicated Maplewood space and long-term support for Pywacket Children’s Theater and Friends of Kids with Cancer.</p>
         </div>
       </a>
       <a class="comm-item" href="/cv2/community.html">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4.5 19 8v4.2c0 4.3-3 7.2-7 8.3-4-1.1-7-4-7-8.3V8l7-3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10.5v4M10 12.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
-          <h3>Hospital &amp; Community Involvement</h3>
-          <p>Happy Meals on Saturdays at St. Louis Children’s Hospital, while his daughter Mia was in treatment.</p>
+          <h3>Happy Meals on Saturdays</h3>
+          <p>Built custom heated and cooled wagons to deliver individualized Saturday meals across the pediatric oncology floor at St. Louis Children’s Hospital — the direct inspiration for the Ronald McDonald Kitchen proposal.</p>
         </div>
       </a>
       <a class="comm-item" href="/cv2/community.html">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.2-7-9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
         <div>
-          <h3>Making a Difference</h3>
-          <p>A family entertainment district built around kids — not a slogan. The Channel 9 piece is the record.</p>
+          <h3>Family Entertainment District</h3>
+          <p>Designed a downtown district centered around children and families, documented by PBS KETC Channel 9.</p>
         </div>
       </a>
     </div>
   </div>
 </section>
 
-<section class="home-section" id="talk">
-  <div class="wrap-wide">
-    <div class="ai-banner">
-      <div class="ai-banner-copy">
-        <span class="ai-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15.8V8.4A2 2 0 0 1 7 6.4h6.2L16.8 9.8v6A2 2 0 0 1 14.8 17.8H7A2 2 0 0 1 5 15.8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16.8 10.5h1.4A1.8 1.8 0 0 1 20 12.3v5.2A1.8 1.8 0 0 1 18.2 19.3h-7.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <div>
-          <h2>Talk with Mr. Simpson’s AI Team Member</h2>
-          <p>Ask about his experience, businesses, projects, and career journey.</p>
-        </div>
-      </div>
-      <a class="btn-talk xl" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
-    </div>
-  </div>
-</section>
-
-<section class="home-section home-section--soft" id="achievements">
+<section class="home-section" id="achievements">
   <div class="wrap-wide">
     <h2 class="home-h">Selected Achievements</h2>
     <div class="ach-grid">
@@ -215,33 +459,32 @@
       </a>
       <a class="ach-card" href="/cv2/inventions.html">
         <b>U.S. Patent</b>
-        <em>Anti-icing — plus later provisionals</em>
+        <em>#8,119,025 Anti-icing — plus provisionals</em>
       </a>
     </div>
   </div>
 </section>
 
-<section class="home-section" id="background">
+<section class="home-section home-section--soft" id="background">
   <div class="wrap-wide">
-    <h2 class="home-h">Background &amp; Career History</h2>
+    <h2 class="home-h">Background &amp; Career Chronology</h2>
     <div class="hist-grid">
-    <div>
-      <ol class="hist-list">
-        <li><a href="/cv2/education.html"><strong>Public health</strong> — Doorways, Missouri Department of Health, trainer of trainers during the HIV/AIDS crisis.</a></li>
-        <li><a href="/cv2/businesses.html"><strong>Specialized Testing Services</strong> — HIV/STIs and the national lab network (~1993).</a></li>
-        <li><a href="/cv2/businesses.html"><strong>Nationwide medical testing</strong> — call centers, regional labs, DNA paternity at national scale.</a></li>
-        <li><a href="/cv2/development.html"><strong>Real estate &amp; development</strong> — historic Maplewood family entertainment district, Florida beachfront, Michigan, rental houses.</a></li>
-        <li><a href="/cv2/businesses.html"><strong>Restaurants &amp; hospitality</strong> — Maya Cafe, Momo’s, Boogaloo’s.</a></li>
-        <li><a href="/cv2/inventions.html"><strong>Inventions</strong> — U.S. patent in anti-icing, plus provisionals in wound care and voice AI.</a></li>
-        <li><a href="/cv2/current.html"><strong>Axon AI</strong> — the artificial brain he created; this resume is one application of it.</a></li>
-        <li><a href="/portfolio/projects/siteeye-360.html"><strong>SiteEye 360 Live</strong> — portable live job-site camera monitoring with AI support.</a></li>
-      </ol>
-    </div>
-    <aside class="focus-card">
-      <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-      <h3>Current Focus</h3>
-      <p>Axon AI — the artificial brain he created. It started on legacy websites. New applications keep landing almost weekly.</p>
-    </aside>
+      <div>
+        <ol class="hist-list">
+          <li><a href="/cv2/education.html"><strong>Education &amp; Public Health</strong> — Washington University in St. Louis (1987, full scholarship); Doorways, Missouri Department of Health, and HIV crisis trainer of trainers.</a></li>
+          <li><a href="/cv2/businesses.html"><strong>Specialized Testing Services</strong> — Pioneered the first national lab-network model for rapid HIV/STI testing (~1993).</a></li>
+          <li><a href="/cv2/businesses.html"><strong>Nationwide Medical Testing</strong> — Diagnostic call centers, regional laboratory partnerships, and DNA paternity testing nationwide.</a></li>
+          <li><a href="/cv2/development.html"><strong>Real Estate &amp; Hospitality</strong> — Historic Maplewood district, Florida beachfront subdivisions, Michigan properties, and Maya Cafe, Momo’s, and Boogaloo’s.</a></li>
+          <li><a href="/cv2/inventions.html"><strong>Patents &amp; Product Inventions</strong> — Pre-De-Icer™ (U.S. Patent #8,119,025), No More Boo-Boos dissolvable bandage, Pre-Ember Guard, and Ronald McDonald Kitchen hospital concept.</a></li>
+          <li><a href="/portfolio/projects/siteeye-360.html"><strong>SiteEye 360 Live</strong> — Portable live job-site camera monitoring paired with owner-trained AI field guidance.</a></li>
+          <li><a href="/cv2/current.html"><strong>Axon AI</strong> — Custom-trained artificial brains and conversational AI team members for businesses, websites, email, and voice.</a></li>
+        </ol>
+      </div>
+      <aside class="focus-card">
+        <span class="hl-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <h3>Current Focus</h3>
+        <p>Axon AI and SiteEye 360 Live — building practical AI brains and field systems for businesses, alongside continued diagnostic and product ventures.</p>
+      </aside>
     </div>
   </div>
 </section>
