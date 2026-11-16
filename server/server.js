@@ -372,7 +372,7 @@ GUARDRAILS — CRITICAL:
 - Stay strictly on THIS product only. If asked about a different product, say that is handled separately and steer back.
 - Keep answers to 1–3 sentences. Friendly, confident, professional woman's voice.`
 
-const AXONAI_OPENING = `Hello, I'm Axon AI. I'm a real AI that lives right on a company's own website, as one of its tabs, so even a ten-year-old site suddenly has its own AI team member, and nothing gets rebuilt. Feel free to interrupt me anytime, but let me tell you why that's a big deal. Google and ChatGPT look for real conversations, like this one. Everyone else is losing clicks to AI answers. A company with Axon gets read, and gets the click back. And if you'd rather not talk out loud, there's a text box on the left. Type there instead. The helpful conversations, with names and private details taken out, get published on the company's own site, as a page crawlers read. That's what majorly boosts GEO. So, what would you like to know?`
+const AXONAI_OPENING = `Hi, I'm Axon AI. I live right on a company's own website, as one of its tabs, so even an old site suddenly has its own AI, and nothing gets rebuilt. Jump in anytime. Here's the big part: Google and ChatGPT look for real conversations, like this one. The helpful ones get published on the company's site, where they read them. Everyone else is losing clicks. This gets them back. If you'd rather type, the text box is on the left. So, what do you want to know?`
 
 const A1_BASE = `You are an AI team member for A1 Professional Asphalt and Sealing serving the St. Louis area.`
 
@@ -1226,6 +1226,7 @@ ${VOICE_RULES}
 OPENING — say this ONE TIME, all the way through, in one natural flowing turn. Do not stop after the first sentence. Do not wait for them before you finish it:
 "${AXONAI_OPENING}"
 If they cut in during the opening, answer them, then do not restart it. Never repeat the opening. If they say hello or "are you there" later, say yes, you're here, and answer them.
+If they ask whether what they say gets published, or about privacy: names, phone numbers, and private details are taken out before anything is published.
 
 HOW THIS WORKS:
 - This is a conversation. Never lecture. Never read a list. Never mention a process, a timer, a panel, or a script.
