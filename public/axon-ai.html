@@ -138,18 +138,19 @@
     transition:opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
   }
   body.show-why .why{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
-  .why h2{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#0f1b33;margin:0 0 6px}
-  .why .sub{font-size:13px;line-height:1.4;color:#3a4660;margin:0 0 14px}
+  .why h2{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#1d4ed8;margin:0 0 8px}
+  .why .punch{font-size:18px;font-weight:800;line-height:1.25;color:#0f1b33;margin:0 0 10px}
+  .why .sub{font-size:14px;line-height:1.45;color:#3a4660;margin:0 0 16px}
   .why ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
   .why li{padding:0 0 10px;border-bottom:1px solid #eeece8;font-size:14px;line-height:1.4;color:#0f1b33}
   .why li:last-child{border-bottom:0;padding-bottom:0}
   .why li b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1d4ed8;margin-bottom:3px}
-  .why .hit{margin-top:4px}
-  .why .hit p{font-size:12px;font-weight:700;color:#0f1b33;margin:0 0 8px}
+  .why .hit{margin:0 0 14px;padding:12px 12px 10px;background:#f4f7fd;border-radius:12px}
+  .why .hit p{font-size:12px;font-weight:800;color:#0f1b33;margin:0 0 8px}
   .why .lab{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#3a4660;margin:0 0 4px}
   .why .track{height:10px;background:#e8eef9;border-radius:999px;overflow:hidden;margin:0 0 10px}
-  .why .track span{display:block;height:100%;background:#1d4ed8;border-radius:999px}
-  .why .track.dim span{background:#8aa0d4;width:42%}
+  .why .track span{display:block;height:100%;background:#8aa0d4;border-radius:999px}
+  .why .track.down span{width:42%;background:#94a3b8}
   .why .src{font-size:11px;line-height:1.45;color:#8a93a3;margin:0}
 
   .dots{
@@ -243,29 +244,29 @@
     <p class="note">Axon reads what you give it, then you can talk or type about it.</p>
   </aside>
 
-  <aside class="why" id="whyPane" aria-label="Why add Axon AI">
-    <h2>Why add Axon</h2>
-    <p class="sub">To a website that already exists. No rebuild.</p>
-    <ul>
-      <li><b>GEO</b> Conversations become pages crawlers and other AIs can read.</li>
-      <li><b>Helps SEO</b> Keep the URLs and search history that site already earned.</li>
-      <li><b>Brand identity</b> It looks like the company has AI. The company gets the credit.</li>
-      <li><b>Cost effective</b> IT adds a tab. The old site stays up.</li>
-      <li><b>Catalog defense</b> When Google answers the part question, this site can still be the source they quote.</li>
-    </ul>
+  <aside class="why" id="whyPane" aria-label="GEO — conversations crawlers can read">
+    <h2>GEO</h2>
+    <p class="punch">The conversations can be read. That is what ChatGPT looks for.</p>
+    <p class="sub">A real talk, in the customer’s words, published on the company’s own site. Search engines and other AIs read the same words a person sees. Everyone else is losing click-through. This is how you go the other way.</p>
     <div class="hit">
-      <p>Online catalog, the CorvetteParts.com kind of site</p>
-      <div class="lab"><span>Natural clicks before AI answers</span><span>100%</span></div>
+      <p>Everyone else is going backwards</p>
+      <div class="lab"><span>Clicks before AI answers on the results page</span><span>100%</span></div>
       <div class="track"><span style="width:100%"></span></div>
-      <div class="lab"><span>Position 1 with an AI answer on the page</span><span>42%</span></div>
-      <div class="track dim"><span></span></div>
-      <p class="src">About 58% fewer clicks at the top listing when Google shows an AI answer. Ahrefs, December 2025. An earlier look put the drop around 35%. Industry figures, not that catalog’s private analytics.</p>
+      <div class="lab"><span>Position 1 with an AI answer sitting on top</span><span>42%</span></div>
+      <div class="track down"><span></span></div>
+      <p class="src">About 58% fewer clicks at the top listing when Google shows an AI answer. Ahrefs, December 2025. An earlier look put the drop around 35%.</p>
     </div>
+    <ul>
+      <li><b>Click-through the other way</b> Conversational Q&amp;A is what those systems look for. You become the source they quote, instead of a blue link they skip.</li>
+      <li><b>Keep the old site</b> The URLs and search history stay. IT adds a tab. Nothing is rebuilt.</li>
+      <li><b>Brand</b> It looks like the company has AI. The company gets the credit.</li>
+      <li><b>Cost</b> A tab, not a new website.</li>
+    </ul>
   </aside>
 
   <nav class="dots" aria-label="More">
     <button type="button" class="dot" id="textDot" aria-label="Text"><span>Text</span></button>
-    <button type="button" class="dot" id="whyDot" aria-label="Why add Axon"><span>Why</span></button>
+    <button type="button" class="dot" id="whyDot" aria-label="GEO"><span>GEO</span></button>
     <button type="button" class="dot" id="fileDot" aria-label="Files"><span>Files</span></button>
   </nav>
 
@@ -387,7 +388,7 @@ function toggleFiles(){
   fileDot.classList.toggle('on',on);
 }
 function maybeWhy(text){
-  if(/why|legacy|seo|geo|catalog|click|corvette|benefit|brand|rebuild|parts site/i.test(text||''))showWhy();
+  if(/why|legacy|seo|geo|catalog|click|corvette|benefit|brand|rebuild|chatgpt|conversation|crawler|parts site/i.test(text||''))showWhy();
 }
 
 function send(ev){
