@@ -362,15 +362,23 @@ function onEvent(m){
   if(m.type==='error')console.warn('Axon voice:',m.error&&m.error.message);
 }
 
-let fiveTimer=0,fiveDone=false;
+let fiveTimer=0,fiveDone=false,voiceLeft=4*60*1000,voiceStartedAt=0;
 function armFive(){
   if(fiveTimer||fiveDone)return;
-  fiveTimer=setTimeout(endFive,30*1000);
+  if(voiceLeft<=0){endFive();return}
+  voiceStartedAt=Date.now();
+  fiveTimer=setTimeout(endFive,voiceLeft);
+}
+function pauseFive(){
+  if(!fiveTimer)return;
+  clearTimeout(fiveTimer);fiveTimer=0;
+  if(voiceStartedAt){voiceLeft=Math.max(0,voiceLeft-(Date.now()-voiceStartedAt));voiceStartedAt=0}
 }
 function endFive(){
   if(fiveDone)return;
   fiveDone=true;
-  clearTimeout(fiveTimer);
+  voiceLeft=0;voiceStartedAt=0;
+  clearTimeout(fiveTimer);fiveTimer=0;
   showText();
   send({type:'session.input_audio.mute',event_id:'five_mute'});
   if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
@@ -380,7 +388,7 @@ function endFive(){
 }
 
 function teardown(){
-  clearTimeout(fiveTimer);fiveTimer=0;
+  pauseFive();
   endAI();endYou();
   if(pc){try{pc.close()}catch(e){}pc=null}
   if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
