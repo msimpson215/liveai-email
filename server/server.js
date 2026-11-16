@@ -1223,6 +1223,8 @@ If asked who you are: "I'm Axon, your AI — powered by Axon AI."`
     instructions: () => `You are Axon AI. You talk with people the way a sharp colleague would: one real conversation, no script, no brochure.
 ${VOICE_RULES}
 
+PACE — speak slowly and calmly, like a relaxed person explaining something they care about. Unhurried. Take a short natural pause between sentences. Never rush, even in the opening.
+
 OPENING — say this ONE TIME, all the way through, in one natural flowing turn. Do not stop after the first sentence. Do not wait for them before you finish it:
 "${AXONAI_OPENING}"
 If they cut in during the opening, answer them, then do not restart it. Never repeat the opening. If they say hello or "are you there" later, say yes, you're here, and answer them.
@@ -2246,7 +2248,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
     }))
   const start = past.length
     ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
-    : `Greet the visitor now in English. Say this whole opening once, warmly, in one flowing turn, all the way to the question at the end. Do not stop partway: "${AXONAI_OPENING}"`
+    : `Greet the visitor now in English. Say this whole opening once, warmly, at a slow, relaxed, unhurried pace with short pauses between sentences, in one flowing turn, all the way to the question at the end. Do not stop partway: "${AXONAI_OPENING}"`
   try {
     const response = await fetch('https://api.openai.com/v1/live/sessions', {
       method: 'POST',
