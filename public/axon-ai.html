@@ -131,15 +131,15 @@
   .why{
     position:fixed;z-index:4;width:min(32vw,360px);max-height:min(70vh,560px);overflow:auto;
     right:max(24px,calc(50% - min(36vw,26vh,220px) - min(32vw,360px) - 36px));
-    top:50%;transform:translateY(-50%) scale(.86);transform-origin:left center;
+    top:50%;transform:translateY(-50%) translateX(-24px) scale(.72);transform-origin:left center;
     opacity:0;pointer-events:none;
     background:#fff;border:1px solid #e3e1dc;border-radius:16px;box-shadow:0 10px 30px rgba(15,27,51,.08);
     padding:22px 22px 18px;
-    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+    transition:opacity .9s ease, transform .9s cubic-bezier(.2,.85,.2,1);
   }
   body.show-why .why{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
   .why h2{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#1d4ed8;margin:0 0 8px}
-  .why .punch{font-size:18px;font-weight:800;line-height:1.25;color:#0f1b33;margin:0 0 10px}
+  .why .punch{font-size:20px;font-weight:800;line-height:1.2;color:#0f1b33;margin:0 0 10px}
   .why .sub{font-size:14px;line-height:1.45;color:#3a4660;margin:0 0 16px}
   .why ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
   .why li{padding:0 0 10px;border-bottom:1px solid #eeece8;font-size:14px;line-height:1.4;color:#0f1b33}
@@ -246,8 +246,8 @@
 
   <aside class="why" id="whyPane" aria-label="GEO — conversations crawlers can read">
     <h2>GEO</h2>
-    <p class="punch">The conversations can be read. That is what ChatGPT looks for.</p>
-    <p class="sub">A real talk, in the customer’s words, published on the company’s own site. Search engines and other AIs read the same words a person sees. Everyone else is losing click-through. This is how you go the other way.</p>
+    <p class="punch">This conversation can be crawled.</p>
+    <p class="sub">ChatGPT and Google look for talks, not keyword pages. Publish this one on the company’s own site and you get the click everyone else is losing.</p>
     <div class="hit">
       <p>Everyone else is going backwards</p>
       <div class="lab"><span>Clicks before AI answers on the results page</span><span>100%</span></div>
@@ -387,8 +387,13 @@ function toggleFiles(){
   document.body.classList.toggle('show-files',on);
   fileDot.classList.toggle('on',on);
 }
+let whyTimer=0;
+function armWhy(){
+  if(whyTimer||document.body.classList.contains('show-why'))return;
+  whyTimer=setTimeout(showWhy,8500);
+}
 function maybeWhy(text){
-  if(/why|legacy|seo|geo|catalog|click|corvette|benefit|brand|rebuild|chatgpt|conversation|crawler|parts site/i.test(text||''))showWhy();
+  if(/seo|geo|click-through|chatgpt|crawler|why add|legacy site/i.test(text||''))showWhy();
 }
 
 function send(ev){
@@ -411,8 +416,6 @@ function onEvent(m){
     setState('listening');
     if(greet){send({type:'session.commentary.append',event_id:'greeting_1',delegation_id:null,content:greet});greet=null}
     armFive();
-    setTimeout(showWhy,1800);
-    if(!textOffered){textOffered=true;setTimeout(showText,6500)}
     return;
   }
   if(m.type==='session.output_transcript.delta'&&m.delta){
@@ -420,7 +423,7 @@ function onEvent(m){
     if(!curAI)curAI=line('ai','');
     curAI._raw+=m.delta;
     curAI.textContent='Axon: '+curAI._raw;
-    maybeWhy(curAI._raw);
+    armWhy();
     logEl.scrollTop=logEl.scrollHeight;
     setState('speaking');
     clearTimeout(aiQuiet);
