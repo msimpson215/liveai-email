@@ -387,10 +387,10 @@ function toggleFiles(){
   document.body.classList.toggle('show-files',on);
   fileDot.classList.toggle('on',on);
 }
-let whyTimer=0;
-function armWhy(){
-  if(whyTimer||document.body.classList.contains('show-why'))return;
-  whyTimer=setTimeout(showWhy,8500);
+function cue(text){
+  text=text||'';
+  if(!document.body.classList.contains('show-why')&&/google|chatgpt|crawl|clicks/i.test(text))showWhy();
+  if(!textOffered&&/text box/i.test(text)){textOffered=true;showText()}
 }
 function maybeWhy(text){
   if(/seo|geo|click-through|chatgpt|crawler|why add|legacy site/i.test(text||''))showWhy();
@@ -423,7 +423,7 @@ function onEvent(m){
     if(!curAI)curAI=line('ai','');
     curAI._raw+=m.delta;
     curAI.textContent='Axon: '+curAI._raw;
-    armWhy();
+    cue(curAI._raw);
     logEl.scrollTop=logEl.scrollHeight;
     setState('speaking');
     clearTimeout(aiQuiet);
