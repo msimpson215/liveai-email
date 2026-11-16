@@ -127,6 +127,31 @@
   .docs li{padding:8px 0;border-bottom:1px solid #eeece8}
   .files .note{margin-top:auto;font-size:12px;line-height:1.5;color:#8a93a3}
 
+  /* Why Axon — slides out of the orb on the right */
+  .why{
+    position:fixed;z-index:4;width:min(32vw,360px);max-height:min(70vh,560px);overflow:auto;
+    right:max(24px,calc(50% - min(36vw,26vh,220px) - min(32vw,360px) - 36px));
+    top:50%;transform:translateY(-50%) scale(.86);transform-origin:left center;
+    opacity:0;pointer-events:none;
+    background:#fff;border:1px solid #e3e1dc;border-radius:16px;box-shadow:0 10px 30px rgba(15,27,51,.08);
+    padding:22px 22px 18px;
+    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+  }
+  body.show-why .why{opacity:1;pointer-events:auto;transform:translateY(-50%) scale(1)}
+  .why h2{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#0f1b33;margin:0 0 6px}
+  .why .sub{font-size:13px;line-height:1.4;color:#3a4660;margin:0 0 14px}
+  .why ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+  .why li{padding:0 0 10px;border-bottom:1px solid #eeece8;font-size:14px;line-height:1.4;color:#0f1b33}
+  .why li:last-child{border-bottom:0;padding-bottom:0}
+  .why li b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#1d4ed8;margin-bottom:3px}
+  .why .hit{margin-top:4px}
+  .why .hit p{font-size:12px;font-weight:700;color:#0f1b33;margin:0 0 8px}
+  .why .lab{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#3a4660;margin:0 0 4px}
+  .why .track{height:10px;background:#e8eef9;border-radius:999px;overflow:hidden;margin:0 0 10px}
+  .why .track span{display:block;height:100%;background:#1d4ed8;border-radius:999px}
+  .why .track.dim span{background:#8aa0d4;width:42%}
+  .why .src{font-size:11px;line-height:1.45;color:#8a93a3;margin:0}
+
   .dots{
     position:fixed;left:0;right:0;bottom:max(28px,env(safe-area-inset-bottom));
     display:flex;justify-content:center;gap:22px;z-index:5;
@@ -179,6 +204,11 @@
       transform:translateY(12px) scale(.96);transform-origin:center bottom;max-height:38vh;
     }
     body.show-files .files{transform:none}
+    .why{
+      left:16px;right:16px;width:auto;top:auto;bottom:70px;
+      transform:translateY(12px) scale(.96);transform-origin:center bottom;max-height:42vh;
+    }
+    body.show-why .why{transform:none}
   }
 </style>
 </head>
@@ -186,7 +216,7 @@
   <div class="intro" id="intro">
     <img src="/sites/assets/axon-logo-orb.jpg" alt="Axon AI">
     <button type="button" id="hello">Say hello</button>
-    <small>Sound on. Talk, type, or upload a file.</small>
+    <small>Sound on. Interrupt anytime.</small>
   </div>
   <div class="mark"><img src="/art/axon-wordmark.png" alt="Axon AI" width="374" height="79"><sup>&trade;</sup></div>
 
@@ -213,8 +243,29 @@
     <p class="note">Axon reads what you give it, then you can talk or type about it.</p>
   </aside>
 
+  <aside class="why" id="whyPane" aria-label="Why add Axon AI">
+    <h2>Why add Axon</h2>
+    <p class="sub">To a website that already exists. No rebuild.</p>
+    <ul>
+      <li><b>GEO</b> Conversations become pages crawlers and other AIs can read.</li>
+      <li><b>Helps SEO</b> Keep the URLs and search history that site already earned.</li>
+      <li><b>Brand identity</b> It looks like the company has AI. The company gets the credit.</li>
+      <li><b>Cost effective</b> IT adds a tab. The old site stays up.</li>
+      <li><b>Catalog defense</b> When Google answers the part question, this site can still be the source they quote.</li>
+    </ul>
+    <div class="hit">
+      <p>Online catalog, the CorvetteParts.com kind of site</p>
+      <div class="lab"><span>Natural clicks before AI answers</span><span>100%</span></div>
+      <div class="track"><span style="width:100%"></span></div>
+      <div class="lab"><span>Position 1 with an AI answer on the page</span><span>42%</span></div>
+      <div class="track dim"><span></span></div>
+      <p class="src">About 58% fewer clicks at the top listing when Google shows an AI answer. Ahrefs, December 2025. An earlier look put the drop around 35%. Industry figures, not that catalog’s private analytics.</p>
+    </div>
+  </aside>
+
   <nav class="dots" aria-label="More">
     <button type="button" class="dot" id="textDot" aria-label="Text"><span>Text</span></button>
+    <button type="button" class="dot" id="whyDot" aria-label="Why add Axon"><span>Why</span></button>
     <button type="button" class="dot" id="fileDot" aria-label="Files"><span>Files</span></button>
   </nav>
 
@@ -229,6 +280,7 @@ const docsEl=document.getElementById('docs');
 const drop=document.getElementById('drop');
 const fileInput=document.getElementById('file');
 const textDot=document.getElementById('textDot');
+const whyDot=document.getElementById('whyDot');
 const fileDot=document.getElementById('fileDot');
 
 let pc=null,dc=null,localStream=null,audioEl=null;
@@ -294,23 +346,48 @@ function remember(role,text){
   history.push({role:role,text:text});
   if(history.length>40)history=history.slice(-40);
 }
+function hideRight(){
+  document.body.classList.remove('show-files','show-why');
+  fileDot.classList.remove('on');
+  whyDot.classList.remove('on');
+}
 function showText(){
-  if(innerWidth<=860){document.body.classList.remove('show-files');fileDot.classList.remove('on');}
+  if(innerWidth<=860)hideRight();
   document.body.classList.add('show-text');
   textDot.classList.add('on');
   setTimeout(function(){try{document.getElementById('q').focus()}catch(e){}},400);
 }
+function showWhy(){
+  document.body.classList.remove('show-files');
+  fileDot.classList.remove('on');
+  if(innerWidth<=860){document.body.classList.remove('show-text');textDot.classList.remove('on');}
+  document.body.classList.add('show-why');
+  whyDot.classList.add('on');
+}
 function toggleText(){
   const on=!document.body.classList.contains('show-text');
+  if(on&&innerWidth<=860)hideRight();
   document.body.classList.toggle('show-text',on);
   textDot.classList.toggle('on',on);
   if(on)setTimeout(function(){try{document.getElementById('q').focus()}catch(e){}},200);
 }
+function toggleWhy(){
+  const on=!document.body.classList.contains('show-why');
+  if(on)showWhy();
+  else{document.body.classList.remove('show-why');whyDot.classList.remove('on');}
+}
 function toggleFiles(){
   const on=!document.body.classList.contains('show-files');
-  if(on&&innerWidth<=860){document.body.classList.remove('show-text');textDot.classList.remove('on');}
+  if(on){
+    document.body.classList.remove('show-why');
+    whyDot.classList.remove('on');
+    if(innerWidth<=860){document.body.classList.remove('show-text');textDot.classList.remove('on');}
+  }
   document.body.classList.toggle('show-files',on);
   fileDot.classList.toggle('on',on);
+}
+function maybeWhy(text){
+  if(/why|legacy|seo|geo|catalog|click|corvette|benefit|brand|rebuild|parts site/i.test(text||''))showWhy();
 }
 
 function send(ev){
@@ -333,6 +410,7 @@ function onEvent(m){
     setState('listening');
     if(greet){send({type:'session.commentary.append',event_id:'greeting_1',delegation_id:null,content:greet});greet=null}
     armFive();
+    setTimeout(showWhy,1800);
     if(!textOffered){textOffered=true;setTimeout(showText,6500)}
     return;
   }
@@ -341,6 +419,7 @@ function onEvent(m){
     if(!curAI)curAI=line('ai','');
     curAI._raw+=m.delta;
     curAI.textContent='Axon: '+curAI._raw;
+    maybeWhy(curAI._raw);
     logEl.scrollTop=logEl.scrollHeight;
     setState('speaking');
     clearTimeout(aiQuiet);
@@ -352,6 +431,7 @@ function onEvent(m){
     if(!curYou)curYou=line('you','');
     curYou._raw+=m.delta;
     curYou.textContent='You: '+curYou._raw;
+    maybeWhy(curYou._raw);
     logEl.scrollTop=logEl.scrollHeight;
     setState('listening');
     clearTimeout(youQuiet);
@@ -503,6 +583,7 @@ async function sendText(text){
   endAI();endYou();
   line('you',text);
   remember('user',text);
+  maybeWhy(text);
   document.getElementById('q').value='';
   const wait=line('ai','…');
   try{
@@ -558,6 +639,7 @@ async function readFile(file){
 orb.addEventListener('click',toggle);
 pauseBtn.addEventListener('click',toggle);
 textDot.addEventListener('click',toggleText);
+whyDot.addEventListener('click',toggleWhy);
 fileDot.addEventListener('click',toggleFiles);
 drop.addEventListener('click',function(){fileInput.click()});
 fileInput.addEventListener('change',function(){readFile(fileInput.files[0])});

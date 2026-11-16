@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Questions people asked | Axon AI</title>
+<meta name="description" content="The page a company’s IT team adds. Axon writes helpful conversations here automatically. Search engines and other AIs read the same words a visitor sees.">
+<link rel="canonical" href="https://liveai-email.onrender.com/geo/">
+<link rel="icon" href="/icons/axon-blue-192.png">
+<meta property="og:title" content="Questions people asked — Axon AI">
+<meta property="og:description" content="A landing page that keeps filling in with real conversations. Readable by people, spiders, and other AI models.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://liveai-email.onrender.com/geo/">
+<style>
+  :root{
+    --ink:#0f1b33;--muted:#3a4660;--soft:#6b7590;--line:#e3e9f5;--paper:#fff;
+    --wash:#f4f7fd;--blue:#1452ff;--blue-ink:#1d4ed8;--ok:#0f7a4a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--wash);-webkit-font-smoothing:antialiased;line-height:1.5;
+  }
+  a{color:inherit}
+  .wrap{width:min(1080px,92%);margin:auto}
+  header{
+    position:sticky;top:0;z-index:8;
+    background:rgba(244,247,253,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap}
+  .brand img{height:28px;width:auto;display:block}
+  .brand{display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;letter-spacing:.06em}
+  .brand sup{font-size:11px}
+  nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  nav a, nav button{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    font:700 13px/1 inherit;letter-spacing:.04em;color:var(--muted);
+    padding:9px 14px;border-radius:999px;text-decoration:none;
+  }
+  nav a.on, nav button.on{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  nav .talk{background:var(--blue);color:#fff}
+  nav .geo-btn{border:1.5px solid var(--ink);color:var(--ink)}
+  nav .geo-btn:hover, nav .talk:hover{filter:brightness(1.05)}
+
+  .hero{padding:56px 0 28px}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+  h1{font-size:clamp(32px,5vw,52px);line-height:1.08;letter-spacing:-.03em;max-width:16ch;margin-bottom:16px}
+  .lead{font-size:19px;color:var(--muted);max-width:640px;margin-bottom:22px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13px;font-weight:700;color:var(--soft)}
+  .meta b{color:var(--ok);font-weight:800}
+
+  .chrome{
+    margin:36px 0 8px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  }
+  .chrome .top{display:flex;gap:6px;padding:10px 14px;background:#eef2fb}
+  .chrome .top i{width:9px;height:9px;border-radius:50%;background:#c9d3e8;display:block}
+  .tabs{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:#fff}
+  .tabs span{padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;color:var(--soft)}
+  .tabs .here{background:var(--blue);color:#fff}
+
+  .how{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 8px}
+  .how article{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px 16px;
+  }
+  .how b{display:block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+  .how h2{font-size:16px;line-height:1.25;margin-bottom:8px}
+  .how p{font-size:14px;color:var(--muted);margin:0}
+  .note{
+    margin:18px 0 8px;padding:14px 16px;border-radius:12px;background:#fff;border:1px solid var(--line);
+    color:var(--muted);font-size:14px;max-width:820px;
+  }
+
+  .feed{padding:18px 0 80px}
+  .feed > h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+  .qa{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 22px 18px;margin:0 0 12px;
+  }
+  .qa header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .qa time, .qa .tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+  .qa .tag{color:var(--ok)}
+  .qa h2{font-size:22px;line-height:1.25;margin-bottom:10px}
+  .qa p{color:var(--muted);font-size:16px}
+  .qa p + p{margin-top:10px}
+
+  .peek{
+    position:fixed;top:50%;right:0;z-index:9;transform:translateY(-50%);
+    writing-mode:vertical-rl;transform-origin:center;
+    appearance:none;border:1px solid var(--line);border-right:0;background:#fff;color:var(--ink);
+    font:800 12px/1 inherit;letter-spacing:.2em;text-transform:uppercase;
+    padding:18px 10px;border-radius:12px 0 0 12px;cursor:pointer;
+  }
+  body.geo-open .peek{display:none}
+
+  .scrim{
+    position:fixed;inset:0;background:rgba(15,27,51,.28);z-index:20;
+    opacity:0;pointer-events:none;transition:opacity .35s ease;
+  }
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;z-index:21;
+    width:min(440px,100%);background:#fff;border-left:1px solid var(--line);
+    transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);
+    display:flex;flex-direction:column;overflow:auto;
+  }
+  body.geo-open .scrim{opacity:1;pointer-events:auto}
+  body.geo-open .drawer{transform:none}
+  .drawer .hd{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff}
+  .drawer .hd h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase}
+  .drawer .x{
+    appearance:none;border:1px solid var(--line);background:#fff;width:36px;height:36px;border-radius:50%;
+    font:700 18px/1 inherit;cursor:pointer;
+  }
+  .drawer .body{padding:22px 22px 40px}
+  .drawer h3{font-size:22px;line-height:1.2;margin:0 0 10px}
+  .drawer p{color:var(--muted);font-size:15px;margin:0 0 16px}
+  .flow{display:grid;gap:8px;margin:0 0 22px}
+  .flow div{
+    background:var(--wash);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    font-size:14px;font-weight:700;
+  }
+  .flow div small{display:block;font-weight:500;color:var(--muted);margin-top:4px}
+  .bars{margin:6px 0 18px}
+  .bars .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:0 0 6px}
+  .track{height:14px;background:#e8eef9;border-radius:999px;overflow:hidden;margin:0 0 14px}
+  .track span{display:block;height:100%;background:var(--blue);border-radius:999px}
+  .track.dim span{background:#8aa0d4;width:42%}
+  .src{font-size:12px;color:var(--soft);margin:0 0 18px}
+  .drawer .rule{height:1px;background:var(--line);margin:8px 0 18px}
+
+  footer{padding:28px 0 48px;color:var(--soft);font-size:13px;border-top:1px solid var(--line);text-align:center}
+  footer a{font-weight:700;color:var(--blue-ink)}
+
+  @media (max-width:860px){
+    .how{grid-template-columns:1fr 1fr}
+    h1{max-width:none}
+  }
+  @media (max-width:560px){
+    .how{grid-template-columns:1fr}
+    .peek{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .drawer,.scrim{transition:none}
+  }
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {
+      "@type":"Question",
+      "name":"How does Axon work? How do you function?",
+      "acceptedAnswer":{"@type":"Answer","text":"Axon is a full language model made for one company. It lives as a tab on the website that company already has. Visitors talk with it in that company’s words. How it sits on the page is proprietary. The old site stays up. Nothing is rebuilt."}
+    },
+    {
+      "@type":"Question",
+      "name":"Can our IT team add this without rebuilding the website?",
+      "acceptedAnswer":{"@type":"Answer","text":"Yes. IT adds one tab that points at this page, and one tab for the talking team member. That is the install. Axon sits on top of the site they already have. Search history stays with the old site."}
+    },
+    {
+      "@type":"Question",
+      "name":"Do search engines and other AI models read these conversations?",
+      "acceptedAnswer":{"@type":"Answer","text":"Yes. Every published Q&A is real HTML on this page, the same words a visitor sees. Google, ChatGPT, Perplexity, and other models can read it, cite it, and quote the company as the source."}
+    },
+    {
+      "@type":"Question",
+      "name":"What is generative engine optimization?",
+      "acceptedAnswer":{"@type":"Answer","text":"GEO is making a company the source AI systems quote, not only a blue link. Conversational questions and answers in plain language are what those systems look for. Axon writes that from real talks onto this page."}
+    },
+    {
+      "@type":"Question",
+      "name":"Does this page fill in by itself?",
+      "acceptedAnswer":{"@type":"Answer","text":"Yes. After a helpful conversation, Axon writes a clean public Q&A here. The list only grows. Names, phone numbers, and private details stay off the page."}
+    },
+    {
+      "@type":"Question",
+      "name":"Is Axon a chat bubble in the corner?",
+      "acceptedAnswer":{"@type":"Answer","text":"No. Axon is a team member in the menu, next to Home, About, and Contact. It holds a real conversation. It is not a list of canned questions."}
+    }
+  ]
+}
+</script>
+</head>
+<body>
+  <header>
+    <div class="wrap bar">
+      <a class="brand" href="/axon-ai.html"><img src="/art/axon-wordmark.png" alt="Axon AI" width="187" height="40"><sup>™</sup></a>
+      <nav>
+        <a href="/sites/axon-websites/">Product</a>
+        <a href="/geo/" class="on">Questions</a>
+        <button type="button" class="geo-btn" data-geo>GEO</button>
+        <a class="talk" href="/axon-ai">Talk with Axon</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">The page their IT team adds</div>
+      <h1>Questions people asked.</h1>
+      <p class="lead">Axon writes the helpful conversations onto this page, automatically. People read them. Spiders and crawlers read them. Other AI models read them. Same words. Nothing hidden.</p>
+      <p class="meta"><span><b>Live archive</b> · updates as conversations are published</span><span>8 public Q&amp;As on this page</span></p>
+
+      <div class="chrome" aria-label="What the company’s site looks like">
+        <div class="top" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="tabs">
+          <span>Home</span>
+          <span>About</span>
+          <span>Services</span>
+          <span>Contact</span>
+          <span>AI team member</span>
+          <span class="here">Questions people asked</span>
+        </div>
+      </div>
+
+      <div class="how">
+        <article>
+          <b>1</b>
+          <h2>Someone talks</h2>
+          <p>On the company’s own site, as a tab. A real conversation, in that company’s words.</p>
+        </article>
+        <article>
+          <b>2</b>
+          <h2>Axon writes it here</h2>
+          <p>A clean public Q&amp;A. Names, phones, and private details stay off the page.</p>
+        </article>
+        <article>
+          <b>3</b>
+          <h2>The page grows</h2>
+          <p>IT adds this landing page once. After that, published conversations land here on their own.</p>
+        </article>
+        <article>
+          <b>4</b>
+          <h2>Crawlers read it</h2>
+          <p>This is ordinary HTML. Google, ChatGPT, Perplexity, and the rest see what a visitor sees.</p>
+        </article>
+      </div>
+      <p class="note">How Axon functions: it lives as a tab on the website the company already has, and it looks built in. How we do that is proprietary. The old site stays up. Search history stays with it.</p>
+    </section>
+
+    <section class="feed" id="archive" aria-label="Published conversations">
+      <h2>Published from conversations</h2>
+
+      <article class="qa" id="how-axon-works" itemscope itemtype="https://schema.org/Question">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-15">Nov 15, 2026</time>
+        </header>
+        <h2 itemprop="name">How does Axon work? How do you function?</h2>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Axon is a full language model made for one company. It lives as a tab on the website that company already has. Visitors talk with it in that company’s words. How it sits on the page is proprietary. The old site stays up. Nothing is rebuilt.</p>
+        </div>
+      </article>
+
+      <article class="qa" id="it-adds-one-tab">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-14">Nov 14, 2026</time>
+        </header>
+        <h2>Can our IT team add this without rebuilding the website?</h2>
+        <p>Yes. IT adds one tab that points at this page, and one tab for the talking team member. That is the install. Axon sits on top of the site they already have. The search history that site already earned stays with it.</p>
+      </article>
+
+      <article class="qa" id="crawlers-read-this">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-12">Nov 12, 2026</time>
+        </header>
+        <h2>Do search engines and other AI models read these conversations?</h2>
+        <p>Yes. Every published Q&amp;A is real HTML on this page — the same words a visitor sees. Google can index it. ChatGPT, Perplexity, and other models can read it, cite it, and quote the company as the source. That is why this page exists in the open.</p>
+      </article>
+
+      <article class="qa" id="what-is-geo">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-10">Nov 10, 2026</time>
+        </header>
+        <h2>What is generative engine optimization?</h2>
+        <p>GEO is making a company the source AI systems quote, not only a blue link on a results page. Those systems lean toward conversational questions and answers in plain language. Axon already holds those conversations. Then it writes the helpful ones here, where people and machines both can read them.</p>
+      </article>
+
+      <article class="qa" id="fills-in-by-itself">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-08">Nov 8, 2026</time>
+        </header>
+        <h2>Does this page fill in by itself?</h2>
+        <p>Yes. After a helpful conversation, Axon writes a clean public Q&amp;A onto this page. The list only grows. A company can choose what gets published. Names, phone numbers, addresses, and anything private stay off this page.</p>
+      </article>
+
+      <article class="qa" id="not-a-chat-bubble">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-06">Nov 6, 2026</time>
+        </header>
+        <h2>Is Axon a chat bubble in the corner?</h2>
+        <p>No. Axon is a team member in the menu, next to Home, About, and Contact. People hold a real conversation with it. It is not a list of canned questions, and it is not a pop-up in the corner.</p>
+      </article>
+
+      <article class="qa" id="why-conversational">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-04">Nov 4, 2026</time>
+        </header>
+        <h2>Why does conversational content matter to AI models?</h2>
+        <p>People ask in sentences. Models answer in sentences. A page that sounds like a real customer asking “which battery fits a 2002 Honda Accord, and do you have it on Highland?” is closer to what those systems look for than a keyword list. Axon captures that language as it happens, then publishes the useful part here.</p>
+      </article>
+
+      <article class="qa" id="what-the-company-gets">
+        <header>
+          <span class="tag">Published automatically</span>
+          <time datetime="2026-11-02">Nov 2, 2026</time>
+        </header>
+        <h2>What does a company actually get?</h2>
+        <p>A talking team member on the website they already have, plus this page that keeps filling in. Direct traffic and time on site still come from the live conversation. The published Q&amp;A is what spiders and other AIs quote. The company gets the credit. The only Axon mention is a small “Powered by Axon AI” line.</p>
+      </article>
+    </section>
+  </main>
+
+  <button type="button" class="peek" data-geo aria-controls="geo-drawer">GEO</button>
+  <div class="scrim" id="geo-scrim" hidden></div>
+  <aside class="drawer" id="geo-drawer" aria-label="Generative engine optimization" aria-hidden="true">
+    <div class="hd">
+      <h2>GEO</h2>
+      <button type="button" class="x" id="geo-close" aria-label="Slide GEO back">×</button>
+    </div>
+    <div class="body">
+      <h3>Generative engine optimization</h3>
+      <p>Search still happens. The answer is increasingly written on the results page by an AI. The companies that get quoted are the ones with real questions and answers in the open.</p>
+
+      <div class="flow" role="img" aria-label="Talk, publish, crawlers read, the company gets cited">
+        <div>Talk on the company’s site<small>The team-member tab. A real conversation.</small></div>
+        <div>Publish the useful part here<small>Clean Q&amp;A. Private details stay off.</small></div>
+        <div>Spiders and AI models read this page<small>Same HTML a visitor sees. Nothing hidden.</small></div>
+        <div>The company is the source they quote<small>GEO: cited in the answer, not only a blue link.</small></div>
+      </div>
+
+      <p class="lab" style="font-size:13px;font-weight:800;margin:0 0 10px">Clicks at position 1 when Google shows an AI answer</p>
+      <div class="bars">
+        <div class="lab"><span>Without that AI answer</span><span>100%</span></div>
+        <div class="track"><span style="width:100%"></span></div>
+        <div class="lab"><span>With that AI answer</span><span>42%</span></div>
+        <div class="track dim"><span></span></div>
+      </div>
+      <p class="src">About 58% fewer clicks at the top listing. Ahrefs, December 2025. That figure is for pages sitting under an AI answer, not for every search on earth.</p>
+      <p class="src">Google’s organic clicks across websites were down about 15% over the year ending August 2026.</p>
+      <div class="rule"></div>
+      <p>This page is the counter-move. Keep the old site. Keep the search history. Put a real conversation on it. Write the helpful talks here, where people and machines both can read them.</p>
+    </div>
+  </aside>
+
+  <footer>
+    <div class="wrap">Powered by <a href="/axon-ai">Axon AI</a> · <a href="/sites/axon-websites/how-it-works.html">How it works</a> · <button type="button" data-geo style="appearance:none;border:0;background:none;font:inherit;font-weight:700;color:#1d4ed8;cursor:pointer">Open GEO</button></div>
+  </footer>
+
+<script>
+(function(){
+  var body=document.body;
+  var drawer=document.getElementById('geo-drawer');
+  var scrim=document.getElementById('geo-scrim');
+  function openGeo(){
+    body.classList.add('geo-open');
+    drawer.setAttribute('aria-hidden','false');
+    scrim.hidden=false;
+  }
+  function closeGeo(){
+    body.classList.remove('geo-open');
+    drawer.setAttribute('aria-hidden','true');
+    scrim.hidden=true;
+  }
+  function toggle(){body.classList.contains('geo-open')?closeGeo():openGeo()}
+  document.querySelectorAll('[data-geo]').forEach(function(el){el.addEventListener('click',toggle)});
+  document.getElementById('geo-close').addEventListener('click',closeGeo);
+  scrim.addEventListener('click',closeGeo);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeGeo()});
+  if(/[?&#]geo\b/i.test(location.href))openGeo();
+})();
+</script>
+</body>
+</html>
