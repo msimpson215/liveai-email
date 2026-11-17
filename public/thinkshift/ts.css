@@ -55,7 +55,9 @@ footer .ts-logo { height: 48px; }
 @media (max-width: 400px) { .ts-header .ts-logo { height: 38px; } }
 
 /* Hero: the AI button sits in the row with the other two, same size and style. */
-div:has(> .ts-hero-ai) { flex-wrap: wrap; }
+.ts-hero-cta { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem; }
+.ts-hero-cta .ts-hero-ai { grid-column: 1 / -1; }
+@media (max-width: 640px) { .ts-hero-cta { grid-template-columns: minmax(0, 1fr); } }
 .ts-hero-ai img { width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto; }
 @media (max-width: 640px) {
   .ts-hero-ai { white-space: normal; height: auto; min-height: 3.5rem; padding: 10px 20px; text-align: center; line-height: 1.3; }
