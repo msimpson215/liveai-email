@@ -108,3 +108,34 @@ footer .ts-logo { height: 48px; }
 .ts-tag-a { color: #fff; }
 .ts-tag-b { color: hsl(var(--highlight)); }
 @media (max-width: 640px) { .ts-tagline { font-size: 20px; } }
+
+/* Keep hero content below the fixed header, including short viewports. */
+main > section.bg-hero {
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: 144px;
+  padding-bottom: 72px;
+}
+main > section.bg-hero > .container { min-width: 0; flex-shrink: 0; }
+.ts-tagline { position: static; font-size: clamp(20px, 2vw, 26px); line-height: 1.35; }
+.ts-tag-b { color: #34d4df; }
+.ts-hero-cta { max-width: 100%; }
+.ts-hero-cta > a { min-width: 0; }
+@media (max-width: 1099px) {
+  .ts-header nav[aria-label="Main"] { display: none; }
+  .ts-header .md\:hidden { display: flex; }
+  .ts-menu { display: block; }
+}
+@media (min-width: 1100px) {
+  .ts-header nav[aria-label="Main"] { gap: 20px; }
+  .ts-header .md\:hidden, .ts-menu { display: none; }
+}
+@media (max-width: 767px) {
+  main > section.bg-hero { padding-top: 120px; padding-bottom: 56px; }
+  .ts-tagline { margin-bottom: 24px; }
+}
+@media (max-width: 640px) {
+  .ts-hero-cta { grid-template-columns: minmax(0, 1fr); }
+  .ts-hero-cta > a { white-space: normal; height: auto; min-height: 56px; padding: 14px 18px; text-align: center; }
+}
