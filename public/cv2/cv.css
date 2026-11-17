@@ -1349,7 +1349,7 @@ body.home .hero-summary { margin-bottom: 0; }
   /* Home: the Arch first, edge to edge, then the name. */
   body.home .hero { padding-top: 0; }
   body.home .hero-home-grid { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
-  body.home .hero-right { order: -1; margin: 0 -20px; }
+  body.home .hero-right { order: -1; margin: 0 -14px; }
   body.home .hero-art { border-radius: 0; }
   body.home .hero-name { font-size: 40px; }
 
