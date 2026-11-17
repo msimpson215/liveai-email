@@ -182,7 +182,15 @@
   .ai-band .btn-outline:hover { background: rgba(255,255,255,.1); }
   .prod-grid .work-card { border-top: 3px solid #e0a526; }
   .ai-band .ai-kicker { color: #7fb4ff; }
-  .career-list { max-width: 860px; margin: 34px auto 0; }
+  .co-h { margin-top: 40px; }
+  .co-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .co-card { display: block; padding: 16px 18px 18px; background: #fff; border: 1px solid var(--line); border-left: 4px solid #1668d8; border-radius: 12px; text-decoration: none; color: inherit; box-shadow: var(--shadow); }
+  .co-card:hover { border-color: #aac0da; border-left-color: #1668d8; }
+  .co-card h4 { margin: 4px 0 6px; font-size: 16px; font-weight: 800; letter-spacing: -.015em; color: var(--navy); }
+  .co-card p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .co-tag { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); }
+  @media (max-width: 980px) { .co-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .co-grid { grid-template-columns: 1fr; } }
   .roots-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -382,7 +390,7 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Three Decades of Building Companies</p>
     <h2 class="home-h">Career</h2>
-    <p class="sec-lead">After Washington University, Martin went into public health during the HIV/AIDS crisis, at Doorways and the Missouri Department of Health. Patients were waiting two weeks for test results. So in 1993 he organized the first coast-to-coast rapid HIV/STI laboratory network. That became a nationwide medical testing company, and the career that followed.</p>
+    <p class="sec-lead">After Washington University, Martin went into public health during the HIV/AIDS crisis, at Doorways and the Missouri Department of Health. People were waiting two weeks for their test results. So in 1993 he organized the first coast-to-coast rapid HIV/STI laboratory network. That became a nationwide medical testing company, and the career that followed.</p>
     <div class="ach-grid">
       <a class="ach-card" href="/cv2/businesses.html">
         <b>$1.4M</b>
@@ -402,14 +410,21 @@
       </a>
     </div>
 
-    <ol class="hist-list career-list">
-      <li><a href="/cv2/education.html"><strong>Public Health</strong> — Doorways and the Missouri Department of Health during the HIV/AIDS crisis; trainer of trainers.</a></li>
-      <li><a href="/cv2/businesses.html"><strong>Specialized Testing Services</strong> — Organized the first national lab network for rapid HIV/STI testing (1993).</a></li>
-      <li><a href="/cv2/businesses.html"><strong>Medical Testing Center</strong> — Nationwide diagnostic call centers, regional laboratory partnerships, and DNA paternity testing.</a></li>
-      <li><a href="/cv2/development.html"><strong>Real Estate &amp; Restaurants</strong> — The historic Maplewood family district, Florida beachfront subdivisions, Michigan properties, and Maya Cafe, Momo’s, and Boogaloo’s.</a></li>
-      <li><a href="/cv2/inventions.html"><strong>Patented Inventions</strong> — Pre-De-Icer™ (U.S. Patent #8,119,025), plus new products in development.</a></li>
-      <li><a href="/cv2/current.html"><strong>Axon AI</strong> — Real AI put into the websites companies already have, and the applications built on it.</a></li>
-    </ol>
+    <h3 class="sub-h co-h">Companies Martin Simpson Has Founded or Owned</h3>
+    <div class="co-grid">
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Specialized Counseling</h4><p>Started alongside Specialized Testing Services when he left the Missouri Department of Health.</p></a>
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Specialized Testing Services</h4><p>The first national lab network for rapid HIV/STI testing, 1993. About $1.4M a year.</p></a>
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Medical Testing Solutions</h4><p>Nationwide DNA paternity testing, run as a call center. About $4M a year.</p></a>
+      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Maplewood Development</h4><p>Bought and rebuilt the Sutton Boulevard family district in Maplewood, Missouri.</p></a>
+      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Florida Beachfront Land</h4><p>Bought beachfront by the acre at Cape San Blas and Mexico Beach, subdivided it, and sold the lots.</p></a>
+      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Michigan Property</h4><p>Property development in the Benton Harbor, Michigan area.</p></a>
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Maya Cafe</h4><p>The first restaurant in the Maplewood district, on Sutton Boulevard.</p></a>
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Momo’s</h4><p>A Maplewood restaurant, opened with a partner.</p></a>
+      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Boogaloo’s</h4><p>A Maplewood restaurant and bar.</p></a>
+      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Venues</span><h4>The Focal Point</h4><p>One of the first two businesses in the Maplewood district.</p></a>
+      <a class="co-card" href="/cv2/inventions.html"><span class="co-tag">Products</span><h4>Pre-De-Icer™</h4><p>Preventive anti-icing product. U.S. Patent #8,119,025.</p></a>
+      <a class="co-card" href="/cv2/current.html"><span class="co-tag">Artificial Intelligence</span><h4>Axon AI</h4><p>Real AI put into the websites companies already have.</p></a>
+    </div>
   </div>
 </section>
 
