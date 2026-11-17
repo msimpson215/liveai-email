@@ -116,3 +116,6 @@ footer .ts-logo { height: 48px; }
 .ts-float { animation: ts-floaty 6s ease-in-out infinite; }
 @keyframes ts-floaty { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 @media (prefers-reduced-motion: reduce) { .ts-float { animation: none; } }
+
+.ts-tag-a, .ts-tag-b { white-space: nowrap; }
+
