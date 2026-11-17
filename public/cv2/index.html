@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/cv2/cv.css?v=phone3"/>
+<link rel="stylesheet" href="/cv2/cv.css?v=flow1"/>
 <style>
   .sec-lead {
     max-width: 50em;
@@ -223,13 +223,68 @@
   .roots-card h3 { margin: 0 0 10px; font-size: 21px; font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
   .roots-card p:not(.roots-kicker) { margin: 0 0 10px; font-size: 15.5px; line-height: 1.6; color: var(--muted); }
   @media (max-width: 760px) { .roots-grid { grid-template-columns: 1fr; } }
+  .ov-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .ov-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: inherit;
+  }
+  .ov-card:hover { border-color: #aac0da; }
+  .ov-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: #eef3f8; }
+  .ov-body { display: flex; flex-direction: column; gap: 6px; padding: 16px 18px 20px; }
+  .ov-body strong { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
+  .ov-body > span:last-child { font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+  .ov-jump { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 26px; }
+  .ov-jump a {
+    padding: 9px 16px;
+    border: 1px solid #cfdff3;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy-2);
+    font-size: 14.5px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .ov-jump a:hover { border-color: var(--accent); color: var(--accent-text); }
+  .rmk-feature { max-width: 440px; margin: 28px auto 0; }
+  .rmk-feature .work-card { padding: 0; overflow: hidden; gap: 0; }
+  .rmk-feature .work-card { border-top: 3px solid #e0a526; }
+  html { scroll-padding-top: 84px; }
   @media (max-width: 980px) {
+    .ov-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .prod-grid .work-card { width: calc((100% - 20px) / 2); }
   }
   @media (max-width: 620px) {
     .app-grid { grid-template-columns: 1fr; }
     .prod-grid .work-card { width: 100%; }
+  }
+  @media (max-width: 640px) {
+    html { scroll-padding-top: 64px; }
+    .ov-grid { grid-template-columns: 1fr; gap: 12px; }
+    .ov-card { flex-direction: row; align-items: stretch; }
+    .ov-card img { width: 108px; aspect-ratio: auto; flex: 0 0 108px; }
+    .ov-body { padding: 12px 14px; gap: 4px; }
+    .ov-body strong { font-size: 16.5px; }
+    .ov-body > span:last-child { font-size: 14px; }
+    .ov-jump { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; margin: 18px -14px 0; padding: 0 14px 4px; scrollbar-width: none; }
+    .ov-jump::-webkit-scrollbar { display: none; }
+    .ov-jump a { flex: 0 0 auto; white-space: nowrap; font-size: 14px; }
+    .sec-lead { font-size: 16px; margin: -6px auto 22px; }
+    .home-h { font-size: 26px; }
+    .clip-single { margin-bottom: 24px; }
+    .talk-strip, #talk { display: none; }
+    .rmk-feature { max-width: none; }
   }
 </style>
 </head>
@@ -256,18 +311,51 @@
   </div>
 </section>
 
+<section class="home-section home-section--soft" id="overview">
+  <div class="wrap-wide">
+    <p class="sec-kicker">Overview</p>
+    <h2 class="home-h">The Scope of Martin Simpson’s Work</h2>
+    <p class="sec-lead">Artificial intelligence, patented inventions, children’s hospital work, and three decades of companies. Start with the four you will hear about most.</p>
+    <div class="ov-grid">
+      <a class="ov-card" href="#current">
+        <img src="/portfolio/assets/hero-axon.png" alt="Axon AI on a company website" loading="eager"/>
+        <span class="ov-body"><span class="work-tag">Current Projects</span><strong>Axon AI</strong><span>Real AI put into the website a company already has, and twelve applications built on it.</span></span>
+      </a>
+      <a class="ov-card" href="#products">
+        <img src="/portfolio/assets/hero-predeicer.png" alt="Pre-De-Icer bottle" loading="eager"/>
+        <span class="ov-body"><span class="work-tag">U.S. Patent #8,119,025</span><strong>Pre-De-Icer™</strong><span>A preventive anti-icing treatment applied before the storm so ice cannot bond.</span></span>
+      </a>
+      <a class="ov-card" href="#products">
+        <img src="/portfolio/assets/bandage-blue.jpg" alt="No More Boo-Boos dissolvable children’s bandage" loading="eager"/>
+        <span class="ov-body"><span class="work-tag">Pediatric Wound Care</span><strong>No More Boo-Boos</strong><span>A dissolvable bandage for children that washes away under warm water instead of tearing skin.</span></span>
+      </a>
+      <a class="ov-card" href="#pediatric">
+        <img src="/sites/assets/kids-kitchen-table-tent.jpg" alt="Child in a hospital bed with a meal tray card" loading="eager"/>
+        <span class="ov-body"><span class="work-tag">Children’s Hospitals</span><strong>Pediatric Hospital Work</strong><span>Happy Meals on Saturdays at St. Louis Children’s Hospital, and the Ronald McDonald Kitchen proposal.</span></span>
+      </a>
+    </div>
+    <nav class="ov-jump" aria-label="On this page">
+      <a href="#current">Current Projects</a>
+      <a href="#roots">Career</a>
+      <a href="#products">Inventions</a>
+      <a href="#pediatric">Pediatric &amp; Community</a>
+      <a href="#press">Media</a>
+    </nav>
+  </div>
+</section>
+
 <div class="talk-strip">
   <div class="wrap-wide talk-strip-inner">
-    <p><strong>This résumé talks.</strong> Ask Mr. Simpson’s AI anything about his work, out loud.</p>
-    <a class="talk-strip-btn" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Start talking</a>
+    <p><strong>This résumé talks.</strong> Ask out loud about anything on this page.</p>
+    <a class="talk-strip-btn" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
   </div>
 </div>
 
 <section class="home-section ai-band home-current" id="current">
   <div class="wrap-wide">
-    <p class="sec-kicker ai-kicker">Current Work</p>
+    <p class="sec-kicker ai-kicker">Current Projects</p>
     <h2 class="home-h">Artificial Intelligence — Axon AI</h2>
-    <p class="sec-lead">Martin saw that most companies have a working website with no AI behind it. So he built Axon AI. It puts real AI, trained on the company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. He has since used it to build the applications below, including the AI on this résumé.</p>
+    <p class="sec-lead">Martin saw that most companies have a working website with no AI behind it. So he built Axon AI. It puts real AI, trained on the company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. He has since used it to build twelve applications, including the AI on this résumé.</p>
 
     <div class="clip-single">
       <figure class="clip-card">
@@ -281,93 +369,19 @@
       </figure>
     </div>
 
-    <h3 class="sub-h">AI Applications Martin Simpson Has Built</h3>
-    <div class="app-grid">
-      <a class="work-card" href="/portfolio/projects/axon-websites.html">
-        <span class="work-tag">Core Platform</span>
-        <h3>Axon AI for Websites</h3>
-        <p>A customized AI team member inserted directly into the website a business already owns.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/conversational-resume.html">
-        <span class="work-tag">Hiring &amp; Career</span>
-        <h3>Conversational Résumé</h3>
-        <p>A résumé a hiring manager can interview directly by voice — demonstrated live on this page.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/digital-twin/">
-        <span class="work-tag">Personal Agent</span>
-        <h3>Axon Digital Twin</h3>
-        <p>A private AI stand-in that places approved calls or speaks with another AI and reports back.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/conversational-email.html">
-        <span class="work-tag">Outreach</span>
-        <h3>Conversational Email</h3>
-        <p>An AI team member embedded inside an email; recipients click the orb and start talking.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/business-card.html">
-        <span class="work-tag">Print + Voice</span>
-        <h3>AI Business Card</h3>
-        <p>A printed QR business card that lets anyone scan and speak with an AI representative anytime.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/axon-operator.html">
-        <span class="work-tag">Voice Control</span>
-        <h3>Axon AI Operator</h3>
-        <p>Hands-free voice operator — no keyboard or mouse required to run tasks through your AI team member.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/ai-point.html">
-        <span class="work-tag">Presentations</span>
-        <h3>Axon AI Point</h3>
-        <p>An AI team member paired with live slide decks during a meeting and after everyone leaves.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/patient-education.html">
-        <span class="work-tag">Healthcare QR</span>
-        <h3>Patient Education</h3>
-        <p>Scan a clinic pamphlet QR code to walk through procedure preparation with an AI medical guide.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/product-instructions.html">
-        <span class="work-tag">Support QR</span>
-        <h3>Product Instructions</h3>
-        <p>Replace dense paper manuals with a QR code that talks customers step-by-step through setup.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/personal-axon.html">
-        <span class="work-tag">Private Brain</span>
-        <h3>Personal Axon AI</h3>
-        <p>One dedicated AI team member built around a single person’s work, company, and daily life.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/grocery-shopping.html">
-        <span class="work-tag">E-Commerce</span>
-        <h3>Grocery Shopping Teammate</h3>
-        <p>Conversational store assistant that compares options by voice, builds the cart, and checks out.</p>
-        <span class="work-more">View project →</span>
-      </a>
-      <a class="work-card" href="/portfolio/projects/dna-answers.html">
-        <span class="work-tag">Diagnostics + AI</span>
-        <h3>DNA &amp; STD Testing + Axon AI</h3>
-        <p>Private voice AI guides built for DNA Answers paternity testing and confidential STD/STI testing.</p>
-        <span class="work-more">View project →</span>
-      </a>
-    </div>
 
     <div class="sec-actions">
+      <a class="btn-outline" href="/cv2/current.html#applications">See All Twelve AI Applications →</a>
       <a class="btn-outline" href="/portfolio/projects.html">Open Full Project Portfolio →</a>
-      <a class="btn-outline" href="/cv2/current.html">Read Axon AI Overview →</a>
     </div>
   </div>
 </section>
 
-<section class="home-section home-section--soft" id="roots">
+<section class="home-section" id="roots">
   <div class="wrap-wide">
-    <p class="sec-kicker">Where He Comes From</p>
+    <p class="sec-kicker">Career · Where It Began</p>
     <h2 class="home-h">Upbringing &amp; Education</h2>
+    <p class="sec-lead">Before the companies and the AI, there was Palo Alto and Washington University.</p>
     <div class="roots-grid">
       <article class="roots-card">
         <p class="roots-kicker">Born at Stanford Hospital</p>
@@ -386,9 +400,9 @@
   </div>
 </section>
 
-<section class="home-section" id="career">
+<section class="home-section home-section--soft" id="career">
   <div class="wrap-wide">
-    <p class="sec-kicker">Three Decades of Building Companies</p>
+    <p class="sec-kicker">Career · Three Decades of Building Companies</p>
     <h2 class="home-h">Career</h2>
     <p class="sec-lead">After Washington University, Martin went into public health during the HIV/AIDS crisis, at Doorways and the Missouri Department of Health. People were waiting two weeks for their test results. So in 1993 he organized the first coast-to-coast rapid HIV/STI laboratory network. That became a nationwide medical testing company, and the career that followed.</p>
     <div class="ach-grid">
@@ -428,7 +442,7 @@
   </div>
 </section>
 
-<section class="home-section home-section--soft" id="products">
+<section class="home-section" id="products">
   <div class="wrap-wide">
     <p class="sec-kicker">Inventions</p>
     <h2 class="home-h">Products &amp; Patented Inventions</h2>
@@ -474,6 +488,43 @@
           <span class="work-more">View Pre-Ember Guard →</span>
         </div>
       </a>
+    </div>
+
+    <div class="sec-actions">
+      <a class="btn-outline" href="/cv2/inventions.html">Patents &amp; Inventions Detail →</a>
+    </div>
+  </div>
+</section>
+
+<section class="home-section home-section--soft" id="pediatric">
+  <div class="wrap-wide">
+    <p class="sec-kicker">Pediatric &amp; Community Work</p>
+    <h2 class="home-h">Children’s Hospitals &amp; Community</h2>
+    <p class="sec-lead">Much of Martin’s work has been for children. It started on the pediatric oncology floor at St. Louis Children’s Hospital, and it shaped the Maplewood district and the Ronald McDonald Kitchen proposal.</p>
+    <div class="comm-grid">
+      <a class="comm-item" href="/cv2/community.html">
+        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4.5 19 8v4.2c0 4.3-3 7.2-7 8.3-4-1.1-7-4-7-8.3V8l7-3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10.5v4M10 12.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <div>
+          <h3>Happy Meals on Saturdays</h3>
+          <p>Built custom heated and cooled wagons to deliver individualized Saturday meals across the pediatric oncology floor at St. Louis Children’s Hospital — the direct inspiration for the Ronald McDonald Kitchen proposal.</p>
+        </div>
+      </a>
+      <a class="comm-item" href="/cv2/community.html">
+        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 18c.7-2.6 2.2-3.9 4.3-3.9 1.3 0 2.3.5 3.2 1.4.9-.9 1.9-1.4 3.2-1.4 2.1 0 3.6 1.3 4.3 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <div>
+          <h3>Support for Children’s Organizations</h3>
+          <p>Provided dedicated Maplewood space and long-term support for Pywacket Children’s Theater and Friends of Kids with Cancer.</p>
+        </div>
+      </a>
+      <a class="comm-item" href="/cv2/community.html">
+        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.2-7-9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+        <div>
+          <h3>Family Entertainment District</h3>
+          <p>Designed a downtown district centered around children and families, documented by PBS KETC Channel 9.</p>
+        </div>
+      </a>
+    </div>
+    <div class="rmk-feature">
       <a class="work-card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
         <img class="prod-thumb" src="/sites/assets/kids-kitchen-table-tent.jpg" alt="Smiling child in hospital bed with meal tray card" loading="lazy"/>
         <div class="prod-body">
@@ -484,17 +535,14 @@
         </div>
       </a>
     </div>
-
-    <div class="sec-actions">
-      <a class="btn-outline" href="/cv2/inventions.html">Patents &amp; Inventions Detail →</a>
-    </div>
   </div>
 </section>
 
 <section class="home-section" id="press">
   <div class="wrap-wide">
-    <p class="sec-kicker">In the Press</p>
+    <p class="sec-kicker">Media</p>
     <h2 class="home-h">Legacy &amp; Public Record</h2>
+    <p class="sec-lead">The public record of that work, in television and newspaper coverage.</p>
     <div class="legacy-grid">
       <article class="legacy-card">
         <p class="legacy-kicker">KETC Channel 9</p>
@@ -528,44 +576,14 @@
   </div>
 </section>
 
-<section class="home-section home-section--soft" id="community">
-  <div class="wrap-wide">
-    <p class="sec-kicker">Beyond Business</p>
-    <h2 class="home-h">Community &amp; Giving Back</h2>
-    <div class="comm-grid">
-      <a class="comm-item" href="/cv2/community.html">
-        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 18c.7-2.6 2.2-3.9 4.3-3.9 1.3 0 2.3.5 3.2 1.4.9-.9 1.9-1.4 3.2-1.4 2.1 0 3.6 1.3 4.3 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <div>
-          <h3>Support for Children’s Organizations</h3>
-          <p>Provided dedicated Maplewood space and long-term support for Pywacket Children’s Theater and Friends of Kids with Cancer.</p>
-        </div>
-      </a>
-      <a class="comm-item" href="/cv2/community.html">
-        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4.5 19 8v4.2c0 4.3-3 7.2-7 8.3-4-1.1-7-4-7-8.3V8l7-3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10.5v4M10 12.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <div>
-          <h3>Happy Meals on Saturdays</h3>
-          <p>Built custom heated and cooled wagons to deliver individualized Saturday meals across the pediatric oncology floor at St. Louis Children’s Hospital — the direct inspiration for the Ronald McDonald Kitchen proposal.</p>
-        </div>
-      </a>
-      <a class="comm-item" href="/cv2/community.html">
-        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.2-7-9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
-        <div>
-          <h3>Family Entertainment District</h3>
-          <p>Designed a downtown district centered around children and families, documented by PBS KETC Channel 9.</p>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="home-section" id="talk">
+<section class="home-section home-section--soft" id="talk">
   <div class="wrap-wide">
     <div class="ai-banner">
       <div class="ai-banner-copy">
         <span class="ai-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15.8V8.4A2 2 0 0 1 7 6.4h6.2L16.8 9.8v6A2 2 0 0 1 14.8 17.8H7A2 2 0 0 1 5 15.8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16.8 10.5h1.4A1.8 1.8 0 0 1 20 12.3v5.2A1.8 1.8 0 0 1 18.2 19.3h-7.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
-          <h2>Have a question? Ask Mr. Simpson’s AI</h2>
-          <p>Ask it out loud about anything on this page. It knows his patents, his businesses, and his whole career.</p>
+          <h2>Talk with Mr. Simpson’s AI Team Member</h2>
+          <p>Ask out loud about anything on this page: Axon AI, his patents, his companies, or his work for children.</p>
         </div>
       </div>
       <a class="btn-talk xl" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
@@ -580,7 +598,7 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/orb.js"></script>
-<script src="/cv2/cv.js?v=phone3"></script>
+<script src="/cv2/orb.js?v=flow1"></script>
+<script src="/cv2/cv.js?v=flow1"></script>
 </body>
 </html>
