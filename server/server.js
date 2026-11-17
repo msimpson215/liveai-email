@@ -32,6 +32,14 @@ app.use((req, _res, next) => {
   }
   next()
 })
+app.use((req, res, next) => {
+  const m = req.path.match(/^\/(cv|cv-v1)(\/[^.]*(\.html)?)?$/)
+  if (!m) return next()
+  let rest = (m[2] || '/').replace(/^\/2\/?$/, '/')
+  const q = req.originalUrl.includes('?') ? req.originalUrl.slice(req.originalUrl.indexOf('?')) : ''
+  res.set('Cache-Control', 'no-store')
+  res.redirect(301, '/cv2' + rest + q)
+})
 app.use(express.static('public', {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store')
@@ -301,9 +309,9 @@ app.get('/talk-to-the-consultant', (_req, res) => {
 })
 
 /** Marty AI curriculum vitae — lives on this app for now (live AI-email). */
-app.get(['/cv', '/marty', '/resume'], (_req, res) => {
+app.get(['/marty', '/resume'], (_req, res) => {
   res.set('Cache-Control', 'no-store')
-  res.redirect(302, '/cv/')
+  res.redirect(302, '/cv2/')
 })
 app.get('/cv-v1', (_req, res) => {
   res.set('Cache-Control', 'no-store')
