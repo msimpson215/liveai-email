@@ -11,6 +11,12 @@
     });
   }
 
+  var toc = document.querySelector('.toc');
+  var here = toc && toc.querySelector('a.active');
+  if (here && toc.scrollWidth > toc.clientWidth) {
+    toc.scrollLeft = here.offsetLeft - (toc.clientWidth - here.offsetWidth) / 2;
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll('.clip-frame'), function (frame) {
     var video = frame.querySelector('.clip-player');
     if (!video) return;
