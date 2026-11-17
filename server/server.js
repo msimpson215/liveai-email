@@ -32,6 +32,18 @@ app.use((req, _res, next) => {
   }
   next()
 })
+/**
+ * A Render service named thinkshift-… (or SITE_HOME=thinkshift) opens straight
+ * onto the ThinkShift demo. Everything else on that service still works.
+ */
+function isThinkShiftHost(req) {
+  return process.env.SITE_HOME === 'thinkshift' || (req.hostname || '').toLowerCase().startsWith('thinkshift')
+}
+app.get('/', (req, res, next) => {
+  if (!isThinkShiftHost(req)) return next()
+  res.set('Cache-Control', 'no-store')
+  res.redirect(302, '/thinkshift/')
+})
 app.use((req, res, next) => {
   const m = req.path.match(/^\/(cv|cv-v1)(\/[^.]*(\.html)?)?$/)
   if (!m) return next()
