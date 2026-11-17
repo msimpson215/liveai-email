@@ -102,3 +102,9 @@ footer .ts-logo { height: 48px; }
 .ts-form-note { font-size: .875rem; text-align: center; color: hsl(var(--muted-foreground)); min-height: 1.25rem; }
 .ts-form-note.is-error { color: hsl(var(--destructive)); }
 .ts-invalid { border-color: hsl(var(--destructive)) !important; }
+
+/* Hero tagline */
+.ts-tagline { font-weight: 700; font-size: 26px; line-height: 1.25; margin: 0 0 24px; letter-spacing: normal; text-transform: none; }
+.ts-tag-a { color: #fff; }
+.ts-tag-b { color: hsl(var(--highlight)); }
+@media (max-width: 640px) { .ts-tagline { font-size: 20px; } }
