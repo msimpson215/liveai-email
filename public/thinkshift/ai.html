@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Team Member | ThinkShift Technologies</title>
+<meta name="description" content="Talk with ThinkShift Technologies’ AI team member about IT consulting, AI automation, process improvement, and training.">
+<meta property="og:title" content="AI Team Member | ThinkShift Technologies">
+<meta property="og:description" content="Talk with ThinkShift Technologies’ AI team member about IT consulting, AI automation, process improvement, and training.">
+<meta property="og:type" content="website">
+<script>document.documentElement.className+=' js'</script>
+<link rel="stylesheet" href="/thinkshift/site.css?v=1">
+<link rel="stylesheet" href="/thinkshift/ts.css?v=1">
+
+<style>
+  .ts-ai { position: relative; min-height: 100vh; padding: 112px 0 72px; background: radial-gradient(ellipse 70% 60% at 50% 45%, #fff 0%, hsl(var(--background)) 55%, hsl(var(--muted)) 100%); overflow: hidden; }
+  .ts-ai::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(circle at 1px 1px, rgba(32,170,182,.12) 1px, transparent 0); background-size: 40px 40px; }
+  .ts-ai-inner { position: relative; z-index: 1; }
+  .ts-ai-head { text-align: center; max-width: 46rem; margin: 0 auto 28px; }
+  .ts-ai-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: center; justify-items: center; }
+  @media (min-width: 1024px) {
+    .ts-ai-grid { grid-template-columns: 340px minmax(0, 1fr) 340px; gap: 32px; }
+    .ts-text { grid-column: 1; grid-row: 1; }
+    .ts-orbcol { grid-column: 2; grid-row: 1; }
+  }
+
+  .ts-orbcol { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  #orb { appearance: none; border: 0; padding: 0; cursor: pointer; background: transparent; position: relative;
+    width: min(64vw, 46vh, 400px); aspect-ratio: 1; border-radius: 50%; -webkit-tap-highlight-color: transparent;
+    transform: scale(calc(1 + var(--lvl, 0) * .05)); transition: transform .08s linear; }
+  #orb:focus-visible { outline: 3px solid hsl(var(--ring)); outline-offset: 6px; }
+  #orb .halo { position: absolute; inset: -18%; border-radius: 50%; pointer-events: none; z-index: 0;
+    background: radial-gradient(circle, rgba(50,120,255,.5) 0, rgba(50,120,255,.18) 42%, transparent 68%);
+    opacity: calc(.18 + var(--lvl, 0) * 1.4); transform: scale(calc(.9 + var(--lvl, 0) * .3));
+    transition: opacity .08s linear, transform .08s linear; }
+  #orb .ring { position: absolute; inset: -5%; border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0;
+    background: conic-gradient(from 0deg, transparent 0 62%, rgba(120,180,255,.9) 82%, transparent 100%);
+    -webkit-mask: radial-gradient(circle, transparent 64%, #000 65.5%, #000 68%, transparent 69.5%);
+    mask: radial-gradient(circle, transparent 64%, #000 65.5%, #000 68%, transparent 69.5%);
+    animation: ts-spin 2.6s linear infinite; transition: opacity .5s ease; }
+  body.live[data-state="listening"] #orb .ring { opacity: 1; }
+  @keyframes ts-spin { to { transform: rotate(360deg); } }
+  #orb img { position: relative; z-index: 1; display: block; width: 100%; height: 100%;
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 64%, transparent 71%); mask-image: radial-gradient(circle at 50% 50%, #000 64%, transparent 71%);
+    transition: transform .2s ease, filter .3s ease; animation: ts-breathe 5s ease-in-out infinite; }
+  #orb:active img { transform: scale(.97); }
+  body[data-state="connecting"] #orb img { animation: ts-pulse .9s ease-in-out infinite; }
+  body[data-state="speaking"] #orb img { filter: brightness(calc(1.04 + var(--lvl, 0) * .3)) saturate(calc(1.05 + var(--lvl, 0) * .3)); }
+  @keyframes ts-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+  @keyframes ts-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+  .ts-under { margin-top: 18px; min-height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
+  .ts-start { white-space: normal; text-align: center; line-height: 1.3; max-width: 100%; }
+  body.started .ts-start { display: none; }
+  .ts-hint { font-size: 15px; font-weight: 500; color: hsl(var(--muted-foreground)); }
+  .ts-hint:empty { display: none; }
+  .ts-pause { display: none; appearance: none; cursor: pointer; border: 1.5px solid hsl(var(--primary)); background: transparent;
+    color: hsl(var(--primary)); border-radius: 999px; padding: 9px 24px; font: 700 13px/1 inherit; letter-spacing: .12em; text-transform: uppercase;
+    transition: background .2s ease, color .2s ease; }
+  .ts-pause:hover { background: hsl(var(--primary)); color: #fff; }
+  body.live .ts-pause, body.paused .ts-pause { display: inline-block; }
+
+  .ts-text { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 1024px) { .ts-text { max-width: none; height: min(52vh, 440px); } }
+  .ts-text h2 { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: hsl(var(--accent)); }
+  .ts-log { flex: 1; min-height: 150px; max-height: 38vh; overflow: auto; padding: 14px 16px 10px; font-size: 14.5px; line-height: 1.5; color: hsl(var(--foreground)); }
+  @media (min-width: 1024px) { .ts-log { max-height: none; } }
+  .ts-log:empty::before { content: "Type a question below. Your typed conversation stays on your screen."; color: hsl(var(--muted-foreground)); }
+  .ts-log .you { color: hsl(var(--accent)); margin: 0 0 8px; font-weight: 500; }
+  .ts-log .ai { margin: 0 0 10px; }
+  .ts-compose { display: flex; gap: 8px; }
+  .ts-compose input { flex: 1; min-width: 0; height: 44px; border-radius: 999px; padding: 0 16px; font-size: 15px; }
+  .ts-compose button { height: 44px; border-radius: 999px; padding: 0 20px; }
+
+  .ts-powered { position: absolute; right: 24px; bottom: 18px; z-index: 2; font-size: 12px; font-weight: 600; letter-spacing: .02em; color: hsl(var(--muted-foreground)); }
+  @media (max-width: 640px) { .ts-ai { padding-top: 100px; } .ts-powered { right: 16px; bottom: 14px; } }
+</style>
+</head>
+<body>
+<div class="min-h-screen">
+<header class="ts-header fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="tsHeader" data-solid="1">
+  <div class="container mx-auto px-6 lg:px-8"><div class="flex items-center justify-between h-20">
+    <a class="flex items-center gap-3" href="/thinkshift/"><div class="w-10 h-10 rounded-xl bg-accent-gradient flex items-center justify-center shadow-md transition-transform hover:scale-105"><span class="text-accent-foreground font-bold text-lg">TS</span></div><div class="ts-brand font-display font-bold text-xl transition-colors">ThinkShift Technologies</div></a>
+    <nav class="hidden md:flex items-center gap-8" aria-label="Main">
+      <a class="ts-nav font-medium transition-colors" href="/thinkshift/#about">About</a>
+      <a class="ts-nav font-medium transition-colors" href="/thinkshift/services.html">Services</a>
+      <a class="ts-nav font-medium transition-colors" href="/thinkshift/#process">Process</a>
+      <a class="ts-nav font-medium transition-colors" href="/thinkshift/#contact">Contact</a>
+      <a class="ts-ai-tab font-medium transition-colors is-active" href="/thinkshift/ai.html"><img src="/art/axon-orb.png" alt="" width="24" height="24">AI Team Member</a>
+      <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-gradient-to-r from-[hsl(185,70%,42%)] to-[hsl(195,65%,50%)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 h-10 px-4 py-2" href="/thinkshift/#contact">Get Started</a>
+    </nav>
+    <div class="md:hidden flex items-center gap-1">
+      <a class="ts-ai-mini" href="/thinkshift/ai.html" aria-label="Talk with a ThinkShift AI Team Member"><img src="/art/axon-orb.png" alt="" width="34" height="34"></a>
+      <button class="p-2 ts-menu-btn" id="tsMenuBtn" type="button" aria-label="Open menu" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu w-6 h-6 ts-i-open" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-6 h-6 ts-i-close" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    </div>
+  </div></div>
+</header>
+<div class="ts-menu md:hidden" id="tsMenu">
+  <nav class="relative flex flex-col items-center gap-6 p-8" aria-label="Mobile">
+    <a class="text-xl font-medium text-foreground hover:text-accent transition-colors" href="/thinkshift/#about">About</a>
+    <a class="text-xl font-medium text-foreground hover:text-accent transition-colors" href="/thinkshift/services.html">Services</a>
+    <a class="text-xl font-medium text-foreground hover:text-accent transition-colors" href="/thinkshift/#process">Process</a>
+    <a class="text-xl font-medium text-foreground hover:text-accent transition-colors" href="/thinkshift/#contact">Contact</a>
+    <a class="ts-ai-tab text-xl font-medium is-active" href="/thinkshift/ai.html"><img src="/art/axon-orb.png" alt="" width="24" height="24">AI Team Member</a>
+    <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-gradient-to-r from-[hsl(185,70%,42%)] to-[hsl(195,65%,50%)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 h-12 rounded-xl px-8 text-base" href="/thinkshift/#contact">Get Started</a>
+  </nav>
+</div>
+
+<main class="ts-ai" data-state="idle">
+  <div class="container mx-auto px-6 lg:px-8 ts-ai-inner">
+    <div class="ts-ai-head">
+      <span class="text-accent font-semibold text-sm uppercase tracking-wider mb-3 block">AI Team Member</span>
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4 leading-tight">Talk with ThinkShift</h1>
+      <p class="text-lg text-muted-foreground">Ask about IT consulting, AI automation, process improvement, or training for your team.</p>
+    </div>
+    <div class="ts-ai-grid">
+      <div class="ts-orbcol">
+        <button type="button" id="orb" aria-label="Talk with a ThinkShift AI Team Member"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
+        <div class="ts-under">
+          <button type="button" id="startBtn" class="ts-start inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[hsl(185,70%,42%)] to-[hsl(195,65%,50%)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 rounded-xl px-8 py-4 text-lg">Click here to speak with a ThinkShift AI Team Member</button>
+          <p class="ts-hint" id="hint"></p>
+          <button type="button" class="ts-pause" id="pauseBtn">Pause</button>
+        </div>
+      </div>
+      <aside class="ts-text" aria-label="Type to ThinkShift's AI team member">
+        <h2>Prefer to type? Ask privately here.</h2>
+        <div class="ts-log bg-card rounded-2xl border border-border shadow-sm" id="log" aria-live="polite"></div>
+        <form class="ts-compose" id="textForm">
+          <input id="q" type="text" autocomplete="off" placeholder="Type your question" enterkeyhint="send" aria-label="Type a question" class="border border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <button type="submit" class="bg-gradient-to-r from-[hsl(185,70%,42%)] to-[hsl(195,65%,50%)] text-white font-semibold shadow-md">Send</button>
+        </form>
+      </aside>
+    </div>
+  </div>
+  <p class="ts-powered">Powered by Axon AI</p>
+</main>
+
+<footer class="bg-primary py-12"><div class="container mx-auto px-6 lg:px-8"><div class="flex flex-col gap-8"><div class="flex flex-col md:flex-row items-center justify-between gap-6"><a class="flex items-center gap-3" href="/thinkshift/"><div class="w-10 h-10 rounded-xl bg-accent-gradient flex items-center justify-center"><span class="text-accent-foreground font-bold text-lg">TS</span></div><div class="font-display font-bold text-xl text-primary-foreground">ThinkShift Technologies</div></a><nav class="flex flex-wrap items-center justify-center gap-6"><a class="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm" href="/thinkshift/services.html">Services</a><a class="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm" href="/thinkshift/consultation.html">Free Consultation</a><a class="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm" href="/thinkshift/ai.html">AI Team Member</a><a class="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm" href="/thinkshift/privacy.html">Privacy Policy</a><a class="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm" href="/thinkshift/terms.html">Terms of Service</a></nav></div><div class="text-primary-foreground/60 text-sm text-center border-t border-primary-foreground/10 pt-8"><p>© 2026 ThinkShift Technologies LLC. All Rights Reserved.</p></div></div></div></footer>
+</div>
+<script src="/thinkshift/ts.js?v=1"></script>
+
+<script>
+(function(){
+const BRAIN='thinkshift';
+const NAME='ThinkShift AI';
+const orb=document.getElementById('orb');
+const hint=document.getElementById('hint');
+const pauseBtn=document.getElementById('pauseBtn');
+const startBtn=document.getElementById('startBtn');
+const logEl=document.getElementById('log');
+
+let pc=null,dc=null,localStream=null,audioEl=null;
+let starting=false,ready=false,closing=false,audioBlocked=false;
+let curAI=null,curYou=null,aiQuiet=0,youQuiet=0;
+let history=[],greet=null;
+
+function setState(s,msg){
+  document.body.dataset.state=s||'idle';
+  if(msg!==undefined)hint.textContent=msg;
+}
+function setLive(on){
+  document.body.classList.toggle('live',on);
+  if(on)document.body.classList.remove('paused');
+  pauseBtn.textContent=on?'Pause':'Resume';
+}
+function ensureAudio(){
+  if(!audioEl){
+    audioEl=document.createElement('audio');
+    audioEl.autoplay=true;audioEl.playsInline=true;
+    document.body.appendChild(audioEl);
+  }
+  return audioEl;
+}
+let lvlCtx=null,lvlRaf=0;
+function startLevel(stream){
+  try{
+    if(!lvlCtx)lvlCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(lvlCtx.resume)lvlCtx.resume();
+    const an=lvlCtx.createAnalyser();
+    an.fftSize=512;
+    lvlCtx.createMediaStreamSource(stream).connect(an);
+    const buf=new Uint8Array(an.fftSize);
+    let smooth=0;
+    cancelAnimationFrame(lvlRaf);
+    (function tick(){
+      an.getByteTimeDomainData(buf);
+      let sum=0;
+      for(let i=0;i<buf.length;i++){const v=(buf[i]-128)/128;sum+=v*v}
+      const target=Math.min(1,Math.sqrt(sum/buf.length)*4.5);
+      smooth+=(target-smooth)*(target>smooth?.45:.1);
+      orb.style.setProperty('--lvl',smooth.toFixed(3));
+      lvlRaf=requestAnimationFrame(tick);
+    })();
+  }catch(e){}
+}
+function stopLevel(){
+  cancelAnimationFrame(lvlRaf);
+  orb.style.setProperty('--lvl','0');
+}
+function line(role,text){
+  const d=document.createElement('div');
+  d.className=role;
+  d._raw=text;
+  d.textContent=(role==='you'?'You: ':NAME+': ')+text;
+  logEl.appendChild(d);
+  logEl.scrollTop=logEl.scrollHeight;
+  return d;
+}
+function remember(role,text){
+  text=String(text||'').trim();
+  if(!text)return;
+  history.push({role:role,text:text});
+  if(history.length>40)history=history.slice(-40);
+}
+function focusText(){try{document.getElementById('q').focus()}catch(e){}}
+
+function send(ev){
+  if(!dc||dc.readyState!=='open'||!ready)return false;
+  try{dc.send(JSON.stringify(ev));return true}catch(e){return false}
+}
+function endAI(){
+  clearTimeout(aiQuiet);
+  if(curAI){remember('assistant',curAI._raw);curAI=null}
+}
+function endYou(){
+  clearTimeout(youQuiet);
+  if(curYou){remember('user',curYou._raw);curYou=null}
+}
+
+function onEvent(m){
+  if(m.type==='session.started'){
+    ready=true;
+    setLive(true);
+    setState('listening','');
+    if(greet){send({type:'session.commentary.append',event_id:'greeting_1',delegation_id:null,content:greet});greet=null}
+    armClock();
+    return;
+  }
+  if(m.type==='session.output_transcript.delta'&&m.delta){
+    endYou();
+    if(!curAI)curAI=line('ai','');
+    curAI._raw+=m.delta;
+    curAI.textContent=NAME+': '+curAI._raw;
+    logEl.scrollTop=logEl.scrollHeight;
+    setState('speaking');
+    clearTimeout(aiQuiet);
+    aiQuiet=setTimeout(function(){endAI();if(pc)setState('listening')},1200);
+    return;
+  }
+  if(m.type==='session.input_transcript.delta'&&m.delta){
+    endAI();
+    if(!curYou)curYou=line('you','');
+    curYou._raw+=m.delta;
+    curYou.textContent='You: '+curYou._raw;
+    logEl.scrollTop=logEl.scrollHeight;
+    setState('listening');
+    clearTimeout(youQuiet);
+    youQuiet=setTimeout(endYou,1500);
+    return;
+  }
+  if(m.type==='session.closed'){teardown();return}
+  if(m.type==='error')console.warn('Voice:',m.error&&m.error.message);
+}
+
+// Voice minutes are capped per visit; typing keeps working after that.
+let clock=0,clockDone=false,voiceLeft=4*60*1000,voiceStartedAt=0;
+function armClock(){
+  if(clock||clockDone)return;
+  if(voiceLeft<=0){endClock();return}
+  voiceStartedAt=Date.now();
+  clock=setTimeout(endClock,voiceLeft);
+}
+function pauseClock(){
+  if(!clock)return;
+  clearTimeout(clock);clock=0;
+  if(voiceStartedAt){voiceLeft=Math.max(0,voiceLeft-(Date.now()-voiceStartedAt));voiceStartedAt=0}
+}
+function endClock(){
+  if(clockDone)return;
+  clockDone=true;
+  voiceLeft=0;voiceStartedAt=0;
+  clearTimeout(clock);clock=0;
+  send({type:'session.input_audio.mute',event_id:'clock_mute'});
+  if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
+  send({type:'session.instructions.append',event_id:'clock_up',delegation_id:null,
+    content:"The time is up. Right now, say this once, warmly, then stop. Do not ask a question and do not add a pitch: We're going to switch you to text now. Please feel free to use it to keep asking questions."});
+  setTimeout(function(){stopVoice();focusText()},9000);
+}
+
+function teardown(){
+  pauseClock();
+  endAI();endYou();
+  if(pc){try{pc.close()}catch(e){}pc=null}
+  if(localStream){try{localStream.getTracks().forEach(function(t){t.stop()})}catch(e){}localStream=null}
+  if(audioEl){try{audioEl.pause();audioEl.srcObject=null}catch(e){}}
+  dc=null;ready=false;closing=false;audioBlocked=false;
+  stopLevel();
+  setLive(false);
+  setState('idle',clockDone?'Voice time is up. Keep going by typing.':undefined);
+}
+function stopVoice(){
+  if(!pc)return;
+  if(audioEl){try{audioEl.pause();audioEl.srcObject=null}catch(e){}}
+  if(localStream){try{localStream.getAudioTracks().forEach(function(t){t.enabled=false})}catch(e){}}
+  stopLevel();
+  setLive(false);
+  if(closing)return;
+  closing=true;
+  if(!send({type:'session.close',event_id:'close_1'})){teardown();return}
+  setTimeout(function(){if(closing)teardown()},2500);
+}
+
+function waitForIce(conn){
+  if(conn.iceGatheringState==='complete')return Promise.resolve();
+  return new Promise(function(resolve){
+    const t=setTimeout(done,4000);
+    function done(){clearTimeout(t);conn.removeEventListener('icegatheringstatechange',check);resolve()}
+    function check(){if(conn.iceGatheringState==='complete')done()}
+    conn.addEventListener('icegatheringstatechange',check);
+  });
+}
+
+async function connectVoice(){
+  const conn=new RTCPeerConnection();
+  pc=conn;
+  const audio=ensureAudio();
+  conn.ontrack=function(e){
+    const stream=e.streams[0]||new MediaStream([e.track]);
+    audio.srcObject=stream;
+    audio.play().then(function(){audioBlocked=false}).catch(function(){
+      audioBlocked=true;
+      setState('idle','Tap the orb to hear the AI team member');
+    });
+    startLevel(stream);
+  };
+  conn.addEventListener('connectionstatechange',function(){
+    if(pc!==conn)return;
+    if(conn.connectionState==='failed'||(conn.connectionState==='disconnected'&&!closing)){
+      teardown();
+      if(!clockDone)setState('idle','The line dropped. Tap the orb to keep talking.');
+    }
+  });
+  localStream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
+  });
+  if(pc!==conn){localStream.getTracks().forEach(function(t){t.stop()});localStream=null;return}
+  localStream.getAudioTracks().forEach(function(t){conn.addTrack(t,localStream)});
+
+  dc=conn.createDataChannel('oai-events');
+  dc.addEventListener('message',function(ev){
+    try{onEvent(JSON.parse(ev.data))}catch(e){}
+  });
+  dc.addEventListener('close',function(){if(pc===conn&&!clockDone)teardown()});
+
+  const offer=await conn.createOffer();
+  await conn.setLocalDescription(offer);
+  await waitForIce(conn);
+  const r=await fetch('/api/axon-ai/live',{
+    method:'POST',cache:'no-store',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({brain:BRAIN,sdp:conn.localDescription.sdp,history:history.slice(-12)})
+  });
+  if(!r.ok){const err=new Error('session');err.status=r.status;throw err}
+  const data=await r.json();
+  if(pc!==conn)return;
+  greet=data.greet||null;
+  await conn.setRemoteDescription({type:'answer',sdp:data.transport.sdp});
+  await new Promise(function(resolve,reject){
+    let waited=0;
+    const t=setInterval(function(){
+      waited+=100;
+      if(ready||pc!==conn){clearInterval(t);resolve()}
+      else if(waited>=15000){clearInterval(t);reject(new Error('timeout'))}
+    },100);
+  });
+}
+
+async function toggle(){
+  if(starting)return;
+  document.body.classList.add('started');
+  if(pc&&audioBlocked){
+    audioEl.play().then(function(){audioBlocked=false;setState('listening','')}).catch(function(){});
+    return;
+  }
+  if(pc){stopVoice();document.body.classList.add('paused');setState('idle','Paused. Tap Resume or the orb to keep talking.');return}
+  if(clockDone){focusText();return}
+  starting=true;
+  setState('connecting','Connecting…');
+  try{await connectVoice()}
+  catch(e){
+    const wasPaused=document.body.classList.contains('paused');
+    teardown();
+    if(wasPaused)document.body.classList.add('paused');
+    setState('idle',e.status===429?'Busy right now. Tap the orb to try again.':(e.name==='NotAllowedError'?'Allow the microphone to talk, or type below.':'Tap the orb to talk with ThinkShift’s AI team member'));
+  }
+  starting=false;
+}
+
+let typing=false;
+async function sendText(text){
+  text=String(text||'').trim();
+  if(!text||typing)return;
+  typing=true;
+  endAI();endYou();
+  line('you',text);
+  remember('user',text);
+  document.getElementById('q').value='';
+  const wait=line('ai','…');
+  try{
+    const r=await fetch('/api/axon-ai/text',{
+      method:'POST',cache:'no-store',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({brain:BRAIN,messages:history.slice(-20)})
+    });
+    const d=await r.json().catch(function(){return{}});
+    const reply=d.reply||d.error||'No answer just now. Try again.';
+    wait._raw=reply;
+    wait.textContent=NAME+': '+reply;
+    logEl.scrollTop=logEl.scrollHeight;
+    if(d.reply){
+      remember('assistant',d.reply);
+      send({type:'session.thinking.append',event_id:'typed_'+Date.now(),delegation_id:null,
+        content:('The visitor typed: "'+text+'". It was answered in the text box: "'+d.reply+'". Do not read it aloud. If they talk about it, you already know.').slice(0,1800)});
+    }
+  }catch(e){
+    wait.textContent=NAME+': No answer just now. Try again.';
+  }
+  typing=false;
+}
+
+function begin(){
+  ensureAudio().play().catch(function(){});
+  try{lvlCtx=lvlCtx||new (window.AudioContext||window.webkitAudioContext)();lvlCtx.resume();}catch(e){}
+  toggle();
+}
+orb.addEventListener('click',begin);
+startBtn.addEventListener('click',begin);
+pauseBtn.addEventListener('click',toggle);
+document.getElementById('textForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  sendText(document.getElementById('q').value);
+});
+window.addEventListener('pagehide',function(){if(pc){send({type:'session.close'});teardown()}});
+})();
+</script>
+</body>
+</html>

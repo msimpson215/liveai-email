@@ -1,0 +1,95 @@
+/* Additions on top of ThinkShift's own stylesheet (site.css). */
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+body { -webkit-font-smoothing: antialiased; }
+
+/* Header: clear over the dark hero, solid white once you scroll or on light pages. */
+.ts-header { background: transparent; border-bottom: 1px solid transparent; }
+.ts-header .ts-brand { color: hsl(var(--primary-foreground)); }
+.ts-header .ts-nav, .ts-header .ts-ai-tab { color: hsl(var(--primary-foreground) / .8); }
+.ts-header .ts-nav:hover, .ts-header .ts-ai-tab:hover { color: hsl(var(--primary-foreground)); }
+.ts-header .ts-menu-btn { color: hsl(var(--primary-foreground)); }
+.ts-header.ts-solid, body.ts-menu-open .ts-header {
+  background: hsl(var(--card) / .95);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
+  border-bottom-color: hsl(var(--border));
+}
+.ts-header.ts-solid .ts-brand, body.ts-menu-open .ts-header .ts-brand { color: hsl(var(--foreground)); }
+.ts-header.ts-solid .ts-nav, .ts-header.ts-solid .ts-ai-tab { color: hsl(var(--muted-foreground)); }
+.ts-header.ts-solid .ts-nav:hover, .ts-header.ts-solid .ts-ai-tab:hover { color: hsl(var(--accent)); }
+.ts-header.ts-solid .ts-menu-btn, body.ts-menu-open .ts-header .ts-menu-btn { color: hsl(var(--foreground)); }
+.ts-header .ts-nav.is-active, .ts-header .ts-ai-tab.is-active { color: hsl(var(--accent)); }
+
+/* The AI tab: same type as the other tabs, with the orb in front. */
+.ts-ai-tab { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.ts-ai-tab img { width: 24px; height: 24px; border-radius: 50%; display: block; flex: 0 0 auto; }
+.ts-ai-mini { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 50%; }
+.ts-ai-mini img { width: 34px; height: 34px; border-radius: 50%; display: block; }
+.ts-menu-btn { display: inline-flex; }
+.ts-menu-btn .ts-i-close { display: none; }
+body.ts-menu-open .ts-menu-btn .ts-i-open { display: none; }
+body.ts-menu-open .ts-menu-btn .ts-i-close { display: block; }
+
+/* Phone menu */
+.ts-menu {
+  position: fixed; inset: 0; z-index: 40; padding-top: 5rem;
+  background: hsl(var(--card) / .98);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  opacity: 0; transform: translateY(-20px); pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+body.ts-menu-open { overflow: hidden; }
+body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; }
+.ts-menu .ts-ai-tab { color: hsl(var(--accent)); }
+@media (min-width: 768px) { .ts-menu { display: none; } }
+
+/* Hero: link to the AI tab under the two buttons. */
+.ts-hero-ai {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 22px;
+  color: hsl(var(--primary-foreground) / .85); font-weight: 600; font-size: 1rem;
+  text-decoration: none; transition: color .2s ease;
+}
+.ts-hero-ai img { width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto; }
+.ts-hero-ai span { border-bottom: 1px solid hsl(var(--accent) / .6); padding-bottom: 1px; }
+.ts-hero-ai:hover { color: hsl(var(--primary-foreground)); }
+
+/* The live inner pages ask for this class, but it never made it into their
+   stylesheet, so their white page titles sat on a white background. */
+.bg-hero-gradient { background: var(--gradient-hero); }
+
+/* Alignment fixes */
+@media (min-width: 640px) { .ts-indent { padding-left: 72px; } }
+@media (min-width: 1024px) {
+  .ts-contact { column-gap: 4rem; }
+  .ts-contact-side { padding-top: 36px; }
+  .ts-why-h { padding-right: 1rem; }
+}
+
+/* Motion, matching the live site's entrance animations. */
+.js [data-r] { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.js [data-r="l"] { transform: translateX(-40px); }
+.js [data-r="r"] { transform: translateX(40px); }
+.js [data-r="s"] { transform: scale(.9); }
+.js [data-r].in { opacity: 1; transform: none; }
+.ts-bob { animation: ts-bob 4s ease-in-out infinite; }
+.ts-bob + .ts-bob, .absolute.bottom-8.ts-bob { animation-delay: -2s; }
+@keyframes ts-bob { 0%, 100% { transform: translateY(-10px); } 50% { transform: translateY(10px); } }
+.ts-scrollcue { text-decoration: none; }
+.ts-scrolldot { animation: ts-dot 1.5s ease-in-out infinite; }
+@keyframes ts-dot { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js [data-r] { opacity: 1; transform: none; transition: none; }
+  .ts-bob, .ts-scrolldot, .animate-spin, .animate-float { animation: none; }
+}
+
+/* Consultation form */
+.ts-select { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .75rem center; }
+.ts-select:invalid { color: hsl(var(--muted-foreground)); }
+.ts-check { accent-color: hsl(var(--primary)); margin-top: 1px; cursor: pointer; }
+.ts-form-note { font-size: .875rem; text-align: center; color: hsl(var(--muted-foreground)); min-height: 1.25rem; }
+.ts-form-note.is-error { color: hsl(var(--destructive)); }
+.ts-invalid { border-color: hsl(var(--destructive)) !important; }
