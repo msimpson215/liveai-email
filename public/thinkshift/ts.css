@@ -46,12 +46,13 @@ body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; 
 
 /* Logo: white lettering over the dark hero and footer, navy once the header turns white. */
 .ts-logo-link { display: inline-flex; align-items: center; }
-.ts-logo { display: block; height: 44px; width: auto; }
+.ts-logo { display: block; height: 54px; width: auto; }
 .ts-header .ts-logo-on-light { display: none; }
 .ts-header.ts-solid .ts-logo-on-dark, body.ts-menu-open .ts-header .ts-logo-on-dark { display: none; }
 .ts-header.ts-solid .ts-logo-on-light, body.ts-menu-open .ts-header .ts-logo-on-light { display: block; }
-footer .ts-logo { height: 40px; }
-@media (max-width: 400px) { .ts-header .ts-logo { height: 36px; } }
+footer .ts-logo { height: 48px; }
+@media (max-width: 767px) { .ts-header .ts-logo { height: 44px; } }
+@media (max-width: 400px) { .ts-header .ts-logo { height: 38px; } }
 
 /* Hero: the AI button sits in the row with the other two, same size and style. */
 div:has(> .ts-hero-ai) { flex-wrap: wrap; }
