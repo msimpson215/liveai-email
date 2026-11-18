@@ -152,3 +152,65 @@ footer .ts-logo { height: 46px; }
 @keyframes ts-floaty { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 @media (prefers-reduced-motion: reduce) { .ts-float { animation: none; } }
 
+/* Consultation page only. */
+body.ts-consult .ts-header,
+body.ts-consult .ts-header.ts-solid,
+body.ts-consult.ts-menu-open .ts-header {
+  background: hsl(var(--primary));
+  border-bottom-color: hsl(var(--primary-foreground) / .12);
+}
+body.ts-consult .ts-header .ts-nav,
+body.ts-consult .ts-header .ts-ai-tab,
+body.ts-consult .ts-header .ts-menu-btn {
+  color: hsl(var(--primary-foreground) / .92);
+  font-size: 16px;
+}
+body.ts-consult .ts-header .ts-nav:hover,
+body.ts-consult .ts-header .ts-ai-tab:hover,
+body.ts-consult .ts-header .ts-nav.is-active,
+body.ts-consult .ts-header .ts-ai-tab.is-active { color: #fff; }
+body.ts-consult .ts-header.ts-solid .ts-nav,
+body.ts-consult .ts-header.ts-solid .ts-ai-tab { color: hsl(var(--primary-foreground) / .92); }
+.ts-wordmark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.ts-mark-frame { width: 38px; height: 38px; position: relative; flex: 0 0 auto; }
+.ts-mark-frame::before {
+  content: "";
+  position: absolute;
+  inset: 6px 8px 0 0;
+  border: 3px solid #fff;
+  border-radius: 5px;
+}
+.ts-mark-frame::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 14px; height: 14px;
+  background: hsl(185, 70%, 42%);
+  border-radius: 3px;
+}
+.ts-wordmark-text { display: flex; flex-direction: column; line-height: 1.05; }
+.ts-wordmark-name { font-weight: 700; font-size: 22px; color: #fff; letter-spacing: -0.02em; }
+.ts-wordmark-name span { color: hsl(185, 70%, 52%); }
+.ts-wordmark-sub {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.ts-consult-h1 { font-size: 36px; line-height: 1.15; }
+.ts-consult-intro { font-size: 16px; line-height: 1.6; }
+.ts-consult-formsec { padding-top: 32px; padding-bottom: 80px; }
+.ts-consult-label { font-size: 16px; }
+.ts-consult-field { font-size: 16px; }
+body.ts-consult form input.ts-consult-field,
+body.ts-consult form select.ts-consult-field,
+body.ts-consult form textarea.ts-consult-field,
+body.ts-consult form input[type="email"],
+body.ts-consult form input[type="tel"],
+body.ts-consult form input[name] { font-size: 16px; }
+@media (max-width: 767px) {
+  body.ts-consult form .grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) { .ts-consult-h1 { font-size: 30px; } }
+
