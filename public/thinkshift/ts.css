@@ -214,3 +214,23 @@ body.ts-consult form input[name] { font-size: 16px; }
 }
 @media (max-width: 640px) { .ts-consult-h1 { font-size: 30px; } }
 
+
+/* Homepage only. */
+.ts-home .ts-hero { min-height: 0; align-items: flex-start; padding-top: 136px; padding-bottom: 120px; }
+@media (min-width: 1024px) { .ts-home .ts-hero { min-height: 680px; } }
+.ts-hero-one { grid-template-columns: max-content; }
+.ts-menu-labeled { gap: 8px; align-items: center; font-weight: 600; font-size: 16px; padding: 8px 4px 8px 8px; }
+.ts-menu-labeled svg { width: 22px; height: 22px; }
+@media (max-width: 767px) {
+  .ts-home .ts-header .ts-logo { height: 56px; }
+  .ts-home .ts-hero { padding-top: 104px; padding-bottom: 64px; }
+  .ts-home .ts-hero-one { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 360px) { .ts-home .ts-header .ts-logo { height: 52px; } }
+@media (max-width: 1023px) {
+  .js .ts-home [data-r="r"]:not(.in), .js .ts-home [data-r="l"]:not(.in) { transform: translateY(20px); }
+}
+.ts-home #contact > section { overflow-x: clip; }
+
+.ts-hero-cta svg { flex-shrink: 0; }
+
