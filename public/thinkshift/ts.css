@@ -2,10 +2,20 @@
 html { scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { -webkit-font-smoothing: antialiased; }
 
-/* Header: clear over the dark hero, solid white once you scroll or on light pages. */
-.ts-header { background: transparent; border-bottom: 1px solid transparent; }
+/* Header sits in the page so a full-page capture cannot paint it over the slogan. */
+.ts-header {
+  position: sticky;
+  top: 0;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+}
 .ts-header .ts-brand { color: hsl(var(--primary-foreground)); }
-.ts-header .ts-nav, .ts-header .ts-ai-tab { color: hsl(var(--primary-foreground) / .8); }
+.ts-header .ts-nav, .ts-header .ts-ai-tab {
+  color: hsl(var(--primary-foreground) / .8);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ts-header nav[aria-label="Main"] { gap: 1.5rem; }
 .ts-header .ts-nav:hover, .ts-header .ts-ai-tab:hover { color: hsl(var(--primary-foreground)); }
 .ts-header .ts-menu-btn { color: hsl(var(--primary-foreground)); }
 .ts-header.ts-solid, body.ts-menu-open .ts-header {
@@ -46,12 +56,12 @@ body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; 
 
 /* Logo: white lettering over the dark hero and footer, navy once the header turns white. */
 .ts-logo-link { display: inline-flex; align-items: center; }
-.ts-logo { display: block; height: 40px; width: auto; }
+.ts-logo { display: block; height: 50px; width: auto; }
 .ts-header .ts-logo-on-light { display: none; }
 .ts-header.ts-solid .ts-logo-on-dark, body.ts-menu-open .ts-header .ts-logo-on-dark { display: none; }
 .ts-header.ts-solid .ts-logo-on-light, body.ts-menu-open .ts-header .ts-logo-on-light { display: block; }
-footer .ts-logo { height: 40px; }
-@media (max-width: 767px) { .ts-header .ts-logo { height: 36px; } }
+footer .ts-logo { height: 46px; }
+@media (max-width: 767px) { .ts-header .ts-logo { height: 42px; } }
 
 /* Hero: the AI button sits in the row with the other two, same size and style. */
 .ts-hero-cta { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem; }
@@ -102,28 +112,43 @@ footer .ts-logo { height: 40px; }
 .ts-form-note.is-error { color: hsl(var(--destructive)); }
 .ts-invalid { border-color: hsl(var(--destructive)) !important; }
 
-/* Hero: his page vertically centers a short stack. Ours is taller (slogan + AI button),
-   so that same centering shoved the slogan up through the logo. Pin it below the header. */
+/* Header is in the flow, so the hero only needs air under it — not a fake 80px spacer. */
 .ts-hero {
-  padding-top: 112px;
-  padding-bottom: 64px;
+  min-height: calc(100vh - 5rem);
+  padding-top: 40px;
+  padding-bottom: 56px;
   box-sizing: border-box;
+  align-items: safe center;
 }
-@media (max-width: 640px) { .ts-hero { padding-top: 104px; padding-bottom: 48px; } }
+@media (max-width: 640px) { .ts-hero { padding-top: 28px; padding-bottom: 40px; } }
 
-/* Slogan is a whisper, like his, not a second headline. Two-tone, no pill. */
+/* Inner pages used extra top padding to clear a fixed header. Sticky header is already in flow. */
+main > section.pt-32 { padding-top: 4.5rem; }
+
+/* Type scale: logo 50 / nav 14 / slogan 26 / headline 56. */
 .ts-tagline {
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1.4;
-  margin: 0 0 20px;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.3;
+  margin: 0 0 18px;
+  letter-spacing: normal;
   text-transform: none;
 }
 .ts-tag-a { color: #fff; }
 .ts-tag-b { color: hsl(var(--highlight)); }
 .ts-tag-a, .ts-tag-b { white-space: nowrap; }
-@media (max-width: 640px) { .ts-tagline { font-size: 15px; } }
+.ts-hero h1 {
+  font-size: 2.5rem;
+  line-height: 1.12;
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 768px) { .ts-hero h1 { font-size: 2.75rem; } }
+@media (min-width: 1024px) { .ts-hero h1 { font-size: 3.25rem; } }
+@media (min-width: 1280px) { .ts-hero h1 { font-size: 3.5rem; } }
+@media (max-width: 640px) {
+  .ts-tagline { font-size: 20px; margin-bottom: 14px; }
+  .ts-hero h1 { font-size: 2rem; }
+}
 
 /* Hero squares: float without losing their tilt. */
 .ts-float { animation: ts-floaty 6s ease-in-out infinite; }
