@@ -46,13 +46,12 @@ body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; 
 
 /* Logo: white lettering over the dark hero and footer, navy once the header turns white. */
 .ts-logo-link { display: inline-flex; align-items: center; }
-.ts-logo { display: block; height: 54px; width: auto; }
+.ts-logo { display: block; height: 40px; width: auto; }
 .ts-header .ts-logo-on-light { display: none; }
 .ts-header.ts-solid .ts-logo-on-dark, body.ts-menu-open .ts-header .ts-logo-on-dark { display: none; }
 .ts-header.ts-solid .ts-logo-on-light, body.ts-menu-open .ts-header .ts-logo-on-light { display: block; }
-footer .ts-logo { height: 48px; }
-@media (max-width: 767px) { .ts-header .ts-logo { height: 44px; } }
-@media (max-width: 400px) { .ts-header .ts-logo { height: 38px; } }
+footer .ts-logo { height: 40px; }
+@media (max-width: 767px) { .ts-header .ts-logo { height: 36px; } }
 
 /* Hero: the AI button sits in the row with the other two, same size and style. */
 .ts-hero-cta { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem; }
@@ -106,11 +105,11 @@ footer .ts-logo { height: 48px; }
 /* Hero: his page vertically centers a short stack. Ours is taller (slogan + AI button),
    so that same centering shoved the slogan up through the logo. Pin it below the header. */
 .ts-hero {
-  padding-top: 152px;
-  padding-bottom: 72px;
+  padding-top: 112px;
+  padding-bottom: 64px;
   box-sizing: border-box;
 }
-@media (max-width: 640px) { .ts-hero { padding-top: 120px; padding-bottom: 48px; } }
+@media (max-width: 640px) { .ts-hero { padding-top: 104px; padding-bottom: 48px; } }
 
 /* Slogan is a whisper, like his, not a second headline. Two-tone, no pill. */
 .ts-tagline {
