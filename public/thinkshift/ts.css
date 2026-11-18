@@ -2,34 +2,21 @@
 html { scroll-behavior: smooth; scroll-padding-top: 88px; }
 body { -webkit-font-smoothing: antialiased; }
 
-/* Header stays over the navy hero so the white logo and 14px nav actually show. */
+/* One header on every page: navy, the white logo, 16px links. */
 .ts-header {
   position: fixed;
-  background: transparent;
-  border-bottom: 1px solid transparent;
+  background: hsl(var(--primary));
+  border-bottom: 1px solid hsl(var(--primary-foreground) / .12);
 }
-.ts-header .ts-brand { color: hsl(var(--primary-foreground)); }
-.ts-header .ts-nav, .ts-header .ts-ai-tab {
-  color: hsl(var(--primary-foreground) / .8);
-  font-size: 14px;
+.ts-header.ts-solid { box-shadow: 0 4px 12px -2px rgb(0 0 0 / .25); }
+.ts-header .ts-nav, .ts-header .ts-ai-tab, .ts-header .ts-menu-btn {
+  color: hsl(var(--primary-foreground) / .92);
+  font-size: 16px;
   font-weight: 500;
 }
-.ts-header nav[aria-label="Main"] { gap: 1.5rem; }
-.ts-header .ts-nav:hover, .ts-header .ts-ai-tab:hover { color: hsl(var(--primary-foreground)); }
-.ts-header .ts-menu-btn { color: hsl(var(--primary-foreground)); }
-.ts-header.ts-solid, body.ts-menu-open .ts-header {
-  background: hsl(var(--card) / .95);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);
-  border-bottom-color: hsl(var(--border));
-}
-.ts-header.ts-solid .ts-brand, body.ts-menu-open .ts-header .ts-brand { color: hsl(var(--foreground)); }
-.ts-header.ts-solid .ts-nav, .ts-header.ts-solid .ts-ai-tab { color: hsl(var(--foreground) / .72); }
-.ts-header.ts-solid .ts-nav:hover, .ts-header.ts-solid .ts-ai-tab:hover { color: hsl(var(--accent)); }
-.ts-header.ts-solid .ts-menu-btn, body.ts-menu-open .ts-header .ts-menu-btn { color: hsl(var(--foreground)); }
-.ts-header .ts-nav.is-active, .ts-header .ts-ai-tab.is-active { color: hsl(var(--accent)); }
-
+.ts-header nav[aria-label="Main"] { gap: 1.75rem; }
+.ts-header .ts-nav:hover, .ts-header .ts-ai-tab:hover { color: #fff; }
+.ts-header .ts-nav.is-active, .ts-header .ts-ai-tab.is-active { color: hsl(var(--highlight)); }
 /* The AI tab: same type as the other tabs, with the orb in front. */
 .ts-ai-tab { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .ts-ai-tab img { width: 24px; height: 24px; border-radius: 50%; display: block; flex: 0 0 auto; }
@@ -43,25 +30,21 @@ body.ts-menu-open .ts-menu-btn .ts-i-close { display: block; }
 /* Phone menu */
 .ts-menu {
   position: fixed; inset: 0; z-index: 40; padding-top: 5rem;
-  background: hsl(var(--card) / .98);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  background: hsl(var(--primary));
   opacity: 0; transform: translateY(-20px); pointer-events: none;
   transition: opacity .25s ease, transform .25s ease;
 }
 body.ts-menu-open { overflow: hidden; }
 body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; }
-.ts-menu .ts-ai-tab { color: hsl(var(--accent)); }
+.ts-menu nav a { color: #fff; }
+.ts-menu nav a:hover, .ts-menu .ts-ai-tab { color: hsl(var(--highlight)); }
 @media (min-width: 768px) { .ts-menu { display: none; } }
 
-/* Logo: white lettering over the dark hero and footer, navy once the header turns white. */
+/* Logo: large enough that "Technologies" reads. */
 .ts-logo-link { display: inline-flex; align-items: center; }
-.ts-logo { display: block; height: 50px; width: auto; }
-.ts-header .ts-logo-on-light { display: none; }
-.ts-header.ts-solid .ts-logo-on-dark, body.ts-menu-open .ts-header .ts-logo-on-dark { display: none; }
-.ts-header.ts-solid .ts-logo-on-light, body.ts-menu-open .ts-header .ts-logo-on-light { display: block; }
+.ts-logo { display: block; height: 56px; width: auto; }
 footer .ts-logo { height: 46px; }
-@media (max-width: 767px) { .ts-header .ts-logo { height: 42px; } }
-
+@media (max-width: 360px) { .ts-header .ts-logo { height: 52px; } }
 /* Hero: the AI button sits in the row with the other two, same size and style. */
 .ts-hero-cta { display: grid; grid-template-columns: repeat(2, max-content); gap: 1rem; }
 .ts-hero-cta .ts-hero-ai { grid-column: 1 / -1; }
@@ -122,12 +105,12 @@ footer .ts-logo { height: 46px; }
 }
 @media (max-width: 640px) { .ts-hero { padding-top: 108px; padding-bottom: 40px; } }
 
-/* Type scale: logo 50 / nav 14 / slogan 26 / headline 56. */
+/* The headline leads; the tagline sits above it at 16px. */
 .ts-tagline {
-  font-weight: 700;
-  font-size: 26px;
-  line-height: 1.3;
-  margin: 0 0 18px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0 0 14px;
   letter-spacing: normal;
   text-transform: none;
 }
@@ -143,7 +126,6 @@ footer .ts-logo { height: 46px; }
 @media (min-width: 1024px) { .ts-hero h1 { font-size: 3.25rem; } }
 @media (min-width: 1280px) { .ts-hero h1 { font-size: 3.5rem; } }
 @media (max-width: 640px) {
-  .ts-tagline { font-size: 20px; margin-bottom: 14px; }
   .ts-hero h1 { font-size: 2rem; }
 }
 
@@ -153,51 +135,6 @@ footer .ts-logo { height: 46px; }
 @media (prefers-reduced-motion: reduce) { .ts-float { animation: none; } }
 
 /* Consultation page only. */
-body.ts-consult .ts-header,
-body.ts-consult .ts-header.ts-solid,
-body.ts-consult.ts-menu-open .ts-header {
-  background: hsl(var(--primary));
-  border-bottom-color: hsl(var(--primary-foreground) / .12);
-}
-body.ts-consult .ts-header .ts-nav,
-body.ts-consult .ts-header .ts-ai-tab,
-body.ts-consult .ts-header .ts-menu-btn {
-  color: hsl(var(--primary-foreground) / .92);
-  font-size: 16px;
-}
-body.ts-consult .ts-header .ts-nav:hover,
-body.ts-consult .ts-header .ts-ai-tab:hover,
-body.ts-consult .ts-header .ts-nav.is-active,
-body.ts-consult .ts-header .ts-ai-tab.is-active { color: #fff; }
-body.ts-consult .ts-header.ts-solid .ts-nav,
-body.ts-consult .ts-header.ts-solid .ts-ai-tab { color: hsl(var(--primary-foreground) / .92); }
-.ts-wordmark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
-.ts-mark-frame { width: 38px; height: 38px; position: relative; flex: 0 0 auto; }
-.ts-mark-frame::before {
-  content: "";
-  position: absolute;
-  inset: 6px 8px 0 0;
-  border: 3px solid #fff;
-  border-radius: 5px;
-}
-.ts-mark-frame::after {
-  content: "";
-  position: absolute;
-  top: 0; right: 0;
-  width: 14px; height: 14px;
-  background: hsl(185, 70%, 42%);
-  border-radius: 3px;
-}
-.ts-wordmark-text { display: flex; flex-direction: column; line-height: 1.05; }
-.ts-wordmark-name { font-weight: 700; font-size: 22px; color: #fff; letter-spacing: -0.02em; }
-.ts-wordmark-name span { color: hsl(185, 70%, 52%); }
-.ts-wordmark-sub {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
 .ts-consult-h1 { font-size: 36px; line-height: 1.15; }
 .ts-consult-intro { font-size: 16px; line-height: 1.6; }
 .ts-consult-formsec { padding-top: 32px; padding-bottom: 80px; }
@@ -218,19 +155,26 @@ body.ts-consult form input[name] { font-size: 16px; }
 /* Homepage only. */
 .ts-home .ts-hero { min-height: 0; align-items: flex-start; padding-top: 136px; padding-bottom: 120px; }
 @media (min-width: 1024px) { .ts-home .ts-hero { min-height: 680px; } }
-.ts-hero-one { grid-template-columns: max-content; }
-.ts-menu-labeled { gap: 8px; align-items: center; font-weight: 600; font-size: 16px; padding: 8px 4px 8px 8px; }
+.ts-hero-stack { grid-template-columns: max-content; gap: .75rem; }
+.ts-hero-second {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 48px; padding: 0 24px; border-radius: .75rem;
+  border: 1px solid hsl(var(--primary-foreground) / .28);
+  color: hsl(var(--primary-foreground) / .88);
+  font-size: 16px; font-weight: 500; white-space: nowrap;
+  transition: background-color .2s, border-color .2s, color .2s;
+}
+.ts-hero-second:hover { background: rgb(255 255 255 / .08); border-color: rgb(255 255 255 / .5); color: #fff; }
+.ts-hero-second img { width: 24px; height: 24px; border-radius: 50%; flex: 0 0 auto; }
+.ts-header .ts-menu-labeled { gap: 8px; align-items: center; font-weight: 600; font-size: 16px; padding: 8px 4px 8px 8px; }
 .ts-menu-labeled svg { width: 22px; height: 22px; }
 @media (max-width: 767px) {
-  .ts-home .ts-header .ts-logo { height: 56px; }
   .ts-home .ts-hero { padding-top: 104px; padding-bottom: 64px; }
-  .ts-home .ts-hero-one { grid-template-columns: minmax(0, 1fr); }
+  .ts-home .ts-hero-stack { grid-template-columns: minmax(0, 1fr); }
 }
-@media (max-width: 360px) { .ts-home .ts-header .ts-logo { height: 52px; } }
 @media (max-width: 1023px) {
   .js .ts-home [data-r="r"]:not(.in), .js .ts-home [data-r="l"]:not(.in) { transform: translateY(20px); }
 }
 .ts-home #contact > section { overflow-x: clip; }
 
 .ts-hero-cta svg { flex-shrink: 0; }
-
