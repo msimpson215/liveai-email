@@ -38,7 +38,12 @@ body.ts-menu-open { overflow: hidden; }
 body.ts-menu-open .ts-menu { opacity: 1; transform: none; pointer-events: auto; }
 .ts-menu nav a { color: #fff; }
 .ts-menu nav a:hover, .ts-menu .ts-ai-tab { color: hsl(var(--highlight)); }
-@media (min-width: 768px) { .ts-menu { display: none; } }
+.ts-desk-nav { display: none; }
+.ts-mob-ctrl { display: flex; }
+@media (min-width: 1024px) {
+  .ts-desk-nav { display: flex; }
+  .ts-mob-ctrl, .ts-menu { display: none; }
+}
 
 /* Logo: large enough that "Technologies" reads. */
 .ts-logo-link { display: inline-flex; align-items: center; }
