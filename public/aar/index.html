@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Auto Auction Rebuild AI Team Member. Marty Simpson is building this for Randy Shear.">
-<title>Auto Auction Rebuild AI Team Member</title>
+<meta name="description" content="Axon AI — a talking team member for a website that already exists.">
+<title>Axon AI</title>
 <link rel="icon" href="/icons/axon-blue-192.png">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -17,6 +17,9 @@
     -webkit-font-smoothing:antialiased;
   }
   .mark img{display:inline-block;height:clamp(30px,4.6vw,46px);width:auto;vertical-align:top}
+  .mark .aar-name{display:none}
+  body.started .mark img,body.started .mark sup{display:none}
+  body.started .mark .aar-name{display:block;font-size:clamp(16px,2.6vw,28px);letter-spacing:0;line-height:1.2;padding:0 20px}
   .mark sup{display:inline-block;vertical-align:top;margin-left:3px;font-size:clamp(11px,1.2vw,14px);font-weight:700;letter-spacing:0;line-height:1;color:#0f1b33}
   .mark{
     position:fixed;top:max(30px,env(safe-area-inset-top));left:0;right:0;
@@ -219,17 +222,17 @@
     <button type="button" id="hello">Say hello</button>
     <small>Sound on. Interrupt anytime.</small>
   </div>
-  <div class="mark"><img src="/art/axon-wordmark.png" alt="Axon AI" width="374" height="79"><sup>&trade;</sup></div>
+  <div class="mark"><img src="/art/axon-wordmark.png" alt="Axon AI" width="374" height="79"><sup>&trade;</sup><span class="aar-name">Auto Auction Rebuilds AI Team Member</span></div>
 
   <div class="stage">
-    <button type="button" id="orb" aria-label="Tap the orb to talk with the Auto Auction Rebuild AI Team Member"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
+    <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
     <div class="under">
       <p class="hint" id="hint"></p>
       <button type="button" class="pause" id="pauseBtn">Pause</button>
     </div>
   </div>
 
-  <aside class="text" id="textPane" aria-label="Text with the Auto Auction Rebuild AI Team Member">
+  <aside class="text" id="textPane" aria-label="Text with Axon AI">
     <div class="log" id="log"></div>
     <form class="compose" id="textForm">
       <input id="q" type="text" autocomplete="off" placeholder="Type instead" enterkeyhint="send" aria-label="Type a question">
@@ -288,6 +291,7 @@ let pc=null,dc=null,localStream=null,audioEl=null;
 let starting=false,ready=false,closing=false,audioBlocked=false,textOffered=false;
 let curAI=null,curYou=null,aiQuiet=0,youQuiet=0;
 let history=[],docsText='',greet=null;
+let who='Axon';
 
 function setState(s,msg){
   document.body.dataset.state=s||'idle';
@@ -336,7 +340,7 @@ function line(role,text){
   const d=document.createElement('div');
   d.className=role;
   d._raw=text;
-  d.textContent=(role==='you'?'You: ':'Team member: ')+text;
+  d.textContent=(role==='you'?'You: ':who+': ')+text;
   logEl.appendChild(d);
   logEl.scrollTop=logEl.scrollHeight;
   return d;
@@ -422,7 +426,7 @@ function onEvent(m){
     endYou();
     if(!curAI)curAI=line('ai','');
     curAI._raw+=m.delta;
-    curAI.textContent='Team member: '+curAI._raw;
+    curAI.textContent=who+': '+curAI._raw;
     cue(curAI._raw);
     logEl.scrollTop=logEl.scrollHeight;
     setState('speaking');
@@ -599,7 +603,7 @@ async function sendText(text){
     const d=await r.json().catch(function(){return{}});
     const reply=d.reply||d.error||'No answer just now. Try again.';
     wait._raw=reply;
-    wait.textContent='Team member: '+reply;
+    wait.textContent=who+': '+reply;
     logEl.scrollTop=logEl.scrollHeight;
     if(d.reply){
       remember('assistant',d.reply);
@@ -607,7 +611,7 @@ async function sendText(text){
         content:('The visitor typed: "'+text+'". It was answered in the text box: "'+d.reply+'". Do not read it aloud. If they talk about it, you already know.').slice(0,1800)});
     }
   }catch(e){
-    wait.textContent='Team member: No answer just now. Try again.';
+    wait.textContent=who+': No answer just now. Try again.';
   }
   typing=false;
 }
@@ -663,6 +667,10 @@ document.getElementById('textForm').addEventListener('submit',function(e){
 });
 window.addEventListener('pagehide',function(){if(pc){send({type:'session.close'});teardown()}});
 document.getElementById('hello').addEventListener('click',function(){
+  who='Auto Auction Rebuilds';
+  document.title='Auto Auction Rebuilds AI Team Member';
+  orb.setAttribute('aria-label','Tap the orb to talk with the Auto Auction Rebuilds AI Team Member');
+  document.getElementById('textPane').setAttribute('aria-label','Text with the Auto Auction Rebuilds AI Team Member');
   document.body.classList.add('started');
   ensureAudio().play().catch(function(){});
   try{lvlCtx=lvlCtx||new (window.AudioContext||window.webkitAudioContext)();lvlCtx.resume();}catch(e){}
