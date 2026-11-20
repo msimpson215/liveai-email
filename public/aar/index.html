@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Axon AI — a talking team member for a website that already exists.">
-<title>Axon for Randy</title>
+<meta name="description" content="Auto Auction Rebuild AI Team Member. Marty Simpson is building this for Randy Shear.">
+<title>Auto Auction Rebuild AI Team Member</title>
 <link rel="icon" href="/icons/axon-blue-192.png">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -222,14 +222,14 @@
   <div class="mark"><img src="/art/axon-wordmark.png" alt="Axon AI" width="374" height="79"><sup>&trade;</sup></div>
 
   <div class="stage">
-    <button type="button" id="orb" aria-label="Tap the orb to talk with Axon AI"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
+    <button type="button" id="orb" aria-label="Tap the orb to talk with the Auto Auction Rebuild AI Team Member"><span class="halo"></span><span class="ring"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></button>
     <div class="under">
       <p class="hint" id="hint"></p>
       <button type="button" class="pause" id="pauseBtn">Pause</button>
     </div>
   </div>
 
-  <aside class="text" id="textPane" aria-label="Text with Axon">
+  <aside class="text" id="textPane" aria-label="Text with the Auto Auction Rebuild AI Team Member">
     <div class="log" id="log"></div>
     <form class="compose" id="textForm">
       <input id="q" type="text" autocomplete="off" placeholder="Type instead" enterkeyhint="send" aria-label="Type a question">
@@ -241,7 +241,7 @@
     <h2>Upload files</h2>
     <div class="drop" id="drop">Drop a file here, or click to choose.<br>PDF, Word, or text.</div>
     <ul class="docs" id="docs"></ul>
-    <p class="note">Axon reads what you give it, then you can talk or type about it.</p>
+    <p class="note">The team member reads what you give it, then you can talk or type about it.</p>
   </aside>
 
   <aside class="why" id="whyPane" aria-label="GEO — conversations crawlers can read">
@@ -336,7 +336,7 @@ function line(role,text){
   const d=document.createElement('div');
   d.className=role;
   d._raw=text;
-  d.textContent=(role==='you'?'You: ':'Axon: ')+text;
+  d.textContent=(role==='you'?'You: ':'Team member: ')+text;
   logEl.appendChild(d);
   logEl.scrollTop=logEl.scrollHeight;
   return d;
@@ -422,7 +422,7 @@ function onEvent(m){
     endYou();
     if(!curAI)curAI=line('ai','');
     curAI._raw+=m.delta;
-    curAI.textContent='Axon: '+curAI._raw;
+    curAI.textContent='Team member: '+curAI._raw;
     cue(curAI._raw);
     logEl.scrollTop=logEl.scrollHeight;
     setState('speaking');
@@ -513,7 +513,7 @@ async function connectVoice(){
     audio.srcObject=stream;
     audio.play().then(function(){audioBlocked=false}).catch(function(){
       audioBlocked=true;
-      setState('idle','Tap the orb to hear Axon');
+      setState('idle','Tap the orb to talk');
     });
     startLevel(stream);
   };
@@ -574,7 +574,7 @@ async function toggle(){
     const wasPaused=document.body.classList.contains('paused');
     teardown();
     if(wasPaused)document.body.classList.add('paused');
-    setState('idle',e.status===429?'Busy right now. Tap the orb to try again.':'Tap the orb to talk with Axon');
+    setState('idle',e.status===429?'Busy right now. Tap the orb to try again.':'Tap the orb to talk');
   }
   starting=false;
 }
@@ -599,7 +599,7 @@ async function sendText(text){
     const d=await r.json().catch(function(){return{}});
     const reply=d.reply||d.error||'No answer just now. Try again.';
     wait._raw=reply;
-    wait.textContent='Axon: '+reply;
+    wait.textContent='Team member: '+reply;
     logEl.scrollTop=logEl.scrollHeight;
     if(d.reply){
       remember('assistant',d.reply);
@@ -607,7 +607,7 @@ async function sendText(text){
         content:('The visitor typed: "'+text+'". It was answered in the text box: "'+d.reply+'". Do not read it aloud. If they talk about it, you already know.').slice(0,1800)});
     }
   }catch(e){
-    wait.textContent='Axon: No answer just now. Try again.';
+    wait.textContent='Team member: No answer just now. Try again.';
   }
   typing=false;
 }
