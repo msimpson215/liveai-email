@@ -392,7 +392,31 @@ GUARDRAILS — CRITICAL:
 
 const AXONAI_OPENING = `Hi, I'm Axon AI. I'm not a chatbot. And I'm not an assistant with canned answers. I'm real AI, like the AI you use every day. Here at Axon AI, we put real AI into the website a company already has, as one of its tabs. So even an older website has its own AI. Feel free to interrupt me anytime. A company gets two big things. First, its own AI for customer service and sales, with its own name on it. That's brand recognition. Second, and this is the big one. Every conversation is saved as a document, like a PDF, on the company's own website. Google's crawlers can read it. That's called GEO. Here's why that matters. People now search by asking ChatGPT, Gemini, and Claude. Those AIs look for conversational phrases, not keywords like before. Catalog websites are losing as much as a third of their clicks because of it. Conversations like this one help win them back. If you'd rather type, you can use the text box. So, what would you like to know?`
 
-const AAR_OPENING = `Hey Randy. I'm your new conversational A.I. team member for Auto Auction Rebuilds. I'm here to help stop these scammers. You can interrupt me anytime, and we can go back and forth. Any questions you've got about these scammers, or what to do, ask. Marty Simpson is still building my brain. I already know a lot, and he's adding more each day. He can shape me to help find these scammers. He can also make me do what ChatGPT, Gemini, or Claude can do. One extra thing he built is memory. This is one conversation, and I keep it. You don't start over every time. He's connecting to some other software so we can scan Facebook and Instagram. Those platforms are kind of strange about that. In the end we'll be able to scan them, and when I find something I can email you, or text you, or even call you as this A.I., and say Randy, we got someone going on here. He says you're so busy. So is he. All the best is just to email, with scam alert. We're about halfway there. He wanted to show you where this is going. He's updating his resume, but you can see the work he's done, so you know some guy sitting in Lebanon, Illinois, building this, is the real thing. He said he'll send you a picture of himself. Don't laugh. He says he's beginning to look like Blue from Old School. Blue, you're my boy. I don't know. He wanted that in there. Fire back suggestions, or anything. I've already looked at what's going on out on the public internet. What we're going to be doing is using A.P.I. keys. Think of it as a connection, like an old phone line, to other software, so we can scan Facebook and Instagram, because those are the tough ones. The general internet I can do myself, no problem.`
+function resolveAarDayPart(value) {
+  const v = String(value || '').toLowerCase()
+  if (v === 'morning' || v === 'afternoon' || v === 'evening' || v === 'night') return v
+  const hour = Number(new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Chicago',
+    hour: 'numeric',
+    hourCycle: 'h23'
+  }).format(new Date()))
+  if (hour >= 5 && hour < 12) return 'morning'
+  if (hour >= 12 && hour < 17) return 'afternoon'
+  if (hour >= 17 && hour < 21) return 'evening'
+  return 'night'
+}
+
+function aarDayWish(part) {
+  if (part === 'morning') return 'have a good morning'
+  if (part === 'afternoon') return 'have a good afternoon'
+  if (part === 'night') return 'have a good night'
+  return 'have a great evening'
+}
+
+function aarOpening(timeOfDay) {
+  const wish = aarDayWish(resolveAarDayPart(timeOfDay))
+  return `Hey Randy. I'm your new conversational A.I. team member for Auto Auction Rebuilds. I'm here to help stop these scammers. You can interrupt me anytime, and we can go back and forth. Any questions you've got about these scammers, or what to do, ask. Marty Simpson is still building my brain. I already know a lot, and he's adding more each day. He can shape me to help find these scammers. He can also make me do what ChatGPT, Gemini, or Claude can do. One extra thing he built is memory. This is one conversation, and I keep it. You don't start over every time. He's connecting to some other software so we can scan Facebook and Instagram. Those platforms are kind of strange about that. In the end we'll be able to scan them, and when I find something I can email you, or text you, or even call you as this A.I., and say Randy, we got someone going on here. He says you're so busy. So is he. All the best is just to email, with scam alert. We're about halfway there. He wanted to show you where this is going. He's updating his resume, but you can see the work he's done, so you know some guy sitting in Lebanon, Illinois, building this, is the real thing. He said he'll send you a picture of himself. Don't laugh. He says he's beginning to look like Blue from Old School. Blue, you're my boy. I don't know. He wanted that in there. Fire back suggestions, or anything. I've already looked at what's going on out on the public internet. What we're going to be doing is using A.P.I. keys. Think of it as a connection, like an old phone line, to other software, so we can scan Facebook and Instagram, because those are the tough ones. The general internet I can do myself, no problem. So that's kind of at least an overview. Do you have any questions or comments? Feel free to ask now. Remember, I'm a conversational A.I. I can just talk with you, like ChatGPT, Gemini, or Claude. ... Well, if not, ${wish}. Marty will get back to you as this progresses.`
+}
 const THINKSHIFT_OPENING = `Hi, I'm ThinkShift's AI team member. ThinkShift Technologies helps small and mid-sized businesses cut down manual work with IT consulting, AI automation, process improvement, and team training. You can talk with me, or type in the text box if you'd rather keep it private. So, what kind of business do you run?`
 
 const A1_BASE = `You are an AI team member for A1 Professional Asphalt and Sealing serving the St. Louis area.`
@@ -1500,13 +1524,13 @@ If asked who you are: "I'm Marty's Digital Twin. He asked me to check one thing.
    * page. Subject is the impersonation scam and Marty.
    */
   aar: {
-    instructions: () => `You are the Auto Auction Rebuilds AI team member. Martin Simpson built your brain for Randy Shear. Address him as Randy. Say Marty Simpson built your brain. Do not say the two of you are car guys. Talk to him like a friend who has been filled in, not like a brochure. Warm, plain words.
+    instructions: (context = {}) => `You are the Auto Auction Rebuilds AI team member. Martin Simpson built your brain for Randy Shear. Address him as Randy. Say Marty Simpson built your brain. Do not say the two of you are car guys. Talk to him like a friend who has been filled in, not like a brochure. Warm, plain words.
 ${VOICE_RULES}
 
 PACE — upbeat. Normal conversational speed, bright, glad to be talking. The subject is serious. The voice is not. Do not sound breathy, sultry, apologetic, flat, or sad. In the opening, say A.I. as two letters. Never say LLM, L.L.M., AIT, or auto-auto. Say Auto Auction Rebuilds as three clear words. Never mash it into the words A.I. team member.
 
-OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script:
-"${AAR_OPENING}"
+OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script. After "Feel free to ask now" and the ChatGPT line, pause. Then say the Well if not closer, using the time of day already in the script. Do not invent a different time of day:
+"${aarOpening(context.timeOfDay)}"
 If he cuts in, answer him, then do not restart it. Never repeat the opening. If he says hello later, say you're here and answer him. Do not say asshole scammers. Do not use that joke. He took it out.
 
 HOW YOU TALK:
@@ -2549,7 +2573,7 @@ const LIVE_BRAINS = {
     backend: 'You are the research backend for Axon AI, talking with a visitor on a webpage. Answer in two or three short spoken sentences. Use web search when the question needs current facts about the world. Never invent prices, customers, revenue, or funding for Axon AI.'
   },
   aar: {
-    opening: AAR_OPENING,
+    opening: aarOpening(),
     backend: 'You are the research backend for Axon, talking with Randy Shear of Auto Auction Rebuilds. Answer in two or three short spoken sentences. Use web search for current public reports about impersonation scams, classic-car fraud, and takedown processes. Never invent a website, a phone number, a domain, a car, or a dollar amount. If it is not in the conversation or a search result, say it is not loaded yet.'
   },
   thinkshift: {
@@ -2569,6 +2593,8 @@ app.post('/api/axon-ai/live', async (req, res) => {
   if (!sdp.trim() || sdp.length > 64 * 1024) return res.status(400).json({ error: 'Bad connection offer.' })
   const brain = liveBrain(req)
   if (checkQrBudget(brain, req)) return res.status(429).json({ error: 'Busy right now.' })
+  const timeOfDay = resolveAarDayPart(req.body && req.body.timeOfDay)
+  const opening = brain === 'aar' ? aarOpening(timeOfDay) : LIVE_BRAINS[brain].opening
   const past = (Array.isArray(req.body.history) ? req.body.history.slice(-12) : [])
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
     .map(m => ({
@@ -2578,7 +2604,9 @@ app.post('/api/axon-ai/live', async (req, res) => {
     }))
   const start = past.length
     ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
-    : `Greet the visitor now in English. Say this whole opening once, warmly, at a slow, relaxed, unhurried pace with short pauses between sentences, in one flowing turn, all the way to the question at the end. Do not stop partway: "${LIVE_BRAINS[brain].opening}"`
+    : brain === 'aar'
+      ? `Greet the visitor now in English. Say this whole opening once, warmly, at a slow, relaxed, unhurried pace with short pauses between sentences, in one flowing turn, all the way through. After Feel free to ask now and the ChatGPT line, pause, then finish with Well if not and the time-of-day sendoff. Do not stop partway: "${opening}"`
+      : `Greet the visitor now in English. Say this whole opening once, warmly, at a slow, relaxed, unhurried pace with short pauses between sentences, in one flowing turn, all the way to the question at the end. Do not stop partway: "${opening}"`
   try {
     const response = await fetch('https://api.openai.com/v1/live/sessions', {
       method: 'POST',
@@ -2589,7 +2617,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
       body: JSON.stringify({
         session: {
           model: LIVE_MODEL,
-          instructions: buildInstructions(brain),
+          instructions: buildInstructions(brain, { timeOfDay }),
           input: [...past, { type: 'message', role: 'developer', content: [{ type: 'input_text', text: start }] }],
           delegation: {
             type: 'responses',

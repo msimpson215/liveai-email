@@ -517,7 +517,7 @@ async function connectVoice(){
   const r=await fetch('/api/axon-ai/live',{
     method:'POST',cache:'no-store',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({brain:'aar',sdp:conn.localDescription.sdp,history:history.slice(-12)})
+    body:JSON.stringify({brain:'aar',sdp:conn.localDescription.sdp,history:history.slice(-12),timeOfDay:(function(){const h=new Date().getHours();if(h>=5&&h<12)return'morning';if(h>=12&&h<17)return'afternoon';if(h>=17&&h<21)return'evening';return'night'})()})
   });
   if(!r.ok){const err=new Error('session');err.status=r.status;throw err}
   const data=await r.json();
