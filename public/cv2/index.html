@@ -279,7 +279,7 @@
   .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
   .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
   html.cv-view-pending #featured-projects { visibility: hidden; }
-  @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
     .feat-grid .ov-card { flex-direction: column; }
     .feat-grid .ov-card img,
@@ -339,6 +339,15 @@
     <p class="sec-kicker">Featured</p>
     <h2 class="home-h">Featured work</h2>
     <div class="feat-grid" id="featured-projects" data-cv-build="mayor-video-20261123" aria-busy="true"></div>
+    <a class="florida-feature" href="/cv2/development.html#florida" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:center;margin:26px auto 8px;max-width:1040px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;box-shadow:var(--shadow);">
+      <img src="/cv2/images/archive/florida-cape-san-blas-aerial.jpg" alt="Cape San Blas Gulf Coast property development" loading="lazy" style="width:100%;height:100%;min-height:190px;object-fit:cover;"/>
+      <span style="display:block;padding:22px 24px;">
+        <span class="work-tag">Florida Property Investment &amp; Development</span>
+        <strong style="display:block;font-size:clamp(20px,2.3vw,27px);color:var(--navy);margin:7px 0;">Cape San Blas &amp; Mexico Beach, Florida</strong>
+        <span style="display:block;color:var(--muted);line-height:1.6;">Acquired beachfront property, subdivided parcels, and developed and sold properties on Florida’s Gulf Coast. The work helped fund later investment in Maplewood.</span>
+        <span class="work-more" style="display:block;margin-top:10px;">Explore Florida developments →</span>
+      </span>
+    </a>
     <nav class="ov-jump" aria-label="On this page">
       <a href="#current">AI &amp; Technology</a>
       <a href="#career">Businesses &amp; Ventures Founded</a>
