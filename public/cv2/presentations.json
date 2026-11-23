@@ -14,15 +14,15 @@
     },
     {
       "id": "maplewood",
-      "title": "Historic Maplewood",
+      "title": "Historic Downtown Maplewood",
       "tag": "Community Development & Philanthropy",
-      "summary": "The Sutton Boulevard family district in Maplewood, Missouri, with support for children’s organizations.",
+      "summary": "Commercial property investment and redevelopment across historic downtown Maplewood, including Manchester Road and Sutton Boulevard, alongside community and philanthropic work.",
       "image": "/cv2/images/archive/maplewood-sutton-fountain.jpg",
       "alt": "Corner building and fountain on the Sutton Loop in Maplewood",
       "href": "/cv2/development.html#maplewood",
       "more": "View Maplewood →",
       "picker": true,
-      "ai": "Historic Maplewood redevelopment in the St. Louis area: a family entertainment district on Sutton Boulevard. Maya Cafe was the first restaurant from his company. The Focal Point was among the first in the district as an independent organization in buildings he developed; he did not own The Focal Point. He donated theater space for Pywacket Children’s Theater and support for Friends of Kids with Cancer. Portfolio sale about $3.4 million. KETC Channel 9 — Living in St. Louis — is the broadcast record. St. Louis Business Journal covered the plan in October 2003 as Pied Piper of Maplewood, with the editor’s Magic in Maplewood editorial. Do not mention McDonald’s, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK."
+      "ai": "Martin acquired and redeveloped substantial commercial properties in historic downtown Maplewood, Missouri, along Manchester Road and Sutton Boulevard. His work included Maya Cafe and the Focal Point building; Focal Point was an independent nonprofit, not a business he owned. His community support included Pywacket Children's Theater and Friends of Kids with Cancer. The portfolio sale is described in his source materials as about $3.4 million, while contemporary St. Louis Business Journal reporting documented nearly $4 million invested in property acquisitions. Those are different financial measures. KETC Channel 9 covered his work. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK."
     },
     {
       "id": "pre-de-icer",
@@ -181,19 +181,31 @@
   "presets": {
     "general": {
       "name": "General",
-      "featured": ["axon-ai", "dna"]
+      "featured": [
+        "axon-ai",
+        "dna"
+      ]
     },
     "mayor": {
       "name": "Mayor",
-      "featured": ["axon-ai", "maplewood"]
+      "featured": [
+        "axon-ai",
+        "maplewood"
+      ]
     },
     "randy": {
       "name": "Randy",
-      "featured": ["axon-ai", "pre-de-icer"]
+      "featured": [
+        "axon-ai",
+        "pre-de-icer"
+      ]
     },
     "haley": {
       "name": "Haley",
-      "featured": ["axon-ai", "dna"]
+      "featured": [
+        "axon-ai",
+        "dna"
+      ]
     }
   }
 }
