@@ -1,14 +1,14 @@
 {
-  "build": "mayor-cv-20261123c",
+  "build": "cv-20261123d",
   "projects": [
     {
       "id": "axon-ai",
       "title": "Axon AI",
       "tag": "AI & Technology",
-      "summary": "Real AI put into the website a company already has, and the applications built on it.",
+      "summary": "Martin created Axon AI, which puts real AI — trained on a company’s own documents, pricing, and rules — into the website the company already has, with nothing rebuilt. Visitors simply talk to it. He has built a family of applications on the platform, including this conversational curriculum vitae, Conversational Email, Patient Education by QR code, and Axon AI Point presentations.",
       "video": "/cv2/videos/axon-ai.mp4",
       "href": "/cv2/current.html",
-      "more": "View Axon AI →",
+      "more": "Explore Axon AI and its applications →",
       "picker": true,
       "ai": "Martin created Axon AI to put real AI, trained on a company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. This curriculum vitae is one of the applications. Live demonstrations include Axon AI for Websites, this Interactive Résumé, Conversational Email, Patient Education by QR, and Axon AI Point. In development: the Conversational Business Card, Axon AI Operator, and Axon Digital Twin."
     },
@@ -16,11 +16,11 @@
       "id": "maplewood",
       "title": "Historic Downtown Maplewood, Missouri",
       "tag": "Real Estate · Businesses · Venues · Community",
-      "summary": "Acquired and owned substantial commercial property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard. Founded Maya Cafe, developed The Focal Point music venue, and leased buildings for $1 a month to the Black Cat Theater and The Focal Point.",
+      "summary": "Acquired and owned substantial commercial property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard. Founded and owned Maya Cafe, developed The Focal Point music venue, and leased buildings for $1 a month to the Black Cat Theater, The Focal Point, and Pywacket Children’s Theater.",
       "href": "/cv2/development.html#maplewood",
       "more": "Explore Maplewood, the venues, and the properties →",
       "picker": true,
-      "ai": "Martin acquired and owned substantial commercial property throughout historic downtown Maplewood, Missouri, including Manchester Road and Sutton Boulevard — much more than a single Sutton Boulevard development. Maya Cafe was a restaurant he founded in Maplewood. He developed and built The Focal Point music venue and owned the building; he did not own the nonprofit organization, and he gave it a 20-year lease for $1 per month. He provided the Black Cat Theater a building valued at approximately $1 million, leased for $1 per month — leased, not donated. He also gave long-term space to Pywacket Children's Theater and Friends of Kids with Cancer. At St. Louis Children's Hospital he founded Happy Days on Saturday, a weekly Saturday meal program delivering about 70 to 80 meals to children in pediatric oncology, who chose what they wanted; it was his personal initiative, not a corporate sponsorship. He also founded the Children's Toy Chest for pediatric oncology patients, coordinated with Friends of Kids with Cancer. The St. Louis Business Journal documented nearly $4 million in property acquisitions. A later reported Maplewood property-portfolio sale was about $3.4 million. Those are different figures: acquisition spend versus a later property-portfolio sale. Do not say he sold Specialized Testing Services, Specialized Counseling, Medical Testing Solutions, or Axon AI. Do not mention Boogaloo's. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK. KETC Channel 9 covered the Maplewood work.",
+      "ai": "Martin acquired and owned substantial commercial property throughout historic downtown Maplewood, Missouri, including Manchester Road and Sutton Boulevard — much more than a single Sutton Boulevard development. Maya Cafe was a restaurant he founded and owned in Maplewood. He developed and built The Focal Point music venue and owned the building; he did not own the nonprofit organization, and he gave it a 20-year lease for $1 per month. He provided the Black Cat Theater a building valued at approximately $1 million, leased for $1 per month — leased, not donated. He gave Pywacket Children's Theater a 20-year lease for $1 per month. He leased Friends of Kids with Cancer space in his building for a penny a month; after he left Maplewood, the later owners ended that lease — state this neutrally, and do not name or criticize the later owners. At St. Louis Children's Hospital he founded Happy Days on Saturday, a weekly Saturday meal program delivering about 70 to 80 meals to children in pediatric oncology, who chose what they wanted; it was his personal initiative, not a corporate sponsorship. He also founded the Children's Toy Chest for pediatric oncology patients, coordinated with Friends of Kids with Cancer. The St. Louis Business Journal documented nearly $4 million in property acquisitions. A later reported Maplewood property-portfolio sale was about $3.4 million. Those are different figures: acquisition spend versus a later property-portfolio sale. Do not say he sold Specialized Testing Services, Specialized Counseling, Medical Testing Solutions, or Axon AI. Do not mention Boogaloo's. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK. KETC Channel 9 covered the Maplewood work.",
       "image": "/cv2/images/archive/maplewood-route-66.jpg",
       "alt": "Historic Route 66 and Manchester Road corridor in downtown Maplewood"
     },
@@ -197,7 +197,14 @@
       ]
     },
     "mayor": {
-      "name": "Mayor",
+      "name": "Maplewood",
+      "featured": [
+        "axon-ai",
+        "maplewood"
+      ]
+    },
+    "prototype1": {
+      "name": "Prototype 1",
       "featured": [
         "axon-ai",
         "maplewood"

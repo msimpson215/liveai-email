@@ -281,9 +281,9 @@
   .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
   .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
   html.cv-view-pending #featured-projects { visibility: hidden; }
-  body[data-cv-view="mayor"] .mayor-video-focus { display:block !important; }
-  body[data-cv-view="mayor"] .general-ai-focus { display:none; }
-  body[data-cv-view="mayor"] #press .legacy-card:first-child .legacy-media { display:none; }
+  body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus { display:block !important; }
+  body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus { display:none; }
+  body[data-cv-view="mayor"] #press .legacy-card:first-child .legacy-media, body[data-cv-view="prototype1"] #press .legacy-card:first-child .legacy-media { display:none; }
 
   @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
@@ -292,6 +292,8 @@
     .feat-grid .ov-card video { width: 100%; aspect-ratio: 16 / 9; flex: none; }
     #featured { padding-top: 22px; }
   }
+  #community .comm-grid, #childrens-hospital .comm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 760px) { #community .comm-grid, #childrens-hospital .comm-grid { grid-template-columns: 1fr; } }
   .rmk-feature { max-width: 440px; margin: 28px auto 0; }
   .rmk-feature .work-card { padding: 0; overflow: hidden; gap: 0; }
   .rmk-feature .work-card { border-top: 3px solid #e0a526; }
@@ -344,14 +346,14 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Career</p>
     <h2 class="home-h">Selected Career Highlights</h2>
-    <div class="feat-grid" id="featured-projects" data-cv-build="mayor-cv-20261123c" aria-busy="true"></div>
+    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261123d" aria-busy="true"></div>
     <nav class="ov-jump" aria-label="On this page">
       <a href="#current">AI &amp; Technology</a>
-      <a href="#community">Maplewood Arts &amp; Community</a>
+      <a href="#press">In the News</a>
+      <a href="#community">Contributions to Maplewood</a>
       <a href="#childrens-hospital">Children’s Hospital Initiatives</a>
       <a href="#career">Businesses &amp; Ventures Founded</a>
       <a href="#products">Inventions &amp; Products</a>
-      <a href="#press">In the News</a>
     </nav>
   </div>
 </section>
@@ -374,7 +376,6 @@
 
     <p class="sec-lead">Watch the Axon AI demonstration in the featured project above, or explore the applications below.</p>
 
-
     <div class="sec-actions">
       <a class="btn-outline" href="/cv2/current.html#applications">See All Twelve AI Applications →</a>
       <a class="btn-outline" href="/portfolio/projects.html">Open Full Project Portfolio →</a>
@@ -383,11 +384,48 @@
   </div>
 </section>
 
+<section class="home-section" id="press">
+  <div class="wrap-wide">
+    <p class="sec-kicker">In the News</p>
+    <h2 class="home-h">Television &amp; Newspaper Coverage</h2>
+    <p class="sec-lead">Original reporting and broadcast coverage documenting the scope, investment, and motivation behind the work.</p>
+    <div class="legacy-grid">
+      <article class="legacy-card">
+        <p class="legacy-kicker">KETC Channel 9</p>
+        <h3>Living in St. Louis</h3>
+        <div class="legacy-media" style="aspect-ratio:16/9;">
+          <iframe src="https://www.youtube.com/embed/o_LuKiM_pTw" title="KETC Channel 9 — Living in St. Louis, Martin Simpson and Maplewood" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="display:block;width:100%;height:100%;border:0;"></iframe>
+        </div>
+        <p>The original KETC Channel 9 television profile — documenting Martin’s Maplewood development, family, and community work, and his years supporting children’s organizations in the district.</p>
+        <a class="legacy-link" href="https://www.youtube.com/watch?v=o_LuKiM_pTw" rel="noopener">Watch Channel 9 feature →</a>
+      </article>
+      <article class="legacy-card">
+        <p class="legacy-kicker">St. Louis Business Journal</p>
+        <h3>Pied Piper of Maplewood</h3>
+        <a class="legacy-media" href="/cv2/images/media/slbj-2003-pied-piper.jpg">
+          <img src="/cv2/images/media/slbj-2003-pied-piper-card.jpg" alt="St. Louis Business Journal clipping, Pied Piper of Maplewood, October 2003" width="416" height="540"/>
+        </a>
+        <p>Margaret Jackson, October 24–30, 2003. Front-page profile documenting nearly $4 million invested acquiring property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard.</p>
+        <a class="legacy-link" href="/cv2/images/media/slbj-2003-pied-piper.jpg">View original clipping →</a>
+      </article>
+      <article class="legacy-card">
+        <p class="legacy-kicker">From the editor</p>
+        <h3>Magic in Maplewood</h3>
+        <a class="legacy-media" href="/cv2/images/media/slbj-2003-magic-in-maplewood.jpg">
+          <img src="/cv2/images/media/slbj-2003-magic-card.jpg" alt="St. Louis Business Journal editorial clipping, Magic in Maplewood, Patricia Miller" width="559" height="467"/>
+        </a>
+        <p>Patricia Miller, Editor. “You focus on what’s real, what’s life, and it’s all about kids.”</p>
+        <a class="legacy-link" href="/cv2/images/media/slbj-2003-magic-in-maplewood.jpg">Read editorial clipping →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
 <section class="home-section home-section--soft" id="community">
   <div class="wrap-wide">
     <p class="sec-kicker">Community &amp; Philanthropy</p>
-    <h2 class="home-h">Major Contributions to Maplewood’s Arts &amp; Community Organizations</h2>
-    <p class="sec-lead">Martin owned the buildings and leased them to the Black Cat Theater and The Focal Point for $1 a month, giving theater and live music affordable, long-term space in historic downtown Maplewood.</p>
+    <h2 class="home-h">Contributions to Maplewood</h2>
+    <p class="sec-lead">Martin owned the buildings and leased them to the Black Cat Theater, The Focal Point, and Pywacket Children’s Theater for $1 a month, giving theater, live music, and children’s arts affordable, long-term space in historic downtown Maplewood.</p>
     <div class="comm-grid">
       <a class="comm-item" href="/cv2/development.html#arts">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg></span>
@@ -406,8 +444,15 @@
       <a class="comm-item" href="/cv2/development.html#arts">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 18c.7-2.6 2.2-3.9 4.3-3.9 1.3 0 2.3.5 3.2 1.4.9-.9 1.9-1.4 3.2-1.4 2.1 0 3.6 1.3 4.3 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
-          <h3>Pywacket Children’s Theater &amp; Friends of Kids with Cancer</h3>
-          <p>Gave both organizations long-term space in his Maplewood buildings, as documented by KETC Channel 9.</p>
+          <h3>Pywacket Children’s Theater</h3>
+          <p>Gave the children’s theater a permanent home in his Maplewood building on a <strong>20-year lease for $1 per month</strong>.</p>
+        </div>
+      </a>
+      <a class="comm-item" href="/cv2/development.html#arts">
+        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.2-7-9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+        <div>
+          <h3>Friends of Kids with Cancer</h3>
+          <p>Leased Friends of Kids with Cancer the most visible space in his building for a penny a month.</p>
         </div>
       </a>
     </div>
@@ -459,10 +504,6 @@
       <a class="ach-card" href="/cv2/development.html#maplewood">
         <b>About $3.4M</b>
         <em>Later reported Maplewood property-portfolio sale — not a sale of the operating companies</em>
-      </a>
-      <a class="ach-card" href="/cv2/inventions.html#pre-de-icer">
-        <b>Pre-De-Icer</b>
-        <em>Preventive anti-icing invention</em>
       </a>
     </div>
 
@@ -528,42 +569,6 @@
   </div>
 </section>
 
-<section class="home-section" id="press">
-  <div class="wrap-wide">
-    <p class="sec-kicker">In the News</p>
-    <h2 class="home-h">Television &amp; Newspaper Coverage</h2>
-    <p class="sec-lead">Original reporting and broadcast coverage documenting the scope, investment, and motivation behind the work.</p>
-    <div class="legacy-grid">
-      <article class="legacy-card">
-        <p class="legacy-kicker">KETC Channel 9</p>
-        <h3>Living in St. Louis</h3>
-        <div class="legacy-media" style="aspect-ratio:16/9;">
-          <iframe src="https://www.youtube.com/embed/o_LuKiM_pTw" title="KETC Channel 9 — Living in St. Louis, Martin Simpson and Maplewood" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" style="display:block;width:100%;height:100%;border:0;"></iframe>
-        </div>
-        <p>The original KETC Channel 9 television profile — documenting Martin’s Maplewood development, family, and community work. Play the original video here.</p>
-        <a class="legacy-link" href="https://www.youtube.com/watch?v=o_LuKiM_pTw" rel="noopener">Watch Channel 9 feature →</a>
-      </article>
-      <article class="legacy-card">
-        <p class="legacy-kicker">St. Louis Business Journal</p>
-        <h3>Pied Piper of Maplewood</h3>
-        <a class="legacy-media" href="/cv2/images/media/slbj-2003-pied-piper.jpg">
-          <img src="/cv2/images/media/slbj-2003-pied-piper-card.jpg" alt="St. Louis Business Journal clipping, Pied Piper of Maplewood, October 2003" width="416" height="540"/>
-        </a>
-        <p>Margaret Jackson, October 24–30, 2003. Front-page profile documenting nearly $4 million invested acquiring property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard.</p>
-        <a class="legacy-link" href="/cv2/images/media/slbj-2003-pied-piper.jpg">View original clipping →</a>
-      </article>
-      <article class="legacy-card">
-        <p class="legacy-kicker">From the editor</p>
-        <h3>Magic in Maplewood</h3>
-        <a class="legacy-media" href="/cv2/images/media/slbj-2003-magic-in-maplewood.jpg">
-          <img src="/cv2/images/media/slbj-2003-magic-card.jpg" alt="St. Louis Business Journal editorial clipping, Magic in Maplewood, Patricia Miller" width="559" height="467"/>
-        </a>
-        <p>Patricia Miller, Editor. “You focus on what’s real, what’s life, and it’s all about kids.”</p>
-        <a class="legacy-link" href="/cv2/images/media/slbj-2003-magic-in-maplewood.jpg">Read editorial clipping →</a>
-      </article>
-    </div>
-  </div>
-</section>
 
 <section class="home-section home-section--soft" id="talk">
   <div class="wrap-wide">
@@ -587,8 +592,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/present.js?v=mayor-cv-20261123c"></script>
-<script src="/cv2/orb.js?v=mayor-cv-20261123c"></script>
+<script src="/cv2/present.js?v=cv-20261123d"></script>
+<script src="/cv2/orb.js?v=cv-20261123d"></script>
 <script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>
