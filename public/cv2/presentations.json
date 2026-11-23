@@ -1,5 +1,5 @@
 {
-  "build": "mayor-florida-20261123b",
+  "build": "mayor-cv-20261123c",
   "projects": [
     {
       "id": "axon-ai",
@@ -10,17 +10,17 @@
       "href": "/cv2/current.html",
       "more": "View Axon AI →",
       "picker": true,
-      "ai": "Martin created Axon AI to put real AI, trained on a company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. This résumé is one of the applications. Live demonstrations include Axon AI for Websites, this Interactive Résumé, Conversational Email, Patient Education by QR, and Axon AI Point. In development: the Conversational Business Card, Axon AI Operator, and Axon Digital Twin."
+      "ai": "Martin created Axon AI to put real AI, trained on a company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. This curriculum vitae is one of the applications. Live demonstrations include Axon AI for Websites, this Interactive Résumé, Conversational Email, Patient Education by QR, and Axon AI Point. In development: the Conversational Business Card, Axon AI Operator, and Axon Digital Twin."
     },
     {
       "id": "maplewood",
-      "title": "Historic Downtown Maplewood",
-      "tag": "Restaurants · Music · Community",
-      "summary": "Historic downtown Maplewood businesses, restaurants, music-venue property, and commercial redevelopment. The television profile appears immediately below.",
+      "title": "Historic Downtown Maplewood, Missouri",
+      "tag": "Real Estate · Businesses · Venues · Community",
+      "summary": "Acquired and owned substantial commercial property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard. Founded Maya Cafe, developed The Focal Point music venue, and leased buildings for $1 a month to the Black Cat Theater and The Focal Point.",
       "href": "/cv2/development.html#maplewood",
-      "more": "Explore Maplewood and the original coverage →",
+      "more": "Explore Maplewood, the venues, and the properties →",
       "picker": true,
-      "ai": "Martin acquired and redeveloped substantial commercial properties throughout historic downtown Maplewood, Missouri, including Manchester Road and Sutton Boulevard — not only a Sutton Boulevard family district. Maya Cafe was a restaurant he founded. The Focal Point occupied a building he developed; Focal Point was an independent organization, not a business he owned. He supported Pywacket Children's Theater and Friends of Kids with Cancer. The St. Louis Business Journal documented nearly $4 million in property acquisitions. A later reported Maplewood property-portfolio sale was about $3.4 million. Those are different figures: acquisition spend versus a later property-portfolio sale. Do not say he sold Specialized Testing Services, Specialized Counseling, Medical Testing Solutions, or Axon AI. Do not mention Boogaloo's. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK. KETC Channel 9 covered the Maplewood work.",
+      "ai": "Martin acquired and owned substantial commercial property throughout historic downtown Maplewood, Missouri, including Manchester Road and Sutton Boulevard — much more than a single Sutton Boulevard development. Maya Cafe was a restaurant he founded in Maplewood. He developed and built The Focal Point music venue and owned the building; he did not own the nonprofit organization, and he gave it a 20-year lease for $1 per month. He provided the Black Cat Theater a building valued at approximately $1 million, leased for $1 per month — leased, not donated. He also gave long-term space to Pywacket Children's Theater and Friends of Kids with Cancer. At St. Louis Children's Hospital he founded Happy Days on Saturday, a weekly Saturday meal program delivering about 70 to 80 meals to children in pediatric oncology, who chose what they wanted; it was his personal initiative, not a corporate sponsorship. He also founded the Children's Toy Chest for pediatric oncology patients, coordinated with Friends of Kids with Cancer. The St. Louis Business Journal documented nearly $4 million in property acquisitions. A later reported Maplewood property-portfolio sale was about $3.4 million. Those are different figures: acquisition spend versus a later property-portfolio sale. Do not say he sold Specialized Testing Services, Specialized Counseling, Medical Testing Solutions, or Axon AI. Do not mention Boogaloo's. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK. KETC Channel 9 covered the Maplewood work.",
       "image": "/cv2/images/archive/maplewood-route-66.jpg",
       "alt": "Historic Route 66 and Manchester Road corridor in downtown Maplewood"
     },
@@ -60,8 +60,8 @@
       "title": "No More Boo-Boos",
       "tag": "Inventions & Products",
       "summary": "A dissolvable bandage for children that washes away under warm water instead of tearing skin.",
-      "image": "/portfolio/assets/bandage-blue.jpg",
-      "alt": "No More Boo-Boos dissolvable children’s bandage",
+      "image": "/portfolio/assets/boo-boos-warm-water.png",
+      "alt": "A parent holds a smiling child’s arm under warm water as the No More Boo-Boos bandage dissolves",
       "href": "/cv2/inventions.html#boo-boos",
       "more": "View No More Boo-Boos →",
       "picker": true,
