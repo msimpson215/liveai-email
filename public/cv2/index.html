@@ -279,6 +279,9 @@
   .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
   .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
   html.cv-view-pending #featured-projects { visibility: hidden; }
+  body[data-cv-view="mayor"] .mayor-video-focus { display:block !important; }
+  body[data-cv-view="mayor"] .general-ai-focus { display:none; }
+
   @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
     .feat-grid .ov-card { flex-direction: column; }
@@ -344,7 +347,7 @@
       <span style="display:block;padding:22px 24px;">
         <span class="work-tag">Florida Property Investment &amp; Development</span>
         <strong style="display:block;font-size:clamp(20px,2.3vw,27px);color:var(--navy);margin:7px 0;">Cape San Blas &amp; Mexico Beach, Florida</strong>
-        <span style="display:block;color:var(--muted);line-height:1.6;">Acquired beachfront property, subdivided parcels, and developed and sold properties on Florida’s Gulf Coast. The work helped fund later investment in Maplewood.</span>
+        <span style="display:block;color:var(--muted);line-height:1.6;">Built a portfolio of approximately 15 Gulf Coast properties, including beachfront acquisitions and parcel subdivisions, around Cape San Blas and Mexico Beach. The work helped fund later investment in Maplewood.</span>
         <span class="work-more" style="display:block;margin-top:10px;">Explore Florida developments →</span>
       </span>
     </a>
@@ -360,6 +363,16 @@
 
 <section class="home-section ai-band home-current" id="current">
   <div class="wrap-wide">
+    <div class="mayor-video-focus" style="display:none;">
+      <p class="sec-kicker ai-kicker">Historic Maplewood · On Film</p>
+      <h2 class="home-h">KETC Channel 9 — The Maplewood Story</h2>
+      <p class="sec-lead">The original television feature about Martin’s Maplewood work, family, and community involvement.</p>
+      <div style="max-width:840px;margin:0 auto 24px;aspect-ratio:16/9;">
+        <iframe src="https://www.youtube.com/embed/o_LuKiM_pTw" title="KETC Channel 9 — Living in St. Louis: Maplewood" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" style="width:100%;height:100%;border:0;border-radius:14px;"></iframe>
+      </div>
+      <p style="text-align:center"><a class="btn-outline" href="/cv2/development.html#maplewood">Explore Maplewood, the venues, and the properties →</a></p>
+    </div>
+    <div class="general-ai-focus">
     <p class="sec-kicker ai-kicker">AI &amp; Technology</p>
     <h2 class="home-h">Artificial Intelligence — Axon AI</h2>
     <p class="sec-lead">Martin saw that most companies have a working website with no AI behind it. So he built Axon AI. It puts real AI, trained on the company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. He has since used it to build twelve applications, including the AI on this résumé.</p>
@@ -370,6 +383,8 @@
     <div class="sec-actions">
       <a class="btn-outline" href="/cv2/current.html#applications">See All Twelve AI Applications →</a>
       <a class="btn-outline" href="/portfolio/projects.html">Open Full Project Portfolio →</a>
+    </div>
+  </div>
     </div>
   </div>
 </section>
