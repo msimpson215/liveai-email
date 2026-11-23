@@ -283,7 +283,12 @@
   html.cv-view-pending #featured-projects { visibility: hidden; }
   body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus { display:block !important; }
   body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus { display:none; }
-  body[data-cv-view="mayor"] #press .legacy-card:first-child .legacy-media, body[data-cv-view="prototype1"] #press .legacy-card:first-child .legacy-media { display:none; }
+  #press .legacy-card .legacy-media, #press .legacy-card .legacy-media img { background: #e8edf3; object-fit: cover; object-position: center top; }
+  #press .press-front-page .legacy-media, #press .press-magic .legacy-media,
+  #press .press-front-page .legacy-media img, #press .press-magic .legacy-media img { background: #f4efe6; object-fit: contain; object-position: center; }
+  #press .press-front-page { display:none; }
+  body[data-cv-view="mayor"] #press .press-front-page, body[data-cv-view="prototype1"] #press .press-front-page { display:flex; }
+  body[data-cv-view="mayor"] #press .press-channel9, body[data-cv-view="prototype1"] #press .press-channel9 { display:none; }
 
   @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
@@ -395,7 +400,16 @@
     <h2 class="home-h">Television &amp; Newspaper Coverage</h2>
     <p class="sec-lead">Original reporting and broadcast coverage documenting the scope, investment, and motivation behind the work.</p>
     <div class="legacy-grid">
-      <article class="legacy-card">
+      <article class="legacy-card press-front-page">
+        <p class="legacy-kicker">St. Louis Business Journal · Front page</p>
+        <h3>Front Page, October 2003</h3>
+        <a class="legacy-media" href="/cv2/images/media/slbj-2003-front-page.jpg">
+          <img src="/cv2/images/media/slbj-2003-front-page.jpg" alt="Front page of the St. Louis Business Journal, October 24–30, 2003, with Pied Piper of Maplewood" width="850" height="1074" loading="lazy"/>
+        </a>
+        <p>Martin’s Maplewood plan ran on the front page of the St. Louis Business Journal, October 24–30, 2003, beside the $12 million CORTEX biotech corridor story.</p>
+        <a class="legacy-link" href="/cv2/images/media/slbj-2003-front-page.jpg">View the full front page →</a>
+      </article>
+      <article class="legacy-card press-channel9">
         <p class="legacy-kicker">KETC Channel 9</p>
         <h3>Living in St. Louis</h3>
         <div class="legacy-media" style="aspect-ratio:16/9;">
@@ -413,7 +427,7 @@
         <p>Margaret Jackson, October 24–30, 2003. Front-page profile documenting nearly $4 million invested acquiring property throughout historic downtown Maplewood, including Manchester Road and Sutton Boulevard.</p>
         <a class="legacy-link" href="/cv2/images/media/slbj-2003-pied-piper.jpg">View original clipping →</a>
       </article>
-      <article class="legacy-card">
+      <article class="legacy-card press-magic">
         <p class="legacy-kicker">From the editor</p>
         <h3>Magic in Maplewood</h3>
         <a class="legacy-media" href="/cv2/images/media/slbj-2003-magic-in-maplewood.jpg">
@@ -484,18 +498,18 @@
     <h2 class="home-h">Children’s Hospital Initiatives &amp; Philanthropy</h2>
     <p class="sec-lead">Martin’s work for children began on the pediatric oncology floor at St. Louis Children’s Hospital, where his daughter Mia was treated. These are programs he personally founded and organized.</p>
     <div class="comm-grid">
-      <a class="comm-item" href="/cv2/community.html#happy-days">
+      <a class="comm-item" href="/cv2/community.html#happy-meals">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 11h14l-1.2 7.2A2 2 0 0 1 15.8 20H8.2a2 2 0 0 1-2-1.8L5 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8c0-1.5 1-2.5 3-2.5s3 1 3 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
-          <h3>Happy Days on Saturday</h3>
-          <p>Founded a weekly Saturday meal program at St. Louis Children’s Hospital, delivering approximately <strong>70–80 meals</strong> to children in pediatric oncology. The children chose what they wanted to eat.</p>
+          <h3>Happy Meals on Saturdays</h3>
+          <p>Every Saturday he brought approximately <strong>70–80 Happy Meals</strong> to children in pediatric oncology at St. Louis Children’s Hospital — each one a special order. If a kid wanted no pickles, that kid got no pickles. He worked with <strong>George Gibson</strong> of the McDonald’s on Hanley Road, who later became president of the Ronald McDonald House.</p>
         </div>
       </a>
       <a class="comm-item" href="/cv2/community.html#toy-chest">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="9" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.7"/><path d="M4 13h16M12 9v4M7 9c0-2 1.5-3.5 5-3.5S17 7 17 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
           <h3>Children’s Toy Chest</h3>
-          <p>Founded the Children’s Toy Chest for pediatric oncology patients, coordinated with <strong>Friends of Kids with Cancer</strong>, to bring toys and comfort to children going through cancer treatment.</p>
+          <p>Founded the Children’s Toy Chest for pediatric oncology on the <strong>ninth floor of St. Louis Children’s Hospital</strong>, coordinated with <strong>Friends of Kids with Cancer</strong>, to bring toys and comfort to children going through cancer treatment.</p>
         </div>
       </a>
     </div>
