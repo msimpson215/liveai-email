@@ -118,6 +118,9 @@
         '</video>'
       );
     }
+    if (project.embed) {
+      return '<iframe class="feat-embed" src="' + esc(project.embed) + '" title="' + esc(project.title) + ' television profile" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>';
+    }
     if (project.image) {
       return '<img src="' + esc(project.image) + '" alt="' + esc(project.alt || '') + '" loading="eager"/>';
     }
@@ -126,6 +129,19 @@
 
   function cardHtml(project, slot) {
     var label = (slot === 1 ? 'Project two' : 'Project one') + ' · ' + (project.tag || 'Project');
+    if (project.embed) {
+      return (
+        '<div class="ov-card" data-project-id="' + esc(project.id) + '">' +
+          mediaHtml(project) +
+          '<span class="ov-body">' +
+            '<span class="work-tag">' + esc(label) + '</span>' +
+            '<strong>' + esc(project.title) + '</strong>' +
+            '<span>' + esc(project.summary || '') + '</span>' +
+          '</span>' +
+          '<a class="featured-detail-link" href="' + esc(project.href) + '">' + esc(project.more || 'View project →') + '</a>' +
+        '</div>'
+      );
+    }
     return (
       '<a class="ov-card" data-project-id="' + esc(project.id) + '" href="' + esc(project.href) + '">' +
         mediaHtml(project) +
