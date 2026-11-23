@@ -8,135 +8,195 @@
 <link rel="icon" href="/icons/axon-blue-192.png">
 <style>
   *{box-sizing:border-box}
-  html,body{margin:0;background:#fff}
-  .stage{position:relative;width:100%;max-width:1536px;margin:0 auto;line-height:0}
-  .art{display:block;width:100%;height:auto}
-  .hot{position:absolute;display:block;border-radius:10px;-webkit-tap-highlight-color:transparent}
-  .hot:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
-  body.tune .hot{outline:2px dashed #f4681f;background:rgba(244,104,31,.15)}
-  .cover{position:absolute;background:#fff;z-index:2}
-  .added{position:absolute;z-index:2;container-type:inline-size;display:flex;flex-direction:column;background:#fff;border-radius:3.5%/7%;overflow:hidden;text-decoration:none;color:#0a204a;font-family:Arial,Helvetica,sans-serif;line-height:1.2;box-shadow:0 0 0 2px #fff,0 6px 16px rgba(20,58,110,.1)}
-  .added img{display:block;width:100%;height:52%;object-fit:cover;object-position:50% 70%;flex:none}
-  .added .t{font-weight:700;font-size:5.4cqw;padding:2.6cqw 4.5cqw .6cqw}
-  .added .d{flex:1;font-size:3.9cqw;color:#3f5470;padding:0 4.5cqw;line-height:1.3}
-  .added .m{align-self:flex-end;font-size:3.2cqw;color:#176be8;padding:0 4.5cqw 2.6cqw}
-  .who{max-width:1536px;margin:0 auto;padding:16px 22px 32px;font-family:Arial,Helvetica,sans-serif;font-size:15px;display:flex;gap:28px;line-height:1.4}
-  .who a{color:#176be8;font-weight:800;text-decoration:none}
-  .who span{color:#8aa0b8}
-
-  .portnav{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;justify-content:flex-start;padding:12px 22px;background:#fff;border-bottom:1px solid #e5edf7;font-family:Arial,Helvetica,sans-serif;line-height:1.2}
-  .portnav>a,.portnav-drop>button{color:#176be8;font-weight:800;font-size:14px;text-decoration:none;background:none;border:0;font-family:inherit;cursor:pointer;padding:0}
+  html,body{margin:0;background:#fff;color:#0a204a}
+  body{font-family:Arial,Helvetica,sans-serif;line-height:1.4}
+  img{max-width:100%;height:auto}
+  .portnav{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;justify-content:flex-start;padding:4px 22px;background:#fff;border-bottom:1px solid #e5edf7}
+  .portnav>a,.portnav-drop>button{color:#176be8;font-weight:800;font-size:16px;text-decoration:none;background:none;border:0;font-family:inherit;cursor:pointer;padding:12px 0;min-height:44px}
   .portnav-drop{position:relative}
-  .portnav-menu{display:none;position:absolute;top:calc(100% + 10px);right:0;background:#fff;border:1px solid #e5edf7;border-radius:12px;min-width:240px;max-height:70vh;overflow:auto;box-shadow:0 12px 30px rgba(20,58,110,.12);padding:6px 0;z-index:30;text-align:left}
-  .portnav-drop:hover .portnav-menu,.portnav-drop:focus-within .portnav-menu{display:block}
-  .portnav-menu a{display:block;padding:8px 16px;color:#0a204a;font-weight:600;font-size:14px;text-decoration:none}
-  .portnav-menu a:hover{background:#f3f8ff}
-  .portnav-menu .lab{display:block;padding:10px 16px 4px;font-size:11px;letter-spacing:.12em;font-weight:800;color:#176be8}
+  .portnav-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid #e5edf7;border-radius:12px;width:min(320px,calc(100vw - 32px));max-height:70vh;overflow:auto;box-shadow:0 12px 30px rgba(20,58,110,.12);padding:6px 0;z-index:30;text-align:left}
+  .portnav-drop.is-open .portnav-menu{display:block}
+  .portnav-menu a{display:block;padding:12px 16px;color:#0a204a;font-weight:600;font-size:15px;text-decoration:none}
+  .portnav-menu a:hover,.portnav-menu a:focus{background:#f3f8ff}
+  .portnav-menu .lab{display:block;padding:12px 16px 4px;font-size:11px;letter-spacing:.12em;font-weight:800;color:#176be8}
+  .banner{max-width:1536px;margin:0 auto;line-height:0}
+  .banner img{display:block;width:100%;height:auto}
+  main{max-width:1180px;margin:0 auto;padding:28px 22px 48px}
+  .group{margin:0 0 36px}
+  .group h2{margin:0 0 14px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#176be8}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid.two{grid-template-columns:repeat(2,1fr);max-width:calc((100% - 18px) * 2 / 3)}
+  .solo{max-width:calc((100% - 36px) / 3)}
+  .card{display:flex;flex-direction:column;min-height:100%;background:#fff;border:1px solid #e5edf7;border-radius:16px;overflow:hidden;text-decoration:none;color:#0a204a;box-shadow:0 6px 16px rgba(20,58,110,.06)}
+  .card:hover,.card:focus-visible{border-color:#176be8;outline:none}
+  .art{display:flex;align-items:center;justify-content:center;height:168px;padding:16px;background:#f4f8fc}
+  .art img{display:block;width:auto;height:auto;max-width:100%;max-height:136px;object-fit:contain}
+  .body{display:flex;flex-direction:column;gap:6px;padding:16px 16px 18px}
+  .kicker{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:#176be8}
+  .body strong{font-size:18px;line-height:1.25}
+  .body span{font-size:15px;color:#3f5470}
+  .body span.kicker{color:#176be8}
+  .body span.note{display:block;margin-top:4px;font-size:14px;font-weight:800;color:#0a204a}
+  .who{max-width:1180px;margin:0 auto;padding:0 22px 36px;font-size:15px;font-weight:800;color:#0a204a}
+  @media (max-width:900px){
+    .grid,.grid.two{grid-template-columns:repeat(2,1fr);max-width:none}
+    .solo{max-width:calc((100% - 18px) / 2)}
+  }
+  @media (max-width:640px){
+    .portnav{padding:4px 16px}
+    main{padding:22px 16px 36px}
+    .grid,.grid.two{grid-template-columns:1fr;max-width:none}
+    .solo{max-width:none}
+    .who{padding:0 16px 28px}
+  }
 </style>
 </head>
 <body>
-<nav class="portnav" aria-label="Portfolio"><a class="active" href="/portfolio/projects.html">Home</a>
-    <a href="/portfolio/">Projects &amp; Inventions</a>
-    <a href="/cv2/">Curriculum Vitae</a>
-    <div class="portnav-drop">
-      <button type="button" aria-haspopup="true">Websites &amp; Demos</button>
-      <div class="portnav-menu"><span class="lab">Websites</span>
-<a href="https://a1-test-fyjq.onrender.com/" target="_blank" rel="noopener">A1 Asphalt</a>
-<a href="/sites/axon-websites/" target="_blank" rel="noopener">Axon for Websites</a>
-<a href="/sites/conversational-resume/" target="_blank" rel="noopener">Conversational Résumé</a>
-<a href="/sites/conversational-email/" target="_blank" rel="noopener">Conversational Email</a>
-<a href="/sites/personal-axon/" target="_blank" rel="noopener">Personal Axon</a>
-<a href="/sites/grocery-shopping/" target="_blank" rel="noopener">Grocery Shopping</a>
-<a href="/sites/patient-education/" target="_blank" rel="noopener">Patient Education</a>
-<a href="/sites/product-instructions/" target="_blank" rel="noopener">Product Instructions</a>
-<a href="/sites/ai-point/" target="_blank" rel="noopener">AI Point</a>
-<a href="/sites/business-card/" target="_blank" rel="noopener">Business Card</a>
-<a href="/sites/axon-operator/" target="_blank" rel="noopener">Axon Operator</a>
-<a href="/sites/std-sti-testing/" target="_blank" rel="noopener">STD / STI Testing</a>
-<a href="/predeicer/" target="_blank" rel="noopener">Pre-De-Icer</a>
-<a href="/sites/no-more-boo-boos/" target="_blank" rel="noopener">No More Boo-Boos</a>
-<a href="/sites/ronald-mcdonald-kitchen/" target="_blank" rel="noopener">Ronald McDonald Kitchen</a>
-<a href="/sites/ember-guard/" target="_blank" rel="noopener">Ember Guard</a>
-<a href="https://siteeye-live.onrender.com/" target="_blank" rel="noopener">SiteEye 360</a>
-<a href="/dna" target="_blank" rel="noopener">DNA Answers</a>
-<span class="lab">Demos</span>
-<a href="/sites/axon-websites/axon.html" target="_blank" rel="noopener">Axon team member</a>
-<a href="/a1-ask.html" target="_blank" rel="noopener">A1 tap to talk</a>
-<a href="https://a1-test-fyjq.onrender.com/dierbergs-demo/" target="_blank" rel="noopener">Dierbergs grocery</a>
-<a href="/grocery/" target="_blank" rel="noopener">Grocery demo</a>
-<a href="/ask/stress-test" target="_blank" rel="noopener">Stress-test demo</a>
-<a href="/ask/hvac-install" target="_blank" rel="noopener">HVAC instructions</a>
-<a href="/aipoint.html" target="_blank" rel="noopener">AI Point demo</a>
-<a href="/talk.html" target="_blank" rel="noopener">Email orb</a>
-<a href="/cards/axon-card.html" target="_blank" rel="noopener">Axon business card</a>
-<a href="/cards/a1-card-back.html" target="_blank" rel="noopener">A1 QR card</a>
-<a href="/axon-brain.html" target="_blank" rel="noopener">Professional assistant</a>
-<a href="/demo.html?src=std" target="_blank" rel="noopener">STD testing demo</a>
-<a href="/demo.html?src=bandage" target="_blank" rel="noopener">Bandage demo</a>
-<a href="https://siteeye-live.onrender.com/live/camera.html" target="_blank" rel="noopener">SiteEye phone camera</a>
-<a href="https://siteeye-live.onrender.com/live/watch.html" target="_blank" rel="noopener">SiteEye watch</a></div>
+<nav class="portnav" aria-label="Portfolio">
+  <a href="/portfolio/projects.html">Home</a>
+  <div class="portnav-drop">
+    <button type="button" aria-expanded="false" aria-controls="project-examples">Project Examples</button>
+    <div class="portnav-menu" id="project-examples">
+      <span class="lab">Websites</span>
+      <a href="https://a1-test-fyjq.onrender.com/" target="_blank" rel="noopener">A1 Asphalt</a>
+      <a href="/sites/axon-websites/" target="_blank" rel="noopener">Axon for Websites</a>
+      <a href="/sites/conversational-resume/" target="_blank" rel="noopener">Conversational Résumé</a>
+      <a href="/sites/conversational-email/" target="_blank" rel="noopener">Conversational Email</a>
+      <a href="/sites/personal-axon/" target="_blank" rel="noopener">Personal Axon</a>
+      <a href="/portfolio/digital-twin/" target="_blank" rel="noopener">Axon Digital Twin</a>
+      <a href="/sites/patient-education/" target="_blank" rel="noopener">Axon AI Patient Education</a>
+      <a href="/sites/product-instructions/" target="_blank" rel="noopener">Axon AI Product Instructions</a>
+      <a href="/sites/ai-point/" target="_blank" rel="noopener">Axon AI Point</a>
+      <a href="/sites/business-card/" target="_blank" rel="noopener">Talking Business Card</a>
+      <a href="/sites/axon-operator/" target="_blank" rel="noopener">Axon AI Operator</a>
+      <a href="/sites/grocery-shopping/" target="_blank" rel="noopener">Grocery Shopping Assistant</a>
+      <a href="/sites/std-sti-testing/" target="_blank" rel="noopener">Confidential STD/STI Testing</a>
+      <a href="/predeicer/" target="_blank" rel="noopener">Pre De-Icer</a>
+      <a href="/sites/ember-guard/" target="_blank" rel="noopener">Pre Ember Guard</a>
+      <a href="/sites/no-more-boo-boos/" target="_blank" rel="noopener">No More Boo-Boos</a>
+      <a href="/sites/ronald-mcdonald-kitchen/" target="_blank" rel="noopener">Ronald McDonald Kitchen</a>
+      <a href="https://siteeye-live.onrender.com/" target="_blank" rel="noopener">SiteEye 360</a>
+      <a href="/dna" target="_blank" rel="noopener">DNA Paternity Testing</a>
+      <span class="lab">Demos</span>
+      <a href="/a1-ask.html" target="_blank" rel="noopener">A1 tap to talk</a>
+      <a href="https://a1-test-fyjq.onrender.com/dierbergs-demo/" target="_blank" rel="noopener">Dierbergs grocery example</a>
+      <a href="/ask/stress-test" target="_blank" rel="noopener">Patient education demo</a>
+      <a href="/ask/hvac-install" target="_blank" rel="noopener">Product instructions demo</a>
+      <a href="/sites/ai-point/" target="_blank" rel="noopener">AI Point demo</a>
+      <a href="/talk.html" target="_blank" rel="noopener">Conversational email demo</a>
+      <a href="/demo.html?src=std" target="_blank" rel="noopener">STD testing demo</a>
+      <a href="/demo.html?src=bandage" target="_blank" rel="noopener">Bandage demo</a>
+      <a href="https://siteeye-live.onrender.com/live/camera.html" target="_blank" rel="noopener">SiteEye phone camera</a>
+      <a href="https://siteeye-live.onrender.com/live/watch.html" target="_blank" rel="noopener">SiteEye watch</a>
     </div>
-</nav>
-<div class="stage" id="stage">
-  <img class="art" src="/portfolio/assets/project-portfolio.png?v=5" width="1536" height="1024"
-       alt="Project Portfolio — AI applications, products, and inventions. Martin Simpson.">
   </div>
-<p class="who"><a href="/cv2/">Martin Simpson</a></p>
+</nav>
+<div class="banner">
+  <img src="/portfolio/assets/portfolio-header.png" width="1536" height="175" alt="Project Portfolio. AI applications, products, and inventions. Martin Simpson.">
+</div>
+<main>
+  <section class="group" aria-labelledby="tech">
+    <h2 id="tech">Technology and business applications</h2>
+    <div class="grid">
+      <a class="card" href="/portfolio/projects/axon-websites.html">
+        <span class="body"><strong>Axon AI for Websites</strong><span>Customers talk to that company’s own AI on the website it already has.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/axon-operator.html">
+        <span class="art"><img src="/portfolio/assets/operator.png" alt="A person talking while the operator works on a laptop"></span>
+        <span class="body"><strong>Axon AI Operator</strong><span>You speak. It opens email, finds documents, and moves the work on the computer.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/business-card.html">
+        <span class="body"><strong>Talking Business Card</strong><span>Someone scans the card and can ask what you do, even after you have left.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/conversational-resume.html">
+        <span class="body"><strong>Conversational Résumé</strong><span>A hiring manager talks to the résumé and hears only that one person’s background.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/conversational-email.html">
+        <span class="body"><strong>Conversational Email</strong><span>The email carries an AI the reader can talk with about that one company.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/ai-point.html">
+        <span class="body"><strong>Axon AI Point</strong><span>People keep the presentation and can still ask it questions after the meeting.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/personal-axon.html">
+        <span class="body"><strong>Personal Axon</strong><span>One private AI for one person. Only that person can open it.</span></span>
+      </a>
+      <a class="card" href="/portfolio/digital-twin/">
+        <span class="art"><img src="/portfolio/digital-twin/tile.jpg" alt="The Axon glass orb and its reflection"></span>
+        <span class="body"><strong>Axon Digital Twin</strong><span>You give it one task. It makes the call, or talks to their AI, then reports back.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/siteeye-360.html">
+        <span class="art"><img src="/portfolio/assets/siteeye-job.png" alt="SiteEye mounted on a truck at a paving job"></span>
+        <span class="body"><strong>SiteEye 360 Live</strong><span>A job-site camera that rides in on the truck, lets the office watch live, and goes home at night.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/patient-education.html">
+        <span class="body"><strong>Axon AI Patient Education</strong><span>A patient scans the pamphlet and asks basic questions about that procedure. It does not diagnose.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/product-instructions.html">
+        <span class="body"><strong>Axon AI Product Instructions</strong><span>Scan the code on the box. The AI walks you through putting the product together or using it.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/grocery-shopping.html">
+        <span class="body"><span class="kicker">Grocery example · Dierbergs</span><strong>Grocery Shopping</strong><span>One example of Axon helping a shopper. At Dierbergs it talks through the choices, fills the cart, and checks out.</span></span>
+      </a>
+    </div>
+  </section>
+  <section class="group" aria-labelledby="testing">
+    <h2 id="testing">Testing</h2>
+    <div class="grid two">
+      <a class="card" href="/portfolio/projects/dna-answers.html">
+        <span class="body"><strong>DNA Paternity Testing + Axon AI</strong><span>A legal test, a home test, and a prenatal test. The AI answers basic questions about the test itself.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/std-sti-testing.html">
+        <span class="body"><strong>Confidential STD/STI Testing</strong><span>A person calls, then goes to Quest Diagnostics or Labcorp. Results are usually back in a day or two.</span></span>
+      </a>
+    </div>
+  </section>
+  <section class="group" aria-labelledby="inventions">
+    <h2 id="inventions">Inventions and products</h2>
+    <div class="grid">
+      <a class="card" href="/portfolio/projects/pre-de-icer.html">
+        <span class="art"><img src="/portfolio/assets/predeicer-logo.png" alt="Pre De-Icer spray bottle"></span>
+        <span class="body"><strong>Pre De-Icer</strong><span>Spray it on before the storm. Ice does not bond to the surface, so it wipes or slides off.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/ember-guard.html">
+        <span class="art"><img src="/portfolio/assets/ember-guard.jpg" alt="A clear coat being sprayed on a wood roof before a wildfire"></span>
+        <span class="body"><strong>Pre Ember Guard</strong><span>A clear gel sprayed on wood and shake shingles before fire weather, so wind-blown embers are less likely to catch.</span></span>
+      </a>
+      <a class="card" href="/portfolio/projects/no-more-boo-boos.html">
+        <span class="art"><img src="/portfolio/assets/bandage-card.png" alt="A child’s bandage with an animal on it"></span>
+        <span class="body"><strong>No More Boo-Boos</strong><span>It goes on like a regular bandage. Warm water dissolves it, so it does not have to be ripped off the skin. An animal shows in the bandage.</span></span>
+      </a>
+    </div>
+  </section>
+  <section class="group" aria-labelledby="proposal">
+    <h2 id="proposal">Independent proposal</h2>
+    <div class="solo">
+      <a class="card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
+        <span class="art"><img src="/portfolio/assets/rmk-art.png" alt="Kids Kitchen concept mark"></span>
+        <span class="body"><strong>Ronald McDonald Kitchen</strong><span>A cafeteria kiosk idea for families at a children’s hospital: a short, familiar menu, paid for by donations.</span><span class="note">Martin Simpson’s own proposal. Not a McDonald’s program. Not a Ronald McDonald House Charities program. They are not participating.</span></span>
+      </a>
+    </div>
+  </section>
+</main>
+<p class="who">Martin Simpson</p>
 <script>
-/* Click areas over the Canva artwork, in pixels of a 1024 x 682 view of it.
-   Nothing is drawn on the artwork. Add ?tune=1 to outline the areas. */
-var W=1024,H=682;
-var COLS=[[20,257],[270,505],[519,754],[767,1003]];
-var ROWS=[[128,259],[267,391],[403,524],[533,652]];
-var SLUGS=[
-  ['axon-websites','Axon AI for Websites'],
-  ['conversational-resume','Conversational Résumé'],
-  ['conversational-email','Conversational Email'],
-  ['ai-point','Axon AI Point'],
-  ['patient-education','Patient Education QR'],
-  ['product-instructions','Product Instruction QR'],
-  ['personal-axon','Personal Axon'],
-  ['grocery-shopping','Grocery Shopping Teammate'],
-  ['added','/portfolio/digital-twin/','Axon Digital Twin','A private twin of you that makes the call, or talks to their AI, and reports back.','/portfolio/digital-twin/tile.jpg?v=3'],
-  ['cover','Start a Business with AI'],
-  ['dna-answers','DNA Answers'],
-  ['std-sti-testing','STD / STI Testing'],
-  ['pre-de-icer','Pre-De-Icer'],
-  ['siteeye-360','SiteEye 360 Live'],
-  ['no-more-boo-boos','No More Boo-Boos'],
-  ['ronald-mcdonald-kitchen','Ronald McDonald Kitchen']
-];
-var stage=document.getElementById('stage');
-SLUGS.forEach(function(s,i){
-  if(!s) return;
-  var c=COLS[i%4],r=ROWS[Math.floor(i/4)];
-  var a=document.createElement(s[0]==='cover'?'div':'a');
-  if(s[0]==='added'){
-    a.className='added';
-    a.href=s[1];
-    a.setAttribute('aria-label',s[2]);
-    a.innerHTML='<img src="'+s[4]+'" alt=""><span class="t">'+s[2]+'</span><span class="d">'+s[3]+'</span><span class="m">Learn more →</span>';
-  }else{
-    a.className=s[0]==='cover'?'cover':'hot';
-    if(s[0]!=='cover'){a.href='/portfolio/projects/'+s[0]+'.html';}
-    a.setAttribute('aria-label',s[1]);
+(function(){
+  var drop = document.querySelector('.portnav-drop');
+  var btn = drop.querySelector('button');
+  function setOpen(open){
+    drop.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  a.style.left=(c[0]/W*100)+'%';
-  a.style.top=(r[0]/H*100)+'%';
-  a.style.width=((c[1]-c[0])/W*100)+'%';
-  a.style.height=((r[1]-r[0])/H*100)+'%';
-  stage.appendChild(a);
-});
-/* His name in the header, and his photo, both open the résumé. */
-[['Martin Simpson','/cv2/','50.5%','13%','12%','4.5%'],['Martin Simpson','/cv2/','74%','0%','26%','17%']].forEach(function(h){
-  var a=document.createElement('a');
-  a.className='hot';
-  a.href=h[1];
-  a.setAttribute('aria-label',h[0]);
-  a.style.left=h[2]; a.style.top=h[3]; a.style.width=h[4]; a.style.height=h[5];
-  stage.appendChild(a);
-});
-if(/[?&]tune=1/.test(location.search))document.body.classList.add('tune');
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    setOpen(!drop.classList.contains('is-open'));
+  });
+  document.addEventListener('click', function(e){
+    if (!drop.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') setOpen(false);
+  });
+})();
 </script>
 </body>
 </html>
