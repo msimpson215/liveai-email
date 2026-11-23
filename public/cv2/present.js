@@ -208,6 +208,7 @@
     var hasQuery = !!(params.get('view') || params.get('f1'));
     var query = queryFrom(location.search, (onHome || hasQuery) ? {} : readStored());
     var presentation = resolve(data, query);
+    if (document.body) document.body.setAttribute('data-cv-view', presentation.view || 'general');
     if (onHome || hasQuery) persist(presentation);
     else window.CV_PRESENTATION = presentation;
     renderFeatured(presentation);
