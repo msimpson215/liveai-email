@@ -1,5 +1,5 @@
 {
-  "build": "sys1-20261123",
+  "build": "mayor-20261123a",
   "projects": [
     {
       "id": "axon-ai",
@@ -14,15 +14,15 @@
     },
     {
       "id": "maplewood",
-      "title": "Historic Downtown Maplewood",
-      "tag": "Community Development & Philanthropy",
-      "summary": "Commercial property investment and redevelopment across historic downtown Maplewood, including Manchester Road and Sutton Boulevard, alongside community and philanthropic work.",
+      "title": "Historic Downtown Maplewood — Property Investment, Redevelopment & Philanthropy",
+      "tag": "Property Investment, Redevelopment & Philanthropy",
+      "summary": "Substantial commercial property investment and redevelopment throughout historic downtown Maplewood, Missouri — including Manchester Road and Sutton Boulevard — with support for children’s organizations.",
       "image": "/cv2/images/archive/maplewood-sutton-fountain.jpg",
       "alt": "Corner building and fountain on the Sutton Loop in Maplewood",
       "href": "/cv2/development.html#maplewood",
       "more": "View Maplewood →",
       "picker": true,
-      "ai": "Martin acquired and redeveloped substantial commercial properties in historic downtown Maplewood, Missouri, along Manchester Road and Sutton Boulevard. His work included Maya Cafe and the Focal Point building; Focal Point was an independent nonprofit, not a business he owned. His community support included Pywacket Children's Theater and Friends of Kids with Cancer. The portfolio sale is described in his source materials as about $3.4 million, while contemporary St. Louis Business Journal reporting documented nearly $4 million invested in property acquisitions. Those are different financial measures. KETC Channel 9 covered his work. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK."
+      "ai": "Martin acquired and redeveloped substantial commercial properties throughout historic downtown Maplewood, Missouri, including Manchester Road and Sutton Boulevard — not only a Sutton Boulevard family district. Maya Cafe was a restaurant he founded. The Focal Point occupied a building he developed; Focal Point was an independent organization, not a business he owned. He supported Pywacket Children's Theater and Friends of Kids with Cancer. The St. Louis Business Journal documented nearly $4 million in property acquisitions. A later reported Maplewood property-portfolio sale was about $3.4 million. Those are different figures: acquisition spend versus a later property-portfolio sale. Do not say he sold Specialized Testing Services, Specialized Counseling, Medical Testing Solutions, or Axon AI. Do not mention Boogaloo's. Do not mention McDonald's, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK. KETC Channel 9 covered the Maplewood work."
     },
     {
       "id": "pre-de-icer",
@@ -44,6 +44,16 @@
       "more": "View DNA paternity work →",
       "picker": true,
       "ai": "Medical Testing Solutions ran nationwide DNA paternity testing as a call center out of the St. Louis metro, using LabCorp and other collection sites, with in-house geo-SEO. Annual gross on this medical testing work was about $4 million. This is a company he founded, not a company he purchased. It is separate from Specialized Testing Services (HIV/STI) and from Specialized Counseling. DNA Answers is a later paternity-testing project still being built. Do not invent FDA claims, current lab contracts, or new revenue figures. Do not describe this as Specialized Counseling or as HIV/STI testing."
+    },
+    {
+      "id": "affordable-paternity",
+      "title": "Affordable Paternity Center",
+      "tag": "Businesses Founded",
+      "summary": "A DNA paternity-testing venture Martin founded.",
+      "href": "/cv2/businesses.html#affordable-paternity",
+      "more": "View Affordable Paternity Center →",
+      "picker": true,
+      "ai": "Affordable Paternity Center is a DNA paternity-testing venture Martin founded. Its exact operational relationship to Medical Testing Solutions is not specified in this file. Do not invent current clinics, ownership, or that it was sold. Do not confuse it with Specialized Counseling or HIV/STI testing."
     },
     {
       "id": "no-more-boo-boos",
