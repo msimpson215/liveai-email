@@ -1,0 +1,199 @@
+{
+  "build": "sys1-20261123",
+  "projects": [
+    {
+      "id": "axon-ai",
+      "title": "Axon AI",
+      "tag": "AI & Technology",
+      "summary": "Real AI put into the website a company already has, and the applications built on it.",
+      "video": "/cv2/videos/axon-ai.mp4",
+      "href": "/cv2/current.html",
+      "more": "View Axon AI →",
+      "picker": true,
+      "ai": "Martin created Axon AI to put real AI, trained on a company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. This résumé is one of the applications. Live demonstrations include Axon AI for Websites, this Interactive Résumé, Conversational Email, Patient Education by QR, and Axon AI Point. In development: the Conversational Business Card, Axon AI Operator, and Axon Digital Twin."
+    },
+    {
+      "id": "maplewood",
+      "title": "Historic Maplewood",
+      "tag": "Community Development & Philanthropy",
+      "summary": "The Sutton Boulevard family district in Maplewood, Missouri, with support for children’s organizations.",
+      "image": "/cv2/images/archive/maplewood-sutton-fountain.jpg",
+      "alt": "Corner building and fountain on the Sutton Loop in Maplewood",
+      "href": "/cv2/development.html#maplewood",
+      "more": "View Maplewood →",
+      "picker": true,
+      "ai": "Historic Maplewood redevelopment in the St. Louis area: a family entertainment district on Sutton Boulevard. Maya Cafe was the first restaurant from his company. The Focal Point was among the first in the district as an independent organization in buildings he developed; he did not own The Focal Point. He donated theater space for Pywacket Children’s Theater and support for Friends of Kids with Cancer. Portfolio sale about $3.4 million. KETC Channel 9 — Living in St. Louis — is the broadcast record. St. Louis Business Journal covered the plan in October 2003 as Pied Piper of Maplewood, with the editor’s Magic in Maplewood editorial. Do not mention McDonald’s, Happy Meals, Ronald McDonald Kitchen, RMHC, or RMK."
+    },
+    {
+      "id": "pre-de-icer",
+      "title": "Pre-De-Icer",
+      "tag": "Inventions & Products",
+      "summary": "A preventive anti-icing treatment applied before the storm so ice cannot bond. Invented by Martin Simpson; not yet commercialized.",
+      "video": "/cv2/videos/pre-de-icer.mp4",
+      "href": "/cv2/inventions.html#pre-de-icer",
+      "more": "View Pre-De-Icer →",
+      "picker": true,
+      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing film applied before a storm so frost, snow, and ice cannot bond. Inventor: Martin Simpson. Not yet commercialized; available for sale or licensing. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document."
+    },
+    {
+      "id": "dna",
+      "title": "DNA Paternity Testing",
+      "tag": "Businesses Founded",
+      "summary": "Nationwide DNA paternity testing as a call center through Medical Testing Solutions, using LabCorp and other collection sites.",
+      "href": "/cv2/businesses.html#dna",
+      "more": "View DNA paternity work →",
+      "picker": true,
+      "ai": "Medical Testing Solutions ran nationwide DNA paternity testing as a call center out of the St. Louis metro, using LabCorp and other collection sites, with in-house geo-SEO. Annual gross on this medical testing work was about $4 million. This is a company he founded, not a company he purchased. It is separate from Specialized Testing Services (HIV/STI) and from Specialized Counseling. DNA Answers is a later paternity-testing project still being built. Do not invent FDA claims, current lab contracts, or new revenue figures. Do not describe this as Specialized Counseling or as HIV/STI testing."
+    },
+    {
+      "id": "no-more-boo-boos",
+      "title": "No More Boo-Boos",
+      "tag": "Inventions & Products",
+      "summary": "A dissolvable bandage for children that washes away under warm water instead of tearing skin. Proposed product; not commercially launched.",
+      "image": "/portfolio/assets/bandage-blue.jpg",
+      "alt": "No More Boo-Boos dissolvable children’s bandage",
+      "href": "/cv2/inventions.html#boo-boos",
+      "more": "View No More Boo-Boos →",
+      "picker": true,
+      "ai": "No More Boo-Boos is a bandage that dissolves under warm water so it does not tear skin. Aimed first at children. Provisional patent path. A product website is proposed; it is not up yet. Do not invent FDA clearance, dissolve time, or retail price. Do not describe it as commercially launched."
+    },
+    {
+      "id": "sts",
+      "title": "Specialized Testing Services",
+      "tag": "Businesses Founded",
+      "summary": "The first national lab network for rapid HIV/STI testing, founded in 1993.",
+      "href": "/cv2/businesses.html#sts",
+      "more": "View Specialized Testing Services →",
+      "picker": true,
+      "ai": "Specialized Testing Services pioneered a national STAT HIV/STI-testing call-center model in 1993. Clients, not patients. Annual gross sales about $1.4 million. He founded this company. It is not Specialized Counseling and it is not DNA paternity testing."
+    },
+    {
+      "id": "specialized-counseling",
+      "title": "Specialized Counseling",
+      "tag": "Businesses Founded",
+      "summary": "Founded alongside Specialized Testing Services after he left the Missouri Department of Health.",
+      "href": "/cv2/businesses.html#counseling",
+      "more": "View Specialized Counseling →",
+      "picker": true,
+      "ai": "Specialized Counseling started alongside Specialized Testing Services when he left the Missouri Department of Health. Do not describe it as HIV/STI laboratory testing or as DNA paternity testing. Do not invent services, revenue, or client counts."
+    },
+    {
+      "id": "conversational-resume",
+      "title": "Conversational Résumé",
+      "tag": "AI & Technology",
+      "summary": "A hiring manager talks to the résumé and hears only that one person’s background.",
+      "href": "/cv2/talk.html",
+      "more": "Talk with the résumé →",
+      "picker": true,
+      "ai": "This page is the live Conversational Résumé — an Axon AI application. A hiring manager can talk with Mr. Simpson’s AI team member about his background. Guardrails stay on his career."
+    },
+    {
+      "id": "conversational-email",
+      "title": "Conversational Email",
+      "tag": "AI & Technology",
+      "summary": "The email carries an AI the reader can talk with about that one company.",
+      "href": "/portfolio/projects/conversational-email.html",
+      "more": "View Conversational Email →",
+      "picker": true,
+      "ai": "Axon AI Convo Email is live conversational email — a message you can talk to. This CV runs on it."
+    },
+    {
+      "id": "business-card",
+      "title": "Talking Business Card",
+      "tag": "AI & Technology",
+      "summary": "Someone scans the card and can ask what you do, even after you have left.",
+      "href": "/portfolio/projects/business-card.html",
+      "more": "View Talking Business Card →",
+      "picker": true,
+      "ai": "Axon AI Conversational Business Card: QR on a card or poster — scan, tap, talk to a voice AI. In development; do not describe it as finished or shipping."
+    },
+    {
+      "id": "axon-operator",
+      "title": "Axon AI Operator",
+      "tag": "AI & Technology",
+      "summary": "You speak. It opens email, finds documents, and moves the work on the computer.",
+      "href": "/portfolio/projects/axon-operator.html",
+      "more": "View Axon AI Operator →",
+      "picker": true,
+      "ai": "Axon AI Operator: a voice AI on your machine. In development; do not describe it as finished or shipping."
+    },
+    {
+      "id": "patient-education",
+      "title": "Axon AI Patient Education",
+      "tag": "AI & Technology",
+      "summary": "A patient scans the pamphlet and asks basic questions about that procedure. It does not diagnose.",
+      "href": "/portfolio/projects/patient-education.html",
+      "more": "View Patient Education →",
+      "picker": true,
+      "ai": "Medical explanation by QR: the stress-test guide is live. It does not diagnose."
+    },
+    {
+      "id": "product-instructions",
+      "title": "Axon AI Product Instructions",
+      "tag": "AI & Technology",
+      "summary": "Scan the code on the box. The AI walks you through putting the product together or using it.",
+      "href": "/portfolio/projects/product-instructions.html",
+      "more": "View Product Instructions →",
+      "picker": true,
+      "ai": "Axon AI Product Instructions: a QR code that talks customers through setup instead of a paper manual."
+    },
+    {
+      "id": "grocery",
+      "title": "Grocery Shopping",
+      "tag": "AI & Technology",
+      "summary": "At Dierbergs it talks through the choices, fills the cart, and checks out.",
+      "href": "/portfolio/projects/grocery-shopping.html",
+      "more": "View Grocery Shopping →",
+      "picker": true,
+      "ai": "Grocery Shopping is one example of Axon helping a shopper. At Dierbergs it talks through the choices, fills the cart, and checks out."
+    },
+    {
+      "id": "personal-axon",
+      "title": "Personal Axon",
+      "tag": "AI & Technology",
+      "summary": "One private AI for one person. Only that person can open it.",
+      "href": "/portfolio/projects/personal-axon.html",
+      "more": "View Personal Axon →",
+      "picker": true,
+      "ai": "Personal Axon is one dedicated AI team member built around a single person. Only that person can open it."
+    },
+    {
+      "id": "ai-point",
+      "title": "Axon AI Point",
+      "tag": "AI & Technology",
+      "summary": "People keep the presentation and can still ask it questions after the meeting.",
+      "href": "/portfolio/projects/ai-point.html",
+      "more": "View Axon AI Point →",
+      "picker": true,
+      "ai": "Axon AI Point is live: site slides with voice AI. People can still ask questions after the meeting."
+    },
+    {
+      "id": "digital-twin",
+      "title": "Axon Digital Twin",
+      "tag": "AI & Technology",
+      "summary": "You give it one task. It makes the call, or talks to their AI, then reports back. In development.",
+      "href": "/portfolio/digital-twin/",
+      "more": "View Axon Digital Twin →",
+      "picker": true,
+      "ai": "Axon Digital Twin is in development. It places approved calls or speaks with another AI and reports back. Never describe it as finished or shipping."
+    }
+  ],
+  "presets": {
+    "general": {
+      "name": "General",
+      "featured": ["axon-ai", "dna"]
+    },
+    "mayor": {
+      "name": "Mayor",
+      "featured": ["axon-ai", "maplewood"]
+    },
+    "randy": {
+      "name": "Randy",
+      "featured": ["axon-ai", "pre-de-icer"]
+    },
+    "haley": {
+      "name": "Haley",
+      "featured": ["axon-ai", "dna"]
+    }
+  }
+}

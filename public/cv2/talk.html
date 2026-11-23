@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/cv2/cv.css?v=flow1"/>
+<link rel="stylesheet" href="/cv2/cv.css?v=present1"/>
 <style>
   body.talk {
     min-height: 100dvh;
@@ -72,7 +72,19 @@
 <script>
 const SRC='marty';
 const SEA_TIER=(new URLSearchParams(location.search).get('tier')||'').toLowerCase();
-const sessionUrl='/session?gate=1&src='+encodeURIComponent(SRC)+(SEA_TIER?'&tier='+encodeURIComponent(SEA_TIER):'');
+function sessionUrl(){
+  var url='/session?gate=1&src='+encodeURIComponent(SRC)+(SEA_TIER?'&tier='+encodeURIComponent(SEA_TIER):'');
+  if(window.CVPresent&&typeof window.CVPresent.sessionQuery==='function') return url+window.CVPresent.sessionQuery();
+  var q=new URLSearchParams(location.search);
+  var stored={}; try{stored=JSON.parse(sessionStorage.getItem('cvPresentation')||'{}')||{};}catch(e){}
+  var view=(q.get('view')||stored.view||'').toLowerCase();
+  var f1=(q.get('f1')||stored.f1||'').toLowerCase();
+  var f2=(q.get('f2')||stored.f2||'').toLowerCase();
+  if(view) url+='&view='+encodeURIComponent(view);
+  if(f1) url+='&f1='+encodeURIComponent(f1);
+  if(f2) url+='&f2='+encodeURIComponent(f2);
+  return url;
+}
 let pc=null,localStream=null,starting=false,audioEl=null;
 function setState(s){document.body.classList.remove('idle','connecting','active','error');document.body.classList.add('talk',s);}
 function ensureAudio(){if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;}return audioEl;}
@@ -102,7 +114,7 @@ async function handleLost(){
   },wait);
 }
 async function connectVoice(){
-  const r=await fetch(sessionUrl,{cache:'no-store'});
+  const r=await fetch(sessionUrl(),{cache:'no-store'});
   const data=await r.json();
   if(!r.ok||data.error)throw new Error(data.error||'session');
   const key=data.value||(data.client_secret&&data.client_secret.value);
@@ -146,6 +158,7 @@ window.addEventListener('pagehide',function(){if(pc||starting)stop();});
 window.addEventListener('beforeunload',function(){if(pc||starting)stop();});
 setState('idle');
 </script>
-<script src="/cv2/cv.js?v=flow1"></script>
+<script src="/cv2/present.js?v=sys1"></script>
+<script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>

@@ -18,6 +18,7 @@ import { directImageUrl, refuseInternal } from './image-links.js'
 import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
+import { resolvePresentation, presentationInstructions } from './cv-presentations.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -1517,7 +1518,10 @@ If asked who you are: "I'm Marty's Digital Twin. He asked me to check one thing.
    * new subject only. Do not reuse the A1 / talk.html email page for this.
    */
   marty: {
-    instructions: () => martyCvInstructions(VOICE_RULES)
+    instructions: (context = {}) => martyCvInstructions(
+      VOICE_RULES,
+      presentationInstructions(context.presentation)
+    )
   },
   /**
    * Randy Shear, Auto Auction Rebuilds. Same Live voice as the public Axon
@@ -1999,7 +2003,8 @@ app.get('/session', async (req, res) => {
       topic,
       code: req.query.code,
       manual: req.query.m,
-      question: sanitizeRecipientName(req.query.q || req.query.question)
+      question: sanitizeRecipientName(req.query.q || req.query.question),
+      presentation: source === 'marty' ? resolvePresentation(req.query) : undefined
     })
     const response = await fetch('https://api.openai.com/v1/realtime/client_secrets', {
       method: 'POST',

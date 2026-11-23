@@ -8,7 +8,23 @@
 (function () {
   var SRC = 'marty';
   var tier = (new URLSearchParams(location.search).get('tier') || '').toLowerCase();
-  var sessionUrl = '/session?gate=1&src=' + encodeURIComponent(SRC) + (tier ? '&tier=' + encodeURIComponent(tier) : '');
+
+  function sessionUrl() {
+    var url = '/session?gate=1&src=' + encodeURIComponent(SRC) + (tier ? '&tier=' + encodeURIComponent(tier) : '');
+    if (window.CVPresent && typeof window.CVPresent.sessionQuery === 'function') {
+      return url + window.CVPresent.sessionQuery();
+    }
+    var q = new URLSearchParams(location.search);
+    var stored = {};
+    try { stored = JSON.parse(sessionStorage.getItem('cvPresentation') || '{}') || {}; } catch (e) {}
+    var view = (q.get('view') || stored.view || '').toLowerCase();
+    var f1 = (q.get('f1') || stored.f1 || '').toLowerCase();
+    var f2 = (q.get('f2') || stored.f2 || '').toLowerCase();
+    if (view) url += '&view=' + encodeURIComponent(view);
+    if (f1) url += '&f1=' + encodeURIComponent(f1);
+    if (f2) url += '&f2=' + encodeURIComponent(f2);
+    return url;
+  }
 
   var STATUS = {
     idle: 'Talk with Mr. Simpson’s AI Team Member',
@@ -87,7 +103,7 @@
   }
 
   async function connectVoice() {
-    var r = await fetch(sessionUrl, { cache: 'no-store' });
+    var r = await fetch(sessionUrl(), { cache: 'no-store' });
     var data = await r.json();
     if (!r.ok || data.error) throw new Error(data.error || 'session');
     var key = data.value || (data.client_secret && data.client_secret.value);

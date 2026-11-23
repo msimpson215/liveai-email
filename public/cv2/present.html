@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Presentation links — Martin Simpson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/cv2/cv.css?v=present1"/>
+<style>
+  .compose { max-width: 720px; margin: 0 auto; padding: 36px 20px 80px; }
+  .compose h1 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.03em; color: var(--navy); margin: 0 0 8px; }
+  .compose .lede { color: var(--muted); font-size: 16.5px; margin: 0 0 28px; line-height: 1.55; }
+  .field { margin: 0 0 18px; }
+  .field label { display: block; font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--navy-2); margin-bottom: 6px; }
+  .field select, .field input {
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .actions button, .actions a.btn-outline {
+    font: inherit;
+    cursor: pointer;
+    border: 0;
+  }
+  .actions button {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 750;
+    padding: 12px 18px;
+    border-radius: 999px;
+  }
+  .result {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .result label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 8px; }
+  .result input { width: 100%; font: inherit; font-size: 15px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+  .preview { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .preview a { display: block; padding: 14px 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: inherit; }
+  .preview strong { display: block; color: var(--navy); font-size: 15px; margin-bottom: 4px; }
+  .preview span { color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+  .saved { margin-top: 10px; font-size: 14px; font-weight: 700; color: #1d6b37; min-height: 1.3em; }
+  .note { margin-top: 22px; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+  @media (max-width: 640px) { .preview { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="compose">
+  <h1>Presentation links</h1>
+  <p class="lede">Pick the two featured projects and a recipient name. Copy the URL. The public résumé does not link here.</p>
+  <form id="form">
+    <div class="field">
+      <label for="p1">Featured project 1</label>
+      <select id="p1" required></select>
+    </div>
+    <div class="field">
+      <label for="p2">Featured project 2</label>
+      <select id="p2" required></select>
+    </div>
+    <div class="field">
+      <label for="who">Recipient or preset name</label>
+      <input id="who" type="text" maxlength="40" placeholder="Mayor, Randy, Haley, or a new name" autocomplete="off"/>
+    </div>
+    <div class="actions">
+      <button type="submit">Generate URL</button>
+      <button type="button" id="copy">Copy URL</button>
+      <a class="btn-outline" id="open" href="/cv2/" target="_blank" rel="noopener">Open preview</a>
+    </div>
+  </form>
+  <div class="result">
+    <label for="url">Shareable URL</label>
+    <input id="url" type="text" readonly value=""/>
+    <p class="saved" id="saved"></p>
+    <div class="preview" id="preview"></div>
+  </div>
+  <p class="note">Named presets already on this site: <code>/cv2/?view=mayor</code>, <code>/cv2/?view=randy</code>, <code>/cv2/?view=haley</code>, and <code>/cv2/</code> for General. A new name still works — the two project IDs travel in the link, so you do not have to rebuild the site.</p>
+</main>
+<script src="/cv2/present.js?v=sys1"></script>
+<script>
+(function () {
+  var form = document.getElementById('form');
+  var p1 = document.getElementById('p1');
+  var p2 = document.getElementById('p2');
+  var who = document.getElementById('who');
+  var urlEl = document.getElementById('url');
+  var open = document.getElementById('open');
+  var saved = document.getElementById('saved');
+  var preview = document.getElementById('preview');
+  var copy = document.getElementById('copy');
+
+  function options(select, projects, selected) {
+    select.innerHTML = projects.map(function (project) {
+      return '<option value="' + project.id + '"' + (project.id === selected ? ' selected' : '') + '>' + project.title + '</option>';
+    }).join('');
+  }
+
+  function slugName(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+  }
+
+  function matchPreset(data, a, b) {
+    var presets = data.presets || {};
+    var keys = Object.keys(presets);
+    for (var i = 0; i < keys.length; i++) {
+      var feat = presets[keys[i]].featured || [];
+      if (feat[0] === a && feat[1] === b) return keys[i];
+    }
+    return '';
+  }
+
+  function build() {
+    var data = window.CV_PRESENTATIONS;
+    if (!data) return '';
+    var a = p1.value;
+    var b = p2.value;
+    if (!a || !b || a === b) return '';
+    var named = slugName(who.value);
+    var preset = matchPreset(data, a, b);
+    if (named && data.presets[named] && data.presets[named].featured[0] === a && data.presets[named].featured[1] === b) {
+      preset = named;
+    }
+    var path = '/cv2/';
+    if (preset && preset !== 'general' && (!named || named === preset)) path += '?view=' + encodeURIComponent(preset);
+    else if (preset === 'general' && !named) path += '';
+    else {
+      var parts = [];
+      if (named && !data.presets[named]) parts.push('view=' + encodeURIComponent(named));
+      else if (named && data.presets[named]) parts.push('view=' + encodeURIComponent(named));
+      parts.push('f1=' + encodeURIComponent(a));
+      parts.push('f2=' + encodeURIComponent(b));
+      path += '?' + parts.join('&');
+    }
+    return location.origin + path;
+  }
+
+  function show() {
+    var data = window.CV_PRESENTATIONS;
+    if (!data) return;
+    var map = {};
+    data.projects.forEach(function (project) { map[project.id] = project; });
+    var href = build();
+    urlEl.value = href;
+    open.href = href || '/cv2/';
+    var first = map[p1.value];
+    var second = map[p2.value];
+    preview.innerHTML = '';
+    [first, second].forEach(function (project) {
+      if (!project) return;
+      preview.innerHTML += '<a href="' + project.href + '" target="_blank" rel="noopener"><strong>' + project.title + '</strong><span>' + (project.summary || '') + '</span></a>';
+    });
+  }
+
+  function ready() {
+    var data = window.CV_PRESENTATIONS;
+    if (!data) {
+      setTimeout(ready, 50);
+      return;
+    }
+    var presets = data.presets || {};
+    var start = presets.mayor || presets.general;
+    var pickable = data.projects.filter(function (project) { return project.picker !== false; });
+    options(p1, pickable, start.featured[0]);
+    options(p2, pickable, start.featured[1]);
+    who.value = (presets.mayor && presets.mayor.name) || '';
+    show();
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (p1.value === p2.value) {
+      saved.textContent = 'Pick two different projects.';
+      return;
+    }
+    show();
+    saved.textContent = 'URL ready.';
+  });
+  p1.addEventListener('change', show);
+  p2.addEventListener('change', show);
+  who.addEventListener('input', show);
+  copy.addEventListener('click', function () {
+    show();
+    urlEl.select();
+    navigator.clipboard.writeText(urlEl.value).then(function () {
+      saved.textContent = 'Copied.';
+    }).catch(function () {
+      saved.textContent = 'Select the URL and copy it.';
+    });
+  });
+  ready();
+})();
+</script>
+</body>
+</html>

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /cv2/present.html
 
 Sitemap: https://liveai-email.onrender.com/sitemap.xml

@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="description" content="Martin Simpson — professional resume and career portfolio. Creator of Axon AI, U.S. patent holder (Pre-De-Icer), inventor of No More Boo-Boos and Pre-Ember Guard, and founder of nationwide medical testing and real estate ventures."/>
+<meta name="description" content="Martin Simpson — professional resume and career portfolio. Creator of Axon AI, inventor of Pre-De-Icer and No More Boo-Boos, and founder of nationwide medical testing and community development ventures."/>
 <title>Martin Simpson — Professional Resume &amp; Career Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="/cv2/cv.css?v=flow1"/>
+<link rel="stylesheet" href="/cv2/cv.css?v=sys1"/>
+<script>document.documentElement.classList.add('cv-view-pending');</script>
 <style>
   .sec-lead {
     max-width: 50em;
@@ -50,7 +51,7 @@
   .prod-thumb {
     width: 100%;
     aspect-ratio: 16 / 10;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     background: #eef3f8;
     border-bottom: 1px solid var(--line);
@@ -256,6 +257,32 @@
     text-decoration: none;
   }
   .ov-jump a:hover { border-color: var(--accent); color: var(--accent-text); }
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .feat-grid .ov-card img,
+  .feat-grid .ov-card video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background: #0b2340;
+    display: block;
+  }
+  .feat-grid .ov-card img { background: #eef3f8; }
+  .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
+  .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
+  html.cv-view-pending #featured-projects { visibility: hidden; }
+  @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .feat-grid .ov-card { flex-direction: column; }
+    .feat-grid .ov-card img,
+    .feat-grid .ov-card video { width: 100%; aspect-ratio: 16 / 9; flex: none; }
+    #featured { padding-top: 22px; }
+  }
   .rmk-feature { max-width: 440px; margin: 28px auto 0; }
   .rmk-feature .work-card { padding: 0; overflow: hidden; gap: 0; }
   .rmk-feature .work-card { border-top: 3px solid #e0a526; }
@@ -271,12 +298,6 @@
   }
   @media (max-width: 640px) {
     html { scroll-padding-top: 64px; }
-    .ov-grid { grid-template-columns: 1fr; gap: 12px; }
-    .ov-card { flex-direction: row; align-items: stretch; }
-    .ov-card img { width: 108px; aspect-ratio: auto; flex: 0 0 108px; }
-    .ov-body { padding: 12px 14px; gap: 4px; }
-    .ov-body strong { font-size: 16.5px; }
-    .ov-body > span:last-child { font-size: 14px; }
     .ov-jump { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; margin: 18px -14px 0; padding: 0 14px 4px; scrollbar-width: none; }
     .ov-jump::-webkit-scrollbar { display: none; }
     .ov-jump a { flex: 0 0 auto; white-space: nowrap; font-size: 14px; }
@@ -284,13 +305,6 @@
     .home-h { font-size: 26px; }
     .clip-single { margin-bottom: 24px; }
     .talk-strip, #talk { display: none; }
-    .rmk-feature { max-width: none; }
-    #overview { padding-top: 22px; }
-    #overview .wrap-wide { display: flex; flex-direction: column; }
-    #overview .home-h { margin-bottom: 12px; }
-    #overview .sec-lead { display: none; }
-    #overview .ov-jump { order: 1; margin: 0 -14px 14px; }
-    #overview .ov-grid { order: 2; }
   }
 </style>
 </head>
@@ -308,8 +322,8 @@
   <div class="wrap-wide hero-home-grid">
     <div class="hero-copy">
       <h1 class="hero-name">Martin Simpson</h1>
-      <p class="hero-titles">AI Systems Creator · Product Inventor · Philanthropist · Entrepreneur</p>
-      <p class="hero-summary">Martin Simpson built Axon AI, which puts real AI into the website a company already has. Before that, he spent three decades building companies. He founded a nationwide medical testing company, developed the historic Maplewood family district in St. Louis, and earned a U.S. patent for Pre-De-Icer.</p>
+      <p class="hero-titles">Entrepreneur · Inventor · AI Systems Creator · Community Developer</p>
+      <p class="hero-summary">Martin Simpson built Axon AI, which puts real AI into the website a company already has. Before that, he spent three decades founding and building companies. He founded a nationwide medical testing company and developed the historic Maplewood family district in St. Louis.</p>
     </div>
     <div class="hero-right">
       <div class="hero-art" role="img" aria-label="The St. Louis skyline and the Gateway Arch from across the Mississippi"></div>
@@ -317,49 +331,24 @@
   </div>
 </section>
 
-<section class="home-section home-section--soft" id="overview">
+<section class="home-section home-section--soft" id="featured">
   <div class="wrap-wide">
-    <p class="sec-kicker">Overview</p>
-    <h2 class="home-h">The Scope of Martin Simpson’s Work</h2>
-    <p class="sec-lead">Artificial intelligence, patented inventions, children’s hospital work, and three decades of companies. Start with the four you will hear about most.</p>
-    <div class="ov-grid">
-      <a class="ov-card" href="#current">
-        <img src="/portfolio/assets/hero-axon.png" alt="Axon AI on a company website" loading="eager"/>
-        <span class="ov-body"><span class="work-tag">Current Projects</span><strong>Axon AI</strong><span>Real AI put into the website a company already has, and twelve applications built on it.</span></span>
-      </a>
-      <a class="ov-card" href="#products">
-        <img src="/portfolio/assets/hero-predeicer.png" alt="Pre-De-Icer bottle" loading="eager"/>
-        <span class="ov-body"><span class="work-tag">U.S. Patent #8,119,025</span><strong>Pre-De-Icer™</strong><span>A preventive anti-icing treatment applied before the storm so ice cannot bond.</span></span>
-      </a>
-      <a class="ov-card" href="#products">
-        <img src="/portfolio/assets/bandage-blue.jpg" alt="No More Boo-Boos dissolvable children’s bandage" loading="eager"/>
-        <span class="ov-body"><span class="work-tag">Pediatric Wound Care</span><strong>No More Boo-Boos</strong><span>A dissolvable bandage for children that washes away under warm water instead of tearing skin.</span></span>
-      </a>
-      <a class="ov-card" href="#pediatric">
-        <img src="/sites/assets/kids-kitchen-table-tent.jpg" alt="Child in a hospital bed with a meal tray card" loading="eager"/>
-        <span class="ov-body"><span class="work-tag">Children’s Hospitals</span><strong>Pediatric Hospital Work</strong><span>Happy Meals on Saturdays at St. Louis Children’s Hospital, and the Ronald McDonald Kitchen proposal.</span></span>
-      </a>
-    </div>
+    <p class="sec-kicker">Featured</p>
+    <h2 class="home-h">Featured work</h2>
+    <div class="feat-grid" id="featured-projects" data-cv-build="sys1-20261123" aria-busy="true"></div>
     <nav class="ov-jump" aria-label="On this page">
-      <a href="#current">Current Projects</a>
-      <a href="#roots">Career</a>
-      <a href="#products">Inventions</a>
-      <a href="#pediatric">Pediatric &amp; Community</a>
-      <a href="#press">Media</a>
+      <a href="#current">AI &amp; Technology</a>
+      <a href="#career">Businesses Founded</a>
+      <a href="#products">Inventions &amp; Products</a>
+      <a href="#community">Community &amp; Philanthropy</a>
+      <a href="#press">In the News</a>
     </nav>
   </div>
 </section>
 
-<div class="talk-strip">
-  <div class="wrap-wide talk-strip-inner">
-    <p><strong>This résumé talks.</strong> Ask out loud about anything on this page.</p>
-    <a class="talk-strip-btn" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
-  </div>
-</div>
-
 <section class="home-section ai-band home-current" id="current">
   <div class="wrap-wide">
-    <p class="sec-kicker ai-kicker">Current Projects</p>
+    <p class="sec-kicker ai-kicker">AI &amp; Technology</p>
     <h2 class="home-h">Artificial Intelligence — Axon AI</h2>
     <p class="sec-lead">Martin saw that most companies have a working website with no AI behind it. So he built Axon AI. It puts real AI, trained on the company’s own documents, pricing, and rules, into the website the company already has. Nothing gets rebuilt. He has since used it to build twelve applications, including the AI on this résumé.</p>
 
@@ -369,7 +358,6 @@
           <video class="clip-player" controls playsinline preload="metadata" title="Axon AI Commercial Overview">
             <source src="/cv2/videos/axon-ai.mp4" type="video/mp4"/>
           </video>
-          <p class="clip-wait">Clip arriving — then hit play.</p>
         </div>
         <figcaption>Axon AI — Commercial Overview</figcaption>
       </figure>
@@ -383,161 +371,111 @@
   </div>
 </section>
 
-<section class="home-section" id="roots">
-  <div class="wrap-wide">
-    <p class="sec-kicker">Career · Where It Began</p>
-    <h2 class="home-h">Upbringing &amp; Education</h2>
-    <p class="sec-lead">Before the companies and the AI, there was Palo Alto and Washington University.</p>
-    <div class="roots-grid">
-      <article class="roots-card">
-        <p class="roots-kicker">Born at Stanford Hospital</p>
-        <h3>Palo Alto, California</h3>
-        <p>Martin was born at Stanford Hospital and raised in Palo Alto, where he went to grade school, middle school, and Palo Alto High School. He grew up there before and during the creation of Silicon Valley.</p>
-        <p>What shaped him most was the community itself: open-minded, intellectual, and right next to Stanford. The friends he still keeps in touch with from those years all recognize what a beautiful place it was to grow up.</p>
-      </article>
-      <a class="roots-card" href="/cv2/education.html">
-        <p class="roots-kicker">Class of 1987</p>
-        <h3>Washington University in St. Louis</h3>
-        <p>Martin came to St. Louis from California to attend Washington University on a full tuition scholarship. He earned degrees in biology and sociology and graduated in 1987.</p>
-        <p>He was headed toward neuroscience. That is where the name Axon comes from.</p>
-        <span class="work-more">Education detail →</span>
-      </a>
-    </div>
-  </div>
-</section>
-
 <section class="home-section home-section--soft" id="career">
   <div class="wrap-wide">
-    <p class="sec-kicker">Career · Three Decades of Building Companies</p>
-    <h2 class="home-h">Career</h2>
-    <p class="sec-lead">After Washington University, Martin went into public health during the HIV/AIDS crisis, at Doorways and the Missouri Department of Health. People were waiting two weeks for their test results. So in 1993 he organized the first coast-to-coast rapid HIV/STI laboratory network. That became a nationwide medical testing company, and the career that followed.</p>
+    <p class="sec-kicker">Businesses Founded</p>
+    <h2 class="home-h">Companies Martin Simpson Founded</h2>
+    <p class="sec-lead">After Washington University, Martin went into public health during the HIV/AIDS crisis, at Doorways and the Missouri Department of Health. People were waiting two weeks for their test results. So in 1993 he founded Specialized Testing Services and organized the first coast-to-coast rapid HIV/STI laboratory network.</p>
     <div class="ach-grid">
-      <a class="ach-card" href="/cv2/businesses.html">
+      <a class="ach-card" href="/cv2/businesses.html#sts">
         <b>$1.4M</b>
         <em>Annual gross — Specialized Testing Services</em>
       </a>
-      <a class="ach-card" href="/cv2/businesses.html">
+      <a class="ach-card" href="/cv2/businesses.html#dna">
         <b>$4M</b>
-        <em>Annual gross — Medical Testing Center</em>
+        <em>Annual gross — Medical Testing Solutions</em>
       </a>
-      <a class="ach-card" href="/cv2/development.html">
+      <a class="ach-card" href="/cv2/development.html#maplewood">
         <b>$3.4M</b>
         <em>Maplewood portfolio sale</em>
       </a>
-      <a class="ach-card" href="/cv2/inventions.html">
-        <b>U.S. Patent</b>
-        <em>#8,119,025 Anti-icing — plus provisionals</em>
+      <a class="ach-card" href="/cv2/inventions.html#pre-de-icer">
+        <b>Pre-De-Icer</b>
+        <em>Preventive anti-icing invention</em>
       </a>
     </div>
 
-    <h3 class="sub-h co-h">Companies Martin Simpson Has Founded or Owned</h3>
+    <h3 class="sub-h co-h">Businesses founded and owned</h3>
     <div class="co-grid">
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Specialized Counseling</h4><p>Started alongside Specialized Testing Services when he left the Missouri Department of Health.</p></a>
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Specialized Testing Services</h4><p>The first national lab network for rapid HIV/STI testing, 1993. About $1.4M a year.</p></a>
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Medical Testing</span><h4>Medical Testing Solutions</h4><p>Nationwide DNA paternity testing, run as a call center. About $4M a year.</p></a>
-      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Maplewood Development</h4><p>Bought and rebuilt the Sutton Boulevard family district in Maplewood, Missouri.</p></a>
-      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Florida Beachfront Land</h4><p>Bought beachfront by the acre at Cape San Blas and Mexico Beach, subdivided it, and sold the lots.</p></a>
-      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Real Estate</span><h4>Michigan Property</h4><p>Property development in the Benton Harbor, Michigan area.</p></a>
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Maya Cafe</h4><p>The first restaurant in the Maplewood district, on Sutton Boulevard.</p></a>
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Momo’s</h4><p>A Maplewood restaurant, opened with a partner.</p></a>
-      <a class="co-card" href="/cv2/businesses.html"><span class="co-tag">Restaurants</span><h4>Boogaloo’s</h4><p>A Maplewood restaurant and bar.</p></a>
-      <a class="co-card" href="/cv2/development.html"><span class="co-tag">Venues</span><h4>The Focal Point</h4><p>One of the first two businesses in the Maplewood district.</p></a>
-      <a class="co-card" href="/cv2/inventions.html"><span class="co-tag">Products</span><h4>Pre-De-Icer™</h4><p>Preventive anti-icing product. U.S. Patent #8,119,025.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#counseling"><span class="co-tag">Counseling</span><h4>Specialized Counseling</h4><p>Founded alongside Specialized Testing Services when he left the Missouri Department of Health.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#sts"><span class="co-tag">HIV/STI Testing</span><h4>Specialized Testing Services</h4><p>The first national lab network for rapid HIV/STI testing, founded 1993. About $1.4M a year.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#dna"><span class="co-tag">DNA Paternity Testing</span><h4>Medical Testing Solutions</h4><p>Nationwide DNA paternity testing, founded as a call-center company. About $4M a year.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#maya"><span class="co-tag">Restaurants</span><h4>Maya Cafe</h4><p>The first restaurant he founded in the Maplewood district, on Sutton Boulevard.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#momos"><span class="co-tag">Restaurants</span><h4>Momo’s</h4><p>A Maplewood restaurant he founded with a partner.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#boogaloos"><span class="co-tag">Restaurants</span><h4>Boogaloo’s</h4><p>A Maplewood restaurant and bar he founded.</p></a>
       <a class="co-card" href="/cv2/current.html"><span class="co-tag">Artificial Intelligence</span><h4>Axon AI</h4><p>Real AI put into the websites companies already have.</p></a>
+    </div>
+
+    <h3 class="sub-h co-h">Property acquired or developed</h3>
+    <div class="co-grid">
+      <a class="co-card" href="/cv2/development.html#maplewood"><span class="co-tag">Community Development</span><h4>Historic Maplewood</h4><p>Acquired and developed the Sutton Boulevard family district in Maplewood, Missouri.</p></a>
+      <a class="co-card" href="/cv2/development.html#florida"><span class="co-tag">Property Development</span><h4>Florida Beachfront Land</h4><p>Bought beachfront by the acre at Cape San Blas and Mexico Beach, subdivided it, and sold the lots.</p></a>
     </div>
   </div>
 </section>
 
 <section class="home-section" id="products">
   <div class="wrap-wide">
-    <p class="sec-kicker">Inventions</p>
-    <h2 class="home-h">Products &amp; Patented Inventions</h2>
-    <p class="sec-lead">Alongside his companies, Martin invented physical products, each one built to fix a specific real-world problem. His first, Pre-De-Icer, earned U.S. Patent #8,119,025.</p>
+    <p class="sec-kicker">Inventions &amp; Products</p>
+    <h2 class="home-h">Products &amp; Inventions</h2>
+    <p class="sec-lead">Alongside his companies, Martin invented physical products, each one built to fix a specific real-world problem.</p>
 
     <div class="clip-single">
       <figure class="clip-card">
         <div class="clip-frame">
-          <video class="clip-player" controls playsinline preload="metadata" title="Pre-De-Icer — U.S. Patent #8,119,025">
+          <video class="clip-player" controls playsinline preload="metadata" title="Pre-De-Icer">
             <source src="/cv2/videos/pre-de-icer.mp4" type="video/mp4"/>
           </video>
-          <p class="clip-wait">Clip arriving — then hit play.</p>
         </div>
-        <figcaption>Pre-De-Icer™ Commercial — U.S. Utility Patent #8,119,025</figcaption>
+        <figcaption>Pre-De-Icer commercial</figcaption>
       </figure>
     </div>
 
     <div class="prod-grid">
-      <a class="work-card" href="/portfolio/projects/pre-de-icer.html">
+      <a class="work-card" href="/cv2/inventions.html#pre-de-icer">
         <img class="prod-thumb" src="/portfolio/assets/hero-predeicer.png" alt="Pre-De-Icer bottle — Never Scrape Again, Apply Before the Storm" loading="lazy"/>
         <div class="prod-body">
-          <span class="work-tag">U.S. Patent #8,119,025</span>
-          <h3>Pre-De-Icer™</h3>
-          <p>Patented salt-free preventive anti-icing formulation applied before winter storms so frost, snow, and ice cannot bond to windshields, equipment, or road surfaces.</p>
+          <span class="work-tag">Anti-icing · Not yet commercialized</span>
+          <h3>Pre-De-Icer</h3>
+          <p>Salt-free preventive anti-icing formulation applied before winter storms so frost, snow, and ice cannot bond to windshields, equipment, or road surfaces.</p>
           <span class="work-more">View Pre-De-Icer →</span>
         </div>
       </a>
-      <a class="work-card" href="/portfolio/projects/no-more-boo-boos.html">
+      <a class="work-card" href="/cv2/inventions.html#boo-boos">
         <img class="prod-thumb" src="/portfolio/assets/bandage-blue.jpg" alt="No More Boo-Boos light-blue children's bandage with koala graphic" loading="lazy"/>
         <div class="prod-body">
-          <span class="work-tag">Wound Care · Provisional Path</span>
+          <span class="work-tag">Proposed · Not commercially launched</span>
           <h3>No More Boo-Boos (Dissolvable Bandage)</h3>
-          <p>A pain-free bandage designed for children and fragile skin (intended FDA Class II pathway): peel off the top layer, hold under warm water, and the film dissolves cleanly without tearing skin.</p>
+          <p>A pain-free bandage designed for children and fragile skin: peel off the top layer, hold under warm water, and the film dissolves cleanly without tearing skin. FDA clearance has not been granted.</p>
           <span class="work-more">View No More Boo-Boos →</span>
-        </div>
-      </a>
-      <a class="work-card" href="/portfolio/projects/ember-guard.html">
-        <img class="prod-thumb" src="/portfolio/assets/ember-guard.jpg" alt="Applying Pre-Ember Guard protective gel spray to a roof ahead of wildfire embers" loading="lazy"/>
-        <div class="prod-body">
-          <span class="work-tag">Wildfire Protection</span>
-          <h3>Pre-Ember Guard</h3>
-          <p>Formulated all-natural protective gel sprayed onto wood and shake shingles ahead of wildfire danger to help keep wind-blown embers from igniting; rinses clean with water afterward.</p>
-          <span class="work-more">View Pre-Ember Guard →</span>
         </div>
       </a>
     </div>
 
     <div class="sec-actions">
-      <a class="btn-outline" href="/cv2/inventions.html">Patents &amp; Inventions Detail →</a>
+      <a class="btn-outline" href="/cv2/inventions.html">Inventions detail →</a>
     </div>
   </div>
 </section>
 
-<section class="home-section home-section--soft" id="pediatric">
+<section class="home-section home-section--soft" id="community">
   <div class="wrap-wide">
-    <p class="sec-kicker">Pediatric &amp; Community Work</p>
-    <h2 class="home-h">Children’s Hospitals &amp; Community</h2>
-    <p class="sec-lead">Much of Martin’s work has been for children. It started on the pediatric oncology floor at St. Louis Children’s Hospital, and it shaped the Maplewood district and the Ronald McDonald Kitchen proposal.</p>
+    <p class="sec-kicker">Community &amp; Philanthropy</p>
+    <h2 class="home-h">Children’s Organizations &amp; Maplewood</h2>
+    <p class="sec-lead">Much of Martin’s work has been for children. It started on the pediatric oncology floor at St. Louis Children’s Hospital, and it shaped the Maplewood district.</p>
     <div class="comm-grid">
-      <a class="comm-item" href="/cv2/community.html">
-        <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 4.5 19 8v4.2c0 4.3-3 7.2-7 8.3-4-1.1-7-4-7-8.3V8l7-3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10.5v4M10 12.5h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <div>
-          <h3>Happy Meals on Saturdays</h3>
-          <p>Built custom heated and cooled wagons to deliver individualized Saturday meals across the pediatric oncology floor at St. Louis Children’s Hospital — the direct inspiration for the Ronald McDonald Kitchen proposal.</p>
-        </div>
-      </a>
-      <a class="comm-item" href="/cv2/community.html">
+      <a class="comm-item" href="/cv2/development.html#maplewood">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 18c.7-2.6 2.2-3.9 4.3-3.9 1.3 0 2.3.5 3.2 1.4.9-.9 1.9-1.4 3.2-1.4 2.1 0 3.6 1.3 4.3 3.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
           <h3>Support for Children’s Organizations</h3>
           <p>Provided dedicated Maplewood space and long-term support for Pywacket Children’s Theater and Friends of Kids with Cancer.</p>
         </div>
       </a>
-      <a class="comm-item" href="/cv2/community.html">
+      <a class="comm-item" href="/cv2/development.html#maplewood">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.2-7-9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7 3.8C19 15.8 12 20 12 20Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
         <div>
           <h3>Family Entertainment District</h3>
-          <p>Designed a downtown district centered around children and families, documented by PBS KETC Channel 9.</p>
-        </div>
-      </a>
-    </div>
-    <div class="rmk-feature">
-      <a class="work-card" href="/portfolio/projects/ronald-mcdonald-kitchen.html">
-        <img class="prod-thumb" src="/sites/assets/kids-kitchen-table-tent.jpg" alt="Smiling child in hospital bed with meal tray card" loading="lazy"/>
-        <div class="prod-body">
-          <span class="work-tag">501(c)(3) Hospital Concept</span>
-          <h3>Ronald McDonald Kitchen</h3>
-          <p>Proposed restaurant-to-hospital giving model funding children’s hospitals and placing a short, familiar free menu in hospital cafeterias for families in treatment. Independent concept proposal; not affiliated with McDonald’s or RMHC.</p>
-          <span class="work-more">View Hospital Initiative →</span>
+          <p>Developed a downtown district centered around children and families, documented by PBS KETC Channel 9.</p>
         </div>
       </a>
     </div>
@@ -546,8 +484,8 @@
 
 <section class="home-section" id="press">
   <div class="wrap-wide">
-    <p class="sec-kicker">Media</p>
-    <h2 class="home-h">Legacy &amp; Public Record</h2>
+    <p class="sec-kicker">In the News</p>
+    <h2 class="home-h">Television &amp; Newspaper Coverage</h2>
     <p class="sec-lead">The public record of that work, in television and newspaper coverage.</p>
     <div class="legacy-grid">
       <article class="legacy-card">
@@ -589,7 +527,7 @@
         <span class="ai-banner-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15.8V8.4A2 2 0 0 1 7 6.4h6.2L16.8 9.8v6A2 2 0 0 1 14.8 17.8H7A2 2 0 0 1 5 15.8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M16.8 10.5h1.4A1.8 1.8 0 0 1 20 12.3v5.2A1.8 1.8 0 0 1 18.2 19.3h-7.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
           <h2>Talk with Mr. Simpson’s AI Team Member</h2>
-          <p>Ask out loud about anything on this page: Axon AI, his patents, his companies, or his work for children.</p>
+          <p>Ask out loud about anything on this page: Axon AI, his companies, or his work for children.</p>
         </div>
       </div>
       <a class="btn-talk xl" href="/cv2/talk.html"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 1 0 7 0v-5A3.5 3.5 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5M8.5 20.5h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Talk with Mr. Simpson’s AI Team Member</a>
@@ -604,7 +542,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/orb.js?v=flow1"></script>
-<script src="/cv2/cv.js?v=flow1"></script>
+<script src="/cv2/present.js?v=sys1"></script>
+<script src="/cv2/orb.js?v=sys1"></script>
+<script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>
