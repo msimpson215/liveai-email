@@ -41,6 +41,8 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+    max-width: 740px;
+    margin: 0 auto;
   }
   .prod-grid .work-card {
     width: 100%;
@@ -272,7 +274,7 @@
     background: #0b2340;
     display: block;
   }
-  .feat-grid .ov-card img { background: #eef3f8; }
+  .feat-grid .ov-card img { background: #eef3f8; object-fit: cover; }
   .feat-grid .ov-card .feat-embed { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; background: #0b2340; }
   .feat-grid .ov-card .featured-detail-link { font-weight: 750; color: var(--navy-2); text-decoration: none; padding: 0 18px 18px; }
   .feat-grid .ov-card .featured-detail-link:hover { text-decoration: underline; }
@@ -342,7 +344,7 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Featured</p>
     <h2 class="home-h">Featured work</h2>
-    <div class="feat-grid" id="featured-projects" data-cv-build="mayor-florida-20261123" aria-busy="true"></div>
+    <div class="feat-grid" id="featured-projects" data-cv-build="mayor-florida-20261123b" aria-busy="true"></div>
     <a class="florida-feature" href="/cv2/development.html#florida" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:20px;align-items:center;margin:26px auto 8px;max-width:1040px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;text-decoration:none;color:inherit;box-shadow:var(--shadow);">
       <img src="/cv2/images/archive/florida-cape-san-blas-aerial.jpg" alt="Cape San Blas Gulf Coast property development" loading="lazy" style="width:100%;height:100%;min-height:190px;object-fit:cover;"/>
       <span style="display:block;padding:22px 24px;">
@@ -453,9 +455,9 @@
 
     <div class="prod-grid">
       <a class="work-card" href="/cv2/inventions.html#pre-de-icer">
-        <img class="prod-thumb" src="/portfolio/assets/hero-predeicer.png" alt="Pre-De-Icer bottle — Never Scrape Again, Apply Before the Storm" loading="lazy"/>
+        <img class="prod-thumb" src="/portfolio/assets/predeicer-banner.png" alt="Pre-De-Icer bottle — Never Scrape Again, Apply Before the Storm" loading="lazy"/>
         <div class="prod-body">
-          <span class="work-tag">Anti-icing · Not yet commercialized</span>
+          <span class="work-tag">Anti-icing invention</span>
           <h3>Pre-De-Icer</h3>
           <p>Salt-free preventive anti-icing formulation applied before winter storms so frost, snow, and ice cannot bond to windshields, equipment, or road surfaces.</p>
           <span class="work-more">View Pre-De-Icer →</span>
@@ -464,7 +466,7 @@
       <a class="work-card" href="/cv2/inventions.html#boo-boos">
         <div class="prod-thumb" role="img" aria-label="No More Boo-Boos dissolvable bandage project" style="padding:32px 24px;min-height:135px;display:grid;place-items:center;font-size:clamp(22px,3vw,32px);font-weight:800;color:#183d6a;text-align:center;">No More Boo-Boos<br/>Dissolvable Bandage</div>
         <div class="prod-body">
-          <span class="work-tag">Proposed · Not commercially launched</span>
+          <span class="work-tag">Children’s health invention</span>
           <h3>No More Boo-Boos (Dissolvable Bandage)</h3>
           <p>A pain-free bandage designed for children and fragile skin: peel off the top layer, hold under warm water, and the film dissolves cleanly without tearing skin. FDA clearance has not been granted.</p>
           <span class="work-more">View No More Boo-Boos →</span>
@@ -561,8 +563,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/present.js?v=mayor-florida-20261123"></script>
-<script src="/cv2/orb.js?v=mayor-20261123a"></script>
+<script src="/cv2/present.js?v=mayor-florida-20261123b"></script>
+<script src="/cv2/orb.js?v=mayor-florida-20261123b"></script>
 <script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>

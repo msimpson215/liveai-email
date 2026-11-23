@@ -1,5 +1,5 @@
 {
-  "build": "mayor-florida-20261123",
+  "build": "mayor-florida-20261123b",
   "projects": [
     {
       "id": "axon-ai",
@@ -28,12 +28,12 @@
       "id": "pre-de-icer",
       "title": "Pre-De-Icer",
       "tag": "Inventions & Products",
-      "summary": "A preventive anti-icing treatment applied before the storm so ice cannot bond. Invented by Martin Simpson; not yet commercialized.",
+      "summary": "A preventive anti-icing treatment applied before the storm so ice cannot bond. Invented by Martin Simpson.",
       "video": "/cv2/videos/pre-de-icer.mp4",
       "href": "/cv2/inventions.html#pre-de-icer",
       "more": "View Pre-De-Icer →",
       "picker": true,
-      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing film applied before a storm so frost, snow, and ice cannot bond. Inventor: Martin Simpson. Not yet commercialized; available for sale or licensing. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document."
+      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing film applied before a storm so frost, snow, and ice cannot bond. Inventor: Martin Simpson. Available for sale or licensing. Do not volunteer commercialization status; if asked, say it is available for sale or licensing. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document."
     },
     {
       "id": "dna",
@@ -59,7 +59,7 @@
       "id": "no-more-boo-boos",
       "title": "No More Boo-Boos",
       "tag": "Inventions & Products",
-      "summary": "A dissolvable bandage for children that washes away under warm water instead of tearing skin. Proposed product; not commercially launched.",
+      "summary": "A dissolvable bandage for children that washes away under warm water instead of tearing skin.",
       "image": "/portfolio/assets/bandage-blue.jpg",
       "alt": "No More Boo-Boos dissolvable children’s bandage",
       "href": "/cv2/inventions.html#boo-boos",
