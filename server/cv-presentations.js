@@ -56,7 +56,7 @@ export function presentationInstructions(presentation) {
   }).join('\n')
   return `
 THIS VISITOR'S PRESENTATION:
-This person opened a targeted link to the same résumé — not a different website, and not a different AI. Two projects are featured at the top of the page:
+This person opened a targeted link to the same curriculum vitae — not a different website, and not a different AI. Two projects are featured at the top of the page:
 ${lines}
 If they ask what they should look at, what he is working on now, or where to start, lead with those two. Keep the rest of this file. You still know the full factual career history. Do not invent a different biography. Do not mention presets, configuration, query parameters, or that this page was customized for a named recipient unless they bring that up. Do not say you are a different system for this visitor.
 `
