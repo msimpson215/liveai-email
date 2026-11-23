@@ -294,6 +294,11 @@
   }
   #community .comm-grid, #childrens-hospital .comm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (max-width: 760px) { #community .comm-grid, #childrens-hospital .comm-grid { grid-template-columns: 1fr; } }
+  .venue-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0 0 22px; }
+  .venue-photo { display: block; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #fff; color: inherit; text-decoration: none; }
+  .venue-photo img { display: block; width: 100%; aspect-ratio: 3 / 2; height: auto; object-fit: cover; }
+  .venue-photo span { display: block; padding: 10px 14px 12px; font-size: 14px; font-weight: 600; }
+  @media (max-width: 760px) { .venue-photos { grid-template-columns: 1fr; } }
   .rmk-feature { max-width: 440px; margin: 28px auto 0; }
   .rmk-feature .work-card { padding: 0; overflow: hidden; gap: 0; }
   .rmk-feature .work-card { border-top: 3px solid #e0a526; }
@@ -426,6 +431,20 @@
     <p class="sec-kicker">Community &amp; Philanthropy</p>
     <h2 class="home-h">Contributions to Maplewood</h2>
     <p class="sec-lead">Martin owned the buildings and leased them to the Black Cat Theater, The Focal Point, and Pywacket Children’s Theater for $1 a month, giving theater, live music, and children’s arts affordable, long-term space in historic downtown Maplewood.</p>
+    <div class="venue-photos">
+      <a class="venue-photo" href="/cv2/development.html#black-cat">
+        <img src="/portfolio/assets/black-cat-theatre.jpg" alt="The Black Cat Theatre building on a corner in downtown Maplewood" width="1024" height="537" loading="lazy"/>
+        <span>Black Cat Theatre — leased for $1 a month</span>
+      </a>
+      <a class="venue-photo" href="/cv2/development.html#focal-point">
+        <img src="/portfolio/assets/focal-point-storefront.jpg" alt="The Focal Point storefront on Sutton Boulevard in Maplewood" width="678" height="452" loading="lazy"/>
+        <span>The Focal Point — the building he developed and owned</span>
+      </a>
+      <a class="venue-photo" href="/cv2/development.html#focal-point">
+        <img src="/portfolio/assets/focal-point-stage.jpg" alt="Inside The Focal Point: rows of vintage theater seats facing a stage with a grand piano" width="678" height="452" loading="lazy"/>
+        <span>Inside The Focal Point — 20-year lease for $1 a month</span>
+      </a>
+    </div>
     <div class="comm-grid">
       <a class="comm-item" href="/cv2/development.html#arts">
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20v-5h4v5" stroke="currentColor" stroke-width="1.7"/></svg></span>
