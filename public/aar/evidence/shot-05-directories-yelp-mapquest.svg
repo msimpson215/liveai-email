@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-label="Evidence plate: Yelp and MapQuest directory results">
+  <rect width="900" height="560" fill="#eef4fc"/>
+  <rect x="28" y="28" width="844" height="504" rx="22" fill="#fff" stroke="#c5d6ee"/>
+  <text x="56" y="78" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#6b7c96">EVIDENCE · DIRECTORIES</text>
+  <text x="56" y="128" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#0b1f4a">Yelp and MapQuest</text>
+  <text x="56" y="190" font-family="Arial,sans-serif" font-size="20" fill="#0b1f4a">Yelp: tractor imagery on aar-auto-sales-byars</text>
+  <text x="56" y="240" font-family="Arial,sans-serif" font-size="20" fill="#0b1f4a">MapQuest: equipment thumbnail next to the result</text>
+  <text x="56" y="310" font-family="Arial,sans-serif" font-size="18" fill="#3a4660">Verify photos, phone, website, and directions. A directory can look like independent confirmation.</text>
+  <text x="56" y="470" font-family="Arial,sans-serif" font-size="16" fill="#8a93a3">Replace this plate with the directory screenshot. Crop unrelated tabs and residential photos before export.</text>
+</svg>

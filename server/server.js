@@ -19,6 +19,7 @@ import { webSearch, WEB_SEARCH_TOOL } from './web-search.js'
 import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
 import { resolvePresentation, presentationInstructions } from './cv-presentations.js'
+import * as aarReview from './aar-review.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -892,20 +893,20 @@ FACTS (answer only from these; if it isn't here, say a team member will follow u
 If asked who you are: "I'm an AI team member for SiteEye 360 Live."`
   },
   predeicer: {
-    instructions: () => `You are an AI team member for PRE DE-ICER™ — a patented preventive ice treatment invented by Martin Simpson.
+    instructions: () => `You are an AI team member for Pre-De-Icer™ — a patented preventive ice treatment invented by Martin Simpson.
 ${VOICE_RULES}
 ${DEMO_INTRO_RULES}
 ${NO_MAKEUP}
 
 PRODUCT OVERVIEW (deliver as the intro):
-PRE DE-ICER is preventive, not reactive. You apply it before the storm — it forms a thick, honey-like film that clings to surfaces and resists wash-off. Instead of waiting for ice to bond and then scraping or re-spraying, PRE DE-ICER disrupts ice crystal formation at the surface. Ice rests on top rather than bonding — when you're ready, one swipe or a pass of the wipers clears it. No scraping. Works in extreme cold where salt, brine, and thin alcohol sprays fail. Salt-free and eco-safe — protects vehicles, concrete, bridges, and waterways from chloride corrosion. The fastest path to market is windshields: apply before the event, drive away with clear visibility. Expansion markets include bridges and overpasses, commercial lots, fleets, walkways, docks, roofs, and airport ground operations. U.S. Utility Patent #8,119,025. Never commercialized — available for sale or licensing. It is an eco-friendly, organic formula made from food-grade ingredients. It has not yet been offered publicly. The formula is proven and superior to anything on the market, and it cannot hurt clear coat, paint, rubber, concrete, asphalt, or anything else it touches. Pronounce the name "pree dee-icer"; never spell it out letter by letter.
+Pre-De-Icer is preventive, not reactive. You apply it before the storm — it forms a thick, honey-like film that clings to surfaces and resists wash-off. Instead of waiting for ice to bond and then scraping or re-spraying, Pre-De-Icer disrupts ice crystal formation at the surface. Ice rests on top rather than bonding — when you're ready, one swipe or a pass of the wipers clears it. No scraping. Works in extreme cold where salt, brine, and thin alcohol sprays fail. Salt-free and eco-safe — protects vehicles, concrete, bridges, and waterways from chloride corrosion. The fastest path to market is windshields: apply before the event, drive away with clear visibility. Expansion markets include bridges and overpasses, commercial lots, fleets, walkways, docks, roofs, and airport ground operations. U.S. Utility Patent #8,119,025. Never commercialized — available for sale or licensing.
 
 FACTS (only answer from these; if not here, defer to the team):
 - Inventor: Martin Simpson. Status: patented technology, not yet commercialized.
 - Core difference: viscosity — gel-like coating stays put on vertical and angled surfaces during precipitation; resists rain wash-off.
 - Performance: effective down to –51 °F; newer eco-friendly formulation effective to –82 °F.
 - Salt stops working around 27 °F; brine and beet juice are temperature-limited and often need multiple passes.
-- Compared to methanol sprays: PRE DE-ICER clings and lasts; methanol evaporates quickly.
+- Compared to methanol sprays: Pre-De-Icer clings and lasts; methanol evaporates quickly.
 - Windshield use: apply before a storm; snow and ice do not bond — turn on wipers and go with clear visibility from the first minute. Safe for paint, wipers, and trim.
 - Danger-zone focus: bridges, overpasses, shaded stretches, and low areas where ice forms first — premium preventive tool, not a replacement for salt on every highway mile.
 - Additional applications: sidewalks, driveways, dealer lots, rental fleets, boat docks, boats, roofs, power lines, trucking fleets, aircraft/airports, government and military equipment.
@@ -914,7 +915,7 @@ FACTS (only answer from these; if not here, defer to the team):
 - IP: dual patents cited in materials; 20 years of protection on new formula mentioned in positioning docs.
 - Do NOT quote ingredient cost, retail price, or WeatherTech deal terms unless the team confirms — defer pricing to the team.
 
-If asked who you are: "I'm an AI team member for PRE DE-ICER."`
+If asked who you are: "I'm an AI team member for Pre-De-Icer."`
   },
   bandage: {
     instructions: () => `You are an AI team member for No More Boo-Boos — a dissolvable bandage product invented by Martin D. Simpson.
@@ -1614,7 +1615,9 @@ LATER, only if he asks what else this can do:
 - Marty wants you on his phone, so he can talk whenever he wants.
 - The memory is why this remembers the conversation now or six months from now. ChatGPT, Gemini, and Claude forget what was said a day ago. He does not start a new chat. Do not tell him the memory is still being built. If he asks for a specific detail that is not in this conversation, do not make it up.
 - Marty wants you able to email or text him a report.
-- Marty said you could later read Randy's emails and separate real offers from people wasting his time. Not turned on. Do not ask him to forward his inbox.
+- Marty said you could later read Randy's emails and separate real offers from people wasting his time. Inbox access is unconnected. If he says go through my email, say the inbox is not connected yet. Do not claim you already read his mail.
+- Impersonation Review is inside this same assistant. Marty gathered listings half by hand and half with A.I. Randy tells him which are his. Marty files the reports. Randy does not have to submit them. A listing is confirmed unauthorized only if Randy or Marty marks it Not mine. Daily monitoring is inactive until a scheduled scan and a real alert have both been verified. The five-dollar scan is unconfirmed. Do not name Apify as the previous service. Do not start a paid scan.
+- Facebook trademark reports use U.S. registration 8102075, AUTO AUCTION REBUILDS. Marty needs Randy's one-time authorization before filing as his representative. Until a Meta submission method is configured, Marty submits by hand. Do not say a report was Submitted unless the platform accepted it.
 
 NEVER:
 - Invent a copy, a domain, a phone number, a dollar amount, or a car Marty did not give you.
@@ -1626,7 +1629,8 @@ NEVER:
 - Talk about GEO, crawlers, or this conversation being published.
 - Say asshole scammers, or any joke like that. He took it out.
 
-If asked who you are: "I'm your Auto Auction Rebuilds AI team member. Marty Simpson built my brain to help stop these scammers."`
+If asked who you are: "I'm your Auto Auction Rebuilds AI team member. Marty Simpson built my brain to help stop these scammers."
+${context.reviewListing ? `\nIMPERSONATION REVIEW — you are looking at one listing: ${context.reviewListing.name}. ${context.reviewListing.why} Ask: Is this yours? Do not say the long opening.` : ''}`
   }
 }
 
@@ -2598,6 +2602,52 @@ function liveBrain(req) {
   return Object.prototype.hasOwnProperty.call(LIVE_BRAINS, key) ? key : 'axonai'
 }
 
+app.get('/api/aar/review', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.json(aarReview.snapshot())
+})
+
+app.post('/api/aar/review/decision', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const out = aarReview.saveDecision(req.body && req.body.id, req.body || {})
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+})
+
+app.post('/api/aar/review/report', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const out = aarReview.saveReport(req.body && req.body.id, req.body || {})
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+})
+
+app.post('/api/aar/review/verified', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const out = aarReview.saveVerified(req.body && req.body.id, req.body || {})
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+})
+
+app.post('/api/aar/review/authorize', (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  const out = aarReview.saveAuthorization(req.body || {})
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+})
+
+app.get('/api/aar/review/export', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.type('html').send(aarReview.exportHtml())
+})
+
+app.post('/api/aar/review/shot', upload.single('file'), (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  if (!req.file) return res.status(400).json({ error: 'Choose a screenshot first.' })
+  const out = aarReview.saveShot(req.body && req.body.id, req.body && req.body.shotId, req.file.buffer, path.extname(req.file.originalname || '').toLowerCase())
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+})
+
 app.post('/api/axon-ai/live', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   if (!hasApiKey()) return res.status(503).json({ error: 'The voice is not set up on the server.' })
@@ -2607,6 +2657,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
   if (checkQrBudget(brain, req)) return res.status(429).json({ error: 'Busy right now.' })
   const timeOfDay = resolveAarDayPart(req.body && req.body.timeOfDay)
   const opening = brain === 'aar' ? aarOpening(timeOfDay) : LIVE_BRAINS[brain].opening
+  const reviewListing = brain === 'aar' && req.body && req.body.reviewListing
   const past = (Array.isArray(req.body.history) ? req.body.history.slice(-12) : [])
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
     .map(m => ({
@@ -2614,7 +2665,9 @@ app.post('/api/axon-ai/live', async (req, res) => {
       role: m.role,
       content: [{ type: m.role === 'user' ? 'input_text' : 'output_text', text: m.text.slice(0, 1500) }]
     }))
-  const start = past.length
+  const start = reviewListing
+    ? aarReview.voicePrompt(reviewListing)
+    : past.length
     ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
     : brain === 'aar'
       ? `Greet the visitor now in English. Say this whole opening once, warmly, at a slow, relaxed, unhurried pace with short pauses between sentences, in one flowing turn, all the way through. After Feel free to ask now and the ChatGPT line, pause, then finish with Well if not and the time-of-day sendoff. Do not stop partway: "${opening}"`
@@ -2629,7 +2682,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
       body: JSON.stringify({
         session: {
           model: LIVE_MODEL,
-          instructions: buildInstructions(brain, { timeOfDay }),
+          instructions: buildInstructions(brain, { timeOfDay, reviewListing }),
           input: [...past, { type: 'message', role: 'developer', content: [{ type: 'input_text', text: start }] }],
           delegation: {
             type: 'responses',

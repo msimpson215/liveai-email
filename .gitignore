@@ -6,5 +6,11 @@ data/founder-files/*
 !data/founder-files/.gitkeep
 data/manuals/*
 !data/manuals/.gitkeep
+data/scam-search/
+data/aar-review/*
+!data/aar-review/.gitkeep
+public/aar/evidence/uploads/
+data/marcus-email.txt
 node_modules/
+.secrets/
 npm-debug.log*
