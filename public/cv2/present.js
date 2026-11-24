@@ -127,6 +127,14 @@
     if (project.embed) {
       return '<iframe class="feat-embed" src="' + esc(project.embed) + '" title="' + esc(project.title) + ' television profile" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>';
     }
+    if (project.image && project.qr) {
+      return (
+        '<span class="feat-duo">' +
+          '<img src="' + esc(project.image) + '" alt="' + esc(project.alt || '') + '" loading="eager"/>' +
+          '<span class="feat-qr"><img src="' + esc(project.qr) + '" alt="' + esc(project.qrAlt || '') + '" loading="eager"/><span>Scan to try it</span></span>' +
+        '</span>'
+      );
+    }
     if (project.image) {
       return '<img src="' + esc(project.image) + '" alt="' + esc(project.alt || '') + '" loading="eager"/>';
     }

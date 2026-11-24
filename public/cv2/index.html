@@ -294,7 +294,11 @@
   .florida-home-grid .fin-note { font-size: 13.5px; color: var(--muted); margin: 0 0 14px; }
   @media (max-width: 760px) { .florida-home-grid { grid-template-columns: 1fr; } }
   .feat-grid .ov-card[data-project-id="no-more-boo-boos"] img { object-position: center 94%; }
-  .feat-grid .ov-card[data-project-id="patient-education"] img { object-fit: contain; background: #011538; }
+  .feat-grid .ov-card .feat-duo { container-type: inline-size; display: flex; align-items: center; justify-content: center; gap: 7%; width: 100%; aspect-ratio: 16 / 9; background: #011538; box-sizing: border-box; }
+  .feat-grid .ov-card .feat-duo > img { flex: none; width: 34cqw; height: 48cqw; aspect-ratio: auto; object-fit: contain; background: transparent; }
+  .feat-grid .ov-card .feat-qr { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .feat-grid .ov-card .feat-qr img { flex: none; width: 36cqw; height: 36cqw; aspect-ratio: 1 / 1; object-fit: contain; background: #fff; padding: 1.5cqw; border-radius: 8px; box-sizing: border-box; }
+  .feat-grid .ov-card .feat-qr span { color: #fff; font-size: 12.5px; font-weight: 700; letter-spacing: .02em; }
   #press .legacy-card .legacy-media, #press .legacy-card .legacy-media img { background: #e8edf3; object-fit: cover; object-position: center top; }
   #press .press-front-page .legacy-media, #press .press-magic .legacy-media,
   #press .press-front-page .legacy-media img, #press .press-magic .legacy-media img { background: #f4efe6; object-fit: contain; object-position: center; }
@@ -368,7 +372,7 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Career</p>
     <h2 class="home-h">Selected Career Highlights</h2>
-    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261124b" aria-busy="true"></div>
+    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261124c" aria-busy="true"></div>
     <nav class="ov-jump" aria-label="On this page">
       <a href="#current">AI &amp; Technology</a>
       <a href="#press">In the News</a>
@@ -384,8 +388,8 @@
   <div class="wrap-wide">
     <div class="mayor-video-focus" style="display:none;">
       <p class="sec-kicker ai-kicker">KETC Channel 9 · Living in St. Louis</p>
-      <h2 class="home-h">Who Martin Is — and Why He Does It</h2>
-      <p class="sec-lead">The original television feature on his work in historic downtown Maplewood, his daughter Mia, and why helping children became his mission.</p>
+      <h2 class="home-h">The Channel 9 Feature</h2>
+      <p class="sec-lead">This KETC Channel 9 feature explains a lot about who Martin is: his work in historic downtown Maplewood, his daughter Mia, and why helping children matters to him.</p>
       <div style="max-width:840px;margin:0 auto 24px;aspect-ratio:16/9;">
         <iframe src="https://www.youtube.com/embed/o_LuKiM_pTw" title="KETC Channel 9 — Living in St. Louis: Maplewood" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" style="width:100%;height:100%;border:0;border-radius:14px;"></iframe>
       </div>
@@ -514,7 +518,7 @@
         <span class="comm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 11h14l-1.2 7.2A2 2 0 0 1 15.8 20H8.2a2 2 0 0 1-2-1.8L5 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8c0-1.5 1-2.5 3-2.5s3 1 3 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <div>
           <h3>Happy Meals on Saturdays</h3>
-          <p>Every Saturday he brought approximately <strong>70–80 Happy Meals</strong> to children in pediatric oncology at St. Louis Children’s Hospital — each one a special order. If a kid wanted no pickles, that kid got no pickles. He worked with <strong>George Gibson</strong> of the McDonald’s on Hanley Road, who later became president of the Ronald McDonald House.</p>
+          <p>Every Saturday he brought approximately <strong>70–80 Happy Meals</strong> to children in pediatric oncology at St. Louis Children’s Hospital — each one a special order. If a kid wanted no pickles, that kid got no pickles. It was his own personal effort, not a corporate sponsorship.</p>
         </div>
       </a>
       <a class="comm-item" href="/cv2/community.html#toy-chest">
@@ -548,7 +552,7 @@
       </a>
       <a class="ach-card" href="/cv2/development.html#maplewood">
         <b>2006</b>
-        <em>Retired and divested — Maplewood, built from nothing</em>
+        <em>Retired and divested — after turning downtown Maplewood around</em>
       </a>
     </div>
 
@@ -557,8 +561,8 @@
       <a class="co-card" href="/cv2/businesses.html#counseling"><span class="co-tag">Counseling</span><h4>Specialized Counseling</h4><p>Founded alongside Specialized Testing Services when he left the Missouri Department of Health.</p></a>
       <a class="co-card" href="/cv2/businesses.html#dna"><span class="co-tag">DNA Paternity Testing</span><h4>Medical Testing Solutions</h4><p>Nationwide DNA paternity testing, founded as a call-center company. About $4M a year.</p></a>
       <a class="co-card" href="/cv2/businesses.html#affordable-paternity"><span class="co-tag">DNA Paternity Testing</span><h4>Affordable Paternity Center</h4><p>A DNA paternity-testing venture Martin founded.</p></a>
-      <a class="co-card" href="/cv2/businesses.html#maya"><span class="co-tag">Restaurants</span><h4>Maya Cafe</h4><p>A restaurant he founded in historic downtown Maplewood, on Sutton Boulevard. Still open today.</p></a>
-      <a class="co-card" href="/cv2/businesses.html#momos"><span class="co-tag">Restaurants</span><h4>Momo’s</h4><p>A Maplewood restaurant he founded with a partner.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#maya"><span class="co-tag">Restaurants</span><h4>Maya Cafe</h4><p>Founded and built out for about $250,000 as the seed restaurant for historic downtown Maplewood, on Sutton Boulevard. Still open today.</p></a>
+      <a class="co-card" href="/cv2/businesses.html#momos"><span class="co-tag">Restaurants</span><h4>Momo’s</h4><p>A University City restaurant. Martin was an initial investor and divested in its first year.</p></a>
       <a class="co-card" href="/cv2/current.html"><span class="co-tag">Artificial Intelligence</span><h4>Axon AI</h4><p>Real AI put into the websites companies already have.</p></a>
     </div>
 
@@ -666,8 +670,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/present.js?v=cv-20261124b"></script>
-<script src="/cv2/orb.js?v=cv-20261124b"></script>
+<script src="/cv2/present.js?v=cv-20261124c"></script>
+<script src="/cv2/orb.js?v=cv-20261124c"></script>
 <script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>
