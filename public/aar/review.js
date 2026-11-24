@@ -5,72 +5,99 @@
     { id: 'mine_wrong', label: 'Mine, but details are wrong' },
     { id: 'unsure', label: 'Unsure' }
   ]
-  const LOCAL_KEY = 'aar-review-v1'
-  const params = new URLSearchParams(location.search)
-  const desk = params.get('desk') === '1' || params.get('op') === '1'
+  const KEY_STORE = 'aar-review-key'
+  const LOCAL_KEY = 'aar-review-v2'
 
-  const state = {
-    data: null,
-    index: 0,
-    actor: desk ? 'marty' : 'randy',
-    pending: null,
-    shot: 0
+  const params = new URLSearchParams(location.search)
+  const urlKey = params.get('k')
+  if (urlKey) {
+    try { localStorage.setItem(KEY_STORE, urlKey) } catch (e) {}
+    params.delete('k')
+    const rest = params.toString()
+    history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash)
   }
+  let key = urlKey || ''
+  try { key = key || localStorage.getItem(KEY_STORE) || '' } catch (e) {}
+
+  const state = { data: null, role: null, index: 0, shot: 0, pending: null, notice: '' }
 
   function $(id) { return document.getElementById(id) }
   function listings() { return (state.data && state.data.listings) || [] }
   function current() { return listings()[state.index] || null }
+  function desk() { return state.role === 'marty' }
 
-  function localOverlay(data) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}')
-      if (!saved.listings) return data
-      data.listings.forEach(function (item) {
-        const row = saved.listings[item.id]
-        if (row && row.decision) {
-          item.decision = row.decision
-          item.history = row.history || item.history
-          item.confirmedUnauthorized = !!row.confirmedUnauthorized
-        }
-      })
-      if (saved.trademarkAuth) data.trademarkAuth = Object.assign({}, data.trademarkAuth, saved.trademarkAuth)
-    } catch (e) {}
-    return data
+  function esc(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
   }
 
-  function persistLocal() {
+  function answerLabel(id) {
+    const row = ANSWERS.find(function (a) { return a.id === id })
+    return row ? row.label : 'No decision yet'
+  }
+
+  function readLocal() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_KEY) || '{}') } catch (e) { return {} }
+  }
+
+  function writeLocal() {
     if (!state.data) return
-    const listingsMap = {}
+    const saved = {}
     state.data.listings.forEach(function (item) {
-      listingsMap[item.id] = {
-        decision: item.decision,
-        history: item.history,
-        confirmedUnauthorized: item.confirmedUnauthorized
-      }
+      if (item.decision) saved[item.id] = item.decision
     })
-    localStorage.setItem(LOCAL_KEY, JSON.stringify({
-      listings: listingsMap,
-      trademarkAuth: state.data.trademarkAuth
-    }))
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(saved)) } catch (e) {}
+  }
+
+  async function api(path, body) {
+    const opts = { cache: 'no-store', headers: { 'x-aar-key': key } }
+    if (body !== undefined) {
+      opts.method = 'POST'
+      opts.headers['Content-Type'] = 'application/json'
+      opts.body = JSON.stringify(body)
+    }
+    const r = await fetch(path, opts)
+    const d = await r.json().catch(function () { return {} })
+    if (r.status === 401) d.unauthorized = true
+    return d
+  }
+
+  /** The server forgets on restart; send back anything this browser saved later. */
+  async function resync() {
+    const saved = readLocal()
+    for (const item of listings()) {
+      const mine = saved[item.id]
+      if (!mine) continue
+      const serverAt = item.decision ? Date.parse(item.decision.at) : 0
+      if (Date.parse(mine.at) <= serverAt) continue
+      const d = await api('/api/aar/review/decision', { id: item.id, answer: mine.answer, via: mine.via, raw: mine.raw, syncAt: mine.at })
+      if (d.listing) replaceListing(d.listing)
+    }
   }
 
   async function load() {
-    let data = null
-    try {
-      const r = await fetch('/api/aar/review', { cache: 'no-store' })
-      if (r.ok) data = await r.json()
-    } catch (e) {}
-    if (!data || !data.listings) {
-      data = { intro: '', listings: [], trademarkAuth: {}, monitoring: { active: false }, email: { connected: false }, metaSubmission: {}, links: {} }
+    if (!key) return
+    const d = await api('/api/aar/review').catch(function () { return {} })
+    if (!d || d.unauthorized || !d.listings) {
+      if (d && d.unauthorized) { try { localStorage.removeItem(KEY_STORE) } catch (e) {} }
+      return
     }
-    state.data = localOverlay(data)
-    if (desk) openReview(true)
+    state.data = d
+    state.role = d.role
+    document.body.classList.add('can-review')
+    document.body.classList.toggle('desk', desk())
+    await resync()
+    writeLocal()
+    if (desk()) openReview(true)
     render()
   }
 
   function openReview(on) {
+    if (!state.data) return
     document.body.classList.toggle('show-review', on)
-    document.body.classList.toggle('desk', desk)
     const chip = $('reviewDot')
     if (chip) chip.classList.toggle('on', on)
     if (on) {
@@ -83,370 +110,282 @@
     }
   }
 
-  function toggleReview() {
-    openReview(!document.body.classList.contains('show-review'))
-  }
-
   function cueListing() {
     const item = current()
-    if (!item || typeof window.aarCueReview !== 'function') return
-    window.aarCueReview(item)
+    if (item && typeof window.aarCueReview === 'function') window.aarCueReview(item)
   }
 
-  function answerLabel(id) {
-    const row = ANSWERS.find(function (a) { return a.id === id })
-    return row ? row.label : 'No decision yet'
+  function go(i) {
+    state.index = Math.max(0, Math.min(listings().length - 1, i))
+    state.shot = 0
+    state.pending = null
+    state.notice = ''
+    render()
+    cueListing()
+  }
+
+  function replaceListing(listing) {
+    const i = listings().findIndex(function (row) { return row.id === listing.id })
+    if (i >= 0) state.data.listings[i] = listing
+  }
+
+  function shotSrc(shot) {
+    if (!shot || !shot.src) return ''
+    return shot.needsKey ? shot.src + '?k=' + encodeURIComponent(key) : shot.src
   }
 
   function render() {
     if (!state.data) return
     const item = current()
-    const intro = $('reviewIntro')
-    const meta = $('reviewMeta')
-    const card = $('reviewCard')
-    const queue = $('reviewQueue')
-    const confirm = $('reviewConfirm')
-    const deskPane = $('reviewDesk')
-    if (intro) intro.textContent = state.data.intro || ''
-    if (meta) {
-      const mon = state.data.monitoring && state.data.monitoring.active ? 'active' : 'inactive'
-      const mail = state.data.email && state.data.email.connected ? 'connected' : 'unconnected'
-      meta.innerHTML =
-        '<span>Daily monitoring: ' + mon + '</span>' +
-        '<span>Email operator: ' + mail + '</span>' +
-        '<span>Recording as ' +
-        '<button type="button" class="mini' + (state.actor === 'randy' ? ' on' : '') + '" data-actor="randy">Randy</button> ' +
-        '<button type="button" class="mini' + (state.actor === 'marty' ? ' on' : '') + '" data-actor="marty">Marty</button></span>'
-    }
-    if (!item) {
-      if (card) card.innerHTML = '<p>No listings loaded.</p>'
-      return
-    }
-    if (queue) {
-      queue.innerHTML = listings().map(function (row, i) {
-        const cls = [
-          i === state.index ? 'on' : '',
-          row.decision ? 'done' : '',
-          row.confirmedUnauthorized ? 'bad' : ''
-        ].filter(Boolean).join(' ')
-        return '<button type="button" class="qitem ' + cls + '" data-jump="' + i + '">' +
-          '<em>' + esc(row.mark) + '</em>' + esc(row.name) +
-          (row.decision ? '<small>' + esc(answerLabel(row.decision.answer)) + '</small>' : '') +
-          '</button>'
-      }).join('')
-    }
-    const shot = (item.screenshots || [])[state.shot] || (item.screenshots || [])[0]
-    const moreShots = (item.screenshots || []).length > 1
-    const linkHtml = item.url
-      ? '<a class="listing-link" href="' + esc(item.url) + '" target="_blank" rel="noopener">' + esc(item.displayUrl || item.url) + '</a>'
-      : (item.showDomainPlain
-        ? '<p class="domain">' + esc(item.name) + '</p>'
-        : '<p class="nolink">No direct link recovered.</p>')
-    const copy = item.copyUrl
-      ? '<button type="button" class="ghost" id="copyUrl">Copy URL</button>'
+    $('reviewIntro').textContent = state.data.intro || ''
+    $('reviewMeta').innerHTML =
+      '<span>Reviewing as ' + (desk() ? 'Marty' : 'Randy') + '</span>' +
+      '<span>Daily monitoring: not running yet</span>' +
+      '<span>Email: not connected</span>'
+    $('reviewQueue').innerHTML = desk() ? listings().map(function (row, i) {
+      const cls = [i === state.index ? 'on' : '', row.decision ? 'done' : '', row.confirmedUnauthorized ? 'bad' : ''].filter(Boolean).join(' ')
+      return '<button type="button" class="qitem ' + cls + '" data-jump="' + i + '">' +
+        '<em>' + esc(row.mark) + '</em>' + esc(row.name) +
+        '<small>' + esc(row.decision ? answerLabel(row.decision.answer) + ' · ' + row.decision.by : 'Waiting') +
+        ' · Report ' + esc(row.report.status) + '</small></button>'
+    }).join('') : ''
+    if (!item) { $('reviewCard').innerHTML = '<p>No listings loaded.</p>'; return }
+
+    const shots = item.screenshots || []
+    const shot = shots[state.shot] || shots[0]
+    let linkHtml
+    if (item.showDomainPlain) linkHtml = '<p class="domain">' + esc(item.name) + '</p>'
+    else if (item.url) linkHtml = '<a class="listing-link" href="' + esc(item.url) + '" target="_blank" rel="noopener noreferrer">' + esc(item.displayUrl || item.url) + '</a>'
+    else linkHtml = '<p class="nolink">No direct link recovered yet.</p>'
+    const copy = item.copyUrl ? '<button type="button" class="ghost" id="copyUrl">Copy URL</button>' : ''
+    const shotHtml = shot && shot.src
+      ? '<button type="button" class="shot" id="openShot" aria-label="Enlarge screenshot"><img src="' + esc(shotSrc(shot)) + '" alt="' + esc(shot.title) + '"></button>' +
+        '<p class="tiny">' + (shot.placeholder ? 'Summary card. Original screenshot not imported yet.' : esc(shot.title)) +
+        (shots.length > 1 ? ' · ' + (state.shot + 1) + ' of ' + shots.length + ' · <button type="button" class="linkish" id="nextShot">Next capture</button>' : '') + '</p>'
       : ''
     const verified = item.lastVerified && item.lastVerified.status !== 'unknown'
-      ? '<p class="tiny">Last verified: ' + esc(item.lastVerified.status) + (item.lastVerified.at ? ' · ' + esc(item.lastVerified.at.slice(0, 10)) : '') + '</p>'
+      ? '<p class="tiny">Last verified: ' + esc(item.lastVerified.status) + ' on ' + esc(String(item.lastVerified.at).slice(0, 10)) + '</p>'
       : ''
-    const decision = item.decision
-      ? '<p class="saved">Saved: ' + esc(answerLabel(item.decision.answer)) + ' · ' + esc(item.decision.by) + ' · ' + esc(item.decision.via) + '</p>'
+    const saved = item.decision
+      ? '<p class="saved">Saved: ' + esc(answerLabel(item.decision.answer)) + ' (by ' + esc(item.decision.by) + ', ' + esc(item.decision.via) + '). Tap another answer to change it.</p>'
       : ''
-    const unauth = item.confirmedUnauthorized ? '<p class="flag">Confirmed unauthorized</p>' : ''
-    card.innerHTML =
+    $('reviewCard').innerHTML =
       '<p class="mark">' + esc(item.mark) + '</p>' +
       '<h3>' + esc(item.name) + '</h3>' +
-      linkHtml + copy +
-      (shot ? '<button type="button" class="shot" id="openShot" aria-label="Enlarge screenshot"><img src="' + esc(shot.src) + '" alt="' + esc(shot.title) + '"></button>' +
-        (moreShots ? '<p class="tiny">Screenshot ' + (state.shot + 1) + ' of ' + item.screenshots.length + ' · <button type="button" class="linkish" id="nextShot">Next capture</button></p>' : '')
-        : '') +
+      linkHtml + copy + shotHtml +
       '<p class="why-line">' + esc(item.why) + '</p>' +
       '<p class="next"><strong>Next:</strong> ' + esc(item.nextAction) + '</p>' +
-      unauth + decision + verified +
+      (item.confirmedUnauthorized ? '<p class="flag">Confirmed unauthorized</p>' : '') +
+      saved + verified +
+      (state.notice ? '<p class="tiny">' + esc(state.notice) + '</p>' : '') +
       '<p class="ask">Is this yours?</p>' +
       '<div class="choices">' + ANSWERS.map(function (a) {
         const on = item.decision && item.decision.answer === a.id ? ' on' : ''
         return '<button type="button" class="choice' + on + '" data-answer="' + a.id + '">' + a.label + '</button>'
       }).join('') + '</div>'
-    if (confirm) {
-      if (state.pending) {
-        confirm.hidden = false
-        confirm.innerHTML = '<p>I heard “' + esc(state.pending) + '.” Which did you mean?</p>' +
-          ANSWERS.map(function (a) {
-            return '<button type="button" class="choice" data-answer="' + a.id + '">' + a.label + '</button>'
-          }).join('') +
-          '<button type="button" class="ghost" data-cancel="1">Cancel</button>'
-      } else {
-        confirm.hidden = true
-        confirm.innerHTML = ''
-      }
+
+    const confirm = $('reviewConfirm')
+    if (state.pending) {
+      confirm.hidden = false
+      confirm.innerHTML = '<p>I heard “' + esc(state.pending.text) + '.” Which one do you mean?</p><div class="choices">' +
+        ANSWERS.map(function (a) {
+          const hint = state.pending.guess === a.id ? ' on' : ''
+          return '<button type="button" class="choice' + hint + '" data-confirm="' + a.id + '">' + a.label + '</button>'
+        }).join('') + '<button type="button" class="ghost" data-cancel="1">Cancel</button></div>'
+    } else {
+      confirm.hidden = true
+      confirm.innerHTML = ''
     }
-    if (deskPane) {
-      if (desk) renderDesk(deskPane, item)
-      else deskPane.innerHTML = ''
-    }
-    const pos = $('reviewPos')
-    if (pos) pos.textContent = (state.index + 1) + ' of ' + listings().length
+    $('reviewPos').textContent = (state.index + 1) + ' of ' + listings().length
+    renderAuth()
+    if (desk()) renderDesk(item)
+    else $('reviewDesk').innerHTML = ''
   }
 
-  function renderDesk(el, item) {
+  function renderAuth() {
+    const el = $('reviewAuth')
     const auth = state.data.trademarkAuth || {}
+    if (auth.authorized) {
+      el.innerHTML = '<p class="tiny">Trademark authorization recorded ' + esc(String(auth.at).slice(0, 10)) + '. ' + esc(auth.how || '') + '</p>'
+      return
+    }
+    el.innerHTML = desk()
+      ? '<p class="tiny">Trademark authorization: not recorded yet. Randy can tap it on his link, or record how he gave it below.</p>'
+      : '<p class="tiny">' + esc(auth.statement) + '</p><button type="button" class="ghost" id="randyAuth">I authorize Marty to file these for me</button>'
+  }
+
+  function renderDesk(item) {
     const report = item.report || {}
-    const mon = state.data.monitoring || {}
-    const mail = state.data.email || {}
-    el.innerHTML =
-      '<h3>Marty desk</h3>' +
-      '<p class="tiny">Review and report without Randy opening each item. Randy still has to decide ownership unless you are recording his answer.</p>' +
-      '<p>Trademark authorization: <strong>' + (auth.authorized ? 'recorded' : 'not recorded') + '</strong></p>' +
-      (auth.authorized ? '' : '<button type="button" class="ghost" id="recordAuth">Record Randy’s one-time authorization</button>') +
-      '<p class="tiny">' + esc(auth.statement || '') + '</p>' +
-      '<label>Report status</label>' +
-      '<select id="repStatus">' + ['Draft', 'Ready', 'Submitted', 'Resolved'].map(function (s) {
-        return '<option' + (report.status === s ? ' selected' : '') + '>' + s + '</option>'
-      }).join('') + '</select>' +
-      '<label class="check"><input type="checkbox" id="repAccepted"' + (report.platformAccepted ? ' checked' : '') + '> Platform accepted this report</label>' +
+    const data = state.data
+    const routes = (data.routes || []).map(function (r) {
+      return '<option value="' + r.id + '"' + (report.route === r.id ? ' selected' : '') + '>' + esc(r.label) + '</option>'
+    }).join('')
+    const statuses = ['Draft', 'Ready', 'Submitted', 'Resolved'].map(function (s) {
+      return '<option' + (report.status === s ? ' selected' : '') + '>' + s + '</option>'
+    }).join('')
+    const verifiedNow = (item.lastVerified && item.lastVerified.status) || 'unknown'
+    const shots = (item.screenshots || []).map(function (s) {
+      return '<option value="' + esc(s.id) + '">' + esc(s.title) + (s.placeholder ? ' (summary card)' : ' (imported)') + '</option>'
+    }).join('')
+    $('reviewDesk').innerHTML =
+      '<h3>Marty’s desk</h3>' +
+      (data.trademarkAuth.authorized ? '' :
+        '<label>How Randy authorized trademark filing</label><input id="authHow" placeholder="Example: email from Randy, Nov 25">' +
+        '<button type="button" class="ghost" id="martyAuth">Record Randy’s authorization</button>') +
+      '<label>Report route</label><select id="repRoute">' + routes + '</select>' +
+      '<label>Report status</label><select id="repStatus">' + statuses + '</select>' +
+      '<label class="check"><input type="checkbox" id="repAccepted"' + (report.platformAccepted ? ' checked' : '') + '> The platform accepted this report</label>' +
       '<label>Case number</label><input id="repCase" value="' + esc(report.caseNumber || '') + '">' +
       '<label>Outcome</label><input id="repOutcome" value="' + esc(report.outcome || '') + '">' +
-      '<label>Draft</label><textarea id="repDraft" rows="8">' + esc(report.draft || '') + '</textarea>' +
+      '<label>Ready-to-submit draft</label><textarea id="repDraft" rows="9">' + esc(report.draft || '') + '</textarea>' +
       '<div class="desk-actions">' +
         '<button type="button" class="ghost" id="saveReport">Save report</button>' +
-        (item.showDomainPlain || item.copyUrl ? '<button type="button" class="ghost" id="copyUrlDesk">Copy URL</button>' : '') +
-        '<label>Verified <select id="verifiedStatus">' +
-          ['unknown', 'online', 'offline'].map(function (s) {
-            const cur = (item.lastVerified && item.lastVerified.status) || 'unknown'
-            return '<option' + (cur === s ? ' selected' : '') + '>' + s + '</option>'
-          }).join('') +
-        '</select></label>' +
-        '<button type="button" class="ghost" id="saveVerified">Save status</button>' +
+        '<button type="button" class="ghost" id="copyDraft">Copy draft</button>' +
+        (item.copyUrl || item.url ? '<button type="button" class="ghost" id="copyUrlDesk">Copy URL</button>' : '') +
       '</div>' +
-      '<p class="tiny">' + esc((state.data.metaSubmission && state.data.metaSubmission.note) || '') + '</p>' +
-      '<p class="tiny">Monitoring: inactive. ' + esc(mon.note || '') + '</p>' +
-      '<p class="tiny">' + esc((mon.paidScanner && mon.paidScanner.note) || '') + '</p>' +
-      '<p class="tiny">Email: unconnected. ' + esc(mail.note || '') + '</p>' +
-      '<div class="email-stub"><p>Inbox is not connected yet. When it is, Randy can say “Go through my email. Show me the people who sound serious about buying a car.”</p></div>'
+      '<label>Last verified</label><div class="desk-actions"><select id="verifiedStatus">' +
+        ['unknown', 'online', 'offline'].map(function (s) { return '<option' + (verifiedNow === s ? ' selected' : '') + '>' + s + '</option>' }).join('') +
+      '</select><button type="button" class="ghost" id="saveVerified">Save status</button></div>' +
+      (shots ? '<label>Import the real screenshot</label><div class="desk-actions"><select id="shotPick">' + shots + '</select>' +
+        '<input type="file" id="shotFile" accept="image/png,image/jpeg,image/webp"><button type="button" class="ghost" id="saveShot">Upload</button></div>' +
+        '<p class="tiny">Crop out browser tabs, account details, and home photos before uploading.</p>' : '') +
+      '<p class="tiny">' + esc(data.metaSubmission.note) + '</p>' +
+      '<p class="tiny">Monitoring: ' + esc(data.monitoring.note) + ' ' + esc(data.monitoring.paidScanner.note) + '</p>' +
+      '<p class="tiny">Email: ' + esc(data.email.note) + '</p>' +
+      '<p class="tiny">Storage: ' + esc(data.storage.note) + '</p>'
   }
 
-  function classifyLocal(text) {
-    const t = String(text || '').toLowerCase().replace(/[’]/g, "'")
-    if (/\b(not sure|unsure|don't know|do not know)\b/.test(t)) return 'unsure'
-    if (/\b(details are wrong|wrong (number|phone|photo|website|address)|mine but)\b/.test(t)) return 'mine_wrong'
-    if (/\b(not mine|isn't mine|is not mine|not ours|that's not mine)\b/.test(t)) return 'not_mine'
-    if (/\b(that's mine|that is mine|it's mine|yes that's mine)\b/.test(t)) return 'mine'
-    if (/^(yes|yeah|yep|mine)\.?$/.test(t.trim())) return 'mine'
-    if (/^(no|nope)\.?$/.test(t.trim())) return 'not_mine'
-    return null
-  }
-
-  function esc(value) {
-    return String(value || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-  }
-
-  async function post(url, body) {
-    const r = await fetch(url, {
-      method: 'POST',
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-    return r.json().catch(function () { return {} })
-  }
-
-  function applyListing(listing) {
-    if (!listing) return
-    const i = listings().findIndex(function (row) { return row.id === listing.id })
-    if (i >= 0) state.data.listings[i] = listing
-    persistLocal()
-    render()
-  }
-
-  async function saveAnswer(answer, via, raw, confirmed) {
+  async function saveAnswer(answer, via, raw) {
     const item = current()
     if (!item) return
-    const payload = {
-      id: item.id,
-      answer: answer,
-      by: state.actor,
-      via: via || 'button',
-      raw: raw || '',
-      confirmed: confirmed !== false
-    }
-    let listing = null
-    try {
-      const d = await post('/api/aar/review/decision', payload)
-      if (d.needsConfirm) {
-        state.pending = d.text || raw
-        render()
-        return
-      }
-      if (d.listing) listing = d.listing
-    } catch (e) {}
-    const guessed = answer || classifyLocal(raw)
-    if (!listing && !guessed) {
-      state.pending = raw || ''
+    const d = await api('/api/aar/review/decision', { id: item.id, answer: answer, via: via, raw: raw || '' }).catch(function () { return {} })
+    if (d.ignored) return
+    if (d.needsConfirm) {
+      state.pending = { text: d.text, guess: d.guess }
       render()
       return
     }
-    if (!listing) {
-      listing = Object.assign({}, item, {
-        decision: {
-          answer: guessed,
-          by: state.actor,
-          at: new Date().toISOString(),
-          via: via || 'button',
-          confirmed: true,
-          raw: raw || ''
-        },
-        confirmedUnauthorized: guessed === 'not_mine'
-      })
+    if (!d.listing) {
+      state.notice = d.error || 'Could not save just now. Try again.'
+      render()
+      return
     }
     state.pending = null
-    applyListing(listing)
-    if (typeof window.aarRememberDecision === 'function') window.aarRememberDecision(listing)
+    state.notice = ''
+    replaceListing(d.listing)
+    writeLocal()
+    render()
+    if (typeof window.aarRememberDecision === 'function') window.aarRememberDecision(d.listing)
   }
 
   function onUserSpeech(text) {
-    if (!document.body.classList.contains('show-review')) return
-    const item = current()
-    if (!item) return
-    saveAnswer(null, 'voice', text, false)
+    if (!state.data || !document.body.classList.contains('show-review')) return
+    saveAnswer(null, 'voice', text)
   }
 
   function copyText(value) {
     if (!value) return
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value)
-    else {
-      const ta = document.createElement('textarea')
-      ta.value = value
-      document.body.appendChild(ta)
-      ta.select()
-      try { document.execCommand('copy') } catch (e) {}
-      ta.remove()
-    }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(value); return }
+    const ta = document.createElement('textarea')
+    ta.value = value
+    document.body.appendChild(ta)
+    ta.select()
+    try { document.execCommand('copy') } catch (e) {}
+    ta.remove()
   }
 
-  function openLightbox(src, title) {
-    const box = $('shotBox')
-    if (!box) return
-    box.hidden = false
-    box.querySelector('img').src = src
-    box.querySelector('img').alt = title || ''
+  async function exportSummary() {
+    const r = await fetch('/api/aar/review/export', { cache: 'no-store', headers: { 'x-aar-key': key } })
+    if (!r.ok) return
+    const blob = new Blob([await r.text()], { type: 'text/html' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'aar-impersonation-review-' + new Date().toISOString().slice(0, 10) + '.html'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(function () { URL.revokeObjectURL(a.href) }, 5000)
   }
 
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      const box = $('shotBox')
-      if (box) box.hidden = true
-    }
-  })
-
-  document.addEventListener('click', function (e) {
-    const actor = e.target.closest && e.target.closest('[data-actor]')
-    if (actor) {
-      state.actor = actor.getAttribute('data-actor')
-      render()
-      return
-    }
-    const jump = e.target.closest && e.target.closest('[data-jump]')
-    if (jump && $('reviewQueue') && $('reviewQueue').contains(jump)) {
-      state.index = Number(jump.getAttribute('data-jump'))
-      state.shot = 0
-      state.pending = null
-      render()
-      cueListing()
-      return
-    }
-    const choice = e.target.closest && e.target.closest('[data-answer]')
-    if (choice && (e.target.closest('#reviewCard') || e.target.closest('#reviewConfirm'))) {
-      saveAnswer(choice.getAttribute('data-answer'), state.pending ? 'voice' : 'button', state.pending || '', true)
-      return
-    }
-    if (e.target.closest && e.target.closest('[data-cancel]')) {
-      state.pending = null
-      render()
-      return
-    }
-    if (e.target.id === 'copyUrl' || e.target.id === 'copyUrlDesk') {
-      const item = current()
-      copyText(item && (item.copyUrl || item.url))
-      return
-    }
-    if (e.target.id === 'nextShot') {
-      const item = current()
-      if (item && item.screenshots && item.screenshots.length) {
-        state.shot = (state.shot + 1) % item.screenshots.length
-        render()
-      }
-      return
-    }
-    if (e.target.id === 'openShot' || (e.target.closest && e.target.closest('#openShot'))) {
-      const item = current()
-      const shot = item && (item.screenshots || [])[state.shot]
-      if (shot && shot.src) openLightbox(shot.src, shot.title)
-      return
-    }
-    if (e.target.id === 'prevItem') {
-      state.index = Math.max(0, state.index - 1)
-      state.shot = 0
-      render()
-      cueListing()
-      return
-    }
-    if (e.target.id === 'nextItem') {
-      state.index = Math.min(listings().length - 1, state.index + 1)
-      state.shot = 0
-      render()
-      cueListing()
-      return
-    }
-    if (e.target.id === 'exportReview') {
-      window.open('/api/aar/review/export', '_blank')
-      return
-    }
-    if (e.target.id === 'recordAuth') {
-      post('/api/aar/review/authorize', { by: 'randy', authorized: true }).then(function (d) {
-        if (d.trademarkAuth) state.data.trademarkAuth = d.trademarkAuth
-        persistLocal()
-        render()
-      })
-      return
-    }
-    if (e.target.id === 'saveReport') {
-      const item = current()
-      post('/api/aar/review/report', {
+  async function deskAction(id) {
+    const item = current()
+    if (id === 'saveReport') {
+      const d = await api('/api/aar/review/report', {
         id: item.id,
+        route: $('repRoute').value,
         status: $('repStatus').value,
         platformAccepted: $('repAccepted').checked,
         caseNumber: $('repCase').value,
         outcome: $('repOutcome').value,
-        draft: $('repDraft').value,
-        route: item.report && item.report.route
-      }).then(function (d) {
-        if (d.error) alert(d.error)
-        if (d.listing) applyListing(d.listing)
+        draft: $('repDraft').value
       })
+      state.notice = d.error || 'Report saved.'
+      if (d.listing) replaceListing(d.listing)
+      render()
+    } else if (id === 'saveVerified') {
+      const d = await api('/api/aar/review/verified', { id: item.id, status: $('verifiedStatus').value })
+      if (d.listing) replaceListing(d.listing)
+      render()
+    } else if (id === 'martyAuth' || id === 'randyAuth') {
+      const d = await api('/api/aar/review/authorize', { authorized: true, how: id === 'martyAuth' ? $('authHow').value : '' })
+      state.notice = d.error || ''
+      if (d.trademarkAuth) state.data.trademarkAuth = d.trademarkAuth
+      render()
+    } else if (id === 'saveShot') {
+      const file = $('shotFile').files[0]
+      if (!file) return
+      const body = new FormData()
+      body.append('shotId', $('shotPick').value)
+      body.append('file', file)
+      const r = await fetch('/api/aar/review/shot', { method: 'POST', headers: { 'x-aar-key': key }, body: body })
+      const d = await r.json().catch(function () { return {} })
+      state.notice = d.error || 'Screenshot imported.'
+      const fresh = await api('/api/aar/review')
+      if (fresh.listings) state.data = fresh
+      render()
+    }
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('shotBox')) $('shotBox').hidden = true
+  })
+
+  document.addEventListener('click', function (e) {
+    if (!state.data) return
+    const t = e.target
+    const jump = t.closest('[data-jump]')
+    if (jump) { go(Number(jump.getAttribute('data-jump'))); return }
+    const choice = t.closest('#reviewCard [data-answer]')
+    if (choice) { saveAnswer(choice.getAttribute('data-answer'), 'button', ''); return }
+    const confirmed = t.closest('[data-confirm]')
+    if (confirmed) { saveAnswer(confirmed.getAttribute('data-confirm'), 'voice', state.pending ? state.pending.text : ''); return }
+    if (t.closest('[data-cancel]')) { state.pending = null; render(); return }
+    if (t.closest('#openShot')) {
+      const shot = (current().screenshots || [])[state.shot]
+      if (shot && shot.src) {
+        const box = $('shotBox')
+        box.querySelector('img').src = shotSrc(shot)
+        box.querySelector('img').alt = shot.title
+        box.hidden = false
+      }
       return
     }
-    if (e.target.id === 'saveVerified') {
-      const item = current()
-      post('/api/aar/review/verified', {
-        id: item.id,
-        status: $('verifiedStatus').value
-      }).then(function (d) {
-        if (d.listing) applyListing(d.listing)
-      })
-    }
+    const id = t.id
+    if (id === 'copyUrl' || id === 'copyUrlDesk') { const it = current(); copyText(it.copyUrl || it.url); return }
+    if (id === 'copyDraft') { copyText($('repDraft').value); return }
+    if (id === 'nextShot') { state.shot = (state.shot + 1) % current().screenshots.length; render(); return }
+    if (id === 'prevItem') { go(state.index - 1); return }
+    if (id === 'nextItem') { go(state.index + 1); return }
+    if (id === 'exportReview') { exportSummary(); return }
+    if (['saveReport', 'saveVerified', 'martyAuth', 'randyAuth', 'saveShot'].indexOf(id) >= 0) deskAction(id)
   })
 
   window.AarReview = {
     load: load,
-    toggle: toggleReview,
-    open: function () { openReview(true) },
-    isOpen: function () { return document.body.classList.contains('show-review') },
+    toggle: function () { openReview(!document.body.classList.contains('show-review')) },
+    isOpen: function () { return !!state.data && document.body.classList.contains('show-review') },
     onUserSpeech: onUserSpeech,
     current: current,
-    isDesk: function () { return desk }
+    key: function () { return key }
   }
 })()

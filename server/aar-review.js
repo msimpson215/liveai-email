@@ -4,12 +4,38 @@
  */
 import fs from 'fs'
 import path from 'path'
+import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.join(__dirname, '..', 'data', 'aar-review')
+const ROOT = process.env.AAR_REVIEW_DIR || path.join(__dirname, '..', 'data', 'aar-review')
 const STATE_FILE = path.join(ROOT, 'state.json')
-const SHOTS_DIR = path.join(__dirname, '..', 'public', 'aar', 'evidence')
+const UPLOADS_DIR = path.join(ROOT, 'shots')
+const PLATES_DIR = path.join(__dirname, '..', 'public', 'aar', 'evidence')
+
+// The repo is public, so only hashes live here. Env vars override for rotation.
+const KEY_HASHES = {
+  randy: 'b5ee5234a5b6a0bf805efa90b10ab516a61b566f1707e1ecaf98b64372a3830f',
+  marty: 'd3c8945cf3d81779d4501a2a196238ec5a3a1141690f005e25d3b1139b255027'
+}
+
+function sha256(value) {
+  return crypto.createHash('sha256').update(String(value)).digest('hex')
+}
+
+/** Which reviewer a key belongs to, or null. */
+export function roleForKey(key) {
+  const k = String(key || '').trim()
+  if (!k) return null
+  for (const role of ['randy', 'marty']) {
+    const envKey = process.env[`AAR_REVIEW_KEY_${role.toUpperCase()}`]
+    const hash = envKey ? sha256(envKey) : KEY_HASHES[role]
+    const a = Buffer.from(sha256(k), 'hex')
+    const b = Buffer.from(hash, 'hex')
+    if (a.length === b.length && crypto.timingSafeEqual(a, b)) return role
+  }
+  return null
+}
 
 export const INTRO =
   "Randy, I did this half manually and half with AI. I wanted you to know I'm staying on it. I've put the screenshots and links in one place so you can tell me which listings are yours. Once we clear the old listings, we can start watching for new ones daily."
@@ -17,49 +43,49 @@ export const INTRO =
 export const ANSWERS = ['mine', 'not_mine', 'mine_wrong', 'unsure']
 export const MARKS = ['Official', 'Priority review', 'Directory correction', 'Evidence pending']
 export const REPORT_STATUSES = ['Draft', 'Ready', 'Submitted', 'Resolved']
-const REVIEWERS = new Set(['randy', 'marty'])
+export const ROUTES = ['impersonation', 'trademark', 'host_registrar', 'directory', 'none']
 
 export const SHOTS = {
   'shot-01-fb-aar-auto-sale-byars': {
     id: 'shot-01-fb-aar-auto-sale-byars',
     file: 'shot-01-fb-aar-auto-sale-byars.svg',
     title: 'Facebook: AAR Auto Sale Byars',
-    captured: '2026-11',
+    captured: null,
     notes: 'Full-page Facebook capture. Vehicle posts, aarautosalesbyars.com, 405-709-2236.'
   },
   'shot-02-fb-byars-ok-search-a': {
     id: 'shot-02-fb-byars-ok-search-a',
     file: 'shot-02-fb-byars-ok-search-a.svg',
     title: 'Facebook search: AAR Auto Sales | Byars OK',
-    captured: '2026-11',
+    captured: null,
     notes: 'Search result showing 937-563-3715 and aar-autosales.com.'
   },
   'shot-03-fb-byars-ok-search-b': {
     id: 'shot-03-fb-byars-ok-search-b',
     file: 'shot-03-fb-byars-ok-search-b.svg',
     title: 'Facebook search: AAR Auto Sales | Byars OK (second capture)',
-    captured: '2026-11',
+    captured: null,
     notes: 'Second search screenshot of the same Facebook result.'
   },
   'shot-04-velora-contact': {
     id: 'shot-04-velora-contact',
     file: 'shot-04-velora-contact.svg',
     title: 'Search: veloramotors.net/contact',
-    captured: '2026-11',
+    captured: null,
     notes: 'Same dealership lot address under a different business name.'
   },
   'shot-05-directories-yelp-mapquest': {
     id: 'shot-05-directories-yelp-mapquest',
     file: 'shot-05-directories-yelp-mapquest.svg',
     title: 'Directory results: Yelp and MapQuest',
-    captured: '2026-11',
+    captured: null,
     notes: 'Tractor imagery on Yelp. Equipment thumbnail next to MapQuest.'
   },
   'shot-06-manta-number': {
     id: 'shot-06-manta-number',
     file: 'shot-06-manta-number.svg',
     title: 'Directory: Manta',
-    captured: '2026-11',
+    captured: null,
     notes: 'Manta number also appears on another business result.'
   }
 }
@@ -158,7 +184,7 @@ export const SEED_LISTINGS = [
     nextAction: 'Tell me if this domain is yours. If not, Marty can prepare a host and registrar report.',
     preserveOffline: true,
     reportPlatform: 'web',
-    reportRoute: 'trademark'
+    reportRoute: 'host_registrar'
   }),
   listing({
     id: 'web-aar-autosales',
@@ -175,7 +201,7 @@ export const SEED_LISTINGS = [
     nextAction: 'Tell me if this domain is yours. Copy the URL only when a report needs it.',
     preserveOffline: true,
     reportPlatform: 'web',
-    reportRoute: 'trademark'
+    reportRoute: 'host_registrar'
   }),
   listing({
     id: 'web-aarautosalesbyars',
@@ -191,7 +217,7 @@ export const SEED_LISTINGS = [
     nextAction: 'Tell me if this domain is yours.',
     preserveOffline: true,
     reportPlatform: 'web',
-    reportRoute: 'trademark'
+    reportRoute: 'host_registrar'
   }),
   listing({
     id: 'web-aarautosalebyars',
@@ -208,7 +234,7 @@ export const SEED_LISTINGS = [
     nextAction: 'Tell me if this domain is yours.',
     preserveOffline: true,
     reportPlatform: 'web',
-    reportRoute: 'trademark'
+    reportRoute: 'host_registrar'
   }),
   listing({
     id: 'velora-motors',
@@ -320,6 +346,59 @@ export const SEED_LISTINGS = [
   })
 ]
 
+const ROUTE_LABELS = {
+  impersonation: 'Facebook impersonation report',
+  trademark: 'Facebook trademark report',
+  host_registrar: 'Hosting company and domain registrar abuse report',
+  directory: 'Directory correction request',
+  none: 'No report'
+}
+
+export function reportKey(listing) {
+  const url = listing.url || listing.copyUrl || listing.id
+  return `${listing.reportPlatform}::${url}`
+}
+
+export function buildDraft(listing, route = listing.reportRoute) {
+  const url = listing.url || listing.copyUrl
+  const lines = [
+    `${ROUTE_LABELS[route] || 'Report'}: ${listing.name}`,
+    url ? `Exact URL: ${url}` : 'Exact URL: not recovered yet. Recover it before filing.',
+    `Why it was flagged: ${listing.why}`,
+    listing.phones.length ? `Phone numbers observed: ${listing.phones.join('; ')}` : null,
+    ...listing.observations.map(o => `Observation: ${o}`),
+    listing.evidenceSources.length ? `Evidence sources: ${listing.evidenceSources.join(' ')}` : null,
+    listing.screenshots.length
+      ? `Screenshots: ${listing.screenshots.map(id => SHOTS[id] ? SHOTS[id].title : id).join('; ')}. Capture dates not recorded.`
+      : null,
+    'Official business for comparison: Auto Auction Rebuilds, https://aarsales.com/'
+  ]
+  if (route === 'impersonation') {
+    lines.push(`Route: report the Page as impersonating a business. Meta guidance: ${LINKS.metaGuidance}`)
+  }
+  if (route === 'trademark') {
+    lines.push(
+      'Mark: AUTO AUCTION REBUILDS, U.S. Registration 8102075.',
+      `Facebook Trademark Report Form: ${LINKS.trademarkForm}`,
+      'Filed by Martin Simpson as authorized representative of Randy Shear, the rights owner.'
+    )
+  }
+  if (route === 'host_registrar') {
+    lines.push(
+      'Send to the hosting company and the domain registrar abuse contacts for this domain.',
+      'This site uses the Auto Auction Rebuilds name and lot details without permission. AUTO AUCTION REBUILDS is U.S. Registration 8102075.',
+      'If the domain is offline, keep this record as evidence. Do not resend unless it returns or there is new evidence.'
+    )
+  }
+  if (route === 'directory') {
+    lines.push(
+      'Ask the directory to correct the specific detail: phone, photo, website, address, or directions. Name exactly which one is wrong and what the right value is, using aarsales.com.',
+      'Do not say who created or edited the listing unless that is verified.'
+    )
+  }
+  return lines.filter(Boolean).join('\n')
+}
+
 function blankReport(listing) {
   return {
     key: reportKey(listing),
@@ -331,47 +410,19 @@ function blankReport(listing) {
     outcome: '',
     draft: buildDraft(listing),
     submittedAt: null,
-    platformAccepted: false
+    platformAccepted: false,
+    updatedBy: null,
+    updatedAt: null
   }
-}
-
-export function reportKey(listing) {
-  const url = listing.url || listing.copyUrl || listing.id
-  return `${listing.reportPlatform}::${url}`
-}
-
-export function buildDraft(listing) {
-  const url = listing.url || listing.copyUrl
-  const lines = [
-    `Subject: ${listing.name}`,
-    `Mark: ${listing.mark}`,
-    url ? `Exact URL: ${url}` : 'Exact URL: not recovered. Do not invent one.',
-    `Why it was flagged: ${listing.why}`,
-    listing.phones.length ? `Phone numbers observed: ${listing.phones.join('; ')}` : null,
-    ...listing.observations.map(o => `Observation: ${o}`),
-    listing.evidenceSources.length ? `Evidence sources: ${listing.evidenceSources.join(' ')}` : null,
-    listing.screenshots.length ? `Dated evidence attached: ${listing.screenshots.join(', ')}` : 'Dated evidence: screenshots on the review card.',
-    listing.reportRoute === 'impersonation'
-      ? `Suggested route: Facebook impersonation reporting. Trademark form if the AUTO AUCTION REBUILDS mark is used: ${LINKS.trademarkForm}`
-      : null,
-    listing.reportRoute === 'trademark'
-      ? `Suggested route: trademark / host / registrar. U.S. registration 8102075, AUTO AUCTION REBUILDS. Facebook Trademark Report Form: ${LINKS.trademarkForm}. Meta guidance: ${LINKS.metaGuidance}`
-      : null,
-    listing.reportRoute === 'directory'
-      ? 'Directory correction should name the specific phone, photo, website, address, or directions that need to change. Do not claim who created or edited the listing unless verified.'
-      : null,
-    'Reporter: Martin Simpson, acting for Randy Shear after one-time trademark authorization when a trademark claim is filed.',
-    'Status is Draft until Marty marks it Ready. Do not label Submitted unless the platform accepted it.'
-  ]
-  return lines.filter(Boolean).join('\n')
 }
 
 function defaultMeta() {
   return {
     trademarkAuth: {
       authorized: false,
-      by: null,
+      recordedBy: null,
       at: null,
+      how: '',
       statement:
         'Randy Shear authorizes Martin Simpson to file trademark reports for U.S. Registration 8102075, AUTO AUCTION REBUILDS, as his representative.'
     },
@@ -397,17 +448,20 @@ function defaultMeta() {
       resultLimit: 25,
       paidScanner: {
         confirmed: false,
-        assumedService: null,
-        note: 'The $5 scan is still unconfirmed. Apify fits the credit amount, but there is no record tying that run to ChatGPT or Cursor. Do not assume Apify was the previous service. Do not start a paid run without confirmation.'
+        note: 'No paid scan runs without Marty confirming it first. The $5 charge is not confirmed. This project does have one earlier Apify Facebook Marketplace run from Cursor on Nov 13, 2026 that checked 810 listings and found 0 matches. Check Apify billing to see if that run was the $5.'
       }
     },
     email: {
       connected: false,
-      note: 'Unconnected until authorized inbox access is working. Randy can later say: Go through my email. Show me the people who sound serious about buying a car.'
+      note: 'Unconnected until authorized inbox access is working. Later Randy can say: Go through my email. Show me the people who sound serious about buying a car.'
     },
     metaSubmission: {
       configured: false,
-      note: 'Until a Meta-supported submission method is verified and configured, the final submission goes through Marty.'
+      note: 'Until a Meta-supported submission method is verified and configured, Marty submits by hand.'
+    },
+    storage: {
+      durable: false,
+      note: 'Saved on the server until it restarts or redeploys. Each browser also keeps a copy and sends it back when the page reloads. Use Export review summary as the lasting record.'
     }
   }
 }
@@ -416,27 +470,21 @@ function emptyState() {
   const reports = {}
   const listings = {}
   for (const item of SEED_LISTINGS) {
-    listings[item.id] = {
-      decision: null,
-      history: [],
-      lastVerified: { ...item.lastVerified },
-      confirmedUnauthorized: false
-    }
+    listings[item.id] = { decision: null, history: [], lastVerified: { ...item.lastVerified } }
     reports[reportKey(item)] = blankReport(item)
   }
   return { listings, reports, ...defaultMeta() }
 }
 
-function ensureDir() {
-  if (!fs.existsSync(ROOT)) fs.mkdirSync(ROOT, { recursive: true })
+function ensureDir(dir = ROOT) {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
 }
 
 function readState() {
   ensureDir()
   if (!fs.existsSync(STATE_FILE)) return emptyState()
   try {
-    const saved = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
-    return mergeState(emptyState(), saved)
+    return mergeState(emptyState(), JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')))
   } catch {
     return emptyState()
   }
@@ -450,24 +498,16 @@ function writeState(state) {
 function mergeState(base, saved) {
   const next = {
     ...base,
-    ...saved,
     trademarkAuth: { ...base.trademarkAuth, ...(saved.trademarkAuth || {}) },
-    monitoring: {
-      ...base.monitoring,
-      ...(saved.monitoring || {}),
-      paidScanner: { ...base.monitoring.paidScanner, ...((saved.monitoring && saved.monitoring.paidScanner) || {}) },
-      active: false
-    },
-    email: { ...base.email, ...(saved.email || {}), connected: false },
-    metaSubmission: { ...base.metaSubmission, ...(saved.metaSubmission || {}) },
     listings: { ...base.listings },
     reports: { ...base.reports }
   }
   for (const [id, row] of Object.entries(saved.listings || {})) {
-    next.listings[id] = { ...(next.listings[id] || {}), ...row }
+    if (next.listings[id]) next.listings[id] = { ...next.listings[id], ...row }
   }
   for (const [key, row] of Object.entries(saved.reports || {})) {
-    const merged = { ...(next.reports[key] || {}), ...row }
+    if (!next.reports[key]) continue
+    const merged = { ...next.reports[key], ...row }
     if (merged.status === 'Submitted' && !merged.platformAccepted) merged.status = 'Ready'
     next.reports[key] = merged
   }
@@ -477,14 +517,17 @@ function mergeState(base, saved) {
 function shotPayload(id) {
   const shot = SHOTS[id]
   if (!shot) return null
-  const uploaded = path.join(SHOTS_DIR, 'uploads', `${id}.png`)
-  const native = path.join(SHOTS_DIR, shot.file)
-  const file = fs.existsSync(uploaded)
-    ? `/aar/evidence/uploads/${id}.png`
-    : fs.existsSync(native)
-      ? `/aar/evidence/${shot.file}`
-      : null
-  return { ...shot, src: file }
+  const uploaded = fs.existsSync(path.join(UPLOADS_DIR, `${id}.img`))
+  if (uploaded) {
+    return { ...shot, src: `/api/aar/review/shot/${id}`, placeholder: false, needsKey: true }
+  }
+  const plate = fs.existsSync(path.join(PLATES_DIR, shot.file)) ? `/aar/evidence/${shot.file}` : null
+  return { ...shot, src: plate, placeholder: true }
+}
+
+/** Not mine from Randy or Marty, and never on the official site. */
+function isConfirmedUnauthorized(item, decision) {
+  return !!decision && decision.answer === 'not_mine' && item.mark !== 'Official'
 }
 
 function publicListing(item, state) {
@@ -495,21 +538,24 @@ function publicListing(item, state) {
     decision: row.decision || null,
     history: row.history || [],
     lastVerified: row.lastVerified || item.lastVerified,
-    confirmedUnauthorized: !!row.confirmedUnauthorized,
+    confirmedUnauthorized: isConfirmedUnauthorized(item, row.decision),
     screenshots: (item.screenshots || []).map(shotPayload).filter(Boolean),
     report
   }
 }
 
-export function snapshot() {
+export function snapshot(role) {
   const state = readState()
   return {
+    role,
     intro: INTRO,
     listings: SEED_LISTINGS.map(item => publicListing(item, state)),
     trademarkAuth: state.trademarkAuth,
     monitoring: state.monitoring,
     email: state.email,
     metaSubmission: state.metaSubmission,
+    storage: state.storage,
+    routes: ROUTES.map(id => ({ id, label: ROUTE_LABELS[id] })),
     links: {
       trademarkForm: LINKS.trademarkForm,
       metaGuidance: LINKS.metaGuidance,
@@ -519,215 +565,239 @@ export function snapshot() {
   }
 }
 
+/**
+ * Read a spoken answer. Explicit phrases are sure. A bare yes or no could be
+ * answering some other question, so it always comes back for confirmation.
+ */
 export function classifyAnswer(text) {
-  const t = String(text || '').toLowerCase().replace(/[’]/g, "'")
-  if (!t.trim()) return null
-  if (/\b(not sure|unsure|don't know|do not know|hard to say)\b/.test(t)) return 'unsure'
-  if (/\b(details are wrong|wrong (number|phone|photo|picture|website|address|directions)|mine but|ours but)\b/.test(t)) {
-    return 'mine_wrong'
+  const t = String(text || '').toLowerCase().replace(/[’]/g, "'").replace(/[.!?,]+/g, ' ').replace(/\s+/g, ' ').trim()
+  if (!t) return null
+  if (/\b(not sure|unsure|i don't know|i do not know|no idea)\b/.test(t)) return { answer: 'unsure', sure: true }
+  if (/\b(details are wrong|(number|phone|photo|picture|website|address|directions) (is|are) wrong|wrong (number|phone|photo|picture|website|address|directions)|mine but|ours but)\b/.test(t)) {
+    return { answer: 'mine_wrong', sure: true }
   }
-  if (/\b(not mine|isn't mine|is not mine|not ours|that's not (me|mine|us|ours)|that is not (me|mine)|fake|scam page)\b/.test(t)) {
-    return 'not_mine'
+  if (/\b(not mine|isn't mine|is not mine|not ours|isn't ours|that's not me|that is not me|not my (page|site|listing))\b/.test(t)) {
+    return { answer: 'not_mine', sure: true }
   }
-  if (/\b(that's mine|that is mine|it's mine|it is mine|yes(?: that's)? mine|ours|yes that's me|yes it is)\b/.test(t)) {
-    return 'mine'
+  if (/\b(that's mine|that is mine|it's mine|it is mine|that's ours|that is ours|that's my (page|site|listing))\b/.test(t)) {
+    return { answer: 'mine', sure: true }
   }
-  if (/^(yes|yeah|yep|yup|mine)\.?$/.test(t.trim())) return 'mine'
-  if (/^(no|nope|nah)\.?$/.test(t.trim())) return 'not_mine'
+  if (/^(yes|yeah|yep|yup|mine)( it is)?$/.test(t)) return { answer: 'mine', sure: false }
+  if (/^(no|nope|nah)( it's not| it isn't)?$/.test(t)) return { answer: 'not_mine', sure: false }
   return null
 }
 
-function normalizeActor(value) {
-  const v = String(value || '').toLowerCase()
-  return REVIEWERS.has(v) ? v : 'randy'
+function findListing(id) {
+  return SEED_LISTINGS.find(row => row.id === id) || null
 }
 
-function applyDecision(item, row, payload) {
-  const answer = ANSWERS.includes(payload.answer) ? payload.answer : null
-  if (!answer) return { error: 'Pick Mine, Not mine, Mine but details are wrong, or Unsure.' }
-  const actor = normalizeActor(payload.by)
-  const via = payload.via === 'voice' ? 'voice' : 'button'
-  const decision = {
-    answer,
-    by: actor,
-    at: new Date().toISOString(),
-    via,
-    confirmed: payload.confirmed !== false,
-    raw: String(payload.raw || '').slice(0, 500)
-  }
-  const history = [...(row.history || []), decision].slice(-40)
-  const confirmedUnauthorized = answer === 'not_mine' && REVIEWERS.has(actor)
-  let mark = item.mark
-  if (item.id === 'official-aarsales' && (answer === 'mine' || answer === 'mine_wrong')) mark = 'Official'
-  else if (answer === 'mine_wrong' && item.reportPlatform === 'directory') mark = 'Directory correction'
-  else if (confirmedUnauthorized && item.mark !== 'Official') mark = item.mark
-  return {
-    listing: {
-      ...row,
-      decision,
-      history,
-      confirmedUnauthorized,
-      markOverride: mark
-    }
-  }
-}
-
-export function saveDecision(id, payload) {
-  const item = SEED_LISTINGS.find(row => row.id === id)
+/**
+ * Save Mine / Not mine / Mine but details are wrong / Unsure.
+ * `by` always comes from the reviewer key, never from the request body.
+ */
+export function saveDecision(id, payload, role) {
+  const item = findListing(id)
   if (!item) return { error: 'Unknown listing.' }
-  if (payload.confirmOnly || (payload.via === 'voice' && !ANSWERS.includes(payload.answer))) {
-    const guessed = classifyAnswer(payload.raw)
-    if (!guessed) return { needsConfirm: true, text: payload.raw }
-    payload = { ...payload, answer: guessed, confirmed: true }
+  let answer = ANSWERS.includes(payload.answer) ? payload.answer : null
+  const via = payload.via === 'voice' ? 'voice' : 'button'
+  if (!answer) {
+    const read = classifyAnswer(payload.raw)
+    if (!read) return { ignored: true }
+    if (!read.sure) return { needsConfirm: true, text: String(payload.raw || ''), guess: read.answer }
+    answer = read.answer
   }
   const state = readState()
-  const applied = applyDecision(item, state.listings[id] || {}, payload)
-  if (applied.error) return applied
-  state.listings[id] = applied.listing
+  const row = state.listings[id] || {}
+  const at = payload.syncAt && !Number.isNaN(Date.parse(payload.syncAt)) ? payload.syncAt : new Date().toISOString()
+  if (payload.syncAt && row.decision && Date.parse(row.decision.at) >= Date.parse(at)) {
+    return { ok: true, listing: publicListing(item, state), stale: true }
+  }
+  const decision = { answer, by: role, at, via, raw: String(payload.raw || '').slice(0, 500) }
+  state.listings[id] = { ...row, decision, history: [...(row.history || []), decision].slice(-40) }
   writeState(state)
   return { ok: true, listing: publicListing(item, state) }
 }
 
-export function saveVerified(id, payload) {
-  const item = SEED_LISTINGS.find(row => row.id === id)
+export function saveVerified(id, payload, role) {
+  const item = findListing(id)
   if (!item) return { error: 'Unknown listing.' }
+  if (role !== 'marty') return { error: 'Only Marty updates verified status.' }
   const status = ['unknown', 'online', 'offline'].includes(payload.status) ? payload.status : 'unknown'
   const state = readState()
   state.listings[id] = {
     ...(state.listings[id] || {}),
-    lastVerified: {
-      status,
-      at: new Date().toISOString(),
-      note: String(payload.note || '').slice(0, 400)
-    }
+    lastVerified: { status, at: new Date().toISOString(), note: String(payload.note || '').slice(0, 400) }
   }
   writeState(state)
   return { ok: true, listing: publicListing(item, state) }
 }
 
-export function saveReport(id, payload) {
-  const item = SEED_LISTINGS.find(row => row.id === id)
+function readyBlocker(item, decision, route, auth) {
+  if (route === 'none') return 'Pick a report route first.'
+  if (route === 'directory') {
+    if (!decision || decision.answer !== 'mine_wrong') return 'A directory correction needs Randy to mark it Mine, but details are wrong.'
+    return null
+  }
+  if (!isConfirmedUnauthorized(item, decision)) return 'Only file after Randy or Marty marks this listing Not mine.'
+  if (route === 'trademark' && !auth.authorized) return 'Record Randy’s one-time authorization before filing a trademark report.'
+  if (!(item.url || item.copyUrl)) return 'The exact URL is still missing. Recover it before filing.'
+  return null
+}
+
+export function saveReport(id, payload, role) {
+  const item = findListing(id)
   if (!item) return { error: 'Unknown listing.' }
+  if (role !== 'marty') return { error: 'Marty handles reports. Randy does not have to submit anything.' }
   const state = readState()
   const key = reportKey(item)
   const current = state.reports[key] || blankReport(item)
-  let status = REPORT_STATUSES.includes(payload.status) ? payload.status : current.status
-  const platformAccepted = payload.platformAccepted === true || current.platformAccepted === true
-  if (status === 'Submitted' && !platformAccepted) {
-    return { error: 'The app must not say Submitted unless the platform actually accepted it.' }
+  const status = REPORT_STATUSES.includes(payload.status) ? payload.status : current.status
+  const route = ROUTES.includes(payload.route) ? payload.route : current.route
+  const platformAccepted = typeof payload.platformAccepted === 'boolean' ? payload.platformAccepted : current.platformAccepted
+  const decision = (state.listings[id] || {}).decision
+  if (status !== 'Draft') {
+    const blocked = readyBlocker(item, decision, route, state.trademarkAuth)
+    if (blocked) return { error: blocked }
   }
-  if (payload.route === 'trademark' && status === 'Ready' && !state.trademarkAuth.authorized) {
-    return { error: 'Record Randy’s one-time authorization before Marty files a trademark report.' }
+  if ((status === 'Submitted' || status === 'Resolved') && !platformAccepted) {
+    return { error: 'Only mark Submitted after the platform actually accepted the report.' }
   }
-  const next = {
+  const routeChanged = route !== current.route
+  const draftEdited = payload.draft != null && String(payload.draft) !== current.draft
+  state.reports[key] = {
     ...current,
     status,
-    route: payload.route || current.route,
+    route,
+    platformAccepted,
     caseNumber: payload.caseNumber != null ? String(payload.caseNumber).slice(0, 80) : current.caseNumber,
     outcome: payload.outcome != null ? String(payload.outcome).slice(0, 400) : current.outcome,
-    draft: payload.draft != null ? String(payload.draft).slice(0, 8000) : current.draft,
-    platformAccepted,
-    submittedAt: status === 'Submitted' ? (current.submittedAt || new Date().toISOString()) : current.submittedAt
+    draft: draftEdited ? String(payload.draft).slice(0, 8000) : routeChanged ? buildDraft(item, route) : current.draft,
+    submittedAt: status === 'Submitted' ? (current.submittedAt || new Date().toISOString()) : current.submittedAt,
+    updatedBy: role,
+    updatedAt: new Date().toISOString()
   }
-  state.reports[key] = next
   writeState(state)
   return { ok: true, listing: publicListing(item, state) }
 }
 
-export function saveAuthorization(payload) {
-  if (normalizeActor(payload.by) !== 'randy') {
-    return { error: 'Only Randy can give the one-time trademark authorization.' }
-  }
+/** Randy gives it himself, or Marty records how Randy gave it. */
+export function saveAuthorization(payload, role) {
   if (!payload.authorized) return { error: 'Authorization was not given.' }
+  const how = String(payload.how || '').trim().slice(0, 300)
+  if (role === 'marty' && !how) return { error: 'Say how Randy authorized it, for example: email from Randy on Nov 25.' }
   const state = readState()
   state.trademarkAuth = {
     ...state.trademarkAuth,
     authorized: true,
-    by: 'randy',
-    at: new Date().toISOString()
+    recordedBy: role,
+    at: new Date().toISOString(),
+    how: role === 'randy' ? 'Randy confirmed in Impersonation Review.' : how
   }
   writeState(state)
   return { ok: true, trademarkAuth: state.trademarkAuth }
 }
 
-export function saveShot(id, shotId, buffer, ext) {
-  const item = SEED_LISTINGS.find(row => row.id === id)
-  if (!item) return { error: 'Unknown listing.' }
-  if (!item.screenshots.includes(shotId) && !SHOTS[shotId]) return { error: 'Unknown screenshot.' }
-  const dir = path.join(SHOTS_DIR, 'uploads')
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-  const safeExt = ext === '.jpg' || ext === '.jpeg' || ext === '.webp' ? '.png' : '.png'
-  fs.writeFileSync(path.join(dir, `${shotId}${safeExt === '.png' ? '.png' : '.png'}`), buffer)
+const IMAGE_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }
+
+export function saveShot(shotId, file, role) {
+  if (role !== 'marty') return { error: 'Only Marty replaces screenshots.' }
+  if (!SHOTS[shotId]) return { error: 'Unknown screenshot.' }
+  if (!file || !IMAGE_TYPES[file.mimetype]) return { error: 'Use a PNG, JPG, or WebP screenshot.' }
+  ensureDir(UPLOADS_DIR)
+  fs.writeFileSync(path.join(UPLOADS_DIR, `${shotId}.img`), file.buffer)
+  fs.writeFileSync(path.join(UPLOADS_DIR, `${shotId}.json`), JSON.stringify({ type: file.mimetype, name: file.originalname, at: new Date().toISOString() }))
   return { ok: true }
 }
 
-export function exportHtml() {
-  const data = snapshot()
+export function readShot(shotId) {
+  if (!SHOTS[shotId]) return null
+  const img = path.join(UPLOADS_DIR, `${shotId}.img`)
+  if (!fs.existsSync(img)) return null
+  let type = 'image/png'
+  try { type = JSON.parse(fs.readFileSync(path.join(UPLOADS_DIR, `${shotId}.json`), 'utf8')).type || type } catch { /* default */ }
+  return { type, buffer: fs.readFileSync(img) }
+}
+
+export function exportHtml(base = '') {
+  const data = snapshot('export')
+  const abs = src => (src && src.startsWith('/') ? `${base}${src}` : src)
   const rows = data.listings.map(item => {
     const decision = item.decision
-      ? `${labelAnswer(item.decision.answer)} · ${item.decision.by} · ${item.decision.via} · ${item.decision.at}`
+      ? `${labelAnswer(item.decision.answer)} (by ${cap(item.decision.by)}, ${item.decision.via}, ${item.decision.at.slice(0, 10)})`
       : 'No decision yet'
-    const link = item.url || item.copyUrl
-    const linkHtml = link
-      ? (item.showDomainPlain
-        ? `<span>${esc(item.name)}</span> · <a href="${esc(link)}">${esc(link)}</a>`
-        : `<a href="${esc(link)}">${esc(link)}</a>`)
-      : 'No direct link recovered'
-    const shots = (item.screenshots || [])
-      .map(s => `${esc(s.title)}${s.src ? ` · <a href="${esc(s.src)}">${esc(s.src)}</a>` : ''}`)
-      .join('<br>')
+    const link = item.showDomainPlain
+      ? `${esc(item.name)} (domain shown as plain text)`
+      : item.url
+        ? `<a href="${esc(item.url)}">${esc(item.url)}</a>`
+        : 'No direct link recovered yet'
+    const shots = (item.screenshots || []).map(s => s.placeholder
+      ? `${esc(s.title)}: original screenshot not imported yet`
+      : `${esc(s.title)}: imported screenshot (open in the review with a reviewer link)`).join('<br>')
     const sources = (item.evidenceSources || []).map(u => `<a href="${esc(u)}">${esc(u)}</a>`).join('<br>')
+    const obs = (item.observations || []).map(o => `<li>${esc(o)}</li>`).join('')
+    const verified = item.lastVerified && item.lastVerified.status !== 'unknown'
+      ? `${esc(item.lastVerified.status)} on ${esc(String(item.lastVerified.at).slice(0, 10))}`
+      : 'Not checked yet'
     return `<article>
       <h2>${esc(item.name)}</h2>
       <p><strong>${esc(item.mark)}</strong>${item.confirmedUnauthorized ? ' · Confirmed unauthorized' : ''}</p>
-      <p>${linkHtml}</p>
-      <p>${esc(item.why)}</p>
+      <p>${link}</p>
+      <p><strong>Why it was flagged:</strong> ${esc(item.why)}</p>
+      ${obs ? `<ul>${obs}</ul>` : ''}
       <p><strong>Decision:</strong> ${esc(decision)}</p>
-      <p><strong>Report:</strong> ${esc(item.report.status)} · ${esc(item.report.route)}${item.report.caseNumber ? ` · case ${esc(item.report.caseNumber)}` : ''}</p>
-      <p><strong>Evidence:</strong><br>${shots || 'No screenshot file on this card yet.'}</p>
+      <p><strong>Last verified:</strong> ${verified}</p>
+      <p><strong>Report:</strong> ${esc(item.report.status)}, ${esc(ROUTE_LABELS[item.report.route] || item.report.route)}${item.report.caseNumber ? `, case ${esc(item.report.caseNumber)}` : ''}${item.report.outcome ? `, outcome: ${esc(item.report.outcome)}` : ''}</p>
+      <p><strong>Evidence:</strong><br>${shots || 'No screenshot on this card.'}</p>
       ${sources ? `<p><strong>Sources:</strong><br>${sources}</p>` : ''}
       <p><strong>Next action:</strong> ${esc(item.nextAction)}</p>
     </article>`
   }).join('\n')
+  const auth = data.trademarkAuth
   return `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>AAR impersonation review</title>
+<html lang="en"><head><meta charset="utf-8"><title>Auto Auction Rebuilds impersonation review</title>
 <style>
   body{font-family:Arial,sans-serif;max-width:800px;margin:24px auto;padding:0 16px;color:#102043;line-height:1.45}
   h1{font-size:22px} article{border:1px solid #d5deec;border-radius:12px;padding:16px;margin:16px 0}
   a{color:#1546e6}
 </style></head><body>
 <h1>Auto Auction Rebuilds impersonation review</h1>
+<p>Exported ${esc(new Date().toISOString().slice(0, 10))}.</p>
 <p>${esc(INTRO)}</p>
-<p>Daily monitoring: inactive. Email operator: unconnected. Marty files reports. Submitted is used only when a platform accepted the report.</p>
-<p>Trademark authorization: ${data.trademarkAuth.authorized ? `recorded ${esc(data.trademarkAuth.at)}` : 'not recorded'}</p>
+<p>Daily monitoring: inactive. Email: not connected. Marty files the reports. A report is marked Submitted only after the platform accepted it.</p>
+<p>Trademark authorization: ${auth.authorized ? `recorded ${esc(String(auth.at).slice(0, 10))} (${esc(auth.how)})` : 'not recorded yet'}</p>
 ${rows}
 </body></html>`
 }
 
-export function voicePrompt(listing) {
-  const link = listing.url || listing.copyUrl || 'no direct link recovered'
+export function voicePromptFor(id) {
+  const item = findListing(id)
+  if (!item) return null
+  const link = item.url || (item.copyUrl ? item.name : 'no direct link recovered yet')
   return `You are on Impersonation Review. Do not say the long hello. Do not mention Jessica. Look at this one listing only.
-Name: ${listing.name}.
-Mark: ${listing.mark}.
+Name: ${item.name}.
+Kind: ${item.mark}.
 Link: ${link}.
-Why it was flagged: ${listing.why}.
-After one short sentence, ask: Is this yours?
-If they say it is theirs: Mine.
-If they say it is not: Not mine.
-If they say it is theirs but a number, photo, website, or address is wrong: Mine, but details are wrong.
-If they are not sure: Unsure.
-If the answer is unclear, confirm those four choices. Do not guess.
-Only Randy or an authorized reviewer can call a listing confirmed unauthorized.
-Marty files reports. Randy does not have to submit them.
-Daily monitoring is inactive. Email is unconnected. Do not claim a scan already ran. The five-dollar scan is unconfirmed. Do not name Apify as the previous service.`
+Why it was flagged: ${item.why}
+Say one short sentence about it, then ask: Is this yours?
+The answers are: Mine. Not mine. Mine, but details are wrong. Unsure.
+If the answer is unclear, read those four back and let them pick. Do not guess.
+Saying Not mine is what confirms a listing as unauthorized. Do not call it confirmed before they say so.
+Marty files the reports. Randy does not have to submit anything.
+Daily monitoring is not running yet. Email is not connected. Do not claim a scan already ran.`
+}
+
+export function reviewListingName(id) {
+  const item = findListing(id)
+  return item ? { name: item.name, why: item.why } : null
 }
 
 function labelAnswer(answer) {
-  if (answer === 'mine') return 'Mine'
-  if (answer === 'not_mine') return 'Not mine'
-  if (answer === 'mine_wrong') return 'Mine, but details are wrong'
-  if (answer === 'unsure') return 'Unsure'
-  return 'None'
+  return ANSWER_LABELS[answer] || 'None'
+}
+
+function cap(value) {
+  const s = String(value || '')
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 function esc(value) {

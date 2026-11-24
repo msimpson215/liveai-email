@@ -208,6 +208,8 @@
   .qitem.bad{border-color:#d7a3a3}
   .review .desk{display:none}
   body.desk .review .desk{display:block}
+  #reviewDot{display:none}
+  body.can-review #reviewDot{display:inline-flex}
   .review .desk label{display:block;font-size:12px;font-weight:800;margin:10px 0 4px}
   .review .desk input,.review .desk select,.review .desk textarea{
     width:100%;border:1px solid #d5deec;border-radius:10px;padding:8px 10px;font:500 13px/1.4 inherit
@@ -282,6 +284,7 @@
         <div class="queue" id="reviewQueue" aria-label="Marty queue"></div>
         <div class="card" id="reviewCard"></div>
         <div class="confirm" id="reviewConfirm" hidden></div>
+        <div class="meta" id="reviewAuth"></div>
         <div class="navrow">
           <button type="button" class="ghost" id="prevItem">Previous</button>
           <span class="tiny" id="reviewPos"></span>
@@ -593,7 +596,7 @@ async function connectVoice(){
   const r=await fetch('/api/axon-ai/live',{
     method:'POST',cache:'no-store',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({brain:'aar',sdp:conn.localDescription.sdp,history:history.slice(-12),timeOfDay:(function(){const h=new Date().getHours();if(h>=5&&h<12)return'morning';if(h>=12&&h<17)return'afternoon';if(h>=17&&h<21)return'evening';return'night'})(),reviewListing:window.AarReview&&AarReview.isOpen()?AarReview.current():null})
+    body:JSON.stringify({brain:'aar',sdp:conn.localDescription.sdp,history:history.slice(-12),timeOfDay:(function(){const h=new Date().getHours();if(h>=5&&h<12)return'morning';if(h>=12&&h<17)return'afternoon';if(h>=17&&h<21)return'evening';return'night'})(),reviewListingId:window.AarReview&&AarReview.isOpen()&&AarReview.current()?AarReview.current().id:null,reviewKey:window.AarReview?AarReview.key():''})
   });
   if(!r.ok){const err=new Error('session');err.status=r.status;throw err}
   const data=await r.json();

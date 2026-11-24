@@ -1534,9 +1534,9 @@ ${VOICE_RULES}
 
 PACE — upbeat. Normal conversational speed, bright, glad to be talking. The subject is serious. The voice is not. Do not sound breathy, sultry, apologetic, flat, or sad. In the opening, say A.I. as two letters. Never say LLM, L.L.M., AIT, or auto-auto. Say Auto Auction Rebuilds as three clear words. Never mash it into the words A.I. team member.
 
-OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script. After "Feel free to ask now" and the ChatGPT line, pause. Then say the Well if not closer, using the time of day already in the script. Do not invent a different time of day:
+${context.reviewListing ? `IMPERSONATION REVIEW — this session is for reviewing listings, not the hello. Do not say the opening at all. You are looking at: ${context.reviewListing.name}. ${context.reviewListing.why} Ask: Is this yours? When the screen moves to another listing you will be told; look only at that one.` : `OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script. After "Feel free to ask now" and the ChatGPT line, pause. Then say the Well if not closer, using the time of day already in the script. Do not invent a different time of day:
 "${aarOpening(context.timeOfDay)}"
-If he cuts in, answer him, then do not restart it. Never repeat the opening. If he says hello later, say you're here and answer him. Do not say asshole scammers. Do not use that joke. He took it out.
+If he cuts in, answer him, then do not restart it. Never repeat the opening. If he says hello later, say you're here and answer him.`} Do not say asshole scammers. Do not use that joke. He took it out.
 
 HOW YOU TALK:
 - One to three sentences, then stop and listen. Longer only when he asks, and for this opening.
@@ -1616,7 +1616,7 @@ LATER, only if he asks what else this can do:
 - The memory is why this remembers the conversation now or six months from now. ChatGPT, Gemini, and Claude forget what was said a day ago. He does not start a new chat. Do not tell him the memory is still being built. If he asks for a specific detail that is not in this conversation, do not make it up.
 - Marty wants you able to email or text him a report.
 - Marty said you could later read Randy's emails and separate real offers from people wasting his time. Inbox access is unconnected. If he says go through my email, say the inbox is not connected yet. Do not claim you already read his mail.
-- Impersonation Review is inside this same assistant. Marty gathered listings half by hand and half with A.I. Randy tells him which are his. Marty files the reports. Randy does not have to submit them. A listing is confirmed unauthorized only if Randy or Marty marks it Not mine. Daily monitoring is inactive until a scheduled scan and a real alert have both been verified. The five-dollar scan is unconfirmed. Do not name Apify as the previous service. Do not start a paid scan.
+- Impersonation Review is inside this same assistant. Marty gathered listings half by hand and half with A.I. Randy tells him which are his. Marty files the reports. Randy does not have to submit them. A listing is confirmed unauthorized only if Randy or Marty marks it Not mine. Daily monitoring is inactive until a scheduled scan and a real alert have both been verified. Whether the five-dollar charge was the earlier Marketplace scan is not confirmed. Do not claim it either way. Do not start a paid scan.
 - Facebook trademark reports use U.S. registration 8102075, AUTO AUCTION REBUILDS. Marty needs Randy's one-time authorization before filing as his representative. Until a Meta submission method is configured, Marty submits by hand. Do not say a report was Submitted unless the platform accepted it.
 
 NEVER:
@@ -1629,8 +1629,7 @@ NEVER:
 - Talk about GEO, crawlers, or this conversation being published.
 - Say asshole scammers, or any joke like that. He took it out.
 
-If asked who you are: "I'm your Auto Auction Rebuilds AI team member. Marty Simpson built my brain to help stop these scammers."
-${context.reviewListing ? `\nIMPERSONATION REVIEW — you are looking at one listing: ${context.reviewListing.name}. ${context.reviewListing.why} Ask: Is this yours? Do not say the long opening.` : ''}`
+If asked who you are: "I'm your Auto Auction Rebuilds AI team member. Marty Simpson built my brain to help stop these scammers."`
   }
 }
 
@@ -2602,50 +2601,61 @@ function liveBrain(req) {
   return Object.prototype.hasOwnProperty.call(LIVE_BRAINS, key) ? key : 'axonai'
 }
 
-app.get('/api/aar/review', (_req, res) => {
+/** Impersonation Review is private: Randy's or Marty's key, or nothing. */
+function aarReviewer(req, res) {
   res.set('Cache-Control', 'no-store')
-  res.json(aarReview.snapshot())
+  res.set('X-Robots-Tag', 'noindex')
+  const role = aarReview.roleForKey(req.get('x-aar-key') || req.query.k)
+  if (!role) res.status(401).json({ error: 'This review needs Randy’s or Marty’s link.' })
+  return role
+}
+
+function aarReply(res, out) {
+  if (out.error) return res.status(400).json(out)
+  res.json(out)
+}
+
+app.get('/api/aar/review', (req, res) => {
+  const role = aarReviewer(req, res)
+  if (role) res.json(aarReview.snapshot(role))
 })
 
 app.post('/api/aar/review/decision', (req, res) => {
-  res.set('Cache-Control', 'no-store')
-  const out = aarReview.saveDecision(req.body && req.body.id, req.body || {})
-  if (out.error) return res.status(400).json(out)
-  res.json(out)
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, aarReview.saveDecision(req.body && req.body.id, req.body || {}, role))
 })
 
 app.post('/api/aar/review/report', (req, res) => {
-  res.set('Cache-Control', 'no-store')
-  const out = aarReview.saveReport(req.body && req.body.id, req.body || {})
-  if (out.error) return res.status(400).json(out)
-  res.json(out)
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, aarReview.saveReport(req.body && req.body.id, req.body || {}, role))
 })
 
 app.post('/api/aar/review/verified', (req, res) => {
-  res.set('Cache-Control', 'no-store')
-  const out = aarReview.saveVerified(req.body && req.body.id, req.body || {})
-  if (out.error) return res.status(400).json(out)
-  res.json(out)
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, aarReview.saveVerified(req.body && req.body.id, req.body || {}, role))
 })
 
 app.post('/api/aar/review/authorize', (req, res) => {
-  res.set('Cache-Control', 'no-store')
-  const out = aarReview.saveAuthorization(req.body || {})
-  if (out.error) return res.status(400).json(out)
-  res.json(out)
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, aarReview.saveAuthorization(req.body || {}, role))
 })
 
-app.get('/api/aar/review/export', (_req, res) => {
-  res.set('Cache-Control', 'no-store')
-  res.type('html').send(aarReview.exportHtml())
+app.get('/api/aar/review/export', (req, res) => {
+  const role = aarReviewer(req, res)
+  if (role) res.type('html').send(aarReview.exportHtml(`${(req.get('x-forwarded-proto') || req.protocol).split(',')[0]}://${req.get('host')}`))
+})
+
+app.get('/api/aar/review/shot/:id', (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  const shot = aarReview.readShot(req.params.id)
+  if (!shot) return res.status(404).end()
+  res.type(shot.type).send(shot.buffer)
 })
 
 app.post('/api/aar/review/shot', upload.single('file'), (req, res) => {
-  res.set('Cache-Control', 'no-store')
-  if (!req.file) return res.status(400).json({ error: 'Choose a screenshot first.' })
-  const out = aarReview.saveShot(req.body && req.body.id, req.body && req.body.shotId, req.file.buffer, path.extname(req.file.originalname || '').toLowerCase())
-  if (out.error) return res.status(400).json(out)
-  res.json(out)
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, aarReview.saveShot(req.body && req.body.shotId, req.file, role))
 })
 
 app.post('/api/axon-ai/live', async (req, res) => {
@@ -2657,7 +2667,9 @@ app.post('/api/axon-ai/live', async (req, res) => {
   if (checkQrBudget(brain, req)) return res.status(429).json({ error: 'Busy right now.' })
   const timeOfDay = resolveAarDayPart(req.body && req.body.timeOfDay)
   const opening = brain === 'aar' ? aarOpening(timeOfDay) : LIVE_BRAINS[brain].opening
-  const reviewListing = brain === 'aar' && req.body && req.body.reviewListing
+  const reviewId = brain === 'aar' && aarReview.roleForKey(req.body && req.body.reviewKey) ? req.body.reviewListingId : null
+  const reviewPrompt = reviewId ? aarReview.voicePromptFor(reviewId) : null
+  const reviewListing = reviewPrompt ? aarReview.reviewListingName(reviewId) : null
   const past = (Array.isArray(req.body.history) ? req.body.history.slice(-12) : [])
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
     .map(m => ({
@@ -2665,8 +2677,8 @@ app.post('/api/axon-ai/live', async (req, res) => {
       role: m.role,
       content: [{ type: m.role === 'user' ? 'input_text' : 'output_text', text: m.text.slice(0, 1500) }]
     }))
-  const start = reviewListing
-    ? aarReview.voicePrompt(reviewListing)
+  const start = reviewPrompt
+    ? reviewPrompt
     : past.length
     ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
     : brain === 'aar'
