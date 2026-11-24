@@ -1,5 +1,5 @@
 {
-  "build": "cv-20261124a",
+  "build": "cv-20261124b",
   "projects": [
     {
       "id": "axon-ai",
@@ -213,8 +213,8 @@
         "maplewood"
       ]
     },
-    "randy": {
-      "name": "Randy Scheer — Auto Auction Rebuilds",
+    "innovation": {
+      "name": "Innovation",
       "featured": [
         "axon-ai",
         "pre-de-icer",

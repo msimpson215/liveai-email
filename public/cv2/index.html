@@ -281,10 +281,10 @@
   .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
   .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
   html.cv-view-pending #featured-projects { visibility: hidden; }
-  body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus, body[data-cv-view="randy"] .mayor-video-focus { display:block !important; }
-  body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus, body[data-cv-view="randy"] .general-ai-focus { display:none; }
+  body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus, body[data-cv-view="innovation"] .mayor-video-focus { display:block !important; }
+  body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus, body[data-cv-view="innovation"] .general-ai-focus { display:none; }
   #florida-home { display:none; }
-  body[data-cv-view="randy"] #florida-home { display:block; }
+  body[data-cv-view="innovation"] #florida-home { display:block; }
   .florida-home-grid { display:grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; max-width: 1040px; margin: 0 auto; }
   .florida-home-grid .photo-figure { margin: 0; }
   .florida-home-grid .fin-table { width: 100%; border-collapse: collapse; margin: 0 0 10px; background: #fff; }
@@ -299,8 +299,8 @@
   #press .press-front-page .legacy-media, #press .press-magic .legacy-media,
   #press .press-front-page .legacy-media img, #press .press-magic .legacy-media img { background: #f4efe6; object-fit: contain; object-position: center; }
   #press .press-front-page { display:none; }
-  body[data-cv-view="mayor"] #press .press-front-page, body[data-cv-view="prototype1"] #press .press-front-page, body[data-cv-view="randy"] #press .press-front-page { display:flex; }
-  body[data-cv-view="mayor"] #press .press-channel9, body[data-cv-view="prototype1"] #press .press-channel9, body[data-cv-view="randy"] #press .press-channel9 { display:none; }
+  body[data-cv-view="mayor"] #press .press-front-page, body[data-cv-view="prototype1"] #press .press-front-page, body[data-cv-view="innovation"] #press .press-front-page { display:flex; }
+  body[data-cv-view="mayor"] #press .press-channel9, body[data-cv-view="prototype1"] #press .press-channel9, body[data-cv-view="innovation"] #press .press-channel9 { display:none; }
 
   @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
@@ -368,7 +368,7 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Career</p>
     <h2 class="home-h">Selected Career Highlights</h2>
-    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261124a" aria-busy="true"></div>
+    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261124b" aria-busy="true"></div>
     <nav class="ov-jump" aria-label="On this page">
       <a href="#current">AI &amp; Technology</a>
       <a href="#press">In the News</a>
@@ -666,8 +666,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/present.js?v=cv-20261124a"></script>
-<script src="/cv2/orb.js?v=cv-20261124a"></script>
+<script src="/cv2/present.js?v=cv-20261124b"></script>
+<script src="/cv2/orb.js?v=cv-20261124b"></script>
 <script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>
