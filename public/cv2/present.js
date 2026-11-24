@@ -1,6 +1,8 @@
 (function () {
   var STORE = 'cvPresentation';
   var DATA_URL = '/cv2/presentations.json';
+  var MAX_FEATURED = 4;
+  var SLOT_LABELS = ['Project one', 'Project two', 'Project three', 'Project four'];
 
   function slug(value) {
     return String(value || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
@@ -44,10 +46,12 @@
     var f2 = query.f2;
     var ids = [];
     var key = 'general';
+    var custom = false;
 
     if (f1 && f2 && map[f1] && map[f2] && f1 !== f2) {
       ids = [f1, f2];
       key = presets[view] ? view : (view || 'custom');
+      custom = true;
     } else if (view && presets[view] && presets[view].featured) {
       ids = presets[view].featured.slice();
       key = view;
@@ -57,25 +61,26 @@
     }
 
     var featured = [];
-    for (var i = 0; i < ids.length && featured.length < 2; i++) {
+    for (var i = 0; i < ids.length && featured.length < MAX_FEATURED; i++) {
       if (map[ids[i]]) featured.push(map[ids[i]]);
     }
+    if (featured.length > 2 && featured.length < 4) featured = featured.slice(0, 2);
     var preset = presets[key] || {};
     return {
       view: key,
       name: preset.name || '',
       build: data.build || '',
-      f1: featured[0] && featured[0].id,
-      f2: featured[1] && featured[1].id,
+      custom: custom,
+      sections: (!custom && preset.sections) || null,
+      f1: custom ? f1 : null,
+      f2: custom ? f2 : null,
       featured: featured
     };
   }
 
   function shareQuery(presentation) {
-    var presets = (window.CV_PRESENTATIONS && window.CV_PRESENTATIONS.presets) || {};
-    var preset = presets[presentation.view];
-    if (preset && preset.featured && preset.featured[0] === presentation.f1 && preset.featured[1] === presentation.f2) {
-      if (presentation.view === 'general') return '';
+    if (!presentation.custom) {
+      if (!presentation.view || presentation.view === 'general') return '';
       return '?view=' + encodeURIComponent(presentation.view);
     }
     var parts = [];
@@ -113,7 +118,8 @@
   function mediaHtml(project) {
     if (project.video) {
       return (
-        '<video class="feat-video" controls playsinline preload="metadata" title="' + esc(project.title) + '">' +
+        '<video class="feat-video" controls playsinline preload="metadata" title="' + esc(project.title) + '"' +
+          (project.poster ? ' poster="' + esc(project.poster) + '"' : '') + '>' +
           '<source src="' + esc(project.video) + '" type="video/mp4"/>' +
         '</video>'
       );
@@ -128,7 +134,7 @@
   }
 
   function cardHtml(project, slot) {
-    var label = (slot === 1 ? 'Project two' : 'Project one') + ' · ' + (project.tag || 'Project');
+    var label = (SLOT_LABELS[slot] || 'Project') + ' · ' + (project.tag || 'Project');
     if (project.embed) {
       return (
         '<div class="ov-card" data-project-id="' + esc(project.id) + '">' +
@@ -164,11 +170,34 @@
       document.documentElement.classList.remove('cv-view-pending');
       return;
     }
-    root.innerHTML = cardHtml(presentation.featured[0], 0) + cardHtml(presentation.featured[1], 1);
+    root.innerHTML = presentation.featured.map(cardHtml).join('');
+    root.setAttribute('data-count', String(presentation.featured.length));
     root.setAttribute('data-cv-view', presentation.view || '');
     root.setAttribute('data-cv-build', presentation.build || '');
     root.setAttribute('aria-busy', 'false');
     document.documentElement.classList.remove('cv-view-pending');
+  }
+
+  function orderSections(presentation) {
+    var order = presentation.sections;
+    var anchor = document.getElementById('featured');
+    if (!order || !order.length || !anchor || !anchor.parentNode) return;
+    var after = anchor;
+    order.forEach(function (id) {
+      var section = document.getElementById(id);
+      if (!section || section === anchor) return;
+      after.parentNode.insertBefore(section, after.nextSibling);
+      after = section;
+    });
+    var nav = anchor.querySelector('.ov-jump');
+    if (!nav) return;
+    var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
+    links.sort(function (a, b) {
+      var ia = order.indexOf(a.getAttribute('href').slice(1));
+      var ib = order.indexOf(b.getAttribute('href').slice(1));
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+    links.forEach(function (a) { nav.appendChild(a); });
   }
 
   function stampLinks(presentation) {
@@ -212,8 +241,13 @@
     if (onHome || hasQuery) persist(presentation);
     else window.CV_PRESENTATION = presentation;
     renderFeatured(presentation);
+    if (onHome) orderSections(presentation);
     if (onHome || isTalk || document.querySelector('.site-header')) stampLinks(presentation);
     document.documentElement.classList.remove('cv-view-pending');
+    if (onHome && location.hash) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target) target.scrollIntoView();
+    }
   }
 
   function load() {

@@ -115,7 +115,7 @@
     var keys = Object.keys(presets);
     for (var i = 0; i < keys.length; i++) {
       var feat = presets[keys[i]].featured || [];
-      if (feat[0] === a && feat[1] === b) return keys[i];
+      if (feat.length === 2 && feat[0] === a && feat[1] === b) return keys[i];
     }
     return '';
   }
@@ -128,7 +128,7 @@
     if (!a || !b || a === b) return '';
     var named = slugName(who.value);
     var preset = matchPreset(data, a, b);
-    if (named && data.presets[named] && data.presets[named].featured[0] === a && data.presets[named].featured[1] === b) {
+    if (named && data.presets[named] && data.presets[named].featured.length === 2 && data.presets[named].featured[0] === a && data.presets[named].featured[1] === b) {
       preset = named;
     }
     var path = '/cv2/';

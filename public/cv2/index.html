@@ -281,14 +281,26 @@
   .feat-grid .ov-card:not(:has(img)):not(:has(video)) { justify-content: center; min-height: 220px; }
   .feat-grid .work-more { font-size: 13.5px; font-weight: 700; color: var(--navy-2); margin-top: 4px; }
   html.cv-view-pending #featured-projects { visibility: hidden; }
-  body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus { display:block !important; }
-  body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus { display:none; }
+  body[data-cv-view="mayor"] .mayor-video-focus, body[data-cv-view="prototype1"] .mayor-video-focus, body[data-cv-view="randy"] .mayor-video-focus { display:block !important; }
+  body[data-cv-view="mayor"] .general-ai-focus, body[data-cv-view="prototype1"] .general-ai-focus, body[data-cv-view="randy"] .general-ai-focus { display:none; }
+  #florida-home { display:none; }
+  body[data-cv-view="randy"] #florida-home { display:block; }
+  .florida-home-grid { display:grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; align-items: start; max-width: 1040px; margin: 0 auto; }
+  .florida-home-grid .photo-figure { margin: 0; }
+  .florida-home-grid .fin-table { width: 100%; border-collapse: collapse; margin: 0 0 10px; background: #fff; }
+  .florida-home-grid .fin-table th, .florida-home-grid .fin-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; }
+  .florida-home-grid .fin-table th:last-child, .florida-home-grid .fin-table td:last-child { text-align: right; }
+  .florida-home-grid .fin-table tr:last-child td { border-bottom: 0; }
+  .florida-home-grid .fin-note { font-size: 13.5px; color: var(--muted); margin: 0 0 14px; }
+  @media (max-width: 760px) { .florida-home-grid { grid-template-columns: 1fr; } }
+  .feat-grid .ov-card[data-project-id="no-more-boo-boos"] img { object-position: center 94%; }
+  .feat-grid .ov-card[data-project-id="patient-education"] img { object-fit: contain; background: #011538; }
   #press .legacy-card .legacy-media, #press .legacy-card .legacy-media img { background: #e8edf3; object-fit: cover; object-position: center top; }
   #press .press-front-page .legacy-media, #press .press-magic .legacy-media,
   #press .press-front-page .legacy-media img, #press .press-magic .legacy-media img { background: #f4efe6; object-fit: contain; object-position: center; }
   #press .press-front-page { display:none; }
-  body[data-cv-view="mayor"] #press .press-front-page, body[data-cv-view="prototype1"] #press .press-front-page { display:flex; }
-  body[data-cv-view="mayor"] #press .press-channel9, body[data-cv-view="prototype1"] #press .press-channel9 { display:none; }
+  body[data-cv-view="mayor"] #press .press-front-page, body[data-cv-view="prototype1"] #press .press-front-page, body[data-cv-view="randy"] #press .press-front-page { display:flex; }
+  body[data-cv-view="mayor"] #press .press-channel9, body[data-cv-view="prototype1"] #press .press-channel9, body[data-cv-view="randy"] #press .press-channel9 { display:none; }
 
   @media (max-width: 760px) { .feat-grid { grid-template-columns: 1fr; } .florida-feature { grid-template-columns: 1fr !important; gap:0 !important; } .florida-feature img { height:210px !important; min-height:0 !important; } }
   @media (max-width: 640px) {
@@ -356,7 +368,7 @@
   <div class="wrap-wide">
     <p class="sec-kicker">Career</p>
     <h2 class="home-h">Selected Career Highlights</h2>
-    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261123d" aria-busy="true"></div>
+    <div class="feat-grid" id="featured-projects" data-cv-build="cv-20261124a" aria-busy="true"></div>
     <nav class="ov-jump" aria-label="On this page">
       <a href="#current">AI &amp; Technology</a>
       <a href="#press">In the News</a>
@@ -371,9 +383,9 @@
 <section class="home-section ai-band home-current" id="current">
   <div class="wrap-wide">
     <div class="mayor-video-focus" style="display:none;">
-      <p class="sec-kicker ai-kicker">Historic Maplewood · On Film</p>
-      <h2 class="home-h">KETC Channel 9 — The Maplewood Story</h2>
-      <p class="sec-lead">The original television feature about Martin’s Maplewood work, family, and community involvement.</p>
+      <p class="sec-kicker ai-kicker">KETC Channel 9 · Living in St. Louis</p>
+      <h2 class="home-h">Who Martin Is — and Why He Does It</h2>
+      <p class="sec-lead">The original television feature on his work in historic downtown Maplewood, his daughter Mia, and why helping children became his mission.</p>
       <div style="max-width:840px;margin:0 auto 24px;aspect-ratio:16/9;">
         <iframe src="https://www.youtube.com/embed/o_LuKiM_pTw" title="KETC Channel 9 — Living in St. Louis: Maplewood" loading="lazy" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" style="width:100%;height:100%;border:0;border-radius:14px;"></iframe>
       </div>
@@ -558,6 +570,35 @@
   </div>
 </section>
 
+<section class="home-section" id="florida-home">
+  <div class="wrap-wide">
+    <p class="sec-kicker">Real Estate</p>
+    <h2 class="home-h">Florida Property Investment</h2>
+    <p class="sec-lead">A real-estate investment and resale venture. Around Cape San Blas and Mexico Beach on the Gulf, Martin bought beachfront by the acre, found a legal way to subdivide it, and sold smaller parcels — approximately 15 properties in all, including a Gulf-front house and property at Emerald Isle.</p>
+    <div class="florida-home-grid">
+      <figure class="photo-figure">
+        <img src="/cv2/images/archive/florida-cape-san-blas-map.jpg" alt="Map of Cape San Blas and Mexico Beach with pins marking where Martin’s properties were" width="404" height="390" loading="lazy"/>
+        <figcaption>Cape San Blas and Mexico Beach — the pins mark where his properties were.</figcaption>
+      </figure>
+      <div>
+        <table class="fin-table">
+          <thead><tr><th>Investment / Property</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>John Schweitzer transaction</td><td>$1,000,000</td></tr>
+            <tr><td>House</td><td>$250,000</td></tr>
+            <tr><td>Mexico Beach lot</td><td>$200,000</td></tr>
+            <tr><td>Emerald Isle</td><td>$300,000</td></tr>
+            <tr><td>Six additional properties, combined</td><td>$250,000</td></tr>
+            <tr><td><strong>Total of amounts provided</strong></td><td><strong>$2,000,000</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="fin-note">The total is the sum of the amounts provided for these named transactions and properties. It is not verified profit, total portfolio value, or sale proceeds. Values for the remaining properties are not listed.</p>
+        <p><a class="btn-outline" href="/cv2/development.html#florida">Full Florida history →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="home-section" id="products">
   <div class="wrap-wide">
     <p class="sec-kicker">Inventions &amp; Products</p>
@@ -625,8 +666,8 @@
   </div>
 </footer>
 <script src="/axon-voice.js"></script>
-<script src="/cv2/present.js?v=cv-20261123d"></script>
-<script src="/cv2/orb.js?v=cv-20261123d"></script>
+<script src="/cv2/present.js?v=cv-20261124a"></script>
+<script src="/cv2/orb.js?v=cv-20261124a"></script>
 <script src="/cv2/cv.js?v=sys1"></script>
 </body>
 </html>

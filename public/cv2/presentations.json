@@ -1,5 +1,5 @@
 {
-  "build": "cv-20261123d",
+  "build": "cv-20261124a",
   "projects": [
     {
       "id": "axon-ai",
@@ -27,13 +27,14 @@
     {
       "id": "pre-de-icer",
       "title": "Pre-De-Icer",
-      "tag": "Inventions & Products",
-      "summary": "A preventive anti-icing treatment applied before the storm so ice cannot bond. Invented by Martin Simpson.",
+      "tag": "Invention · Automotive",
+      "summary": "A preventive anti-icing treatment for windshields. Apply it before the winter storm, and the formulation is designed to keep frost, snow, and ice from bonding to the glass, so there is nothing to scrape. Salt-free. Invented by Martin Simpson and available for sale or licensing.",
       "video": "/cv2/videos/pre-de-icer.mp4",
       "href": "/cv2/inventions.html#pre-de-icer",
-      "more": "View Pre-De-Icer →",
+      "more": "See how Pre-De-Icer works →",
       "picker": true,
-      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing film applied before a storm so frost, snow, and ice cannot bond. Inventor: Martin Simpson. Available for sale or licensing. Do not volunteer commercialization status; if asked, say it is available for sale or licensing. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document."
+      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing formulation applied before a winter storm. It forms a thick, honey-like film so frost, snow, and ice cannot bond to a windshield, equipment, or road surfaces: wipers instead of scrapers. Inventor: Martin Simpson. Status: available for sale or licensing. It matters to anyone who parks a car outside in winter, and it is directly related to automobiles. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document.",
+      "poster": "/portfolio/assets/predeicer-card.png"
     },
     {
       "id": "dna",
@@ -58,14 +59,14 @@
     {
       "id": "no-more-boo-boos",
       "title": "No More Boo-Boos",
-      "tag": "Inventions & Products",
-      "summary": "A dissolvable bandage for children that washes away under warm water instead of tearing skin.",
+      "tag": "Invention · Children’s Health",
+      "summary": "A dissolvable bandage designed for children, and potentially other patients with fragile skin. When it is time to come off, a parent holds it under warm water and it dissolves: no painful pulling, just a smiling kid. FDA clearance has not been granted.",
       "image": "/portfolio/assets/boo-boos-warm-water.png",
       "alt": "A parent holds a smiling child’s arm under warm water as the No More Boo-Boos bandage dissolves",
       "href": "/cv2/inventions.html#boo-boos",
       "more": "View No More Boo-Boos →",
       "picker": true,
-      "ai": "No More Boo-Boos is a bandage that dissolves under warm water so it does not tear skin. Aimed first at children. Provisional patent path. A product website is proposed; it is not up yet. Do not invent FDA clearance, dissolve time, or retail price. Do not describe it as commercially launched."
+      "ai": "No More Boo-Boos is a dissolvable bandage invented by Martin Simpson. It is designed for children, and potentially other patients with fragile skin such as older adults. When it is time to remove it, it is held under warm water and dissolves, so it does not pull or tear skin. FDA clearance has not been granted, and it is not commercially available; do not imply either. A product website is proposed and not up yet. Do not invent dissolve time, materials, or retail price."
     },
     {
       "id": "sts",
@@ -129,13 +130,15 @@
     },
     {
       "id": "patient-education",
-      "title": "Axon AI Patient Education",
-      "tag": "AI & Technology",
-      "summary": "A patient scans the pamphlet and asks basic questions about that procedure. It does not diagnose.",
-      "href": "/portfolio/projects/patient-education.html",
-      "more": "View Patient Education →",
+      "title": "Conversational Medical Pamphlet",
+      "tag": "AI & Healthcare",
+      "summary": "A patient scans the QR code on a printed pamphlet and talks with an AI that explains the procedure, such as a nuclear stress test, in plain language and answers follow-up questions. It stays within the approved educational material, does not diagnose or give medical advice, and sends personal questions to the patient’s own healthcare provider.",
+      "href": "/cv2/current.html#patient-education",
+      "more": "See the pamphlet and try the demonstration →",
       "picker": true,
-      "ai": "Medical explanation by QR: the stress-test guide is live. It does not diagnose."
+      "ai": "The Conversational Medical Pamphlet (Axon AI Patient Education) is a live demonstration. A patient scans a QR code on a printed pamphlet and opens a conversational AI that explains a procedure; the example built is a nuclear stress test. It explains the procedure in understandable language, takes follow-up questions, and stays within the approved educational material. It does not diagnose, give individualized treatment recommendations, or give medical advice, and it directs personal medical questions to the patient’s healthcare provider. Never claim it is HIPAA compliant: if it were to handle protected health information, the technical, administrative, and contractual safeguards would have to be verified first. Do not claim any hospital has adopted it.",
+      "image": "/sites/assets/stress-test-guide.jpg",
+      "alt": "Nuclear Stress Test patient pamphlet: Do you have questions? Our AI Assistant can help you understand. Tap to talk."
     },
     {
       "id": "product-instructions",
@@ -197,24 +200,35 @@
       ]
     },
     "mayor": {
-      "name": "Maplewood",
+      "name": "Maplewood, AI & Philanthropy",
       "featured": [
         "axon-ai",
         "maplewood"
       ]
     },
     "prototype1": {
-      "name": "Prototype 1",
+      "name": "Maplewood, AI & Philanthropy (neutral link)",
       "featured": [
         "axon-ai",
         "maplewood"
       ]
     },
     "randy": {
-      "name": "Randy",
+      "name": "Randy Scheer — Auto Auction Rebuilds",
       "featured": [
         "axon-ai",
-        "pre-de-icer"
+        "pre-de-icer",
+        "no-more-boo-boos",
+        "patient-education"
+      ],
+      "sections": [
+        "current",
+        "career",
+        "florida-home",
+        "community",
+        "childrens-hospital",
+        "press",
+        "products"
       ]
     },
     "haley": {
