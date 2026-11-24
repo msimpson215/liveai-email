@@ -1,5 +1,5 @@
 {
-  "build": "cv-20261124c",
+  "build": "cv-20261124d",
   "projects": [
     {
       "id": "axon-ai",
@@ -26,14 +26,14 @@
     },
     {
       "id": "pre-de-icer",
-      "title": "Pre-De-Icer",
+      "title": "PRE DE-ICER",
       "tag": "Invention · Automotive",
-      "summary": "A preventive anti-icing treatment for windshields. Apply it before the winter storm, and the formulation is designed to keep frost, snow, and ice from bonding to the glass, so there is nothing to scrape. Salt-free. Invented by Martin Simpson and available for sale or licensing.",
+      "summary": "An eco-friendly, preventative ice treatment for windshields that has not yet been offered publicly. Apply it before the winter storm, and ice cannot bond to the glass, so there is nothing to scrape. The proven, organic formula is made from food-grade ingredients, outperforms anything on the market, and cannot hurt clear coat, paint, rubber, concrete, or asphalt. Invented by Martin Simpson and available for sale or licensing.",
       "video": "/cv2/videos/pre-de-icer.mp4",
       "href": "/cv2/inventions.html#pre-de-icer",
-      "more": "See how Pre-De-Icer works →",
+      "more": "See how PRE DE-ICER works →",
       "picker": true,
-      "ai": "Pre-De-Icer is a preventive, salt-free anti-icing formulation applied before a winter storm. It forms a thick, honey-like film so frost, snow, and ice cannot bond to a windshield, equipment, or road surfaces: wipers instead of scrapers. Inventor: Martin Simpson. Status: available for sale or licensing. It matters to anyone who parks a car outside in winter, and it is directly related to automobiles. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document.",
+      "ai": "PRE DE-ICER is a preventive, salt-free anti-icing formulation applied before a winter storm. It forms a thick, honey-like film so frost, snow, and ice cannot bond to a windshield, equipment, or road surfaces: wipers instead of scrapers. It is an eco-friendly, organic formula made from food-grade ingredients. It has not yet been offered publicly. The formula is proven and superior to anything on the market, and it cannot hurt clear coat, paint, rubber, concrete, asphalt, or anything else it touches. Inventor: Martin Simpson. Status: available for sale or licensing. It matters to anyone who parks a car outside in winter, and it is directly related to automobiles. Do not quote ingredient cost, retail price, or partner deal terms. Do not present any patent as currently in force as commercial protection. Do not recite a patent number unless asked for the historical issued document. Pronounce the name \"pree dee-icer\"; never spell it out letter by letter.",
       "poster": "/portfolio/assets/predeicer-card.png"
     },
     {
