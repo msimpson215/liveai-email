@@ -20,6 +20,7 @@ import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
 import { resolvePresentation, presentationInstructions } from './cv-presentations.js'
 import * as aarReview from './aar-review.js'
+import * as aarInboxDemo from './aar-inbox-demo.js'
 dotenv.config()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -1534,7 +1535,7 @@ ${VOICE_RULES}
 
 PACE — upbeat. Normal conversational speed, bright, glad to be talking. The subject is serious. The voice is not. Do not sound breathy, sultry, apologetic, flat, or sad. In the opening, say A.I. as two letters. Never say LLM, L.L.M., AIT, or auto-auto. Say Auto Auction Rebuilds as three clear words. Never mash it into the words A.I. team member.
 
-${context.reviewListing ? `IMPERSONATION REVIEW — this session is for reviewing listings, not the hello. Do not say the opening at all. You are looking at: ${context.reviewListing.name}. ${context.reviewListing.why} Ask: Is this yours? When the screen moves to another listing you will be told; look only at that one.` : `OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script. After "Feel free to ask now" and the ChatGPT line, pause. Then say the Well if not closer, using the time of day already in the script. Do not invent a different time of day:
+${context.inboxDemo ? context.inboxDemo : context.reviewListing ? `IMPERSONATION REVIEW — this session is for reviewing listings, not the hello. Do not say the opening at all. You are looking at: ${context.reviewListing.name}. ${context.reviewListing.why} Ask: Is this yours? When the screen moves to another listing you will be told; look only at that one.` : `OPENING — say this ONE TIME, all the way through, in one natural turn. Do not stop after the first sentence. Do not mention Jessica, medical pamphlets, Q.R. codes, or HIPAA. Marty will tell Randy that in an email. Do not add Nick, the PTSD line, anything about not being charged, or extra jokes beyond the Blue line already in the script. After "Feel free to ask now" and the ChatGPT line, pause. Then say the Well if not closer, using the time of day already in the script. Do not invent a different time of day:
 "${aarOpening(context.timeOfDay)}"
 If he cuts in, answer him, then do not restart it. Never repeat the opening. If he says hello later, say you're here and answer him.`} Do not say asshole scammers. Do not use that joke. He took it out.
 
@@ -1597,6 +1598,8 @@ NATIONAL PICTURE, if he asks how long, who they hit, or whether it is increasing
 - There is no public count that proves it has doubled. AI makes website clones and voice mimicry easier, so Marty expects it to get worse. Say that as his judgment, not as a statistic.
 - If he asks what happens when they clone his voice: his voice is already on YouTube. A clone of "hello everybody" is a real coming problem, not a sci-fi bit. Do not claim someone has already cloned him unless he says they have. Marty is thinking about a way to mark a voice so a copy fails. That is not built. Do not promise it.
 - A published account also says Randy filed an FBI internet-crime complaint, that he has no employee named Jacob, and that an AAR Facebook page in one complaint is not his. The lot people are using is in Oklahoma. His real shop is AAR Auto Sales, LLC, Oklahoma City and Midwest City. The official site he runs is aarsales.com. Do not invent other domains.
+- In his own YouTube warning video, Randy said: a McClain County deputy came to AAR headquarters in Byars asking for "Jacob" about a car sold to someone in New Orleans. Callers asked about a Porsche 911 and a Range Rover supposedly on consignment in California; the fake seller hung up and blocked them when they asked questions. He is a wholesale dealer. He does not sell to the public and does not take consignments. He never messages people on Facebook, has no WhatsApp, and never asks anyone to send money to claim a prize. His real email is autoauctionrebuilds@gmail.com. He has about a million Facebook followers and close to six hundred thousand YouTube subscribers, so a "Randy" page with seventy thousand followers is not him. Fakes often misspell auction or rebuilds or add odd characters. He and his team reported the fake pages and stolen videos to Facebook many times, including as intellectual property, and Facebook came back saying it found nothing wrong. So if he asks what is different now: a trademark report citing U.S. registration 8102075, with the exact URLs and evidence in one place, is a stronger route than another impersonation report.
+- Do not bring up his dealer license, the state review, or his finances. If he raises them, listen and do not speculate.
 
 RANDY, if he asks about himself or you bring him up after the opening:
 - He is Randy Shear. The YouTube channel people knew first was UberMan. He rebranded it as Auto Auction Rebuilds. He also drove for Uber. He goes to the auto auctions, buys the cars, rebuilds them, and shows the work. The channel has a few hundred thousand subscribers and he posts constantly. Marty started watching the auctions because of him.
@@ -2601,6 +2604,16 @@ function liveBrain(req) {
   return Object.prototype.hasOwnProperty.call(LIVE_BRAINS, key) ? key : 'axonai'
 }
 
+app.get('/api/aar/inbox-demo', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.json(aarInboxDemo.inbox())
+})
+
+app.get('/aar/inbox', (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  res.sendFile(path.join(__dirname, '..', 'public', 'aar', 'inbox.html'))
+})
+
 /** Impersonation Review is private: Randy's or Marty's key, or nothing. */
 function aarReviewer(req, res) {
   res.set('Cache-Control', 'no-store')
@@ -2670,6 +2683,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
   const reviewId = brain === 'aar' && aarReview.roleForKey(req.body && req.body.reviewKey) ? req.body.reviewListingId : null
   const reviewPrompt = reviewId ? aarReview.voicePromptFor(reviewId) : null
   const reviewListing = reviewPrompt ? aarReview.reviewListingName(reviewId) : null
+  const inboxDemo = brain === 'aar' && req.body && req.body.demo === 'inbox' ? aarInboxDemo.inboxInstructions() : null
   const past = (Array.isArray(req.body.history) ? req.body.history.slice(-12) : [])
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.text === 'string' && m.text.trim())
     .map(m => ({
@@ -2677,7 +2691,11 @@ app.post('/api/axon-ai/live', async (req, res) => {
       role: m.role,
       content: [{ type: m.role === 'user' ? 'input_text' : 'output_text', text: m.text.slice(0, 1500) }]
     }))
-  const start = reviewPrompt
+  const start = inboxDemo
+    ? (past.length
+      ? 'He paused and came back. Do not greet again. Listen.'
+      : 'Say, warmly and briefly: "Hey Randy. I went through your email. This is a sample inbox so you can see how it works. Sixty emails: ten serious buyers, forty-five fans saying thanks, four rude ones, and one that looks like someone got scammed by a fake page. What do you want to see?" Then stop and listen.')
+    : reviewPrompt
     ? reviewPrompt
     : past.length
     ? 'The visitor paused and came back. Do not greet again and do not repeat the opening. Wait quietly and listen.'
@@ -2694,7 +2712,7 @@ app.post('/api/axon-ai/live', async (req, res) => {
       body: JSON.stringify({
         session: {
           model: LIVE_MODEL,
-          instructions: buildInstructions(brain, { timeOfDay, reviewListing }),
+          instructions: buildInstructions(brain, { timeOfDay, reviewListing, inboxDemo }),
           input: [...past, { type: 'message', role: 'developer', content: [{ type: 'input_text', text: start }] }],
           delegation: {
             type: 'responses',
