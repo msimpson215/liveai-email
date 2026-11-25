@@ -24,8 +24,20 @@
     -webkit-tap-highlight-color:transparent;
   }
 
+  #orb .pz{
+    position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:30%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.88);
+    display:none;align-items:center;justify-content:center;gap:12%;
+    box-shadow:0 4px 18px rgba(10,40,120,.25);
+  }
+  #orb .pz i{display:block;width:16%;height:42%;border-radius:3px;background:#0b1f4a}
+  body.live #orb .pz,body.paused #orb .pz{display:flex}
+  body.paused #orb .pz i{display:none}
+  body.paused #orb .pz::after{content:"";margin-left:10%;border-style:solid;border-width:22% 0 22% 34%;border-color:transparent transparent transparent #0b1f4a;width:0;height:0}
+  body.paused #orb img{filter:grayscale(.5) brightness(.95);animation:none}
+  #orb{cursor:pointer}
   #orb{
-    position:fixed;z-index:3;border-radius:50%;pointer-events:none;
+    position:fixed;z-index:5;border-radius:50%;pointer-events:none;
     width:min(62vw,38vh,320px);aspect-ratio:1;
     left:50%;top:44%;transform:translate(-50%,-50%) scale(calc(1 + var(--lvl,0) * .06));
     transition:left .7s cubic-bezier(.2,.8,.2,1),top .7s cubic-bezier(.2,.8,.2,1),width .7s cubic-bezier(.2,.8,.2,1);
@@ -52,7 +64,8 @@
   #start strong{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:-.02em}
   #start span{margin-top:8px;font-size:15px;font-weight:600;color:#6b7c96}
   #start .brand{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:0;right:0;font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
-  body.live #start{display:none}
+  body.live #start,body.paused #start{display:none}
+  body.live #orb,body.paused #orb{pointer-events:auto}
 
   #stacks{
     position:fixed;z-index:2;top:calc(env(safe-area-inset-top) + 24px);right:16px;left:112px;
@@ -135,7 +148,7 @@
 </style>
 </head>
 <body data-state="idle">
-  <div id="orb"><span class="halo"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"></div>
+  <div id="orb" role="button" aria-label="Pause or resume"><span class="halo"></span><img src="/art/axon-orb.png" alt="" width="655" height="655"><span class="pz"><i></i><i></i></span></div>
   <div id="start">
     <div class="brand">Auto Auction Rebuilds · AI Team Member</div>
     <strong>Tap once, then just talk.</strong>
@@ -296,7 +309,9 @@ function onEvent(m){
     clearTimeout(aiQuiet);aiQuiet=setTimeout(endAI,1200);return;
   }
   if(m.type==='session.input_transcript.delta'&&m.delta){
-    endAI();curYou+=m.delta;say('“'+curYou.trim()+'”',true);
+    endAI();curYou+=m.delta;
+    if(STOP.test(curYou)){curYou='';pauseVoice();return}
+    say('“'+curYou.trim()+'”',true);
     clearTimeout(youQuiet);youQuiet=setTimeout(endYou,1300);return;
   }
   if(m.type==='session.closed')teardown();
@@ -310,21 +325,74 @@ function level(stream){
       const t=Math.min(1,Math.sqrt(sum/buf.length)*4.5);s+=(t-s)*(t>s?.45:.1);orb.style.setProperty('--lvl',s.toFixed(3));requestAnimationFrame(tick)})();
   }catch(e){}
 }
+const STOP=/\b(pause|stop|stop talking|shut up|be quiet|quiet|hush|hold on|hang on|not talking to you)\b/i;
+const GO=/\b(go ahead|resume|continue|unpause|i'?m back|ok(ay)? axon|hey axon|keep going|start)\b/i;
+let audioEl=null,micStream=null,paused=false,ears=null;
+
 function teardown(){
   if(pc){try{pc.close()}catch(e){}}
-  pc=null;dc=null;ready=false;clearTimeout(hardStop);
+  if(micStream){try{micStream.getTracks().forEach(function(t){t.stop()})}catch(e){}}
+  if(audioEl){try{audioEl.pause();audioEl.srcObject=null}catch(e){}}
+  pc=null;dc=null;ready=false;micStream=null;clearTimeout(hardStop);clearTimeout(aiQuiet);clearTimeout(youQuiet);
+  curAI='';curYou='';
   document.body.classList.remove('live');document.body.dataset.state='idle';
   $('start').querySelector('strong').textContent='Tap once to keep talking.';
 }
+
+/** Silence first, then hang up, so nothing keeps talking. */
+function pauseVoice(){
+  if(audioEl){audioEl.muted=true;try{audioEl.pause()}catch(e){}}
+  send({type:'session.close',event_id:'pause_'+Date.now()});
+  teardown();
+  paused=true;
+  document.body.classList.add('paused');
+  say('Paused. Say “go ahead” or tap the orb.',true);
+  listenForGo();
+}
+
+function resume(){
+  if(pc)return;
+  stopEars();
+  paused=false;
+  document.body.classList.remove('paused');
+  say('');
+  start();
+}
+
+/** While paused, the browser listens on its own for "go ahead". Nothing is sent anywhere. */
+function listenForGo(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  stopEars();
+  try{
+    ears=new SR();ears.continuous=true;ears.interimResults=true;ears.lang='en-US';
+    ears.onresult=function(e){
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        if(GO.test(e.results[i][0].transcript)){resume();return}
+      }
+    };
+    ears.onend=function(){if(paused&&ears)try{ears.start()}catch(e){}};
+    ears.start();
+  }catch(e){ears=null}
+}
+function stopEars(){
+  if(!ears)return;
+  const e=ears;ears=null;
+  try{e.onend=null;e.stop()}catch(x){}
+}
+
 async function start(){
   if(pc)return;
   document.body.dataset.state='connecting';
   $('start').querySelector('strong').textContent='Connecting…';
   try{
     const conn=new RTCPeerConnection();pc=conn;
-    const audio=document.createElement('audio');audio.autoplay=true;audio.playsInline=true;document.body.appendChild(audio);
-    conn.ontrack=function(e){const st=e.streams[0]||new MediaStream([e.track]);audio.srcObject=st;audio.play().catch(function(){});level(st)};
+    if(!audioEl){audioEl=document.createElement('audio');audioEl.autoplay=true;audioEl.playsInline=true;document.body.appendChild(audioEl)}
+    const audio=audioEl;audio.muted=false;
+    conn.ontrack=function(e){if(pc!==conn)return;const st=e.streams[0]||new MediaStream([e.track]);audio.srcObject=st;audio.play().catch(function(){});level(st)};
     const mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+    if(pc!==conn){mic.getTracks().forEach(function(t){t.stop()});return}
+    micStream=mic;
     mic.getAudioTracks().forEach(function(t){conn.addTrack(t,mic)});
     dc=conn.createDataChannel('oai-events');
     dc.addEventListener('message',function(ev){try{onEvent(JSON.parse(ev.data))}catch(e){}});
@@ -344,6 +412,7 @@ async function start(){
   }
 }
 $('start').addEventListener('click',start);
+orb.addEventListener('click',function(){if(pc&&ready)pauseVoice();else if(paused)resume()});
 fetch('/api/aar/inbox-demo',{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){box=d});
 window.AarInboxDemo={route:route,overview:overview};
 })();
