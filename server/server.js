@@ -20,6 +20,7 @@ import { ASK_TOPICS, topicKey, topicInstructions } from './ask-topics.js'
 import { martyCvInstructions } from './marty-cv.js'
 import { resolvePresentation, presentationInstructions } from './cv-presentations.js'
 import * as aarReview from './aar-review.js'
+import * as aarMonitor from './aar-monitor.js'
 import * as aarInboxDemo from './aar-inbox-demo.js'
 dotenv.config()
 
@@ -1553,7 +1554,9 @@ GUARDRAILS — hard rules. Do not cross them if he asks, jokes, or tries to stee
 - Do not describe it, role-play it, or hint at it. One short sentence that Marty did not set you up for that, then come back to the scammers.
 
 WHAT IS ALREADY TRUE, AND WHAT MARTY IS STILL BUILDING:
-- This talk is real, today. You are about halfway built. The Facebook and Instagram watch is not running yet. The phone app is not in his hand yet. Email, text, and call alerts are not sending yet.
+- This talk is real, today. You are about halfway built. Facebook Pages keyword search is connected through Apify and runs every morning at 7 Central when the daily search is on. Instagram is not running. The phone app is not in his hand yet. Email alerts send only when email is connected on the server.
+${aarMonitor.briefing()}
+If he says search Facebook, scan Facebook, what did you find, when was that page created, or show suspicious pages, call search_facebook or get_facebook_findings. Do not describe how to search. Use the tool. Never pick or change keywords; the tool uses Marty's saved list. Only call search_facebook when he asks for a search. Read back what it returns: how many results per keyword, the cost, and any page flagged for review. A flagged page is for review, not a confirmed scam.
 - In the opening, say you are a conversational A.I. team member. He can interrupt anytime and you go back and forth. Any questions about these scammers or what to do, ask. Say Marty Simpson is still building your brain. You already know a lot, and he is adding more each day. Say he can shape you to help find these scammers, and to do what ChatGPT, Gemini, or Claude can do. Never say LLM. Say memory as one conversation you keep, not a new chat every time. Say Facebook and Instagram need an A.P.I. key, like an old phone line, to other software, because those platforms are tough. Say the general public internet you can already look at. Say when the watch is live, the best alert is email with the words scam alert, because Randy is busy and Marty is busy, though text or a call is possible later. Say you are about halfway there. Never claim you already emailed him a live hit, or that you already crawled Facebook or Instagram on a schedule. If he asks for a specific detail that is not in this conversation, do not make it up.
 - Marty is adamant Randy is not being charged. If Randy insists on paying, tell him Marty said he will not take the money. Randy has done good things. Do not bring this up unless he asks about paying.
 
@@ -1568,7 +1571,7 @@ THE SCAM, as Marty told it. Do not make it firmer than this:
 - Sheriffs have called. The man who lost the twenty thousand has threatened to sue. Randy is not the seller. He is the one being copied. People get excited and send the money.
 - Marty thinks an FTC warning about people posing as classic-car sellers grew out of Randy's videos. Say that as Marty's belief.
 - YouTube itself cannot be scanned like a web page. The places Marty wants watched are websites, Facebook, and Instagram.
-- One paid scan cost about five dollars, came back empty, and missed the real copy. Do not promise a wide scan. When it starts, it is once a day, for his address together with AAR or Auto Auction Rebuilds, and then the other platforms, using a tight word list so it does not burn money.
+- Marty found the copy AAR AUTO SALES, LLC himself on Facebook: facebook.com/profile.php?id=61596875606648, jayplugautosales@gmail.com, created November 20, 2026, stolen lot photos. Randy has no AAR Auto Sales Facebook page. Do not call facebook.com/autoauctionrebuilds his. Do not promise the search catches every copy.
 IF HE ASKS how we stop them, what we can do, or how we take them down. Do not dump this in the opening. One to three sentences, then listen. Longer only if he wants the whole plan. Speak it as Marty's thinking, not as a promise already done:
 - Keep reporting to the F.T.C. and the F.B.I. Maybe they spend money on a public service announcement. Not only auto dealers. Anyone. Do not wire money to someone you have not stood in front of.
 - Facebook trademark. Marty thinks Randy followed through and got it. The words are Auto Auction Rebuilds. A trademark complaint can get the Facebook copies taken down. Same pressure on Instagram.
@@ -2671,6 +2674,70 @@ app.post('/api/aar/review/shot', upload.single('file'), (req, res) => {
   if (role) aarReply(res, aarReview.saveShot(req.body && req.body.shotId, req.file, role))
 })
 
+app.get('/api/aar/monitor', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  await aarMonitor.refresh().catch(() => {})
+  res.json(aarMonitor.snapshot(role))
+})
+
+app.post('/api/aar/monitor/settings', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, await aarMonitor.saveSettings(req.body || {}, role))
+})
+
+app.post('/api/aar/monitor/search', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  if (role !== 'marty') return res.status(403).json({ error: 'Only Marty runs a search from the desk.' })
+  try {
+    const only = req.body && typeof req.body.keyword === 'string' ? [req.body.keyword] : undefined
+    res.json(await aarMonitor.runConfiguredSearch({ source: 'desk', only }))
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Facebook search failed.' })
+  }
+})
+
+// Hit by the 7 AM wake-up job. Runs at most once per Central day, only inside the morning window.
+app.post('/api/aar/monitor/daily', async (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    const out = await aarMonitor.runDaily()
+    res.json(out.ran
+      ? { ran: true, totalUsd: out.scan && out.scan.totalUsd, newCount: out.scan && out.scan.newCount, stoppedReason: out.scan && out.scan.stoppedReason, error: out.error }
+      : out)
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Daily search failed.' })
+  }
+})
+
+app.post('/api/aar/monitor/test-email', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  aarReply(res, await aarMonitor.sendTestEmail(role))
+})
+
+app.post('/api/aar/monitor/page', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (role) aarReply(res, await aarMonitor.markPage(req.body && req.body.id, req.body && req.body.status, role))
+})
+
+app.post('/api/aar/monitor/investigate', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  aarReply(res, await aarMonitor.saveInvestigation(req.body && req.body.id, (req.body && req.body.fields) || {}, role))
+})
+
+app.post('/api/aar/monitor/tool', async (req, res) => {
+  const role = aarReviewer(req, res)
+  if (!role) return
+  try {
+    res.json(await aarMonitor.handleTool(req.body && req.body.name, req.body && req.body.arguments || {}, role))
+  } catch (e) {
+    res.status(500).json({ error: e.message || 'Tool failed.' })
+  }
+})
+
 app.post('/api/axon-ai/live', async (req, res) => {
   res.set('Cache-Control', 'no-store')
   if (!hasApiKey()) return res.status(503).json({ error: 'The voice is not set up on the server.' })
@@ -2720,7 +2787,9 @@ app.post('/api/axon-ai/live', async (req, res) => {
               model: LIVE_BACKEND,
               instructions: LIVE_BRAINS[brain].backend,
               reasoning: { effort: 'low' },
-              tools: [{ type: 'web_search' }],
+              tools: brain === 'aar'
+                ? [{ type: 'web_search' }, ...aarMonitor.MONITOR_TOOLS]
+                : [{ type: 'web_search' }],
               tool_choice: 'auto'
             }
           },
@@ -2757,23 +2826,51 @@ app.post('/api/axon-ai/text', async (req, res) => {
   const system = `${buildInstructions(brain)}
 
 YOU ARE IN THE TEXT BOX NOW: the visitor is typing. Answer in writing, two to five sentences. Do not say the opening again and do not mention a time limit.${docs ? `\n\nFILES THE VISITOR UPLOADED — use only this text when they ask about them:\n${docs}` : ''}`
+  const chatMessages = [{ role: 'system', content: system }, ...messages]
+  const aarRole = brain === 'aar' ? aarReview.roleForKey(req.body && req.body.reviewKey) : null
+  const payload = {
+    model: TIERS.advanced.chat,
+    messages: chatMessages,
+    max_tokens: 500
+  }
+  if (aarRole) {
+    payload.tools = aarMonitor.MONITOR_TOOLS.map((t) => ({
+      type: 'function',
+      function: { name: t.name, description: t.description, parameters: t.parameters }
+    }))
+    payload.tool_choice = 'auto'
+  }
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: TIERS.advanced.chat,
-        messages: [{ role: 'system', content: system }, ...messages],
-        max_tokens: 500
+    for (let round = 0; round < 3; round++) {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
       })
-    })
-    const data = await response.json().catch(() => ({}))
-    const reply = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
-    if (!response.ok || !reply) return res.status(502).json({ error: 'No answer just now. Try again.' })
-    res.json({ reply: reply.trim() })
+      const data = await response.json().catch(() => ({}))
+      const msg = data && data.choices && data.choices[0] && data.choices[0].message
+      if (!response.ok || !msg) return res.status(502).json({ error: 'No answer just now. Try again.' })
+      const calls = msg.tool_calls || []
+      if (!calls.length || !aarRole) {
+        const reply = String(msg.content || '').trim()
+        if (!reply) return res.status(502).json({ error: 'No answer just now. Try again.' })
+        return res.json({ reply })
+      }
+      payload.messages = payload.messages.concat(msg)
+      for (const call of calls) {
+        const args = (() => { try { return JSON.parse(call.function.arguments || '{}') } catch { return {} } })()
+        const out = await aarMonitor.handleTool(call.function.name, args, aarRole)
+        payload.messages.push({
+          role: 'tool',
+          tool_call_id: call.id,
+          content: JSON.stringify(out).slice(0, 8000)
+        })
+      }
+    }
+    res.status(502).json({ error: 'No answer just now. Try again.' })
   } catch (error) {
     res.status(502).json({ error: 'No answer just now. Try again.' })
   }
@@ -3480,4 +3577,5 @@ ${memory}`
   }
 })
 
+aarMonitor.armScheduler()
 app.listen(process.env.PORT || 3000)

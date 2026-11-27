@@ -178,6 +178,28 @@
   body.show-review .review{display:flex;order:-1}
   body.show-review h1{display:none}
   body.show-review .stage{display:none}
+  .watch{
+    width:min(720px,100%);margin:8px auto 0;
+    display:none;flex-direction:column;gap:10px;
+  }
+  body.show-watch .watch{display:flex;order:-1}
+  body.show-watch h1,body.show-watch .stage{display:none}
+  .watch .card,.watch .desk{
+    background:rgba(255,255,255,.9);border:1px solid #d7e3f4;border-radius:18px;padding:14px 16px;
+  }
+  .watch h2{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;margin:0 0 8px}
+  .watch label{display:block;font-size:12px;font-weight:800;margin:10px 0 4px}
+  .watch input,.watch select,.watch textarea{
+    width:100%;border:1px solid #d5deec;border-radius:10px;padding:8px 10px;font:500 13px/1.4 inherit
+  }
+  .watch textarea{min-height:72px}
+  .watch .check{font-weight:600;display:flex;gap:8px;align-items:center;margin-top:8px}
+  .watch .wres{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 14px}
+  .watch .wres th,.watch .wres td{text-align:left;padding:5px 6px;border-bottom:1px solid #e3eaf5;vertical-align:top;word-break:break-word}
+  .watch .wres tr.flag td{background:#fff4e5}
+  .watch .wkw{font-weight:800;margin:10px 0 2px}
+  #watchDot{display:none}
+  body.can-watch #watchDot{display:inline-flex}
   .review .intro,.review .meta,.review .card,.review .desk,.review .confirm{
     background:rgba(255,255,255,.9);border:1px solid #d7e3f4;border-radius:18px;padding:14px 16px;
   }
@@ -273,6 +295,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h16"/><path d="M16 10l4 4-4 4"/></svg>
           Impersonation Review
         </button>
+        <button type="button" class="chip" id="watchDot">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg>
+          Facebook Watch
+        </button>
         <button type="button" class="chip" id="whyDot">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
           About Axon
@@ -292,6 +318,39 @@
           <button type="button" class="ghost" id="exportReview">Export review summary</button>
         </div>
         <div class="desk" id="reviewDesk"></div>
+      </section>
+      <section class="watch" id="watchPane" aria-label="Facebook Watch">
+        <div class="desk">
+          <h2>Facebook Watch</h2>
+          <p class="tiny" id="watchScan"></p>
+          <p class="tiny" id="watchCaps"></p>
+          <label>Keywords (one per line, each searched separately, exactly as typed)</label>
+          <textarea id="watchTerms" rows="6"></textarea>
+          <label>Max results per keyword (up to 20)</label>
+          <input id="watchMax" type="number" min="1" max="20" value="20">
+          <label>Daily spending limit (up to $1.00)</label>
+          <input id="watchCap" type="number" min="0" max="1" step="0.05" value="1">
+          <label>Daily search time (Central)</label>
+          <input id="watchTime" type="time" value="07:00">
+          <label class="check"><input type="checkbox" id="watchOn"> Run the search automatically every day</label>
+          <label>Email recipients</label>
+          <textarea id="watchEmails" rows="3" placeholder="one address per line"></textarea>
+          <div class="desk-actions">
+            <button type="button" class="ghost" id="watchSave">Save settings</button>
+            <button type="button" class="ghost" id="watchRun">Search Facebook now</button>
+            <button type="button" class="ghost" id="watchTestMail">Send test email</button>
+          </div>
+          <p class="tiny" id="watchNotice">Facebook Pages only. No Marketplace. Each keyword is one Apify search with its own charge limit.</p>
+        </div>
+        <div class="card">
+          <h2>Flagged for review</h2>
+          <div class="queue" id="watchList" style="display:flex"></div>
+          <div id="watchDetail"></div>
+        </div>
+        <div class="card">
+          <h2>Last search — every result</h2>
+          <div id="watchResults"></div>
+        </div>
       </section>
     </div>
   </div>
@@ -323,6 +382,8 @@
   <div id="shotBox" hidden role="dialog" aria-label="Screenshot"><img alt=""><button type="button" class="ghost" id="closeShot">Close</button></div>
 
 <script src="/aar/review.js"></script>
+<script src="/aar/monitor-tools.js"></script>
+<script src="/aar/monitor.js"></script>
 <script>
 const orb=document.getElementById('orb');
 const hint=document.getElementById('hint');
@@ -406,11 +467,13 @@ function remember(role,text){
   if(history.length>40)history=history.slice(-40);
 }
 function hidePanels(){
-  document.body.classList.remove('show-files','show-why','show-text','show-review');
+  document.body.classList.remove('show-files','show-why','show-text','show-review','show-watch');
   fileDot.classList.remove('on');
   whyDot.classList.remove('on');
   textDot.classList.remove('on');
   if(reviewDot)reviewDot.classList.remove('on');
+  const watchDot=document.getElementById('watchDot');
+  if(watchDot)watchDot.classList.remove('on');
 }
 function hideRight(){
   document.body.classList.remove('show-files','show-why');
@@ -432,13 +495,13 @@ function toggleText(){
 }
 function toggleFiles(){
   const on=!document.body.classList.contains('show-files');
-  if(on){document.body.classList.remove('show-why','show-text','show-review');whyDot.classList.remove('on');textDot.classList.remove('on');if(reviewDot)reviewDot.classList.remove('on')}
+  if(on){document.body.classList.remove('show-why','show-text','show-review','show-watch');whyDot.classList.remove('on');textDot.classList.remove('on');if(reviewDot)reviewDot.classList.remove('on');const w=document.getElementById('watchDot');if(w)w.classList.remove('on')}
   document.body.classList.toggle('show-files',on);
   fileDot.classList.toggle('on',on);
 }
 function toggleWhy(){
   const on=!document.body.classList.contains('show-why');
-  if(on){document.body.classList.remove('show-files','show-text','show-review');fileDot.classList.remove('on');textDot.classList.remove('on');if(reviewDot)reviewDot.classList.remove('on')}
+  if(on){document.body.classList.remove('show-files','show-text','show-review','show-watch');fileDot.classList.remove('on');textDot.classList.remove('on');if(reviewDot)reviewDot.classList.remove('on');const w=document.getElementById('watchDot');if(w)w.classList.remove('on')}
   document.body.classList.toggle('show-why',on);
   whyDot.classList.toggle('on',on);
 }
@@ -465,6 +528,7 @@ function endYou(){
 }
 
 function onEvent(m){
+  if(window.AarMonitorTools)AarMonitorTools.handle(m,dc);
   if(m.type==='session.started'){
     ready=true;
     setLive(true);
@@ -652,7 +716,7 @@ async function sendText(text){
     const r=await fetch('/api/axon-ai/text',{
       method:'POST',cache:'no-store',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({brain:'aar',messages:history.slice(-20),docs:docsText})
+      body:JSON.stringify({brain:'aar',messages:history.slice(-20),docs:docsText,reviewKey:window.AarReview?AarReview.key():''})
     });
     const d=await r.json().catch(function(){return{}});
     const reply=d.reply||d.error||'No answer just now. Try again.';

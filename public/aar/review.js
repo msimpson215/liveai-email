@@ -101,7 +101,7 @@
     const chip = $('reviewDot')
     if (chip) chip.classList.toggle('on', on)
     if (on) {
-      document.body.classList.remove('show-files', 'show-why', 'show-text')
+      document.body.classList.remove('show-files', 'show-why', 'show-text', 'show-watch')
       ;['fileDot', 'whyDot', 'textDot'].forEach(function (id) {
         const el = $(id)
         if (el) el.classList.remove('on')

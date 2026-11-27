@@ -14,3 +14,5 @@ data/marcus-email.txt
 node_modules/
 .secrets/
 npm-debug.log*
+data/aar-monitor/*
+!data/aar-monitor/.gitkeep

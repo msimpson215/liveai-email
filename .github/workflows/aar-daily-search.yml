@@ -1,0 +1,18 @@
+# Wakes the Render site at 7 AM Central so the AAR daily Facebook search runs.
+# Two times cover daylight saving. The server runs the search at most once per Central day.
+name: AAR daily Facebook search
+
+on:
+  schedule:
+    - cron: '0 12 * * *'
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake the site
+        run: curl -sS --max-time 120 --retry 5 --retry-delay 20 --retry-all-errors -o /dev/null https://liveai-email.onrender.com/health
+      - name: Start the daily search
+        run: curl -sS --max-time 600 -X POST https://liveai-email.onrender.com/api/aar/monitor/daily
