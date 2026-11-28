@@ -158,6 +158,19 @@
 <p class="who">Martin Simpson</p>
 <script>
 (function(){
+  var who = new URLSearchParams(location.search).get('who');
+  if (who === 'joe') {
+    var img = document.querySelector('.banner img');
+    img.src = '/portfolio/assets/portfolio-header-joe.png';
+    img.alt = 'Project Portfolio. AI applications, products, and inventions. Joe Schanze.';
+    document.title = 'Project Portfolio — Joe Schanze';
+    var byline = document.querySelector('.who');
+    if (byline) byline.textContent = 'Joe Schanze';
+    var home = document.querySelector('.portnav > a');
+    if (home) home.href = '/portfolio/projects.html?who=joe';
+  }
+})();
+(function(){
   var drop = document.querySelector('.portnav-drop');
   var btn = drop.querySelector('button');
   function setOpen(open){
